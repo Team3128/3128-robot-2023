@@ -48,15 +48,22 @@ public class Swerve extends SubsystemBase {
         fieldRelative = true;
         estimatedPose = new Pose2d();
 
-        odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
-                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
-
         modules = new SwerveModule[] {
             new SwerveModule(0, Mod0.constants),
             new SwerveModule(1, Mod1.constants),
             new SwerveModule(2, Mod2.constants),
             new SwerveModule(3, Mod3.constants)
         };
+        resetEncoders();
+
+        odometry = new SwerveDrivePoseEstimator(
+            swerveKinematics, 
+            new Rotation2d(), 
+            getPositions(), 
+            estimatedPose, 
+            SVR_STATE_STD, 
+            SVR_VISION_MEASUREMENT_STD);
+
 
         field = new Field2d();
         SmartDashboard.putData("Field", field);
@@ -65,9 +72,8 @@ public class Swerve extends SubsystemBase {
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
         SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                translation.getX(), translation.getY(), rotation, getGyroRotation2d())
+                translation.getX(), translation.getY(), rotation, getRotation2d())
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
-        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, maxSpeed);
         setModuleStates(moduleStates);
     }
 
@@ -97,12 +103,11 @@ public class Swerve extends SubsystemBase {
 
     public void resetEncoders() {
         for (SwerveModule module : modules) {
-            module.resetEncoders();
+            module.resetToAbsolute();
         }
     }
 
     public void resetOdometry(Pose2d pose) { // TODO: Call this!!!!
-        resetEncoders();
         zeroGyro(pose.getRotation().getDegrees());
         odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
     }
@@ -124,11 +129,7 @@ public class Swerve extends SubsystemBase {
     }
     
     public void toggle() {
-        if (fieldRelative) {
-            fieldRelative = false;
-            return;
-        }
-        fieldRelative = true;
+        fieldRelative = !fieldRelative;
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -141,7 +142,8 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        odometry.update(getGyroRotation2d(), getPositions());
+        var angle = MathUtil.inputModulus(getHeading(), -180,180);
+        odometry.update(Rotation2d.fromDegrees(angle), getPositions());
         for(SwerveModule module : modules){
             SmartDashboard.putNumber("Mod " + module.moduleNumber + " Cancoder", module.getCanCoder().getDegrees());
             SmartDashboard.putNumber("Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
@@ -183,13 +185,13 @@ public class Swerve extends SubsystemBase {
         return getRotation2d().getDegrees();
     }
     
-    public double calculateDegreesToTurn(){
+    public double calculateDegreesToTurn(Pose2d target){
         double alpha = getHeading();
-        return MathUtil.inputModulus(calculateDesiredAngle() - alpha,-180,180);
+        return MathUtil.inputModulus(calculateDesiredAngle(target) - alpha,-180,180);
     }
 
-    public double calculateDesiredAngle(){
-        Pose2d location = getPose().relativeTo(FieldConstants.HUB_POSITION);
+    public double calculateDesiredAngle(Pose2d target){
+        Pose2d location = getPose().relativeTo(target);
         double theta = Math.toDegrees(Math.atan2(location.getY(),location.getX()));
         return MathUtil.inputModulus(theta - 180,-180,180);
     }

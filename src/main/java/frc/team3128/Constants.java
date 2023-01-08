@@ -3,11 +3,14 @@ package frc.team3128;
 import static frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.FALCON_ENCODER_RESOLUTION;
 import static frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.SPARKMAX_ENCODER_RESOLUTION;
 
+import java.util.HashMap;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.swerve.SwerveModuleConstants;
 import frc.team3128.common.utility.interpolation.InterpolatingDouble;
 import frc.team3128.common.utility.interpolation.InterpolatingTreeMap;
@@ -15,6 +18,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
@@ -58,19 +62,26 @@ public class Constants {
         public static final double drivePeakCurrentDuration = 0.1;
         public static final boolean driveEnableCurrentLimit = true;
 
-        public static final double TURN_TOLERANCE = 5;
-
         public static final double DRIVE_TOLERANCE = 0.2;
 
-        /* Translation PID Values */
-        public static final double translationKP = 0.1;
-        public static final double translationKI = 0;
-        public static final double translationKD = 0;
-
-        /* Rotation PID Values */
+        /* Auto PID Values */
         public static final double rotationKP = 1;
         public static final double rotationKI = 0;
         public static final double rotationKD = 0;
+
+        public static final double translationKP = 2;
+        public static final double translationKI = 0;
+        public static final double translationKD = 0;
+
+        /* Translation PID Values */
+        public static final double distanceKP = 1;
+        public static final double distanceKI = 0;
+        public static final double distanceKD = 0;
+
+        /* Rotation PID Values */
+        public static final double alignKP = 0.05;
+        public static final double alignKI = 0;
+        public static final double alignKD = 0;
 
         /* Turning PID Values */
         public static final double turnKP = 0.1;
@@ -79,31 +90,31 @@ public class Constants {
         public static final double turnKF = 0.1;
 
         /* Angle Motor PID Values */
+        // switched 364 pid values to SDS pid values
         public static final double angleKP = 0.3; // 0.6; // citrus: 0.3
         public static final double angleKI = 0.0;
         public static final double angleKD = 0.0; // 12.0; // citrus: 0
         public static final double angleKF = 0.0;
 
         /* Drive Motor PID Values */
+        // need to characterize this
         public static final double driveKP = 0.05;//1.476;//0.05; // citrus: 0.05 //sysid 2.9424
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double driveKS = 0.60094;//(0.49321 / 12);
-        public static final double driveKV = 1.1559;//(2.4466 / 12);
-        public static final double driveKA = 0.12348;//(0.22036 / 12);
+        // TODO: need to characterize
+        public static final double driveKS = (0.60094/12);//(0.49321 / 12);
+        public static final double driveKV = (1.1559/12);//(2.4466 / 12);
+        public static final double driveKA = (0.12348/12);//(0.22036 / 12);
 
         public static final double turnTolerance = 2;
 
         /* Swerve Profiling Values */
-        // Theoretical: v = 4.96824, omega = 11.5
-        // Real: v = 4.5, omega = 10
-        // For safety, use less than theoretical and real values
         public static final double maxSpeed = 3; //4.5// 4.96824; // citrus: 4.5 //meters per second - 16.3 ft/sec
         public static final double maxAcceleration = 2;
-        public static final double maxAngularVelocity = 1;//3; //11.5; // citrus: 10
+        public static final double maxAngularVelocity = 2;//3; //11.5; // citrus: 10
 
         /* Motor Inverts */
         public static final boolean driveMotorInvert = false;
@@ -114,11 +125,12 @@ public class Constants {
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
+        // TODO: Figure out angle offsets
         public static final class Mod0 {
             public static final int driveMotorID = 0;
             public static final int angleMotorID = 1;
             public static final int canCoderID = 20;
-            public static final double angleOffset = -157.763671875; // deg
+            public static final double angleOffset = -157.763671875; // -156.357421875;//-46.5 + 90; //104.5;//19.599609375; // 19.51171875;//-51.85546875; // 37.35; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -128,7 +140,7 @@ public class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 3;
             public static final int canCoderID = 21;
-            public static final double angleOffset = 129.375; // deg
+            public static final double angleOffset = 129.375; //126.38671875000001; //23.466 + 90;//-132.25;//311.66015625 - 360; //132.5390625; //311.8359375; //10.45; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -138,7 +150,7 @@ public class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 22;
-            public static final double angleOffset = -69.697265625; // deg
+            public static final double angleOffset = -69.697265625; //-72.0703125;//-70.751953125; //-70.75; //109.51171875; //38.75; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -148,7 +160,7 @@ public class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 23;
-            public static final double angleOffset = -54.31640625; // deg
+            public static final double angleOffset = -54.31640625; //-52.91015625; //-52.9; //306.2109375; //307.6171875; // 58.88; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -163,9 +175,29 @@ public class Constants {
 
     }
 
-    // subsystem constants classes here
+    public static class ClimberConstants {
+
+    }
+
+    public static class HopperConstants {
+
+    }
+
+    public static class IntakeConstants {
+
+    }
+
+    public static class ShooterConstants {
+
+    }
+
+    public static class HoodConstants {
+
+    }
 
     public static class VisionConstants {
+
+        public static final Camera SHOOTER = new Camera("Frog",0,0,0, new Transform2d(new Translation2d(Units.inchesToMeters(-12),0), Rotation2d.fromDegrees(0)));
 
         public static final double SCREEN_WIDTH = 320;
         public static final double SCREEN_HEIGHT = 240;
@@ -179,31 +211,26 @@ public class Constants {
 
         public static final double TARGET_AREA = 6.25 * 6.25; //inches
 
-        public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> visionMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
+        public static final Matrix<N3,N1> SVR_STATE_STD = VecBuilder.fill(10,10,Units.degreesToRadians(0.1));
+ 
+        public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(1,1,Units.degreesToRadians(1));
 
-        public static final Matrix<N3,N1> SVR_STATE_STD = VecBuilder.fill(1,1,Units.degreesToRadians(1));
- 
-        public static final Matrix<N1,N1> SVR_LOCAL_MEASUREMENT_STD = VecBuilder.fill(Units.degreesToRadians(1));
- 
-        public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(0.1,0.1,Units.degreesToRadians(0.1));
+        public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
 
         static {
-            visionMap.put(new InterpolatingDouble(3.34),new InterpolatingDouble(4.0));
-        }
-
-        public static final Pose2d[] APRIL_TAG_POS = new Pose2d[] {
-            new Pose2d(0,0, Rotation2d.fromDegrees(0)),
-            new Pose2d(0,0, Rotation2d.fromDegrees(0)),
-            new Pose2d(0,0, Rotation2d.fromDegrees(0)),
-            new Pose2d(0,0, Rotation2d.fromDegrees(0)),
-            new Pose2d(0,0, Rotation2d.fromDegrees(0))
-        };
+            APRIL_TAG_POS.put(1,FieldConstants.HUB_POSITION);
+            APRIL_TAG_POS.put(5,FieldConstants.HUB_POSITION.transformBy(new Transform2d(new Translation2d(0,-1), new Rotation2d())));
+            APRIL_TAG_POS.put(3,FieldConstants.HUB_POSITION.transformBy(new Transform2d(new Translation2d(0,-2), new Rotation2d())));
+        } 
     }
     
     public static class FieldConstants{
-        public static final Pose2d HUB_POSITION = new Pose2d(Units.inchesToMeters(324), Units.inchesToMeters(162),new Rotation2d(0));
+        public static final Pose2d HUB_POSITION = new Pose2d(Units.inchesToMeters(324), Units.inchesToMeters(162),Rotation2d.fromDegrees(-90));
         public static final double FIELD_X_LENGTH = Units.inchesToMeters(648); // meters
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(324); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
+
+        public static final double RAMP_X_RIGHT = Units.inchesToMeters(324);
+        public static final double RAMP_X_LEFT = Units.inchesToMeters(200);
     }
 }
