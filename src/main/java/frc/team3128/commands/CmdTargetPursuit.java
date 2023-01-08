@@ -14,7 +14,6 @@ import static frc.team3128.Constants.VisionConstants.*;
 import frc.team3128.Constants.DriveConstants;
 import static frc.team3128.Constants.SwerveConstants.*;
 
-import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.utility.Log;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
@@ -27,37 +26,41 @@ public class CmdTargetPursuit extends CommandBase {
     private Rotation2d camAngle;
 
     private PIDController distance, rotation;
+    private boolean atDistance, atRotation;
 
-    int targetCount, plateauCount;
+    private double dist;
 
     /**
      * Aligns robot to ball and pursuits autonomously 
      * @Requirements Drivetrain
      */
-    public CmdTargetPursuit(String camera) {
+    public CmdTargetPursuit(String camera, double distance) {
         drive = Swerve.getInstance();
         vision = Vision.getInstance();
         camAngle = vision.camSpecs(camera).offset.getRotation();
 
         this.camera = camera;
+        this.dist = distance;
 
         initControllers();
         addRequirements(drive);
     }
 
     public void initControllers() {
-        distance = new PIDController(translationKP, translationKI, translationKD);
-        distance.setSetpoint(2);
+        distance = new PIDController(distanceKP, distanceKI, distanceKD);
+        distance.setSetpoint(dist);
         distance.setTolerance(DRIVE_TOLERANCE);
 
-        rotation = new PIDController(rotationKP, rotationKI, rotationKD);
+        rotation = new PIDController(alignKP, alignKI, alignKD);
         rotation.enableContinuousInput(-180, 180);
-        rotation.setTolerance(TURN_TOLERANCE);
+        rotation.setTolerance(TX_THRESHOLD);
         rotation.setSetpoint(0);
     }
 
     @Override
     public void initialize() {
+        atDistance = false;
+        atRotation = false;
         distance.reset();
         rotation.reset();
     }
@@ -65,9 +68,11 @@ public class CmdTargetPursuit extends CommandBase {
     @Override
     public void execute() {
         if (vision.hasValidTarget(camera)) {
-            Double dist = distance.calculate(vision.calculatedDistance(camera));
-            Double spin = rotation.calculate(vision.getTx(camera));
-            drive.drive(new Translation2d(dist,0).rotateBy(camAngle), Units.degreesToRadians(spin),false);
+            Double dist = !atDistance ? distance.calculate(vision.calculateDistance(camera)) : 0;
+            Double spin = !atRotation ? rotation.calculate(vision.getTx(camera)) : 0;
+            drive.drive(new Translation2d(-dist,0).rotateBy(camAngle), -spin,false);
+            atDistance = distance.atSetpoint();
+            atRotation = rotation.atSetpoint();
         }
         else {
             distance.reset();
@@ -80,11 +85,7 @@ public class CmdTargetPursuit extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        /*
-        When the robot is moving very slowly + blind the robot has probably just intook (?)
-        since it decelerated and there is no more target the limelight sees.
-        */
-        return distance.atSetpoint() && rotation.atSetpoint();
+        return atDistance && atRotation;
     }
 
     @Override

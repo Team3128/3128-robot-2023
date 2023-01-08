@@ -63,12 +63,7 @@ public class SwerveModule {
         SmartDashboard.putNumber("angle set position" + moduleNumber, desiredState.angle.getDegrees());
     }
 
-    public void resetEncoders() {
-        resetToAbsolute();
-        driveMotor.setSelectedSensorPosition(0);
-    }
-
-    private void resetToAbsolute(){
+    public void resetToAbsolute(){
         double absolutePosition = degreesToFalcon(getCanCoder().getDegrees(), angleGearRatio);
         angleMotor.setSelectedSensorPosition(absolutePosition);
     }
@@ -105,7 +100,7 @@ public class SwerveModule {
     }
 
     public SwerveModulePosition getPosition() {
-        double position = driveMotor.getSelectedSensorPosition();
+        double position = falconToM(driveMotor.getSelectedSensorPosition(), wheelCircumference, driveGearRatio);
         Rotation2d angle = Rotation2d.fromDegrees(falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio));
         return new SwerveModulePosition(position, angle);
     }
