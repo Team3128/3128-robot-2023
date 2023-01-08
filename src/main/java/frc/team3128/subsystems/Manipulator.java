@@ -11,7 +11,7 @@ public class Manipulator extends SubsystemBase {
     private static Manipulator instance;
 
     public Manipulator(){
-        manipulator_motor  = new NAR_TalonFX( MANIPULATOR_MOTOR_ID, NAR_Motor.PRO_775);
+        manipulator_motor  = new NAR_TalonFX( MANIPULATOR_MOTOR_ID );
         manipulator_motor.setNeutralMode(NeutralMode.Brake);
         
     }
