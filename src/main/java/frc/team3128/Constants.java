@@ -206,6 +206,7 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(324); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
     }
+    
     public static class ManipulatorConstants{
         public static final int MANIPULATOR_MOTOR_ID = 5;
         public static final double MANIPULATOR_MOTOR_SPEED_PERCENT = 0.57;
@@ -219,6 +220,5 @@ public class Constants {
         public static final double K_D = 0;
         public static final double K_F = 0;
         public static final int PLATEAU_COUNT = 10;
-    
     }
 }

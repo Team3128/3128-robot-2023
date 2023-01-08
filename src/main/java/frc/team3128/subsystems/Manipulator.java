@@ -1,7 +1,6 @@
 package frc.team3128.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
@@ -66,6 +65,7 @@ public class Manipulator extends PIDSubsystem {
     public double getCurrentTicks(){
         return manipulator_motor.getSelectedSensorPosition();
     }
+
     @Override
     protected void useOutput(double output, double setpoint) {
 
