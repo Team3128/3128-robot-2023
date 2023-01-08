@@ -206,4 +206,12 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(324); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
     }
+
+    public static class ManipulatorConstants{
+        public static final int MANIPULATOR_MOTOR_ID = 5;
+        public static final double MANIPULATOR_MOTOR_SPEED_PERCENT = 0.57;
+        public static final double MAX_TICKS = 342.00; // this is the estimated maximum release value change once the value has been established
+        public static final double MIN_TICKS_CUBE = 171.00; // this is the estimated maximum release value change once the value has been established
+        public static final double MIN_TICKS_CONE = 42.00; // this is the estimated maximum release value change once the value has been established
+    }
 }
