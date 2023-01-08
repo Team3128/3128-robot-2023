@@ -199,6 +199,13 @@ public class Constants {
             new Pose2d(0,0, Rotation2d.fromDegrees(0))
         };
     }
+
+    public static class PivotConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final int PIVOT_MOTOR_ID = 0;
+    }
     
     public static class FieldConstants{
         public static final Pose2d HUB_POSITION = new Pose2d(Units.inchesToMeters(324), Units.inchesToMeters(162),new Rotation2d(0));
