@@ -199,6 +199,10 @@ public class Constants {
             new Pose2d(0,0, Rotation2d.fromDegrees(0))
         };
     }
+
+    public static class TelescopeConstants {
+        // add all constants for Telescope.java
+    }
     
     public static class FieldConstants{
         public static final Pose2d HUB_POSITION = new Pose2d(Units.inchesToMeters(324), Units.inchesToMeters(162),new Rotation2d(0));
