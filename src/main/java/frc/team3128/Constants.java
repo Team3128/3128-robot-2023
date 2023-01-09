@@ -239,6 +239,9 @@ public class Constants {
     public static class HopperConstants {
         public static final int SERIALIZER_ID = 2;
         public static final double SERIALIZER_POWER = 0;
+
+        public static final int SENSOR_LEFT_ID = 1;
+        public static final int SENSOR_RIGHT_ID = 2;
     }
 
 }
