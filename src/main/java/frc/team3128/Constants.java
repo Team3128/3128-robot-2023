@@ -218,7 +218,8 @@ public class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double ROLLER_POWER = 0;
+        public static final double WHEELS_POWER = 1.0;
+        public static final double ROLLER_POWER = 0.0;
         public static final double SERIALIZER_POWER = 0;
 
         public static final double kP = 0;
