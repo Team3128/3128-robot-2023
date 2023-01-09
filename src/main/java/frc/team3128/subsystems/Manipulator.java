@@ -46,7 +46,7 @@ public class Manipulator extends SubsystemBase {
         if (getClawState() == Value.kForward) {
             openClaw();
         }
-        else if (getClawState() == Value.kReverse || getClawState() == Value.kReverse) {
+        else if (getClawState() == Value.kReverse || getClawState() == Value.kOff) {
             closeClaw();
         }
     }
