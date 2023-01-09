@@ -209,6 +209,8 @@ public class Constants {
     }
 
 
+
+
     public static class ManipulatorConstants{
         public static final int MANIPULATOR_MOTOR_ID = 5;
         public static final double MANIPULATOR_MOTOR_SPEED_PERCENT = 0.57;
@@ -216,10 +218,9 @@ public class Constants {
         public static final double MIN_TICKS_CUBE = 171.00; // this is the estimated maximum release value change once the value has been established
         public static final double MIN_TICKS_CONE = 42.00; // this is the estimated maximum release value change once the value has been established
     }
-
     public static class IntakeConstants {
-        public static final double ROLLER_POWER = 0;
-        public static final double SERIALIZER_POWER = 0;
+        public static final double WHEELS_POWER = 0;
+        
 
         public static final double kP = 0;
         public static final double kI = 0;
@@ -231,7 +232,12 @@ public class Constants {
         //Motor IDs
         public static final int INTAKE_WHEELS_ID = 0;
         public static final int INTAKE_ROTATOR_ID = 1;
+        
+    }
+
+    public static class HopperConstants {
         public static final int SERIALIZER_ID = 2;
+        public static final double SERIALIZER_POWER = 0;
     }
 
 }
