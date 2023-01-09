@@ -78,4 +78,7 @@ public class NAR_TalonFX extends WPI_TalonFX {
 	public double getSelectedSensorVelocity() {
 		return super.getSelectedSensorVelocity() * 10; // convert nu/100ms to nu/s
 	}
+	public double getSelectedSensorPosition() {
+		return super.getSelectedSensorPosition();
+	}
 }
