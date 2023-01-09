@@ -36,7 +36,7 @@ public class Trajectories {
     public static void initTrajectories() {
         final String[] trajectoryNames = {};
         for (String trajectoryName : trajectoryNames) {
-            // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
+            //Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
             trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(maxSpeed, maxAcceleration)));
         }
 

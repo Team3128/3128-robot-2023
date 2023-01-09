@@ -7,40 +7,49 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.VisionConstants.TX_THRESHOLD;
 
+import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
-import frc.team3128.Constants.FieldConstants;
+import static frc.team3128.Constants.FieldConstants.*;
 import frc.team3128.subsystems.Swerve;
 
 public class CmdMove extends CommandBase {
 
     private PIDController xController, yController, rController;
-    private DoubleSupplier xAxis, yAxis, throttle;
+    private static DoubleSupplier xAxis, yAxis, throttle;
+    private double[] xConstraints, yConstraints;
     private boolean xSetpoint, ySetpoint, rSetpoint;
 
-    private boolean joystickOverride = false;
+    private boolean joystickOverride;
 
     private Swerve swerve;
 
-    public CmdMove(Pose2d pose, DoubleSupplier xAxis, DoubleSupplier yAxis, DoubleSupplier throttle) {
-        this(pose);
+    public CmdMove(Pose2d pose, double[] xConstraints, double[] yConstraints, boolean joystickOverride) {
+        this.xConstraints = xConstraints;
+        this.yConstraints = yConstraints;
 
-        this.xAxis = xAxis;
-        this.yAxis = yAxis;
-        this.throttle = throttle;
-        joystickOverride = true;
-    }
-
-    public CmdMove(Pose2d pose) {
         initControllers();
 
         xController.setSetpoint(pose.getX());
         yController.setSetpoint(pose.getY());
         rController.setSetpoint(pose.getRotation().getRadians());
 
+        this.joystickOverride = joystickOverride;
+
         swerve = Swerve.getInstance();
 
         addRequirements(swerve);
+    }
+
+    public CmdMove(Pose2d pose, boolean joystickOverride) {
+        this(pose, new double[] {RAMP_X_LEFT, RAMP_X_RIGHT}, new double[] {0,0}, joystickOverride);
+    }
+
+    public static void setController(DoubleSupplier x, DoubleSupplier y, DoubleSupplier accel) {
+        xAxis = x;
+        yAxis = y;
+        throttle = accel;
     }
 
     private void initControllers() {
@@ -68,8 +77,8 @@ public class CmdMove extends CommandBase {
     @Override
     public void execute() {
         Pose2d pose = swerve.getPose();
-        double xDistance = xSetpoint ? xController.calculate(pose.getX()) : 0;
-        double yDistance = (ySetpoint && (pose.getX() > FieldConstants.RAMP_X_RIGHT || pose.getX() < FieldConstants.RAMP_X_LEFT)) ? yController.calculate(pose.getY()) : 0; 
+        double xDistance = (xSetpoint && (pose.getY() > yConstraints[1] || pose.getY() < yConstraints[0])) ? xController.calculate(pose.getX()) : 0;
+        double yDistance = (ySetpoint && (pose.getX() > xConstraints[1] || pose.getX() < xConstraints[0])) ? yController.calculate(pose.getY()) : 0; 
         double rotation = rSetpoint ? rController.calculate(pose.getRotation().getRadians()) : 0;
 
         xSetpoint = xController.atSetpoint();
