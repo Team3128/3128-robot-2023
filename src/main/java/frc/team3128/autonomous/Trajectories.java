@@ -34,9 +34,11 @@ public class Trajectories {
     private static SwerveAutoBuilder builder;
 
     public static void initTrajectories() {
-        final String[] trajectoryNames = {};
+        final String[] trajectoryNames = {"Climb","1Cone","1Cube","1Cone+Climb","1Cube+Climb","2Cone","2Cube","2Cone+1Cube"};
         for (String trajectoryName : trajectoryNames) {
             // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
+            if 
+            trajectoryName += 'r';
             trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(maxSpeed, maxAcceleration)));
         }
 
