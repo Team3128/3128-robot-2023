@@ -201,7 +201,9 @@ public class Constants {
     }
 
     public static class TelescopeConstants {
-        // add all constants for Telescope.java
+        public static final int TELE_MOTOR_ID = 10;
+        public static final double TELE_MOTOR_POWER = 0.8;
+        // public static final double TELE_GEAR_RATIO = 
     }
     
     public static class FieldConstants{

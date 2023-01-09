@@ -7,32 +7,27 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Encoder;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static frc.team3128.Constants.TelescopeConstants.*;
+import static frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.*;
+import frc.team3128.common.hardware.motorcontroller.NAR_TalonFX;
 import frc.team3128.common.utility.NAR_Shuffleboard;
-// import static frc.team3128.Constants.TelescopeConstants.*; <--- made a new class for telescope consts
-import frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.*;
-// import frc.team3128.common.hardware.motorcontroller.xxxx; 
-// import static frc.team3128.common.hardware.motorcontroller.xxxx; <--- add motor name + add to hardware.motocontroller
 
-
+import static frc.team3128.Constants.TelescopeConstants;
 
 /**
  * Telescope for windmill arm class
  */
 
-public class Telescope extends SubsystemBase{
+public class Telescope extends SubsystemBase {
     
     private static Telescope instance;
 
-    // private xxxx m_teleMotor;
+    private NAR_TalonFX m_teleMotor;
     private Encoder m_teleEncoder;
 
     public Telescope() {
-
         configMotors();
         configEncoders();
-
     }
 
     public static synchronized Telescope getInstance() {
@@ -45,9 +40,9 @@ public class Telescope extends SubsystemBase{
      * Initializes motor needed for telelscope and sets up CAN frame periods
      */
     private void configMotors() {
-        // m_teleMotor = new xxxx(TELE_MOTOR_ID) <---we need to figure out what motors we are using
-
-        // m_hopper1.setNeutralMode(NeutralMode.x);
+        m_teleMotor = new NAR_TalonFX(TelescopeConstants.TELE_MOTOR_ID); 
+        
+        m_teleMotor.setNeutralMode(NeutralMode.Coast);
 
         // m_teleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, x);
         // m_teleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, x);
@@ -66,7 +61,6 @@ public class Telescope extends SubsystemBase{
      * Data for Shuffleboard <-- worry about that later
      */
     public void initShuffleboard() {
-
     }
 
     @Override
@@ -78,33 +72,37 @@ public class Telescope extends SubsystemBase{
      * Extends Telescope at regular power
      */
     public void extendTele() {
-        // m_teleMotor.set(TELE_MOTOR_POWER); 
+        m_teleMotor.set(TELE_MOTOR_POWER); 
     }
 
     public void extendTele(double power) {
-        // m_teleMotor.set(power); 
+        m_teleMotor.set(power); 
     }
 
     /**
      * Retracts telescope at regular power
      */
     public void retractTele() {
-        // m_teleMotor.set(-TELE_MOTOR_POWER);
+        m_teleMotor.set(-TELE_MOTOR_POWER);
     }
 
     public void retractTele(double power) {
-        // m_teleMotor.set(-power);
+        m_teleMotor.set(-power);
     }
 
     /**
      * Telescope goes into neutral position (sets power to 0)
      */
     public void stopTele() {
-        // m_teleMotor.set(0);
+        m_teleMotor.set(0);
     }
 
     public void resetTeleEncoder() {
         // m_teleEncoder.setEncoderPosition(0);
+    }
+
+    public double getCurrentTicks() {
+        return m_teleMotor.getSelectedSensorPosition();
     }
 
 }
