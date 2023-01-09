@@ -219,8 +219,9 @@ public class Constants {
         public static final double MIN_TICKS_CONE = 42.00; // this is the estimated maximum release value change once the value has been established
     }
     public static class IntakeConstants {
-        public static final double WHEELS_POWER = 0;
-        
+        public static final double WHEELS_POWER = 1.0;
+        public static final double ROLLER_POWER = 0.0;
+        public static final double SERIALIZER_POWER = 0;
 
         public static final double kP = 0;
         public static final double kI = 0;
