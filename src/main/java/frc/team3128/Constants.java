@@ -10,10 +10,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.swerve.SwerveModuleConstants;
 import frc.team3128.common.utility.interpolation.InterpolatingDouble;
 import frc.team3128.common.utility.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -218,9 +221,38 @@ public class Constants {
         public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
 
         static {
-            APRIL_TAG_POS.put(1,FieldConstants.HUB_POSITION);
-            APRIL_TAG_POS.put(5,FieldConstants.HUB_POSITION.transformBy(new Transform2d(new Translation2d(0,-1), new Rotation2d())));
-            APRIL_TAG_POS.put(3,FieldConstants.HUB_POSITION.transformBy(new Transform2d(new Translation2d(0,-2), new Rotation2d())));
+            APRIL_TAG_POS.put(1, new Pose2d(
+                new Translation2d(Units.inchesToMeters(610.77), Units.inchesToMeters(42.19)),
+                Rotation2d.fromDegrees(180))
+            );
+            APRIL_TAG_POS.put(2, new Pose2d(
+                new Translation2d(Units.inchesToMeters(610.77), Units.inchesToMeters(108.19)),
+                Rotation2d.fromDegrees(180))
+            );
+            APRIL_TAG_POS.put(3, new Pose2d(
+                new Translation2d(Units.inchesToMeters(610.77), Units.inchesToMeters(174.19)),
+                Rotation2d.fromDegrees(180))
+            );
+            APRIL_TAG_POS.put(4, new Pose2d(
+                new Translation2d(Units.inchesToMeters(636.96), Units.inchesToMeters(265.74)),
+                Rotation2d.fromDegrees(180))
+            );
+            APRIL_TAG_POS.put(5, new Pose2d(
+                new Translation2d(Units.inchesToMeters(14.25), Units.inchesToMeters(265.74)),
+                Rotation2d.fromDegrees(0))
+            );
+            APRIL_TAG_POS.put(6, new Pose2d(
+                new Translation2d( Units.inchesToMeters(40.45), Units.inchesToMeters(174.19)),
+                Rotation2d.fromDegrees(0))
+            );
+            APRIL_TAG_POS.put(7, new Pose2d(
+                new Translation2d(Units.inchesToMeters(40.45), Units.inchesToMeters(108.19)),
+                Rotation2d.fromDegrees(0))
+            );
+            APRIL_TAG_POS.put(8, new Pose2d(
+                new Translation2d(Units.inchesToMeters(40.45), Units.inchesToMeters(42.19)),
+                Rotation2d.fromDegrees(0))
+            );
         } 
     }
     
@@ -230,7 +262,19 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(324); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
 
-        public static final double RAMP_X_RIGHT = Units.inchesToMeters(324);
-        public static final double RAMP_X_LEFT = Units.inchesToMeters(200);
+        public static final double RAMP_X_RIGHT = Units.inchesToMeters(193.25);
+        public static final double RAMP_X_LEFT = Units.inchesToMeters(132.375);
+
+        public static Pose2d allianceFlip(Pose2d pose) {
+            if (DriverStation.getAlliance() == Alliance.Red) {
+                double angle = 180 - pose.getRotation().getDegrees();
+                return new Pose2d(
+                  FIELD_X_LENGTH - pose.getX(),
+                  pose.getY(),
+                  Rotation2d.fromDegrees(angle));
+            } else {
+                return pose;
+            }
+          }
     }
 }
