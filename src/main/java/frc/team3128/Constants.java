@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.team3128.common.swerve.FalconConversions;
 import frc.team3128.common.swerve.SwerveModuleConstants;
 import frc.team3128.common.utility.interpolation.InterpolatingDouble;
 import frc.team3128.common.utility.interpolation.InterpolatingTreeMap;
@@ -206,4 +207,22 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(324); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
     }
+
+    public static class IntakeConstants {
+        public static final double ROLLER_POWER = 0;
+        public static final double SERIALIZER_POWER = 0;
+
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        public static final double ROTATOR_GEAR_RATIO = 1;
+        public static final double ROTATOR_TOLERANCE = FalconConversions.degreesToFalcon(1, ROTATOR_GEAR_RATIO);
+
+        //Motor IDs
+        public static final int INTAKE_WHEELS_ID = 0;
+        public static final int INTAKE_ROTATOR_ID = 1;
+        public static final int SERIALIZER_ID = 2;
+    }
+
 }
