@@ -211,6 +211,10 @@ public class Constants {
 
     public static class ManipulatorConstants{
         public static final int MANIPULATOR_MOTOR_ID = 5;
+
+        public static final int MANIPULATOR_SOLENOID_FORWARD_CHANNEL_ID = 1;
+        public static final int MANIPULATOR_SOLENOID_BACKWARD_CHANNEL_ID = 2;
+
         public static final double MANIPULATOR_MOTOR_SPEED_PERCENT = 0.57;
         public static final double MAX_TICKS = 342.00; // this is the estimated maximum release value change once the value has been established
         public static final double MIN_TICKS_CUBE = 171.00; // this is the estimated maximum release value change once the value has been established
