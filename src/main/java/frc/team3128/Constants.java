@@ -217,7 +217,12 @@ public class Constants {
 
         public static final double PIVOT_HEIGHT = 41.484; // Above ground (inches)
         public static final double ARM_LENGTH = 8; // inches
-        
+    }
+    
+    public static class TelescopeConstants {
+        public static final int TELE_MOTOR_ID = 10;
+        public static final double TELE_MOTOR_POWER = 0.8;
+        // public static final double TELE_GEAR_RATIO = 
     }
     
     public static class FieldConstants{
