@@ -35,7 +35,7 @@ public class Intake extends PIDSubsystem {
     //Motors
     private NAR_TalonSRX m_intakeWheels;
     private NAR_TalonFX m_intakeRotator;
-    private NAR_TalonSRX m_serializer;
+    
 
     //TODO: Make the feedforward based on the weight and angle of the intake arm
     private double m_ff = 0.0;
@@ -57,7 +57,6 @@ public class Intake extends PIDSubsystem {
     public void configMotors() {
         m_intakeWheels = new NAR_TalonSRX(INTAKE_WHEELS_ID);
         m_intakeRotator = new NAR_TalonFX(INTAKE_ROTATOR_ID);
-        m_serializer = new NAR_TalonSRX(SERIALIZER_ID);
     }
 
     @Override
@@ -93,13 +92,5 @@ public class Intake extends PIDSubsystem {
 
     public void disableWheels() {
         m_intakeWheels.set(0);
-    }
-
-    public void enableSerializer() {
-        m_serializer.set(SERIALIZER_POWER);
-    }
-
-    public void disableSerializer() {
-        m_serializer.set(0);
     }
 }
