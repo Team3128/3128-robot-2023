@@ -200,6 +200,25 @@ public class Constants {
         };
     }
 
+    public static class PivotConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final int PIVOT_MOTOR_ID = 11;
+        public static final double ENC_CONV = 0;
+        public static final double TOLERANCE = 0;
+        public static final double MIN_ANGLE = 0;
+
+        public static final double TOP_CONE_ANGLE = 180 - 78.4574324; // 180 - mech magic number
+        public static final double TOP_CUBE_ANGLE = 180 - 89.093; // All in degrees
+        public static final double MID_CONE_ANGLE = 180 - 90.827;
+        public static final double MID_CUBE_ANGLE = 180 - 105.764;
+        public static final double LOW_FLOOR_ANGLE = 180 - 155.114;
+
+        public static final double PIVOT_HEIGHT = 41.484; // Above ground (inches)
+        public static final double ARM_LENGTH = 8; // inches
+    }
+    
     public static class TelescopeConstants {
         public static final int TELE_MOTOR_ID = 10;
         public static final double TELE_MOTOR_POWER = 0.8;
