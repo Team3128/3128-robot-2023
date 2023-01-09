@@ -55,6 +55,7 @@ public class Pivot extends PIDSubsystem {
 
     public void stop() {
         m_rotateMotor.set(0);
+        disable();
     }
 
     public void zeroEncoder() {
@@ -67,11 +68,8 @@ public class Pivot extends PIDSubsystem {
         super.periodic();
     }
 
-    public void startPID(double angle) {
-        // if (RobotContainer.DEBUG) {
-        //     angle = m_setpoint;
-        // }
-
+    public void startPID(double angle) {        
+        enable();
         super.setSetpoint(angle);
         getController().setTolerance(TOLERANCE);
     }
