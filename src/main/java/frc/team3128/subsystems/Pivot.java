@@ -3,7 +3,7 @@ package frc.team3128.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-import frc.team3128.RobotContainer;
+import static frc.team3128.Constants.PivotConstants.*;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 
 import static frc.team3128.Constants.PivotConstants.*;
@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
@@ -41,15 +42,19 @@ public class Pivot extends PIDSubsystem {
 
     private void configMotors() {
         m_rotateMotor = new NAR_CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless);
+        m_rotateMotor.setSmartCurrentLimit(PIVOT_CURRENT_LIMIT);
+        m_rotateMotor.enableVoltageCompensation(12.0);
+        m_rotateMotor.setIdleMode(IdleMode.kBrake);
 
-        m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 0); 
-        m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 0);
-        m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 0);
-        m_rotateMotor.setControlFramePeriodMs(0);
+
+        // m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 0); 
+        // m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 0);
+        // m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 0);
+        // m_rotateMotor.setControlFramePeriodMs(0);
     }
 
     private void configEncoders() {
-        m_encoder =  (SparkMaxRelativeEncoder) m_rotateMotor.getEncoder();
+        m_encoder = (SparkMaxRelativeEncoder) m_rotateMotor.getEncoder();
         m_encoder.setPositionConversionFactor(ENC_CONV);
     }
 
@@ -62,21 +67,24 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.setEncoderPosition(0);
     }
 
+    public void resetPivot() {
+        startPID(MIN_ANGLE);
+    }
+
     @Override
     public void periodic() {
-
         super.periodic();
     }
 
     public void startPID(double angle) {        
         enable();
         super.setSetpoint(angle);
-        getController().setTolerance(TOLERANCE);
+        getController().setTolerance(PIVOT_TOLERANCE);
     }
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        double ff = m_ff; //Need to calculate this
+        double ff = m_ff * setpoint; //Need to calculate this
         double voltageOutput = output + ff;
 
         m_rotateMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));

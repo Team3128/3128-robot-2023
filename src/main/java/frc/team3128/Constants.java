@@ -206,23 +206,43 @@ public class Constants {
         public static final double kD = 0;
         public static final int PIVOT_MOTOR_ID = 11;
         public static final double ENC_CONV = 0;
-        public static final double TOLERANCE = 0;
+        public static final double PIVOT_TOLERANCE = 0;
         public static final double MIN_ANGLE = 0;
+        public static final int PIVOT_CURRENT_LIMIT = 10;
 
-        public static final double TOP_CONE_ANGLE = 180 - 78.4574324; // 180 - mech magic number
-        public static final double TOP_CUBE_ANGLE = 180 - 89.093; // All in degrees
-        public static final double MID_CONE_ANGLE = 180 - 90.827;
-        public static final double MID_CUBE_ANGLE = 180 - 105.764;
-        public static final double LOW_FLOOR_ANGLE = 180 - 155.114;
 
-        public static final double PIVOT_HEIGHT = 41.484; // Above ground (inches)
-        public static final double ARM_LENGTH = 8; // inches
+        public static final double TOP_CONE_ANGLE = 180 - 81.666; // 180 - mech magic number
+        public static final double TOP_CUBE_ANGLE = 180 - 92.221; // All in degrees
+        public static final double MID_CONE_ANGLE = 180 - 95.559;
+        public static final double MID_CUBE_ANGLE = 180 - 110.041;
+        public static final double LOW_FLOOR_ANGLE = 180 - 155.114; //**didn't get new value from mech
+        
+        // add neg  angle vals
+        public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
+        public static final double ARM_LENGTH = 56.75; // inches
+        
     }
-    
+
     public static class TelescopeConstants {
-        public static final int TELE_MOTOR_ID = 10;
-        public static final double TELE_MOTOR_POWER = 0.8;
-        // public static final double TELE_GEAR_RATIO = 
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final int TELE_MOTOR_ID = 5;
+        public static final double TELE_MOTOR_POWER = 0.5;
+        public static final double ENC_CONV = 0;
+        public static final double MIN_DIST = 16;
+        public static final double TELE_TOLERANCE = 0;
+        public static final int TELE_CURRENT_LIMIT = 10;
+
+        public static final double TOP_CONE_DIST = 56.75; // mech magic number <-- max extend length
+        public static final double TOP_CUBE_DIST = 56.75; // All in inches
+        public static final double MID_CONE_DIST = 40.027;
+        public static final double MID_CUBE_DIST = 39.031;
+        public static final double LOW_FLOOR_DIST = 16; 
+
+        public static final double ARM_LENGTH = 56.75; // inches
+
+
     }
     
     public static class FieldConstants{
