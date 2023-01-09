@@ -123,9 +123,9 @@ public class NAR_Camera extends PhotonCamera {
         return new Transform2d(target.getTranslation().toTranslation2d(), target.getRotation().toRotation2d());
     }
 
-    public List<TargetCorner> targetCorners() {
-        return hasValidTarget() ? target.getCorners() : new ArrayList<TargetCorner>();
-    }
+    // public List<TargetCorner> targetCorners() {
+    //     return hasValidTarget() ? target.getCorners() : new ArrayList<TargetCorner>();
+    // }
 
     public boolean hasValidTarget() {
         return target != null;
