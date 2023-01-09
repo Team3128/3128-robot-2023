@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
+import org.photonvision.RobotPoseEstimator;
 import org.photonvision.SimVisionSystem;
 import org.photonvision.SimVisionTarget;
 import org.photonvision.common.hardware.VisionLEDMode;
@@ -196,19 +197,10 @@ public class NAR_Camera extends PhotonCamera {
     private Transform2d getProcessedTarget(PhotonTrackedTarget target) {
         if (!hasValidTarget()) return new Transform2d();
         double hypotenuse = getAprilDistance(target);
-        double angle = Units.degreesToRadians(-getTarget().getRotation().getDegrees());
+        double angle = Units.degreesToRadians(getTarget().getRotation().getDegrees());
         double deltaY = hypotenuse * Math.sin(angle);
         Transform2d vector = getTarget(target);
         return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), Rotation2d.fromDegrees(angle));
-    }
-
-    public List<TargetCorner> targetCorners() {
-        return targetCorners(bestTarget);
-    }
-
-
-    private List<TargetCorner> targetCorners(PhotonTrackedTarget target) {
-        return hasValidTarget() ? target.getCorners() : new ArrayList<TargetCorner>();
     }
 
     public boolean hasValidTarget() {
