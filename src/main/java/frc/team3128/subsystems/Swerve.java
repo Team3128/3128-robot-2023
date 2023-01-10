@@ -11,8 +11,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,7 +33,8 @@ public class Swerve extends SubsystemBase {
     
     public SwerveDrivePoseEstimator odometry;
     public SwerveModule[] modules;
-    public FileWriter txtFile;
+    private FileWriter txtFile;
+    private double prevTime;
     public WPI_Pigeon2 gyro;
     private Pose2d estimatedPose;
 
@@ -53,6 +56,7 @@ public class Swerve extends SubsystemBase {
         zeroGyro();
         fieldRelative = true;
         estimatedPose = new Pose2d();
+        prevTime = 0;
         try {
             txtFile = new FileWriter(new File(Filesystem.getDeployDirectory(),"pose.txt"));
         } catch (IOException e) {
@@ -165,13 +169,16 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Robot Y", position.getY());
         SmartDashboard.putNumber("Robot Gyro", getGyroRotation2d().getDegrees());
         SmartDashboard.putString("POSE2D",getPose().toString());
-
-        try {
-            txtFile.write(estimatedPose.toString() + "\n");
-        } catch (IOException e) {}
-        try {
-            txtFile.flush();
-        } catch (IOException e) {}
+        double time = Timer.getFPGATimestamp();
+        if (time >= prevTime + 1) {
+            prevTime = time;
+            try {
+                txtFile.write(Math.round(time) + ": " + estimatedPose.toString() + "\n");
+            } catch (IOException e) {}
+            try {
+                txtFile.flush();
+            } catch (IOException e) {}
+        }
     }
 
     public double getYaw() {
