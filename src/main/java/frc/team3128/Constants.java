@@ -65,7 +65,7 @@ public class Constants {
         public static final double drivePeakCurrentDuration = 0.1;
         public static final boolean driveEnableCurrentLimit = true;
 
-        public static final double DRIVE_TOLERANCE = 0.2;
+        public static final double DRIVE_TOLERANCE = 0.1;
 
         /* Auto PID Values */
         public static final double rotationKP = 1;

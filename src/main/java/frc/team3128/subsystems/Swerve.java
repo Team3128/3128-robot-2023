@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,10 +23,15 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Swerve extends SubsystemBase {
     
     public SwerveDrivePoseEstimator odometry;
     public SwerveModule[] modules;
+    public FileWriter txtFile;
     public WPI_Pigeon2 gyro;
     private Pose2d estimatedPose;
 
@@ -47,6 +53,10 @@ public class Swerve extends SubsystemBase {
         zeroGyro();
         fieldRelative = true;
         estimatedPose = new Pose2d();
+        try {
+            txtFile = new FileWriter(new File(Filesystem.getDeployDirectory(),"pose.txt"));
+        } catch (IOException e) {
+        }
 
         modules = new SwerveModule[] {
             new SwerveModule(0, Mod0.constants),
@@ -155,6 +165,13 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Robot Y", position.getY());
         SmartDashboard.putNumber("Robot Gyro", getGyroRotation2d().getDegrees());
         SmartDashboard.putString("POSE2D",getPose().toString());
+
+        try {
+            txtFile.write(estimatedPose.toString() + "\n");
+        } catch (IOException e) {}
+        try {
+            txtFile.flush();
+        } catch (IOException e) {}
     }
 
     public double getYaw() {
