@@ -32,9 +32,6 @@ public class Telescope extends PIDSubsystem {
 
     private NAR_CANSparkMax m_teleMotor;
     private SparkMaxRelativeEncoder m_encoder;
-    public double m_ff;
-    public double m_setpoint;
-
 
     public Telescope() {
         super(new PIDController(kP, kI, kD));
@@ -43,7 +40,7 @@ public class Telescope extends PIDSubsystem {
         configEncoders();
     }
 
-    public synchronized static Telescope getInstance() {
+    public static synchronized Telescope getInstance() {
         if (instance == null)
             instance = new Telescope();
         return instance;
@@ -67,7 +64,7 @@ public class Telescope extends PIDSubsystem {
 
     private void configEncoders() {
         m_encoder = (SparkMaxRelativeEncoder) m_teleMotor.getEncoder();
-        m_encoder.setPositionConversionFactor(ENC_CONV);
+        m_encoder.setPositionConversionFactor(ENC_CONV); // TODO: ticks --> inches using gear ratio
     }
 
     public void startPID(double dist) {        
@@ -78,8 +75,9 @@ public class Telescope extends PIDSubsystem {
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        double ff = m_ff * setpoint; //Need to calculate this
+        double ff = kF * setpoint; //Need to calculate this
         double voltageOutput = output + ff;
+        // TODO: account for rotation in pivot b/c gravity
 
         m_teleMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
     }
@@ -104,11 +102,11 @@ public class Telescope extends PIDSubsystem {
      * Telescope goes into neutral position (sets power to 0)
      */
     public void stopTele() {
-        m_teleMotor.set(0);
+        disable();
     }
 
     public void zeroEncoder() {
-        m_encoder.setPosition(0);
+        m_teleMotor.setEncoderPosition(0);
     }
 
 }

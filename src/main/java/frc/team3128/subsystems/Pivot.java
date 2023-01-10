@@ -2,6 +2,7 @@ package frc.team3128.subsystems;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.team3128.Constants.PivotConstants.*;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
@@ -23,8 +24,6 @@ public class Pivot extends PIDSubsystem {
     private static Pivot instance;
     private NAR_CANSparkMax m_rotateMotor;
     private SparkMaxRelativeEncoder m_encoder;
-    public double m_ff;
-    public double m_setpoint;
 
     public Pivot() {
         super(new PIDController(kP, kI, kD));
@@ -59,16 +58,11 @@ public class Pivot extends PIDSubsystem {
     }
 
     public void stop() {
-        m_rotateMotor.set(0);
         disable();
     }
 
     public void zeroEncoder() {
         m_rotateMotor.setEncoderPosition(0);
-    }
-
-    public void resetPivot() {
-        startPID(MIN_ANGLE);
     }
 
     @Override
@@ -84,14 +78,14 @@ public class Pivot extends PIDSubsystem {
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        double ff = m_ff * setpoint; //Need to calculate this
+        double ff = kF * Math.sin(Units.degreesToRadians(setpoint)); //Need to calculate this
         double voltageOutput = output + ff;
 
         m_rotateMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
     }
 
     @Override
-    protected double getMeasurement() {
+    protected double getMeasurement() { // returns degrees
        return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
     }
     

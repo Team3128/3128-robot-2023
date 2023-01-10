@@ -204,6 +204,7 @@ public class Constants {
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
+        public static final double kF = 0;
         public static final int PIVOT_MOTOR_ID = 11;
         public static final double ENC_CONV = 0;
         public static final double PIVOT_TOLERANCE = 0;
@@ -216,6 +217,7 @@ public class Constants {
         public static final double MID_CONE_ANGLE = 180 - 95.559;
         public static final double MID_CUBE_ANGLE = 180 - 110.041;
         public static final double LOW_FLOOR_ANGLE = 180 - 155.114; //**didn't get new value from mech
+        // TODO: add constants for pickup  
         
         // add neg  angle vals
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
@@ -227,6 +229,7 @@ public class Constants {
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
+        public static final double kF = 0;
         public static final int TELE_MOTOR_ID = 5;
         public static final double TELE_MOTOR_POWER = 0.5;
         public static final double ENC_CONV = 0;
@@ -238,7 +241,8 @@ public class Constants {
         public static final double TOP_CUBE_DIST = 56.75; // All in inches
         public static final double MID_CONE_DIST = 40.027;
         public static final double MID_CUBE_DIST = 39.031;
-        public static final double LOW_FLOOR_DIST = 16; 
+        public static final double LOW_FLOOR_DIST = 16;
+        // TODO: add constants for pickup  
 
         public static final double ARM_LENGTH = 56.75; // inches
 

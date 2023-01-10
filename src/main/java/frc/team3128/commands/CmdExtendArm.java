@@ -18,6 +18,8 @@ public class CmdExtendArm extends ParallelCommandGroup {
         addCommands(
            new InstantCommand(() -> pivot.startPID(angle), pivot), 
            new InstantCommand(() -> telescope.startPID(dist), telescope)
-        );
+        );  
     }
 }
+
+// TODO: when making button this command runs onTrue and stopping pivot + telescope runs onFalse

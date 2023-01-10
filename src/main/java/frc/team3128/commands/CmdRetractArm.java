@@ -7,14 +7,16 @@ import frc.team3128.subsystems.Telescope;
 import static frc.team3128.Constants.PivotConstants.*;
 import static frc.team3128.Constants.TelescopeConstants.*;
 
-
+/*
+ * Moves arm to idle position
+ */
 public class CmdRetractArm extends SequentialCommandGroup{
    
     private Pivot pivot;
     private Telescope telescope;
 
 
-    public CmdRetractArm (double angle, double dist) {
+    public CmdRetractArm () {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
 
