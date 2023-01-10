@@ -2,7 +2,6 @@ package frc.team3128.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team3128.common.hardware.motor.NAR_Motor;
 import frc.team3128.common.hardware.motorcontroller.NAR_TalonFX;
 import static frc.team3128.Constants.ManipulatorConstants.*;
 
