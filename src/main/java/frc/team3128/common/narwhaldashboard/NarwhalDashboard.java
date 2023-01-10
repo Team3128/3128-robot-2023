@@ -16,7 +16,7 @@ import org.java_websocket.server.WebSocketServer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import frc.team3128.common.constantsint.ConstantsInt;
+import frc.team3128.common.constantsint.ConstantsInt2;
 import frc.team3128.common.hardware.camera.*;
 import frc.team3128.common.hardware.camera.NAR_Camera.Pipeline;
 import frc.team3128.common.narwhaldashboard.DashButtonCallback;
@@ -159,9 +159,9 @@ public class NarwhalDashboard extends WebSocketServer {
                 }
 
                 JSONObject constantsObj = new JSONObject();
-                for(String category : ConstantsInt.categories.keySet()) {
+                for(String category : ConstantsInt2.getCategories()) {
                     JSONArray catArr = new JSONArray();
-                    List<Field> fields = ConstantsInt.getConstantInfo(category);
+                    List<Field> fields = ConstantsInt2.getConstantInfo(category);
                     for(Field field : fields) {
                         try {
                         // get value from Field
@@ -297,9 +297,22 @@ public class NarwhalDashboard extends WebSocketServer {
             String category = parts[1];
             String name = parts[2];
             String value = parts[3];
-            ConstantsInt.updateConstant(category, name, value);
+            ConstantsInt2.updateConstant(category, name, value);
             //constantsChanged = true;
-        } else {
+        } else if(parts[0].equals("newconstant")){
+            String category = parts[1];
+            String name = parts[2];
+            try{
+                ConstantsInt2.addConstant(category, name);
+            }
+            catch (IllegalArgumentException e){
+                e.printStackTrace();
+                JSONObject errorObj = new JSONObject();
+                errorObj.put("error", e.getMessage());
+                conn.send(errorObj.toJSONString());
+            } 
+            }
+            else {
             Log.info("NarwhalDashboard", "Message recieved: " + message);
         }
         

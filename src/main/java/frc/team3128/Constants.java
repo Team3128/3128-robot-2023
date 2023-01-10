@@ -72,7 +72,7 @@ public class Constants {
         public static final double rotationKI = 0;
         public static final double rotationKD = 0;
 
-        public static final double translationKP = 2;
+        public static final double translationKP = 1;
         public static final double translationKI = 0;
         public static final double translationKD = 0;
 
@@ -200,7 +200,7 @@ public class Constants {
 
     public static class VisionConstants {
 
-        public static final Camera SHOOTER = new Camera("Frog",0,0,0, new Transform2d(new Translation2d(Units.inchesToMeters(-12),0), Rotation2d.fromDegrees(0)));
+        public static final Camera SHOOTER = new Camera("Frog", true, 0, 0, 0,  new Transform2d(new Translation2d(Units.inchesToMeters(-12),0), Rotation2d.fromDegrees(0)));
 
         public static final double SCREEN_WIDTH = 320;
         public static final double SCREEN_HEIGHT = 240;

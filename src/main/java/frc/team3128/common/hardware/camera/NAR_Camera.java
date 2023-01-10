@@ -99,6 +99,7 @@ public class NAR_Camera extends PhotonCamera {
         if (result.hasTargets()) {
             targets = result.getTargets();
             bestTarget = result.getBestTarget();
+            if (!camera.updatePose) return;
             ArrayList<Pose2d> poses = new ArrayList<Pose2d>();
             if (multipleTargets) {
                 for (int i = 0; i < targets.size(); i ++) {
@@ -187,7 +188,7 @@ public class NAR_Camera extends PhotonCamera {
     private Transform2d getTarget(PhotonTrackedTarget target) {
         if (!hasValidTarget()) return new Transform2d();
         Transform3d transform = getRawTarget(target);
-        return new Transform2d(transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d());
+        return new Transform2d(transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d().unaryMinus());
     }
 
     public Transform2d getProcessedTarget() {
