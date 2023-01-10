@@ -3,12 +3,12 @@ package frc.team3128.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.VisionConstants.TX_THRESHOLD;
 
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
 import static frc.team3128.Constants.FieldConstants.*;
@@ -58,8 +58,8 @@ public class CmdMove extends CommandBase {
         rController = new PIDController(rotationKP, rotationKI, rotationKD);
         rController.enableContinuousInput(-Math.PI, Math.PI);
 
-        xController.setTolerance(0);
-        yController.setTolerance(0);
+        xController.setTolerance(DRIVE_TOLERANCE);
+        yController.setTolerance(DRIVE_TOLERANCE);
         rController.setTolerance(TX_THRESHOLD);
     }
 
@@ -76,9 +76,9 @@ public class CmdMove extends CommandBase {
 
     @Override
     public void execute() {
-        Pose2d pose = swerve.getPose();
-        double xDistance = (xSetpoint && (pose.getY() > yConstraints[1] || pose.getY() < yConstraints[0])) ? xController.calculate(pose.getX()) : 0;
-        double yDistance = (ySetpoint && (pose.getX() > xConstraints[1] || pose.getX() < xConstraints[0])) ? yController.calculate(pose.getY()) : 0; 
+        Pose2d pose = swerve.getPose(); 
+        double xDistance = (xSetpoint && (!inYConstraint() || inXConstraint())) ? xController.calculate(pose.getX()) : 0;
+        double yDistance = (ySetpoint && (!inXConstraint() || inYConstraint())) ? yController.calculate(pose.getY()) : 0; 
         double rotation = rSetpoint ? rController.calculate(pose.getRotation().getRadians()) : 0;
 
         xSetpoint = xController.atSetpoint();
@@ -86,11 +86,14 @@ public class CmdMove extends CommandBase {
         rSetpoint = rController.atSetpoint();
 
         if (joystickOverride) {
+            int team = DriverStation.getAlliance() == Alliance.Red ? 1 : -1;
             if (Math.abs(xAxis.getAsDouble()) > 0.05) {
                 yDistance = -xAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed;
+                yDistance = xAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed * team;
             }
             if (Math.abs(yAxis.getAsDouble()) > 0.05) {
                 xDistance = yAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed;
+                xDistance = yAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed * -team;
             }
         }
 
@@ -107,5 +110,14 @@ public class CmdMove extends CommandBase {
         swerve.stop();
     }
 
+    public boolean inXConstraint() {
+        double x = swerve.getPose().getX();
+        return (x >= xConstraints[0] && x <= xConstraints[1]);
+    }
+
+    public boolean inYConstraint() {
+        double y = swerve.getPose().getY();
+        return (y >= yConstraints[0] && y <= yConstraints[1]);
+    }
 
 }
