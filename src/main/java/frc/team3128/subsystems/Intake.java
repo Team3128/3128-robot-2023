@@ -2,6 +2,7 @@ package frc.team3128.subsystems;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.common.hardware.motorcontroller.NAR_TalonFX;
@@ -36,15 +37,21 @@ public class Intake extends PIDSubsystem {
     private NAR_TalonSRX m_intakeWheels;
     private NAR_TalonFX m_intakeRotator;
     
+    //Sensors
+    private DigitalInput m_intakeSensor;
+    
 
     //TODO: Make the feedforward based on the weight and angle of the intake arm
     private double m_ff = 0.0;
+
 
     private static Intake instance;
 
     private Intake() {
         super(new PIDController(kP, kI, kD));
         m_intakeRotator.setNeutralMode(NeutralMode.Brake);
+        configMotors();
+        configSensors();
     }
 
     public static Intake getInstance() {
@@ -59,6 +66,10 @@ public class Intake extends PIDSubsystem {
         m_intakeRotator = new NAR_TalonFX(INTAKE_ROTATOR_ID);
     }
 
+    public void configSensors() {
+        m_intakeSensor = new DigitalInput(SENSOR_INTAKE_ID); //make sure to set sensor_intake_id
+    }
+
     @Override
     protected void useOutput(double output, double setpoint) {
         double voltageOutput = m_ff*setpoint+output;
@@ -66,6 +77,9 @@ public class Intake extends PIDSubsystem {
         //TODO: Consider ControlMode.Position
         m_intakeRotator.set(MathUtil.clamp(voltageOutput, -1, 1));
         
+    }
+    public boolean getIntakeSensor() {
+        return m_intakeSensor.get();
     }
 
     @Override

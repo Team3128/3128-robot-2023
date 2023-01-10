@@ -233,6 +233,9 @@ public class Constants {
         //Motor IDs
         public static final int INTAKE_WHEELS_ID = 0;
         public static final int INTAKE_ROTATOR_ID = 1;
+
+        //Sensor IDs
+        public static final int SENSOR_INTAKE_ID = 0;
         
     }
 
