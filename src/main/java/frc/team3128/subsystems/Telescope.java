@@ -27,6 +27,20 @@ import static frc.team3128.Constants.TelescopeConstants;
  */
 
 public class Telescope extends PIDSubsystem {
+
+    public enum TeleDists {
+        TOP_CONE(56.75), 
+        TOP_CUBE(56.75), 
+        MID_CONE(40.027), 
+        MID_CUBE(39.031), 
+        LOW_FLOOR(16); 
+        //TODO: add constants for pickup
+
+        public double dist; 
+        private TeleDists(double dist) {
+            this.dist = dist;
+        }
+    }
     
     private static Telescope instance;
 
