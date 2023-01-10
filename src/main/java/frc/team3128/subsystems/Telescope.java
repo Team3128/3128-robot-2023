@@ -33,8 +33,8 @@ public class Telescope extends PIDSubsystem {
         TOP_CUBE(56.75), 
         MID_CONE(40.027), 
         MID_CUBE(39.031), 
-        LOW_FLOOR(16); 
-        //TODO: add constants for pickup
+        LOW_FLOOR(16),
+        PICK_UP(0.0); //get value from mech
 
         public double dist; 
         private TeleDists(double dist) {

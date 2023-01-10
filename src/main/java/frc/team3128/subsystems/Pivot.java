@@ -26,8 +26,8 @@ public class Pivot extends PIDSubsystem {
         TOP_CUBE(180 - 92.221), 
         MID_CONE(180 - 95.559), 
         MID_CUBE(180 - 110.041), 
-        LOW_FLOOR(180 - 155.114); //need new value from mech
-        //TODO: add constants for pickup
+        LOW_FLOOR(180 - 155.114), //need new value from mech
+        PICK_UP(0.0); //get value from mech
 
         public double angle; 
         private PivotAngles(double angle) {
