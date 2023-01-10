@@ -16,7 +16,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 
 public class Constants {
 
@@ -223,6 +222,8 @@ public class Constants {
         public static final double ROLLER_POWER = 0.0;
         public static final double SERIALIZER_POWER = 0;
 
+        public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
+
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
@@ -240,8 +241,9 @@ public class Constants {
         public static final int SERIALIZER_ID = 2;
         public static final double SERIALIZER_POWER = 0;
 
-        public static final int SENSOR_LEFT_ID = 1;
-        public static final int SENSOR_RIGHT_ID = 2;
+        public static final int SENSOR_LEFT_ID = 0;
+        public static final int SENSOR_RIGHT_ID = 1;
     }
 
 }
+

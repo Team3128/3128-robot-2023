@@ -3,10 +3,10 @@ package frc.team3128.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.common.hardware.motorcontroller.NAR_TalonFX;
 import frc.team3128.common.hardware.motorcontroller.NAR_TalonSRX;
 import frc.team3128.common.swerve.FalconConversions;
+import frc.team3128.common.utility.NAR_Shuffleboard;
 
 import static frc.team3128.Constants.IntakeConstants.*;
 
@@ -43,8 +43,13 @@ public class Intake extends PIDSubsystem {
     private static Intake instance;
 
     private Intake() {
+        //super(new PIDController(kP, kI, kD));
+        
+        // for pid tuning
         super(new PIDController(kP, kI, kD));
         m_intakeRotator.setNeutralMode(NeutralMode.Brake);
+
+        configMotors();
     }
 
     public static Intake getInstance() {
@@ -84,8 +89,20 @@ public class Intake extends PIDSubsystem {
         m_intakeRotator.set(0);
     }
 
+    @Override
+    public void periodic(){
+        //tuning
+        NAR_Shuffleboard.addComplex("Intake", "kP", m_controller, 1, 1);
+        NAR_Shuffleboard.addData("Intake", "Wheel Velocity", m_intakeWheels.getSelectedSensorVelocity(), 1, 2);
+        NAR_Shuffleboard.addData("Intake", "Intake Delopyed", isDeployed(), 1, 3);
+    }
+
     //Power On/Off Method for Wheel Motors and Conveyer Belt Motors
 
+    public void enableWheels(double power) {
+        m_intakeWheels.set(power);
+    }
+    
     public void enableWheels() {
         m_intakeWheels.set(WHEELS_POWER);
     }
@@ -93,4 +110,14 @@ public class Intake extends PIDSubsystem {
     public void disableWheels() {
         m_intakeWheels.set(0);
     }
+
+    public boolean isDeployed(){
+        if(m_intakeRotator.getSelectedSensorPosition() < INTAKE_DEPLOYED_POSITION_BOUNDRY){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }
+
