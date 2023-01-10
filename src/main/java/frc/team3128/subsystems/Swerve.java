@@ -173,7 +173,7 @@ public class Swerve extends SubsystemBase {
         if (time >= prevTime + 1) {
             prevTime = time;
             try {
-                txtFile.write(Math.round(time) + ": " + estimatedPose.toString() + "\n");
+                txtFile.write(position.getX() + "," + position.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + "\n");
             } catch (IOException e) {}
             try {
                 txtFile.flush();
