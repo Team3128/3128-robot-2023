@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -48,15 +49,16 @@ public class Swerve extends SubsystemBase {
         fieldRelative = true;
         estimatedPose = new Pose2d();
 
-        odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
-                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
-
         modules = new SwerveModule[] {
             new SwerveModule(0, Mod0.constants),
             new SwerveModule(1, Mod1.constants),
             new SwerveModule(2, Mod2.constants),
             new SwerveModule(3, Mod3.constants)
         };
+
+        odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
+                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
+
 
         field = new Field2d();
         SmartDashboard.putData("Field", field);
