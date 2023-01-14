@@ -46,6 +46,10 @@ public class Hopper extends SubsystemBase {
         m_serializer.set(SERIALIZER_POWER);
     }
 
+    public void enableSerializer(double serializerPower) {
+        m_serializer.set(serializerPower);
+    }
+
     public void disableSerializer() {
         m_serializer.set(0);
     }
