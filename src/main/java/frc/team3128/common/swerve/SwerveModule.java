@@ -65,7 +65,6 @@ public class SwerveModule {
 
     public void resetEncoders() {
         resetToAbsolute();
-        driveMotor.setSelectedSensorPosition(0);
     }
 
     private void resetToAbsolute(){

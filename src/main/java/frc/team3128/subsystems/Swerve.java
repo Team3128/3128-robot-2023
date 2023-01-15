@@ -56,6 +56,8 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, Mod3.constants)
         };
 
+        resetEncoders();
+
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
                                                 estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
 
@@ -75,12 +77,12 @@ public class Swerve extends SubsystemBase {
 
     public void initShuffleboard() {
         // General Tab
-        NAR_Shuffleboard.addData("General","Gyro",this::getHeading,7,2,2,2).withWidget("Gyro");
+        NAR_Shuffleboard.addComplex("General","Gyro",gyro,7,2,2,2);//.withWidget("Gyro");
         NAR_Shuffleboard.addData("General","Heading",this::getHeading,1,2);
-        // Drivetrain Tab
-        NAR_Shuffleboard.addComplex("Field","field",field,0,0,13,7).withWidget("Field");
+        // // Drivetrain Tab
+        NAR_Shuffleboard.addComplex("Field","field",field,0,0,13,7);//.withWidget("Field");
         NAR_Shuffleboard.addData("Drivetrain","Pose",() -> (getPose().toString()),2,0,4,1);
-        NAR_Shuffleboard.addComplex("Drivetrain","Gyro",gyro,3,1,2,2).withWidget("Gyro");
+        NAR_Shuffleboard.addComplex("Drivetrain","Gyro",gyro,3,1,2,2);//.withWidget("Gyro");
         NAR_Shuffleboard.addData("Drivetrain","Yaw",this::getYaw,4,1);
         NAR_Shuffleboard.addData("Drivetrain","Pitch",this::getPitch,5,1);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
@@ -104,7 +106,6 @@ public class Swerve extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) { // TODO: Call this!!!!
-        resetEncoders();
         zeroGyro(pose.getRotation().getDegrees());
         odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
     }
