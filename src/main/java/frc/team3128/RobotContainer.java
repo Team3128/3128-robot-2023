@@ -13,8 +13,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.team3128.Constants.VisionConstants;
 import frc.team3128.commands.CmdAlign;
 import frc.team3128.commands.CmdInPlaceTurn;
+import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdTargetPursuit;
 import frc.team3128.common.hardware.camera.Camera;
@@ -25,7 +27,7 @@ import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
-import static frc.team3128.Constants.VisionConstants.SHOOTER;
+import static frc.team3128.Constants.VisionConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -84,6 +86,10 @@ public class RobotContainer {
         hasTarget = new Trigger(()-> vision.hasValidTarget(SHOOTER.hostname))
         .whileTrue(new RunCommand(()-> controller.setRumble(RumbleType.kLeftRumble,0)))
         .whileFalse(new InstantCommand(()-> controller.setRumble(RumbleType.kLeftRumble, 0)));
+
+        for (int i = 0; i < SCORES.length; i++) {
+            leftStick.getButton(i + 1).onTrue(new CmdMove(SCORES[i], false)).onFalse(new InstantCommand(()->swerve.stop(),swerve));
+        }
     }
 
     public void init() {

@@ -15,6 +15,7 @@ import static frc.team3128.Constants.VisionConstants.*;
 import frc.team3128.Constants.FieldConstants;
 import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.hardware.camera.NAR_Camera;
+import frc.team3128.common.utility.NAR_Shuffleboard;
 
 public class Vision extends SubsystemBase{
     private static Vision instance;
@@ -37,7 +38,6 @@ public class Vision extends SubsystemBase{
         NAR_Camera.multipleTargets = true;
         cameras = new HashMap<String,NAR_Camera>();
         cameras.put(SHOOTER.hostname, new NAR_Camera(SHOOTER));
-
     }
 
     public Pose2d targetPos(String name, Pose2d robotPos) {
@@ -110,6 +110,11 @@ public class Vision extends SubsystemBase{
     }
 
     public void initShuffleboard() {
-
+        NAR_Camera cam = cameras.get(SHOOTER.hostname);
+        NAR_Shuffleboard.addData("Vision","HasTarget", ()->cam.hasValidTarget(), 1, 1);
+        NAR_Shuffleboard.addData("Vision","Distance",()->cam.getDistance(),2,1);
+        NAR_Shuffleboard.addData("Vision","RawTarget",()->cam.getTarget().toString(),1,2,3,1);
+        NAR_Shuffleboard.addData("Vision", "Processed Target",()->cam.getProcessedTarget().toString(),1,3,3,1);
+        NAR_Shuffleboard.addData("Vision","EstimatedPose", ()-> cam.getPos(),1,4,3,1);
     }
 }

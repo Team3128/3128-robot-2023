@@ -88,16 +88,14 @@ public class CmdMove extends CommandBase {
         if (joystickOverride) {
             int team = DriverStation.getAlliance() == Alliance.Red ? 1 : -1;
             if (Math.abs(xAxis.getAsDouble()) > 0.05) {
-                yDistance = -xAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed;
                 yDistance = xAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed * team;
             }
             if (Math.abs(yAxis.getAsDouble()) > 0.05) {
-                xDistance = yAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed;
                 xDistance = yAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed * -team;
             }
         }
 
-        swerve.drive(new Translation2d(xDistance, yDistance), rotation, true);
+        swerve.drive(new Translation2d(0, yDistance), 0, true);
     }
 
     @Override
