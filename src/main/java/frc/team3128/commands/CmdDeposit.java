@@ -15,7 +15,7 @@ public class CmdDeposit extends CommandBase{
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         intake.enableWheels();
         hopper.enableSerializer();
     }
