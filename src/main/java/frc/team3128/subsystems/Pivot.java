@@ -7,17 +7,9 @@ import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.team3128.Constants.PivotConstants.*;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 
-import static frc.team3128.Constants.PivotConstants.*;
-
-import java.util.function.DoubleSupplier;
-
-import com.ctre.phoenix.motorcontrol.ControlFrame;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 public class Pivot extends PIDSubsystem {
 
@@ -27,7 +19,9 @@ public class Pivot extends PIDSubsystem {
         MID_CONE(180 - 95.559), 
         MID_CUBE(180 - 110.041), 
         LOW_FLOOR(180 - 155.114), //need new value from mech
-        PICK_UP(0.0); //get value from mech
+        HP_PICK_UP(0.0), //get value from mech
+        INT_PICK_UP(0.0), //get value from mech
+        NEUTRAL(0.0);
 
         public double angle; 
         private PivotAngles(double angle) {
@@ -84,9 +78,9 @@ public class Pivot extends PIDSubsystem {
         super.periodic();
     }
 
-    public void startPID(double angle) {        
+    public void startPID(PivotAngles anglePos) {        
         enable();
-        super.setSetpoint(angle);
+        super.setSetpoint(anglePos.angle);
         getController().setTolerance(PIVOT_TOLERANCE);
     }
 
