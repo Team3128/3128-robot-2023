@@ -25,6 +25,7 @@ import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
+import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
 import static frc.team3128.Constants.VisionConstants.*;
@@ -76,20 +77,24 @@ public class RobotContainer {
     private void configureButtonBindings() {
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
-        rightStick.getButton(3).onTrue(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(SHOOTER.hostname))));
-        rightStick.getButton(4).onTrue(new CmdAlign(SHOOTER.hostname)).onFalse(new InstantCommand(()-> swerve.stop()));
-        rightStick.getButton(5).onTrue(new InstantCommand(()->swerve.zeroGyro(vision.robotPos(SHOOTER.hostname).getRotation().getDegrees())));
-        rightStick.getButton(6).onTrue(new CmdTargetPursuit(SHOOTER.hostname,1.5)).onFalse(new InstantCommand(()->swerve.stop(),swerve));
-        rightStick.getButton(7).onTrue(new CmdInPlaceTurn(180,SHOOTER.hostname));
-        //rightStick.getButton(8).onTrue(new InstantCommand(()-> redBlueToggle()));
-        rightStick.getButton(9).onTrue(new RunCommand(()-> Swerve.getInstance().drive(new Translation2d(0.1,0),0,false),Swerve.getInstance())).onFalse(new InstantCommand(()->Swerve.getInstance().stop(),Swerve.getInstance()));
-        hasTarget = new Trigger(()-> vision.hasValidTarget(SHOOTER.hostname))
-        .whileTrue(new RunCommand(()-> controller.setRumble(RumbleType.kLeftRumble,0)))
-        .whileFalse(new InstantCommand(()-> controller.setRumble(RumbleType.kLeftRumble, 0)));
+
 
         for (int i = 0; i < SCORES.length; i++) {
             leftStick.getButton(i + 1).onTrue(new CmdMove(SCORES[i], false)).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         }
+        rightStick.getButton(3).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
+        rightStick.getButton(4).onTrue(new CmdAlign()).onFalse(new InstantCommand(()-> swerve.stop()));
+        rightStick.getButton(5).onTrue(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(Camera.SHOOTER.hostname))));
+        rightStick.getButton(6).onTrue(new CmdTargetPursuit(Camera.SHOOTER.hostname)).onFalse(new InstantCommand(()->swerve.stop(),swerve));
+        // rightStick.getButton(6).whenActive(new InstantCommand(()-> {
+        //     if(vision.hasValidTarget(Camera.SHOOTER.hostname)) {
+        //         Trajectories.lineCmd(swerve.getPose(),vision.targetPos(Camera.SHOOTER.hostname, swerve.getPose()));
+        //     }
+        // })).whenInactive(new InstantCommand(swerve::stop,swerve));
+
+        // hasTarget = new Trigger(()-> vision.hasValidTarget(Camera.SHOOTER.hostname))
+        // .whenActive(new RunCommand(()-> controller.setRumble(RumbleType.kLeftRumble,1)))
+        // .whenInactive(new InstantCommand(()-> controller.setRumble(RumbleType.kLeftRumble, 0)));
     }
 
     public void init() {
@@ -124,5 +129,6 @@ public class RobotContainer {
         SmartDashboard.putNumber("LeftY",controller.getLeftY());
         SmartDashboard.putNumber("RightX",controller.getRightX());
         SmartDashboard.putNumber("RightY",controller.getRightY());
+        NAR_Shuffleboard.update();
     }
 }

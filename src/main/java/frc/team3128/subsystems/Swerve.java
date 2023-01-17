@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -77,6 +78,12 @@ public class Swerve extends SubsystemBase {
             estimatedPose, 
             SVR_STATE_STD, 
             SVR_VISION_MEASUREMENT_STD);
+
+
+        resetEncoders();
+
+        odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
+                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
 
 
         field = new Field2d();

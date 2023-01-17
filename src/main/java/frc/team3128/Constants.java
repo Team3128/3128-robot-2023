@@ -46,13 +46,14 @@ public class Constants {
         public static final double closedLoopRamp = 0.0;
 
         public static final double driveGearRatio = 6.75; // (6.86 / 1.0); //6.86:1
-        public static final double angleGearRatio = 21.43; // (12.8 / 1.0); //12.8:1
+        public static final double angleGearRatio = (150 / 7); // 21.43; // (12.8 / 1.0); //12.8:1 
 
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
                 new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
                 new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
                 new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+
 
         /* Swerve Current Limiting */
         public static final int angleContinuousCurrentLimit = 25;
@@ -107,10 +108,11 @@ public class Constants {
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        // TODO: need to characterize
-        public static final double driveKS = (0.60094/12);//(0.49321 / 12);
-        public static final double driveKV = (1.1559/12);//(2.4466 / 12);
-        public static final double driveKA = (0.12348/12);//(0.22036 / 12);
+
+        // TODO: sysid this
+        public static final double driveKS = 0.60094;//(0.49321 / 12);
+        public static final double driveKV = 1.1559;//(2.4466 / 12);
+        public static final double driveKA = 0.12348;//(0.22036 / 12);
 
         public static final double turnTolerance = 2;
 

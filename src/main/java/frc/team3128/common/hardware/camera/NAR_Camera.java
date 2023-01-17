@@ -184,7 +184,7 @@ public class NAR_Camera extends PhotonCamera {
     public Transform2d getTarget() {
         return getTarget(bestTarget);
     }
-
+    
     private Transform2d getTarget(PhotonTrackedTarget target) {
         if (!hasValidTarget()) return new Transform2d();
         Transform3d transform = getRawTarget(target);
