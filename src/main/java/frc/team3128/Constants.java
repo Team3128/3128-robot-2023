@@ -3,11 +3,16 @@ package frc.team3128;
 import static frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.FALCON_ENCODER_RESOLUTION;
 import static frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.SPARKMAX_ENCODER_RESOLUTION;
 
+import java.util.HashMap;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.swerve.SwerveModuleConstants;
 import frc.team3128.common.utility.interpolation.InterpolatingDouble;
 import frc.team3128.common.utility.interpolation.InterpolatingTreeMap;
@@ -15,6 +20,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
@@ -31,8 +37,8 @@ public class Constants {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(20.75); // Units.inchesToMeters(21.73);
-        public static final double wheelBase = Units.inchesToMeters(20.75); // Units.inchesToMeters(21.73);
+        public static final double trackWidth = Units.inchesToMeters(26); // Units.inchesToMeters(21.73);
+        public static final double wheelBase = Units.inchesToMeters(26); // Units.inchesToMeters(21.73);
         public static final double wheelDiameter = Units.inchesToMeters(4); // Units.inchesToMeters(3.94);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
 
@@ -45,7 +51,7 @@ public class Constants {
                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
                 new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
                 new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
-                new Translation2d(-wheelBase / 2.0 + Units.inchesToMeters(0.075), -trackWidth / 2.0)); // laser was broken so offset
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); // laser was broken so offset
 
         /* Swerve Current Limiting */
         public static final int angleContinuousCurrentLimit = 25;
@@ -60,12 +66,21 @@ public class Constants {
 
         public static final double TURN_TOLERANCE = 5;
 
-        public static final double DRIVE_TOLERANCE = 0.2;
+        public static final double DRIVE_TOLERANCE = 0.05;
 
-        /* Translation PID Values */
-        public static final double translationKP = 0.1;
+        public static final double translationKP = 1;
         public static final double translationKI = 0;
         public static final double translationKD = 0;
+
+        /* Translation PID Values */
+        public static final double distanceKP = 1;
+        public static final double distanceKI = 0;
+        public static final double distanceKD = 0;
+
+        /* Rotation PID Values */
+        public static final double alignKP = 0.05;
+        public static final double alignKI = 0;
+        public static final double alignKD = 0;
 
         /* Rotation PID Values */
         public static final double rotationKP = 1;
@@ -168,6 +183,8 @@ public class Constants {
 
     public static class VisionConstants {
 
+        public static final Camera SHOOTER = new Camera("Frog", true, 0, 0, 0,  new Transform2d(new Translation2d(Units.inchesToMeters(-12),0), Rotation2d.fromDegrees(0)));
+
         public static final double SCREEN_WIDTH = 320;
         public static final double SCREEN_HEIGHT = 240;
     
@@ -180,31 +197,81 @@ public class Constants {
 
         public static final double TARGET_AREA = 6.25 * 6.25; //inches
 
-        public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> visionMap = new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
+        public static final Matrix<N3,N1> SVR_STATE_STD = VecBuilder.fill(10,10,Units.degreesToRadians(0.1));
+ 
+        public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(0.1,0.1,Units.degreesToRadians(1));
 
-        public static final Matrix<N3,N1> SVR_STATE_STD = VecBuilder.fill(1,1,Units.degreesToRadians(1));
- 
-        public static final Matrix<N1,N1> SVR_LOCAL_MEASUREMENT_STD = VecBuilder.fill(Units.degreesToRadians(1));
- 
-        public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(0.1,0.1,Units.degreesToRadians(0.1));
+        public static final Pose2d[] SCORES = new Pose2d[]{
+            FieldConstants.allianceFlip(new Pose2d(2.1,0.5,Rotation2d.fromDegrees(180))),
+            FieldConstants.allianceFlip(new Pose2d(2.1,1.05,Rotation2d.fromDegrees(180))),
+            FieldConstants.allianceFlip(new Pose2d(2.1,1.65,Rotation2d.fromDegrees(180))),
+            FieldConstants.allianceFlip(new Pose2d(2.1,2.15,Rotation2d.fromDegrees(180))),
+            FieldConstants.allianceFlip(new Pose2d(2.1,2.75,Rotation2d.fromDegrees(180))),
+            FieldConstants.allianceFlip(new Pose2d(2.1,3.3,Rotation2d.fromDegrees(180))),
+            FieldConstants.allianceFlip(new Pose2d(2.1,3.85,Rotation2d.fromDegrees(180))),
+            FieldConstants.allianceFlip(new Pose2d(2.1,4.45,Rotation2d.fromDegrees(180))),
+            FieldConstants.allianceFlip(new Pose2d(2.1,5,Rotation2d.fromDegrees(180)))
+        };
+
+        public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
 
         static {
-            visionMap.put(new InterpolatingDouble(3.34),new InterpolatingDouble(4.0));
-        }
-
-        public static final Pose2d[] APRIL_TAG_POS = new Pose2d[] {
-            new Pose2d(0,0, Rotation2d.fromDegrees(0)),
-            new Pose2d(0,0, Rotation2d.fromDegrees(0)),
-            new Pose2d(0,0, Rotation2d.fromDegrees(0)),
-            new Pose2d(0,0, Rotation2d.fromDegrees(0)),
-            new Pose2d(0,0, Rotation2d.fromDegrees(0))
-        };
+            APRIL_TAG_POS.put(1, new Pose2d(
+                new Translation2d(Units.inchesToMeters(610.77), Units.inchesToMeters(42.19)),
+                Rotation2d.fromDegrees(180))
+            );
+            APRIL_TAG_POS.put(2, new Pose2d(
+                new Translation2d(Units.inchesToMeters(610.77), Units.inchesToMeters(108.19)),
+                Rotation2d.fromDegrees(180))
+            );
+            APRIL_TAG_POS.put(3, new Pose2d(
+                new Translation2d(Units.inchesToMeters(610.77), Units.inchesToMeters(174.19)),
+                Rotation2d.fromDegrees(180))
+            );
+            APRIL_TAG_POS.put(4, new Pose2d(
+                new Translation2d(Units.inchesToMeters(636.96), Units.inchesToMeters(265.74)),
+                Rotation2d.fromDegrees(180))
+            );
+            APRIL_TAG_POS.put(5, new Pose2d(
+                new Translation2d(Units.inchesToMeters(14.25), Units.inchesToMeters(265.74)),
+                Rotation2d.fromDegrees(0))
+            );
+            APRIL_TAG_POS.put(6, new Pose2d(
+                new Translation2d( Units.inchesToMeters(40.45), Units.inchesToMeters(174.19)),
+                Rotation2d.fromDegrees(0))
+            );
+            APRIL_TAG_POS.put(7, new Pose2d(
+                new Translation2d(Units.inchesToMeters(40.45), Units.inchesToMeters(108.19)),
+                Rotation2d.fromDegrees(0))
+            );
+            APRIL_TAG_POS.put(8, new Pose2d(
+                new Translation2d(Units.inchesToMeters(40.45), Units.inchesToMeters(42.19)),
+                Rotation2d.fromDegrees(0))
+            );
+        } 
     }
     
     public static class FieldConstants{
-        public static final Pose2d HUB_POSITION = new Pose2d(Units.inchesToMeters(324), Units.inchesToMeters(162),new Rotation2d(0));
+        public static final Pose2d HUB_POSITION = new Pose2d(Units.inchesToMeters(324), Units.inchesToMeters(162),Rotation2d.fromDegrees(-90));
         public static final double FIELD_X_LENGTH = Units.inchesToMeters(648); // meters
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(324); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
+
+        public static final double RAMP_X_RIGHT = Units.inchesToMeters(193.25);
+        public static final double RAMP_X_LEFT = Units.inchesToMeters(132.375);
+
+        public static Pose2d allianceFlip(Pose2d pose) {
+            if (DriverStation.getAlliance() == Alliance.Red) {
+                return flip(pose);
+            }
+            return pose;
+        }
+        public static Pose2d flip(Pose2d pose) {
+            double angle = 180 - pose.getRotation().getDegrees();
+            return new Pose2d(
+                FIELD_X_LENGTH - pose.getX(),
+                pose.getY(),
+                Rotation2d.fromDegrees(angle));
+          }
     }
 }
