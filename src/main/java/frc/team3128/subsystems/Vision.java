@@ -115,6 +115,6 @@ public class Vision extends SubsystemBase{
         NAR_Shuffleboard.addData("Vision","Distance",()->cam.getDistance(),2,1);
         NAR_Shuffleboard.addData("Vision","RawTarget",()->cam.getTarget().toString(),1,2,3,1);
         NAR_Shuffleboard.addData("Vision", "Processed Target",()->cam.getProcessedTarget().toString(),1,3,3,1);
-        NAR_Shuffleboard.addData("Vision","EstimatedPose", ()-> cam.getPos(),1,4,3,1);
+        NAR_Shuffleboard.addData("Vision","EstimatedPose", ()-> cam.getPos().toString(),1,4,3,1);
     }
 }

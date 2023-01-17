@@ -109,13 +109,15 @@ public class CmdMove extends CommandBase {
     }
 
     public boolean inXConstraint() {
-        double x = swerve.getPose().getX();
-        return (x >= xConstraints[0] && x <= xConstraints[1]);
+        return false;
+        // double x = swerve.getPose().getX();
+        // return (x >= xConstraints[0] && x <= xConstraints[1]);
     }
 
     public boolean inYConstraint() {
-        double y = swerve.getPose().getY();
-        return (y >= yConstraints[0] && y <= yConstraints[1]);
+        return false;
+        // double y = swerve.getPose().getY();
+        // return (y >= yConstraints[0] && y <= yConstraints[1]);
     }
 
 }

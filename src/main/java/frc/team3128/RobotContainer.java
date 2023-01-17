@@ -102,8 +102,8 @@ public class RobotContainer {
             //SmartDashboard.putData("Swerve", swerve);
         }
 
-        swerve.initShuffleboard();
-        vision.initShuffleboard();
+        // swerve.initShuffleboard();
+        // vision.initShuffleboard();
 
         NarwhalDashboard.startServer();   
         

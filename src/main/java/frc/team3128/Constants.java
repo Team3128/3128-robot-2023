@@ -38,8 +38,8 @@ public class Constants {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(20.75); // Units.inchesToMeters(21.73);
-        public static final double wheelBase = Units.inchesToMeters(20.75); // Units.inchesToMeters(21.73);
+        public static final double trackWidth = Units.inchesToMeters(26); // Units.inchesToMeters(21.73);
+        public static final double wheelBase = Units.inchesToMeters(26); // Units.inchesToMeters(21.73);
         public static final double wheelDiameter = Units.inchesToMeters(4); // Units.inchesToMeters(3.94);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
 
@@ -52,7 +52,7 @@ public class Constants {
                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
                 new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
                 new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
-                new Translation2d(-wheelBase / 2.0 + Units.inchesToMeters(0.075), -trackWidth / 2.0));
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
 
         /* Swerve Current Limiting */
         public static final int angleContinuousCurrentLimit = 25;

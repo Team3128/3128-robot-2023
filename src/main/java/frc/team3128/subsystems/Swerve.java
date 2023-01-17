@@ -33,7 +33,7 @@ public class Swerve extends SubsystemBase {
     
     public SwerveDrivePoseEstimator odometry;
     public SwerveModule[] modules;
-    private FileWriter txtFile;
+    //private FileWriter txtFile;
     private double prevTime;
     public WPI_Pigeon2 gyro;
     private Pose2d estimatedPose;
@@ -57,10 +57,10 @@ public class Swerve extends SubsystemBase {
         fieldRelative = true;
         estimatedPose = new Pose2d();
         prevTime = 0;
-        try {
-            txtFile = new FileWriter(new File(Filesystem.getDeployDirectory(),"pose.txt"));
-        } catch (IOException e) {
-        }
+        // try {
+        //     txtFile = new FileWriter(new File(Filesystem.getDeployDirectory(),"pose.txt"));
+        // } catch (IOException e) {
+        // }
 
         modules = new SwerveModule[] {
             new SwerveModule(0, Mod0.constants),
@@ -93,16 +93,16 @@ public class Swerve extends SubsystemBase {
 
     public void initShuffleboard() {
         // General Tab
-        NAR_Shuffleboard.addData("General","Gyro",this::getHeading,7,2,2,2).withWidget("Gyro");
-        NAR_Shuffleboard.addData("General","Heading",this::getHeading,1,2);
-        // Drivetrain Tab
-        NAR_Shuffleboard.addComplex("Field","field",field,0,0,13,7).withWidget("Field");
-        NAR_Shuffleboard.addData("Drivetrain","Pose",() -> (getPose().toString()),2,0,4,1);
-        NAR_Shuffleboard.addComplex("Drivetrain","Gyro",gyro,3,1,2,2).withWidget("Gyro");
-        NAR_Shuffleboard.addData("Drivetrain","Yaw",this::getYaw,4,1);
-        NAR_Shuffleboard.addData("Drivetrain","Pitch",this::getPitch,5,1);
-        NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
-        NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
+        // NAR_Shuffleboard.addData("General","Gyro",this::getHeading,7,2,2,2).withWidget("Gyro");
+        // NAR_Shuffleboard.addData("General","Heading",this::getHeading,1,2);
+        // // Drivetrain Tab
+        // NAR_Shuffleboard.addComplex("Field","field",field,0,0,13,7).withWidget("Field");
+        // NAR_Shuffleboard.addData("Drivetrain","Pose",() -> (getPose().toString()),2,0,4,1);
+        // NAR_Shuffleboard.addComplex("Drivetrain","Gyro",gyro,3,1,2,2).withWidget("Gyro");
+        // NAR_Shuffleboard.addData("Drivetrain","Yaw",this::getYaw,4,1);
+        // NAR_Shuffleboard.addData("Drivetrain","Pitch",this::getPitch,5,1);
+        // NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
+        // NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
     }
 
     public void stop() {
@@ -169,16 +169,16 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Robot Y", position.getY());
         SmartDashboard.putNumber("Robot Gyro", getGyroRotation2d().getDegrees());
         SmartDashboard.putString("POSE2D",getPose().toString());
-        double time = Timer.getFPGATimestamp();
-        if (time >= prevTime + 1) {
-            prevTime = time;
-            try {
-                txtFile.write(position.getX() + "," + position.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + "\n");
-            } catch (IOException e) {}
-            try {
-                txtFile.flush();
-            } catch (IOException e) {}
-        }
+        // double time = Timer.getFPGATimestamp();
+        // if (time >= prevTime + 1) {
+        //     prevTime = time;
+        //     try {
+        //         txtFile.write(position.getX() + "," + position.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + "\n");
+        //     } catch (IOException e) {}
+        //     try {
+        //         txtFile.flush();
+        //     } catch (IOException e) {}
+        // }
     }
 
     public double getYaw() {
