@@ -59,7 +59,7 @@ public class Swerve extends SubsystemBase {
         resetEncoders();
 
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
-                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
+                                                estimatedPose, SVR_STATE_STD, SVR_VISION_MEASUREMENT_STD);
 
 
         field = new Field2d();
