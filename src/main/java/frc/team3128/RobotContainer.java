@@ -2,6 +2,7 @@ package frc.team3128;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -9,8 +10,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.team3128.Constants.VisionConstants;
 import frc.team3128.commands.CmdAlign;
+import frc.team3128.commands.CmdMove;
+import frc.team3128.commands.CmdReset;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdTargetPursuit;
 import frc.team3128.common.hardware.camera.Camera;
@@ -70,10 +75,18 @@ public class RobotContainer {
     private void configureButtonBindings() {
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
-        rightStick.getButton(3).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        rightStick.getButton(4).onTrue(new CmdAlign()).onFalse(new InstantCommand(()-> swerve.stop()));
-        rightStick.getButton(5).onTrue(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(Camera.SHOOTER.hostname))));
-        rightStick.getButton(6).onTrue(new CmdTargetPursuit(Camera.SHOOTER.hostname)).onFalse(new InstantCommand(()->swerve.stop(),swerve));
+        rightStick.getButton(3).onTrue(new CmdReset());
+        rightStick.getButton(4).onTrue(new RunCommand(()->swerve.drive(new Translation2d(0.5,0),0,true)));
+        rightStick.getButton(5).onTrue(new RunCommand(()->swerve.drive(new Translation2d(0,0.5),0,true)));
+        rightStick.getButton(6).onTrue(new RunCommand(()->swerve.drive(new Translation2d(0.5,0),0,false)));
+        rightStick.getButton(7).onTrue(new RunCommand(()->swerve.drive(new Translation2d(0,0.5),0,false)));
+        for (int i = 0; i < VisionConstants.SCORES.length; i++) {
+            leftStick.getButton(i + 1).onTrue(new CmdMove(VisionConstants.SCORES[i], false)).onFalse(new InstantCommand(()->swerve.stop(),swerve));
+        }
+        // rightStick.getButton(3).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
+        // rightStick.getButton(4).onTrue(new CmdAlign()).onFalse(new InstantCommand(()-> swerve.stop()));
+        // rightStick.getButton(5).onTrue(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(Camera.SHOOTER.hostname))));
+        // rightStick.getButton(6).onTrue(new CmdTargetPursuit(Camera.SHOOTER.hostname)).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         // rightStick.getButton(6).whenActive(new InstantCommand(()-> {
         //     if(vision.hasValidTarget(Camera.SHOOTER.hostname)) {
         //         Trajectories.lineCmd(swerve.getPose(),vision.targetPos(Camera.SHOOTER.hostname, swerve.getPose()));
@@ -96,8 +109,8 @@ public class RobotContainer {
             //SmartDashboard.putData("Swerve", swerve);
         }
 
-        swerve.initShuffleboard();
-        vision.initShuffleboard();
+        // swerve.initShuffleboard();
+        // vision.initShuffleboard();
 
         NarwhalDashboard.startServer();   
         
@@ -118,6 +131,6 @@ public class RobotContainer {
         SmartDashboard.putNumber("LeftY",controller.getLeftY());
         SmartDashboard.putNumber("RightX",controller.getRightX());
         SmartDashboard.putNumber("RightY",controller.getRightY());
-        NAR_Shuffleboard.update();
+        //NAR_Shuffleboard.update();
     }
 }

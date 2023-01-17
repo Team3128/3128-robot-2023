@@ -4,32 +4,39 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
 
 import static frc.team3128.Constants.SwerveConstants.*;
+import static frc.team3128.Constants.VisionConstants.TX_THRESHOLD;
 
 public class CmdInPlaceTurn extends PIDCommand {
 
     private double degrees;
 
-    private boolean llInterrupt;
+    private boolean llInterrupt = false;
 
-    public CmdInPlaceTurn(double degrees, boolean llInterrupt) {
+    private String camera;
+
+    public CmdInPlaceTurn(double degrees, String camera) {
+        this(degrees);
+        llInterrupt = true;
+        this.camera = camera;
+    }
+
+    public CmdInPlaceTurn(double degrees) {
         super(
             new PIDController(turnKP,turnKF,turnKD),
             () -> Swerve.getInstance().getHeading(),
             0,
-            output -> Swerve.getInstance().drive(new Translation2d(), -output - Math.copySign(turnKF,output), false),
+            output -> Swerve.getInstance().drive(new Translation2d(), -output, false),
             Swerve.getInstance()
         );
 
         m_controller.enableContinuousInput(-180, 180);
-        m_controller.setTolerance(TURN_TOLERANCE);
+        m_controller.setTolerance(TX_THRESHOLD);
 
         this.degrees = degrees;
-        this.llInterrupt = llInterrupt;
     }
 
     @Override
@@ -40,6 +47,6 @@ public class CmdInPlaceTurn extends PIDCommand {
 
     @Override
     public boolean isFinished() {
-        return m_controller.atSetpoint() || (llInterrupt && Vision.getInstance().hasValidTarget(Camera.SHOOTER.hostname));
+        return m_controller.atSetpoint() || (llInterrupt && Vision.getInstance().hasValidTarget(camera));
     }
 }
