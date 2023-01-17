@@ -34,7 +34,9 @@ public class Telescope extends PIDSubsystem {
         MID_CONE(40.027), 
         MID_CUBE(39.031), 
         LOW_FLOOR(16),
-        PICK_UP(0.0); //get value from mech
+        HP_PICK_UP(0.0), //get value from mech
+        INT_PICK_UP(0.0), //get value from mech
+        NEUTRAL(16);
 
         public double dist; 
         private TeleDists(double dist) {
@@ -81,9 +83,9 @@ public class Telescope extends PIDSubsystem {
         m_encoder.setPositionConversionFactor(ENC_CONV); // TODO: ticks --> inches using gear ratio
     }
 
-    public void startPID(double dist) {        
+    public void startPID(TeleDists teleDist) {        
         enable();
-        super.setSetpoint(dist);
+        super.setSetpoint(teleDist.dist);
         getController().setTolerance(TELE_TOLERANCE);
     }
 
