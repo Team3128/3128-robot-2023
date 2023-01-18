@@ -47,6 +47,7 @@ public class CmdSwerveDrive extends CommandBase {
         else {
             translation = translation.rotateBy(Rotation2d.fromDegrees(-90));
         }
+        System.out.println(translation.toString());
         
         rotation = zAxis.getAsDouble() * maxAngularVelocity; // * throttle.getAsDouble();
         SmartDashboard.putBoolean("fieldOriented",swerve.fieldRelative);

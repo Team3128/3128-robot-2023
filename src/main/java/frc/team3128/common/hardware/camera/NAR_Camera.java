@@ -111,7 +111,7 @@ public class NAR_Camera extends PhotonCamera {
             for (int i = 0; i < poses.size(); i++) {
                 if (translationOutOfBounds(poses.get(i).getTranslation()))
                     return;
-                System.out.println("Pain");
+                //System.out.println("Pain");
                 updatePose.accept(poses.get(i),result.getTimestampSeconds());
             }
             return;
@@ -201,7 +201,7 @@ public class NAR_Camera extends PhotonCamera {
         double angle = Units.degreesToRadians(getTarget().getRotation().getDegrees());
         double deltaY = hypotenuse * Math.sin(angle);
         Transform2d vector = getTarget(target);
-        return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), Rotation2d.fromDegrees(angle));
+        return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), new Rotation2d(angle));
     }
 
     public boolean hasValidTarget() {

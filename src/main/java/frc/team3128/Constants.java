@@ -45,7 +45,7 @@ public class Constants {
         public static final double closedLoopRamp = 0.0;
 
         public static final double driveGearRatio = 6.75; // (6.86 / 1.0); //6.86:1
-        public static final double angleGearRatio = (150 / 7); // 21.43; // (12.8 / 1.0); //12.8:1 
+        public static final double angleGearRatio = (150.0 / 7.0); // 21.43; // (12.8 / 1.0); //12.8:1 
 
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
@@ -68,7 +68,7 @@ public class Constants {
 
         public static final double DRIVE_TOLERANCE = 0.05;
 
-        public static final double translationKP = 1;
+        public static final double translationKP = 3;
         public static final double translationKI = 0;
         public static final double translationKD = 0;
 
@@ -83,7 +83,7 @@ public class Constants {
         public static final double alignKD = 0;
 
         /* Rotation PID Values */
-        public static final double rotationKP = 1;
+        public static final double rotationKP = 3;
         public static final double rotationKI = 0;
         public static final double rotationKD = 0;
 
@@ -117,12 +117,12 @@ public class Constants {
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double maxSpeed = 3; //4.5// 4.96824; // citrus: 4.5 //meters per second - 16.3 ft/sec
+        public static final double maxSpeed = 4; //4.5// 4.96824; // citrus: 4.5 //meters per second - 16.3 ft/sec
         public static final double maxAcceleration = 2;
-        public static final double maxAngularVelocity = 1;//3; //11.5; // citrus: 10
+        public static final double maxAngularVelocity = 2;//3; //11.5; // citrus: 10
 
         /* Motor Inverts */
-        public static final boolean driveMotorInvert = false;
+        public static final boolean driveMotorInvert = true;
         public static final boolean angleMotorInvert = true;
 
         /* Angle Encoder Invert */
@@ -202,15 +202,15 @@ public class Constants {
         public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(0.1,0.1,Units.degreesToRadians(1));
 
         public static final Pose2d[] SCORES = new Pose2d[]{
-            FieldConstants.allianceFlip(new Pose2d(2.1,0.5,Rotation2d.fromDegrees(180))),
-            FieldConstants.allianceFlip(new Pose2d(2.1,1.05,Rotation2d.fromDegrees(180))),
-            FieldConstants.allianceFlip(new Pose2d(2.1,1.65,Rotation2d.fromDegrees(180))),
-            FieldConstants.allianceFlip(new Pose2d(2.1,2.15,Rotation2d.fromDegrees(180))),
-            FieldConstants.allianceFlip(new Pose2d(2.1,2.75,Rotation2d.fromDegrees(180))),
-            FieldConstants.allianceFlip(new Pose2d(2.1,3.3,Rotation2d.fromDegrees(180))),
-            FieldConstants.allianceFlip(new Pose2d(2.1,3.85,Rotation2d.fromDegrees(180))),
-            FieldConstants.allianceFlip(new Pose2d(2.1,4.45,Rotation2d.fromDegrees(180))),
-            FieldConstants.allianceFlip(new Pose2d(2.1,5,Rotation2d.fromDegrees(180)))
+            new Pose2d(2.1,0.5,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.1,1.05,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.1,1.65,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.1,2.15,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.1,2.75,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.1,3.3,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.1,3.85,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.1,4.45,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.1,5,Rotation2d.fromDegrees(180))
         };
 
         public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();

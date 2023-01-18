@@ -59,7 +59,7 @@ public class Swerve extends SubsystemBase {
         resetEncoders();
 
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
-                                                estimatedPose, SVR_STATE_STD, SVR_VISION_MEASUREMENT_STD);
+                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
 
 
         field = new Field2d();
@@ -71,7 +71,6 @@ public class Swerve extends SubsystemBase {
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(), translation.getY(), rotation, getRotation2d())
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
-        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, maxSpeed);
         setModuleStates(moduleStates);
     }
 

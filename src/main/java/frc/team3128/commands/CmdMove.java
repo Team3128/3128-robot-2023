@@ -12,14 +12,17 @@ import static frc.team3128.Constants.VisionConstants.TX_THRESHOLD;
 import java.util.function.DoubleSupplier;
 
 import static frc.team3128.Constants.FieldConstants.*;
+
+import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
 
 public class CmdMove extends CommandBase {
 
-    private PIDController xController, yController, rController;
+    private static PIDController xController, yController, rController;
     private static DoubleSupplier xAxis, yAxis, throttle;
     private double[] xConstraints, yConstraints;
     private boolean xSetpoint, ySetpoint, rSetpoint;
+    private Pose2d pose;
 
     private boolean joystickOverride;
 
@@ -28,12 +31,9 @@ public class CmdMove extends CommandBase {
     public CmdMove(Pose2d pose, double[] xConstraints, double[] yConstraints, boolean joystickOverride) {
         this.xConstraints = xConstraints;
         this.yConstraints = yConstraints;
+        this.pose = pose;
 
-        initControllers();
-
-        xController.setSetpoint(pose.getX());
-        yController.setSetpoint(pose.getY());
-        rController.setSetpoint(pose.getRotation().getRadians());
+        //initControllers();
 
         this.joystickOverride = joystickOverride;
 
@@ -52,7 +52,7 @@ public class CmdMove extends CommandBase {
         throttle = accel;
     }
 
-    private void initControllers() {
+    public static void initControllers() {
         xController = new PIDController(translationKP, translationKI, translationKD);
         yController = new PIDController(translationKP, translationKI, translationKD);
         rController = new PIDController(rotationKP, rotationKI, rotationKD);
@@ -60,7 +60,11 @@ public class CmdMove extends CommandBase {
 
         xController.setTolerance(DRIVE_TOLERANCE);
         yController.setTolerance(DRIVE_TOLERANCE);
-        rController.setTolerance(TX_THRESHOLD);
+        rController.setTolerance(Math.PI/60);
+
+        NAR_Shuffleboard.addComplex("Vision","XCONTROLLER",xController,0,0);
+        NAR_Shuffleboard.addComplex("Vision","YCONTROLLER",yController,0,3);
+        NAR_Shuffleboard.addComplex("Vision","RCONTROLLER",rController,2,3);
     }
 
     @Override
@@ -72,6 +76,10 @@ public class CmdMove extends CommandBase {
         xController.reset();
         yController.reset();
         rController.reset();
+
+        xController.setSetpoint(pose.getX());
+        yController.setSetpoint(pose.getY());
+        rController.setSetpoint(pose.getRotation().getRadians());
     }
 
     @Override
@@ -95,7 +103,7 @@ public class CmdMove extends CommandBase {
             }
         }
 
-        swerve.drive(new Translation2d(0, yDistance), 0, true);
+        swerve.drive(new Translation2d(xDistance, yDistance), rotation, true);
     }
 
     @Override
