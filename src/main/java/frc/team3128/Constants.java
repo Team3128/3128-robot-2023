@@ -31,21 +31,21 @@ public class Constants {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(20.75); // Units.inchesToMeters(21.73);
-        public static final double wheelBase = Units.inchesToMeters(20.75); // Units.inchesToMeters(21.73);
+        public static final double trackWidth = Units.inchesToMeters(26); // Units.inchesToMeters(21.73);
+        public static final double wheelBase = Units.inchesToMeters(26); // Units.inchesToMeters(21.73);
         public static final double wheelDiameter = Units.inchesToMeters(4); // Units.inchesToMeters(3.94);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
 
         public static final double closedLoopRamp = 0.0;
 
         public static final double driveGearRatio = 6.75; // (6.86 / 1.0); //6.86:1
-        public static final double angleGearRatio = 21.43; // (12.8 / 1.0); //12.8:1
+        public static final double angleGearRatio = (150.0 / 7.0); // 21.43; // (12.8 / 1.0); //12.8:1 
 
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
                 new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
                 new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
-                new Translation2d(-wheelBase / 2.0 + Units.inchesToMeters(0.075), -trackWidth / 2.0));
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); // laser was broken so offset
 
         /* Swerve Current Limiting */
         public static final int angleContinuousCurrentLimit = 25;
@@ -91,6 +91,7 @@ public class Constants {
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
+        // TODO: sysid this
         public static final double driveKS = 0.60094;//(0.49321 / 12);
         public static final double driveKV = 1.1559;//(2.4466 / 12);
         public static final double driveKA = 0.12348;//(0.22036 / 12);
@@ -101,12 +102,12 @@ public class Constants {
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double maxSpeed = 3; //4.5// 4.96824; // citrus: 4.5 //meters per second - 16.3 ft/sec
+        public static final double maxSpeed = 4; //4.5// 4.96824; // citrus: 4.5 //meters per second - 16.3 ft/sec
         public static final double maxAcceleration = 2;
-        public static final double maxAngularVelocity = 1;//3; //11.5; // citrus: 10
+        public static final double maxAngularVelocity = 2;//3; //11.5; // citrus: 10
 
         /* Motor Inverts */
-        public static final boolean driveMotorInvert = false;
+        public static final boolean driveMotorInvert = true;
         public static final boolean angleMotorInvert = true;
 
         /* Angle Encoder Invert */
