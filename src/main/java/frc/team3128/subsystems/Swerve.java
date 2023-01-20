@@ -34,6 +34,10 @@ public class Swerve extends SubsystemBase {
     private static Swerve instance;
     public boolean fieldRelative;
 
+    private SlewRateLimiter xFilter;
+    private SlewRateLimiter yFilter;
+    private SlewRateLimiter zFilter;
+
     private Field2d field;
 
     public static synchronized Swerve getInstance() {
@@ -57,6 +61,10 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, Mod3.constants)
         };
 
+        xFilter = new SlewRateLimiter(xRateLimit);
+        yFilter = new SlewRateLimiter(yRateLimit);
+        zFilter = new SlewRateLimiter(zRateLimit);
+
         resetEncoders();
 
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
@@ -68,10 +76,13 @@ public class Swerve extends SubsystemBase {
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
+        double X = xFilter.calculate(translation.getX());
+        double Y = yFilter.calculate(translation.getY());
+        double Z = zFilter.calculate(rotation);
         SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                translation.getX(), translation.getY(), rotation, getGyroRotation2d())
-                : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
+                X, Y, Z, getGyroRotation2d())
+                : new ChassisSpeeds(X, Y, Z));
         setModuleStates(moduleStates);
     }
 

@@ -106,6 +106,10 @@ public class Constants {
         public static final double maxAcceleration = 2;
         public static final double maxAngularVelocity = 2;//3; //11.5; // citrus: 10
 
+        public static final double xRateLimit = 1.0;
+        public static final double yRateLimit = 1.0;
+        public static final double zRateLimit = 1.0;
+
         /* Motor Inverts */
         public static final boolean driveMotorInvert = true;
         public static final boolean angleMotorInvert = true;
