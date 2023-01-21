@@ -40,16 +40,16 @@ public class Trajectories {
             trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(maxSpeed, maxAcceleration)));
         }
 
-        builder = new SwerveAutoBuilder(
-            Swerve.getInstance()::getPose,
-            Swerve.getInstance()::resetOdometry,
-            swerveKinematics,
-            new PIDConstants(translationKP,translationKI,translationKD),
-            new PIDConstants(rotationKP,rotationKI,rotationKD),
-            Swerve.getInstance()::setModuleStates,
-            new HashMap<String,Command>(),
-            Swerve.getInstance()
-        );
+        // builder = new SwerveAutoBuilder(
+        //     Swerve.getInstance()::getPose,
+        //     Swerve.getInstance()::resetOdometry,
+        //     swerveKinematics,
+        //     new PIDConstants(translationKP,translationKI,translationKD),
+        //     new PIDConstants(rotationKP,rotationKI,rotationKD),
+        //     Swerve.getInstance()::setModuleStates,
+        //     new HashMap<String,Command>(),
+        //     Swerve.getInstance()
+        // );
     }
 
     public static CommandBase get(String name) {

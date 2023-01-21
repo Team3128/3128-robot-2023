@@ -265,14 +265,18 @@ public class SecondOrderSwerveDriveKinematics extends SwerveDriveKinematics {
     }
 
     public static void desaturateWheelSpeeds(
-        SwerveModuleState[] moduleStates, double attainableMaxSpeedMetersPerSecond) {
+        SecondOrderSwerveModuleState[] moduleStates, double attainableMaxSpeedMetersPerSecond, double attainableMaxAcceleration) {
       double realMaxSpeed = Collections.max(Arrays.asList(moduleStates)).speedMetersPerSecond;
+      double realMaxAcceleration = Collections.max(Arrays.asList(moduleStates), (state1,state2) -> Double.compare(state1.accelerationMetersPerSecondSquared, state2.accelerationMetersPerSecondSquared)).accelerationMetersPerSecondSquared;
       if (realMaxSpeed > attainableMaxSpeedMetersPerSecond) {
-        for (SwerveModuleState moduleState : moduleStates) {
-          moduleState.speedMetersPerSecond =
-              moduleState.speedMetersPerSecond / realMaxSpeed * attainableMaxSpeedMetersPerSecond;
+        for (SecondOrderSwerveModuleState moduleState : moduleStates) {
+            moduleState.speedMetersPerSecond =
+                moduleState.speedMetersPerSecond / realMaxSpeed * attainableMaxSpeedMetersPerSecond;
+            moduleState.accelerationMetersPerSecondSquared =
+                moduleState.speedMetersPerSecond / realMaxAcceleration * attainableMaxAcceleration;
         }
       }
+      
     }
 
 

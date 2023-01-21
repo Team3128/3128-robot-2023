@@ -53,7 +53,7 @@ public class SwerveModule {
     public void setDesiredState(SecondOrderSwerveModuleState desiredState){
         //TODO: Implement optimize for SecondOrderSwerveModuleState
         //desiredState = CTREModuleState.optimize(desiredState, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
-
+        desiredState.optimize(getState().angle);
         double velocity = MPSToFalcon(desiredState.speedMetersPerSecond, wheelCircumference, driveGearRatio);
         driveMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond, desiredState.accelerationMetersPerSecondSquared));
 

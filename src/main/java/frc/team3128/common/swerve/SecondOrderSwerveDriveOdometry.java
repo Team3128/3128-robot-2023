@@ -130,7 +130,7 @@ public class SecondOrderSwerveDriveOdometry {
 
     SecondOrderSwerveModuleState[] secondOrderModuleStates = new SecondOrderSwerveModuleState[moduleStates.length];
     for(int i = 0; i < moduleStates.length; i++) {
-        secondOrderModuleStates[i] = getSecondOrderSwerveModuleState(m_previousStates[i], moduleStates[i], dt)
+        secondOrderModuleStates[i] = getSecondOrderSwerveModuleState(m_previousStates[i], moduleStates[i], dt);
     }
 
     m_previousTime = WPIUtilJNI.now();

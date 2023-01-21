@@ -47,7 +47,7 @@ public class Swerve extends SubsystemBase {
 
     //Variables to help calculate accelerations (For second-order)
     private Translation2d previousTranslation;
-    private long previousTime;
+    private double previousTime;
     private double previousRotation;
 
     public static synchronized Swerve getInstance() {
@@ -89,11 +89,11 @@ public class Swerve extends SubsystemBase {
 
         if(previousTranslation == null) {
             previousTranslation = translation;
-            previousTime = WPIUtilJNI.now();
+            previousTime = Timer.getFPGATimestamp();
             previousRotation = rotation;
         }
 
-        double dt = (WPIUtilJNI.now() - previousTime) / 1000000000.0;
+        double dt = (Timer.getFPGATimestamp() - previousTime);
 
         //Get SecondOrderChassisSpeeds
         SecondOrderChassisSpeeds secondOrderChassisSpeeds = new SecondOrderChassisSpeeds(
@@ -108,7 +108,7 @@ public class Swerve extends SubsystemBase {
         SecondOrderSwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
             fieldRelative ? SecondOrderChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(), translation.getY(), rotation, secondOrderChassisSpeeds.axMetersPerSecondSq,
-                secondOrderChassisSpeeds.ayMetersPerSecondSq, secondOrderChassisSpeeds.alphaRadiansPerSecondSq, getGyroRotation2d())
+                secondOrderChassisSpeeds.ayMetersPerSecondSq, secondOrderChassisSpeeds.alphaRadiansPerSecondSq, getRotation2d())
                 : secondOrderChassisSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, maxSpeed);
 
@@ -171,7 +171,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setModuleStates(SecondOrderSwerveModuleState[] desiredStates) {
-        SecondOrderSwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, maxSpeed);
+        SecondOrderSwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, maxSpeed, maxAcceleration);
         
         for (SwerveModule module : modules){
             module.setDesiredState(desiredStates[module.moduleNumber]);
