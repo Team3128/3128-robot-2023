@@ -9,19 +9,29 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.Constants.FieldConstants;
+import frc.team3128.common.swerve.SecondOrderChassisSpeeds;
+import frc.team3128.common.swerve.SecondOrderSwerveDriveKinematics;
 import frc.team3128.common.swerve.SwerveModule;
 import frc.team3128.common.utility.NAR_Shuffleboard;
+import frc.team3128.common.swerve.SecondOrderSwerveModuleState;
+import edu.wpi.first.util.WPIUtilJNI;
 
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Swerve extends SubsystemBase {
     
@@ -34,6 +44,11 @@ public class Swerve extends SubsystemBase {
     public boolean fieldRelative;
 
     private Field2d field;
+
+    //Variables to help calculate accelerations (For second-order)
+    private Translation2d previousTranslation;
+    private long previousTime;
+    private double previousRotation;
 
     public static synchronized Swerve getInstance() {
         if (instance == null) {
@@ -55,11 +70,15 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(2, Mod2.constants),
             new SwerveModule(3, Mod3.constants)
         };
-
         resetEncoders();
 
-        odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
-                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
+        odometry = new SwerveDrivePoseEstimator(
+            swerveKinematics, 
+            new Rotation2d(), 
+            getPositions(), 
+            estimatedPose, 
+            SVR_STATE_STD, 
+            SVR_VISION_MEASUREMENT_STD);
 
 
         field = new Field2d();
@@ -67,10 +86,32 @@ public class Swerve extends SubsystemBase {
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
-        SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
-            fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                translation.getX(), translation.getY(), rotation, getRotation2d())
-                : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
+
+        if(previousTranslation == null) {
+            previousTranslation = translation;
+            previousTime = WPIUtilJNI.now();
+            previousRotation = rotation;
+        }
+
+        double dt = (WPIUtilJNI.now() - previousTime) / 1000000000.0;
+
+        //Get SecondOrderChassisSpeeds
+        SecondOrderChassisSpeeds secondOrderChassisSpeeds = new SecondOrderChassisSpeeds(
+            translation.getX(),
+            translation.getY(),
+            rotation,
+            (translation.getX() - previousTranslation.getX()) / dt,
+            (translation.getY() - previousTranslation.getY()) / dt,
+            rotation-previousRotation/dt //TODO: I'm not sure if rotation is an angular velocity
+        );
+        
+        SecondOrderSwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
+            fieldRelative ? SecondOrderChassisSpeeds.fromFieldRelativeSpeeds(
+                translation.getX(), translation.getY(), rotation, secondOrderChassisSpeeds.axMetersPerSecondSq,
+                secondOrderChassisSpeeds.ayMetersPerSecondSq, secondOrderChassisSpeeds.alphaRadiansPerSecondSq, getGyroRotation2d())
+                : secondOrderChassisSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, maxSpeed);
+
         setModuleStates(moduleStates);
     }
 
@@ -78,7 +119,7 @@ public class Swerve extends SubsystemBase {
         // General Tab
         NAR_Shuffleboard.addComplex("General","Gyro",gyro,7,2,2,2);//.withWidget("Gyro");
         NAR_Shuffleboard.addData("General","Heading",this::getHeading,1,2);
-        // // Drivetrain Tab
+        // Drivetrain Tab
         NAR_Shuffleboard.addComplex("Field","field",field,0,0,13,7);//.withWidget("Field");
         NAR_Shuffleboard.addData("Drivetrain","Pose",() -> (getPose().toString()),2,0,4,1);
         NAR_Shuffleboard.addComplex("Drivetrain","Gyro",gyro,3,1,2,2);//.withWidget("Gyro");
@@ -126,15 +167,11 @@ public class Swerve extends SubsystemBase {
     }
     
     public void toggle() {
-        if (fieldRelative) {
-            fieldRelative = false;
-            return;
-        }
-        fieldRelative = true;
+        fieldRelative = !fieldRelative;
     }
 
-    public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, maxSpeed);
+    public void setModuleStates(SecondOrderSwerveModuleState[] desiredStates) {
+        SecondOrderSwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, maxSpeed);
         
         for (SwerveModule module : modules){
             module.setDesiredState(desiredStates[module.moduleNumber]);

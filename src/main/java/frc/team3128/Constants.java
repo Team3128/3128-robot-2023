@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.team3128.common.hardware.camera.Camera;
+import frc.team3128.common.swerve.SecondOrderSwerveDriveKinematics;
 import frc.team3128.common.swerve.SwerveModuleConstants;
 import frc.team3128.common.utility.interpolation.InterpolatingDouble;
 import frc.team3128.common.utility.interpolation.InterpolatingTreeMap;
@@ -47,7 +48,7 @@ public class Constants {
         public static final double driveGearRatio = 6.75; // (6.86 / 1.0); //6.86:1
         public static final double angleGearRatio = (150.0 / 7.0); // 21.43; // (12.8 / 1.0); //12.8:1 
 
-        public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+        public static final SecondOrderSwerveDriveKinematics swerveKinematics = new SecondOrderSwerveDriveKinematics(
                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
                 new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
                 new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
@@ -110,6 +111,13 @@ public class Constants {
         public static final double driveKS = 0.60094;//(0.49321 / 12);
         public static final double driveKV = 1.1559;//(2.4466 / 12);
         public static final double driveKA = 0.12348;//(0.22036 / 12);
+
+         /* Angle Motor Characterization Values */
+
+         //TODO: characterize I guess
+         public static final double angleKS = (0.60094/12);//(0.49321 / 12);
+         public static final double angleKV = (1.1559/12);//(2.4466 / 12);
+         public static final double angleKA = (0.12348/12);//(0.22036 / 12);
 
         public static final double turnTolerance = 2;
 

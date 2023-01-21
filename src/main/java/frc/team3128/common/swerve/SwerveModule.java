@@ -29,6 +29,7 @@ public class SwerveModule {
     private double lastAngle;
 
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(driveKS, driveKV, driveKA);
+    SimpleMotorFeedforward angleFeedforward = new SimpleMotorFeedforward(angleKS, angleKV, angleKA);
 
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
         this.moduleNumber = moduleNumber;
@@ -49,14 +50,16 @@ public class SwerveModule {
         lastAngle = getState().angle.getDegrees();
     }
 
-    public void setDesiredState(SwerveModuleState desiredState){
-        desiredState = CTREModuleState.optimize(desiredState, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
+    public void setDesiredState(SecondOrderSwerveModuleState desiredState){
+        //TODO: Implement optimize for SecondOrderSwerveModuleState
+        //desiredState = CTREModuleState.optimize(desiredState, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
 
         double velocity = MPSToFalcon(desiredState.speedMetersPerSecond, wheelCircumference, driveGearRatio);
-        driveMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond) / 12);
+        driveMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond, desiredState.accelerationMetersPerSecondSquared));
 
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (maxSpeed * 0.025)) ? lastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
-        angleMotor.set(ControlMode.Position, degreesToFalcon(angle, angleGearRatio)); 
+        angleMotor.set(ControlMode.Position, degreesToFalcon(angle, angleGearRatio), DemandType.ArbitraryFeedForward,
+        angleFeedforward.calculate(desiredState.angularVelocity.getRadians())); 
         lastAngle = angle;
 
         SmartDashboard.putNumber("angle curr position" + moduleNumber, falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio));
