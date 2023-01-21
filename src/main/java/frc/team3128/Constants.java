@@ -217,6 +217,12 @@ public class Constants {
             new Pose2d(2.1,5,Rotation2d.fromDegrees(180))
         };
 
+        public static final Pose2d[] SCORE_SETUP = new Pose2d[]{
+            new Pose2d(5.3,0.75,Rotation2d.fromDegrees(180)),
+            new Pose2d(5.3,2.75,Rotation2d.fromDegrees(180)),
+            new Pose2d(5.3,4.6,Rotation2d.fromDegrees(180)),
+        };
+
         public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
 
         static {
