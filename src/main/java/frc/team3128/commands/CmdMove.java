@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.team3128.Constants.SwerveConstants.*;
-import static frc.team3128.Constants.VisionConstants.TX_THRESHOLD;
 
 import java.util.function.DoubleSupplier;
 

@@ -272,10 +272,14 @@ public class SecondOrderSwerveDriveKinematics extends SwerveDriveKinematics {
         for (SecondOrderSwerveModuleState moduleState : moduleStates) {
             moduleState.speedMetersPerSecond =
                 moduleState.speedMetersPerSecond / realMaxSpeed * attainableMaxSpeedMetersPerSecond;
-            moduleState.accelerationMetersPerSecondSquared =
-                moduleState.speedMetersPerSecond / realMaxAcceleration * attainableMaxAcceleration;
         }
       }
+    //   if (realMaxAcceleration > attainableMaxAcceleration) {
+    //     for (SecondOrderSwerveModuleState moduleState : moduleStates) {
+    //         moduleState.accelerationMetersPerSecondSquared =
+    //                 moduleState.accelerationMetersPerSecondSquared / realMaxAcceleration * attainableMaxAcceleration;
+    //     }
+    //   }
       
     }
 

@@ -58,7 +58,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public Swerve() {
-        gyro = new WPI_Pigeon2(pigeonID);
+        gyro = new WPI_Pigeon2(pigeonID, "drivetrain");
         gyro.configFactoryDefault();
         zeroGyro();
         fieldRelative = true;
@@ -110,7 +110,7 @@ public class Swerve extends SubsystemBase {
                 translation.getX(), translation.getY(), rotation, secondOrderChassisSpeeds.axMetersPerSecondSq,
                 secondOrderChassisSpeeds.ayMetersPerSecondSq, secondOrderChassisSpeeds.alphaRadiansPerSecondSq, getRotation2d())
                 : secondOrderChassisSpeeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, maxSpeed);
+        //SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, maxSpeed);
 
         setModuleStates(moduleStates);
     }
@@ -171,7 +171,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setModuleStates(SecondOrderSwerveModuleState[] desiredStates) {
-        SecondOrderSwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, maxSpeed, maxAcceleration);
+        SecondOrderSwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, maxWheelSpeed, maxAcceleration);
         
         for (SwerveModule module : modules){
             module.setDesiredState(desiredStates[module.moduleNumber]);

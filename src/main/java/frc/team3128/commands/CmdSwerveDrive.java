@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.team3128.common.utility.Log;
 import frc.team3128.subsystems.Swerve;
 import static frc.team3128.Constants.SwerveConstants.*;
 
@@ -40,6 +41,7 @@ public class CmdSwerveDrive extends CommandBase {
     public void execute() {
         // deadbands are taken care of in NAR_Joystick
         translation = new Translation2d(xAxis.getAsDouble(), yAxis.getAsDouble()).times(throttle.getAsDouble()).times(maxSpeed);
+        Log.info("throttle", String.valueOf(throttle.getAsDouble()));
         if (DriverStation.getAlliance() == Alliance.Red || !swerve.fieldRelative) {
             translation = translation.rotateBy(Rotation2d.fromDegrees(90));
         }
@@ -47,7 +49,7 @@ public class CmdSwerveDrive extends CommandBase {
             translation = translation.rotateBy(Rotation2d.fromDegrees(-90));
         }
         
-        rotation = zAxis.getAsDouble() * maxAngularVelocity; // * throttle.getAsDouble();
+        rotation = -zAxis.getAsDouble() * maxAngularVelocity; // * throttle.getAsDouble();
         SmartDashboard.putBoolean("fieldOriented",swerve.fieldRelative);
         swerve.drive(translation, rotation, swerve.fieldRelative);
 

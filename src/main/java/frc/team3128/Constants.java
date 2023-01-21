@@ -125,9 +125,10 @@ public class Constants {
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double maxSpeed = 4; //4.5// 4.96824; // citrus: 4.5 //meters per second - 16.3 ft/sec
-        public static final double maxAcceleration = 2;
-        public static final double maxAngularVelocity = 2;//3; //11.5; // citrus: 10
+        public static final double maxWheelSpeed = 2; //4.5// 4.96824; // citrus: 4.5 //meters per second - 16.3 ft/sec
+        public static final double maxAcceleration = 0.5;
+        public static final double maxAngularVelocity = 0.5;//3; //11.5; // citrus: 10
+        public static final double maxSpeed = 0.125;
 
         /* Motor Inverts */
         public static final boolean driveMotorInvert = true;
