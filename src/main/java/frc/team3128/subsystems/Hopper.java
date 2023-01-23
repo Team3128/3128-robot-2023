@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hopper extends SubsystemBase {
 
-    enum GamePiece {
+    public enum GamePiece {
         CUBE,
         CONE_LEFT,
         CONE_RIGHT,
@@ -63,9 +63,9 @@ public class Hopper extends SubsystemBase {
     }
 
     public GamePiece getGamePiece() {
-        if (getSensorLeft() && getSensorRight()) return GamePiece.CUBE;
-        if (getSensorLeft() && !getSensorRight()) return GamePiece.CONE_RIGHT;
-        if (!getSensorLeft() && getSensorRight()) return GamePiece.CONE_LEFT;
+        if (!getSensorLeft() && !getSensorRight()) return GamePiece.CUBE;
+        if (!getSensorLeft() && getSensorRight()) return GamePiece.CONE_RIGHT;
+        if (getSensorLeft() && !getSensorRight()) return GamePiece.CONE_LEFT;
         return GamePiece.NONE;
     }
 }
