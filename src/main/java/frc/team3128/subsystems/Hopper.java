@@ -10,8 +10,7 @@ public class Hopper extends SubsystemBase {
 
     public enum GamePiece {
         CUBE,
-        CONE_LEFT,
-        CONE_RIGHT,
+        CONE,
         NONE;
     }
     
@@ -64,8 +63,7 @@ public class Hopper extends SubsystemBase {
 
     public GamePiece getGamePiece() {
         if (!getSensorLeft() && !getSensorRight()) return GamePiece.CUBE;
-        if (!getSensorLeft() && getSensorRight()) return GamePiece.CONE_RIGHT;
-        if (getSensorLeft() && !getSensorRight()) return GamePiece.CONE_LEFT;
+        if (getSensorLeft() && !getSensorRight()) return GamePiece.CONE;
         return GamePiece.NONE;
     }
 }
