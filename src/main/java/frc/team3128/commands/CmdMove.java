@@ -11,6 +11,7 @@ import static frc.team3128.Constants.SwerveConstants.*;
 import java.util.function.DoubleSupplier;
 
 import static frc.team3128.Constants.FieldConstants.*;
+import static frc.team3128.Constants.SwerveConstants.*;
 
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
@@ -20,7 +21,7 @@ public class CmdMove extends CommandBase {
     public enum Type {
         SCORE(
             new double[][] {
-                new double[] {RAMP_X_LEFT, RAMP_X_RIGHT}
+                new double[] {RAMP_X_LEFT - trackWidth/2, RAMP_X_RIGHT + trackWidth/2}
              }),
         LOADING(
             new double[][] {

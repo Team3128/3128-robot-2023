@@ -43,7 +43,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public Swerve() {
-        gyro = new WPI_Pigeon2(pigeonID);
+        gyro = new WPI_Pigeon2(pigeonID, "drivetrain");
         gyro.configFactoryDefault();
         zeroGyro();
         fieldRelative = true;
@@ -144,11 +144,11 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         odometry.update(getGyroRotation2d(), getPositions());
-        for(SwerveModule module : modules){
-            SmartDashboard.putNumber("Mod " + module.moduleNumber + " Cancoder", module.getCanCoder().getDegrees());
-            SmartDashboard.putNumber("Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);    
-        }
+        // for(SwerveModule module : modules){
+        //     SmartDashboard.putNumber("Mod " + module.moduleNumber + " Cancoder", module.getCanCoder().getDegrees());
+        //     SmartDashboard.putNumber("Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
+        //     SmartDashboard.putNumber("Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);    
+        // }
         estimatedPose = odometry.getEstimatedPosition();
         Translation2d position = estimatedPose.getTranslation();
         SmartDashboard.putNumber("Robot X", position.getX());

@@ -187,7 +187,7 @@ public class Constants {
 
     public static class VisionConstants {
 
-        public static final Camera SHOOTER = new Camera("Frog", true, 0, 0, 0,  new Transform2d(new Translation2d(Units.inchesToMeters(-12),0), Rotation2d.fromDegrees(0)));
+        public static final Camera SHOOTER = new Camera("Frog", true, 0, 0, 0,  new Transform2d(new Translation2d(Units.inchesToMeters(-13),Units.inchesToMeters(-1)), Rotation2d.fromDegrees(0)));
 
         public static final double SCREEN_WIDTH = 320;
         public static final double SCREEN_HEIGHT = 240;
@@ -268,7 +268,13 @@ public class Constants {
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
 
         public static final double RAMP_X_RIGHT = Units.inchesToMeters(193.25);
-        public static final double RAMP_X_LEFT = Units.inchesToMeters(132.375);
+        public static final double RAMP_X_LEFT = Units.inchesToMeters(117.125);
+
+        public static final double chargingStationLength = Units.inchesToMeters(76.125);
+        public static final double chargingStationWidth = Units.inchesToMeters(97.25);
+
+        public static final double chargingStationLeftY = Units.inchesToMeters(156.61);
+        public static final double chargingStationRightY = Units.inchesToMeters(59.36);
 
         public static Pose2d allianceFlip(Pose2d pose) {
             if (DriverStation.getAlliance() == Alliance.Red) {

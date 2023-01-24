@@ -103,8 +103,8 @@ public class NAR_Camera extends PhotonCamera {
             ArrayList<Pose2d> poses = new ArrayList<Pose2d>();
             if (multipleTargets) {
                 for (int i = 0; i < targets.size(); i ++) {
-                    if (targetAmbiguity(targets.get(i)) < 0.5)
-                        poses.add(sPipeline.equals(Pipeline.APRILTAG) ? getPosApril(targets.get(i)) : getPosVision(targets.get(i)));
+                    if (targetAmbiguity(targets.get(i)) < 0.5 && !getPos(targets.get(i)).equals(new Pose2d()))
+                        poses.add(getPos(targets.get(i)));
                 }
             }
             else poses.add(getPos());
@@ -196,12 +196,13 @@ public class NAR_Camera extends PhotonCamera {
     }
 
     private Transform2d getProcessedTarget(PhotonTrackedTarget target) {
-        if (!hasValidTarget()) return new Transform2d();
+        if (!hasValidTarget() || !AprilTags.containsKey(targetId(target))) return new Transform2d();
         double hypotenuse = getAprilDistance(target);
-        double angle = Units.degreesToRadians(getTarget().getRotation().getDegrees());
-        double deltaY = hypotenuse * Math.sin(angle);
+        Rotation2d angle = getTarget().getRotation();
+        double targetAngle = AprilTags.get(targetId(target)).getRotation().getDegrees();
+        double deltaY = hypotenuse * Math.sin(Units.degreesToRadians(gyro.getAsDouble() + targetAngle));
         Transform2d vector = getTarget(target);
-        return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), new Rotation2d(angle));
+        return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), angle);
     }
 
     public boolean hasValidTarget() {
@@ -255,12 +256,16 @@ public class NAR_Camera extends PhotonCamera {
     }
 
     public Pose2d getPos() {
-        return sPipeline.equals(Pipeline.APRILTAG) ? getPosApril(bestTarget) : getPosVision(bestTarget);
+        return getPos(bestTarget);
+    }
+
+    public Pose2d getPos(PhotonTrackedTarget target) {
+        return sPipeline.equals(Pipeline.APRILTAG) ? getPosApril(target) : getPosVision(target);
     }
 
     // Relative to Robot
     private Pose2d getPosApril(PhotonTrackedTarget tag) {
-        if(!hasValidTarget() || !AprilTags.containsKey(targetId())) return new Pose2d();
+        if(!hasValidTarget() || !AprilTags.containsKey(targetId(tag))) return new Pose2d();
         Transform2d transform = getProcessedTarget(tag);
         Pose2d target = AprilTags.get(targetId());
 
