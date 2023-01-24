@@ -1,6 +1,8 @@
 package frc.team3128.subsystems;
 
 import frc.team3128.common.hardware.motorcontroller.NAR_TalonSRX;
+import frc.team3128.common.utility.NAR_Shuffleboard;
+
 import static frc.team3128.Constants.HopperConstants.*;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -65,5 +67,11 @@ public class Hopper extends SubsystemBase {
         if (!getSensorLeft() && !getSensorRight()) return GamePiece.CUBE;
         if (getSensorLeft() && !getSensorRight()) return GamePiece.CONE;
         return GamePiece.NONE;
+    }
+
+    @Override
+    public void periodic(){
+        NAR_Shuffleboard.addData("Hopper", "Hopper Velocity", m_serializer.getSelectedSensorVelocity(), 1, 1);
+        NAR_Shuffleboard.addData("Hopper", "Game Piece", getGamePiece(), 1, 2);
     }
 }
