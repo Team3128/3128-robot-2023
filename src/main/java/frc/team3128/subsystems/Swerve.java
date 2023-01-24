@@ -12,7 +12,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,8 +25,14 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Swerve extends SubsystemBase {
     
+    private FileWriter txtFile;
+    private double prevTime = 0; 
     public SwerveDrivePoseEstimator odometry;
     public SwerveModule[] modules;
     public WPI_Pigeon2 gyro;
@@ -48,6 +56,11 @@ public class Swerve extends SubsystemBase {
         zeroGyro();
         fieldRelative = true;
         estimatedPose = new Pose2d();
+
+        try {
+            txtFile = new FileWriter(new File(Filesystem.getDeployDirectory(),"pose.txt"));
+        } catch (IOException e) {
+        }
 
         modules = new SwerveModule[] {
             new SwerveModule(0, Mod0.constants),
@@ -155,6 +168,16 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Robot Y", position.getY());
         SmartDashboard.putNumber("Robot Gyro", getGyroRotation2d().getDegrees());
         SmartDashboard.putString("POSE2D",getPose().toString());
+        double currTime = Timer.getFPGATimestamp();
+        if (prevTime + 1 <= currTime) {
+            try {
+                txtFile.write(estimatedPose.getX() + "," + estimatedPose.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + currTime + "\n");
+            } catch (IOException e) {}
+            try {
+                txtFile.flush();
+            } catch (IOException e) {}
+            prevTime = currTime;
+        }
     }
 
     public double getYaw() {

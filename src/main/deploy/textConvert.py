@@ -1,6 +1,6 @@
 import json, math
 
-filename = "masonbad.txt"
+filename = "mikabad.txt"
 f = open(filename, "r")
 s = f.readlines()
 f.close()
@@ -8,7 +8,7 @@ poses = []
 for i in s:
   x = i.split(",")
   pose = []
-  for a in range(len(x) - 1):
+  for a in range(3):
     pose.append(x[a])
   poses.append(pose)
 
