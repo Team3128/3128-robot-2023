@@ -115,9 +115,9 @@ public class Constants {
          /* Angle Motor Characterization Values */
 
          //TODO: characterize I guess
-         public static final double angleKS = (0.60094/12);//(0.49321 / 12);
-         public static final double angleKV = (1.1559/12);//(2.4466 / 12);
-         public static final double angleKA = (0.12348/12);//(0.22036 / 12);
+         public static final double angleKS = 0;//(0.49321 / 12);
+         public static final double angleKV = 0;//(2.4466 / 12);
+         public static final double angleKA = 0;//(0.22036 / 12);
 
         public static final double turnTolerance = 2;
 
