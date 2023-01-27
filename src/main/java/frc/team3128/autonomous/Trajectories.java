@@ -34,15 +34,9 @@ public class Trajectories {
     private static SwerveAutoBuilder builder;
 
     public static void initTrajectories() {
-        final String[] trajectoryNames = {"Climb","1Cone","1Cube","1Cone+Climb","1Cube+Climb","2Cone","2Cube","2Cone+1Cube"};
+        final String[] trajectoryNames = {"TestAuto1", "TestAuto2"};
         for (String trajectoryName : trajectoryNames) {
             // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
-            if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-                trajectoryName = "r_" + trajectoryName;
-            }
-            else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-                trajectoryName = "b_" + trajectoryName;
-            }
             trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(maxSpeed, maxAcceleration)));
         }
 
