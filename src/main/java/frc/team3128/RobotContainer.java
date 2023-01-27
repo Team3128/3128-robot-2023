@@ -19,6 +19,7 @@ import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
+import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
 
@@ -67,12 +68,12 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        rightStick.getButton(1).whenActive(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        rightStick.getButton(2).whenActive(new InstantCommand(swerve::toggle));
-        rightStick.getButton(3).whenActive(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        rightStick.getButton(4).whenActive(new CmdAlign()).whenInactive(new InstantCommand(()-> swerve.stop()));
-        rightStick.getButton(5).whenActive(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(Camera.SHOOTER.hostname))));
-        rightStick.getButton(6).whenActive(new CmdTargetPursuit(Camera.SHOOTER.hostname)).whenInactive(new InstantCommand(()->swerve.stop(),swerve));
+        rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
+        rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
+        rightStick.getButton(3).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
+        rightStick.getButton(4).onTrue(new CmdAlign()).onFalse(new InstantCommand(()-> swerve.stop()));
+        rightStick.getButton(5).onTrue(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(Camera.SHOOTER.hostname))));
+        rightStick.getButton(6).onTrue(new CmdTargetPursuit(Camera.SHOOTER.hostname)).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         // rightStick.getButton(6).whenActive(new InstantCommand(()-> {
         //     if(vision.hasValidTarget(Camera.SHOOTER.hostname)) {
         //         Trajectories.lineCmd(swerve.getPose(),vision.targetPos(Camera.SHOOTER.hostname, swerve.getPose()));
@@ -117,5 +118,6 @@ public class RobotContainer {
         SmartDashboard.putNumber("LeftY",controller.getLeftY());
         SmartDashboard.putNumber("RightX",controller.getRightX());
         SmartDashboard.putNumber("RightY",controller.getRightY());
+        NAR_Shuffleboard.update();
     }
 }
