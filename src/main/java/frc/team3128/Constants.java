@@ -201,9 +201,9 @@ public class Constants {
 
         public static final double TARGET_AREA = 6.25 * 6.25; //inches
 
-        public static final Matrix<N3,N1> SVR_STATE_STD = VecBuilder.fill(10,10,Units.degreesToRadians(0.1));
+        public static final Matrix<N3,N1> SVR_STATE_STD = VecBuilder.fill(0.1,0.1,Units.degreesToRadians(0.1));
  
-        public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(0.1,0.1,Units.degreesToRadians(1));
+        public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(1,1,Units.degreesToRadians(5));
 
         public static final Pose2d[] SCORES = new Pose2d[]{
             new Pose2d(2.1,0.5,Rotation2d.fromDegrees(180)),
@@ -269,6 +269,8 @@ public class Constants {
 
         public static final double RAMP_X_RIGHT = Units.inchesToMeters(193.25);
         public static final double RAMP_X_LEFT = Units.inchesToMeters(117.125);
+        public static final double LOADING_X_LEFT = 13.2; // meters
+        public static final double LOADING_X_RIGHT = FIELD_X_LENGTH;
 
         public static final double chargingStationLength = Units.inchesToMeters(76.125);
         public static final double chargingStationWidth = Units.inchesToMeters(97.25);
