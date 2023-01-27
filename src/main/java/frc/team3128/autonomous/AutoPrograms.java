@@ -31,13 +31,13 @@ public class AutoPrograms {
     }
 
     private void initAutoSelector() {
-        String[] autoStrings = new String[] {};
+        String[] autoStrings = new String[] {"TestAuto1", "TestAuto2"};
         NarwhalDashboard.addAutos(autoStrings);
     }
 
     public Command getAutonomousCommand() {
-       // String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = ""; // uncomment and change this for testing without opening Narwhal Dashboard
+       String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
+        //String selectedAutoName = ""; //uncomment and change this for testing without opening Narwhal Dashboard
 
         if (selectedAutoName == null) {
             return null;
