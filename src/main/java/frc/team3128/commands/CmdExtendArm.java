@@ -10,16 +10,16 @@ import frc.team3128.subsystems.Telescope.TeleDists;
 public class CmdExtendArm extends ParallelCommandGroup {
 
     private Pivot pivot;
-    private Telescope telescope;
+    // private Telescope telescope;
 
 
     public CmdExtendArm(PivotAngles anglePos, TeleDists teleDist) {
         pivot = Pivot.getInstance();
-        telescope = Telescope.getInstance();
+        // telescope = Telescope.getInstance();
 
         addCommands(
-           new InstantCommand(() -> pivot.startPID(anglePos), pivot),
-           new InstantCommand(() -> telescope.startPID(teleDist), telescope)
+           new InstantCommand(() -> pivot.startPID(anglePos), pivot)
+        //    new InstantCommand(() -> telescope.startPID(teleDist), telescope)
         );  
     }
 }

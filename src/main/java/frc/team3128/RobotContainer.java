@@ -19,6 +19,7 @@ import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
+import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
 
@@ -34,6 +35,7 @@ public class RobotContainer {
     private Swerve swerve;
     private Vision vision;
     private NAR_Camera cam;
+    private Pivot pivot;
 
     private NAR_Joystick leftStick;
     private NAR_Joystick rightStick;
@@ -50,6 +52,8 @@ public class RobotContainer {
         vision = Vision.getInstance();
         // ConstantsInt.initTempConstants();
         swerve = Swerve.getInstance();
+        pivot = Pivot.getInstance();
+
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
 
@@ -82,6 +86,8 @@ public class RobotContainer {
         // hasTarget = new Trigger(()-> vision.hasValidTarget(Camera.SHOOTER.hostname))
         // .whenActive(new RunCommand(()-> controller.setRumble(RumbleType.kLeftRumble,1)))
         // .whenInactive(new InstantCommand(()-> controller.setRumble(RumbleType.kLeftRumble, 0)));
+
+        rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
 
     }
 

@@ -3,6 +3,7 @@ package frc.team3128.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.team3128.Constants.PivotConstants.*;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
@@ -65,7 +66,7 @@ public class Pivot extends PIDSubsystem {
         m_encoder.setPositionConversionFactor(ENC_CONV);
     }
 
-    public void stop() {
+    public void stopPivot() {
         disable();
     }
 
@@ -75,6 +76,7 @@ public class Pivot extends PIDSubsystem {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("pivot angle", getMeasurement());
         super.periodic();
     }
 
@@ -96,5 +98,6 @@ public class Pivot extends PIDSubsystem {
     protected double getMeasurement() { // returns degrees
        return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
     }
+
     
 }

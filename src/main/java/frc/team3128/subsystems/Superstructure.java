@@ -1,14 +1,17 @@
 package frc.team3128.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team3128.subsystems.Pivot;
+import frc.team3128.Constants.PivotConstants;
+import frc.team3128.Constants.TelescopeConstants;
+import frc.team3128.subsystems.Pivot.*;
 import frc.team3128.subsystems.Telescope.*;
 import frc.team3128.subsystems.Pivot.PivotAngles;
+import static frc.team3128.Constants.PivotConstants.*;
+import static frc.team3128.Constants.TelescopeConstants.*;
 
 
 
-
-public class Superstructure extends SubsystemBase{
+public class Superstructure extends SubsystemBase {
 
     private final Pivot pivot;
     private final Telescope telescope;
@@ -47,6 +50,8 @@ public class Superstructure extends SubsystemBase{
     }
 
     public void superstructureLoop() {
+        checkMin();
+        checkMax();
         switch (m_ScoringPosition) {
             case TOP_CONE:
                 pivot.startPID(PivotAngles.TOP_CONE);
@@ -85,6 +90,35 @@ public class Superstructure extends SubsystemBase{
     }
 
 
+
+    //stop telescope and/or pivot if they are at the max
+    public void checkMax() {
+        if (telescope.getMeasurement() >= TelescopeConstants.MAX_DIST) {
+            // telescope.stopTele(); // set to max
+            telescope.startPID(TeleDists.TOP_CONE);
+        }
+        
+        if (pivot.getMeasurement() >= PivotConstants.MAX_ANGLE) {
+            // pivot.stopPivot();
+            pivot.startPID(PivotAngles.TOP_CONE);
+        }
+    } 
+
+    public void checkMin() {
+        if (telescope.getMeasurement() <= TelescopeConstants.MIN_DIST) {
+            // telescope.stopTele(); // set to min
+            telescope.startPID(TeleDists.NEUTRAL);
+        }
+        
+        if (pivot.getMeasurement() <= PivotConstants.MIN_ANGLE) {
+            // pivot.stopPivot();
+            pivot.startPID(PivotAngles.NEUTRAL);
+        }
+    } 
+
+    public void checkAngleLength() {
+        // if (telescope.getMeasurement() > (Math.cos)))
+    }
 
 
     
