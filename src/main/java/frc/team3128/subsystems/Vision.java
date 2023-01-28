@@ -21,6 +21,7 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 public class Vision extends SubsystemBase{
     private double prevTime = 0;
     private static Vision instance;
+    public int startPos;
 
     private HashMap<String,NAR_Camera> cameras;
 
@@ -90,6 +91,14 @@ public class Vision extends SubsystemBase{
 
     public Collection<NAR_Camera> getCameras(){
         return cameras.values();
+    }
+
+    public void setStartPos(int spot) {
+        startPos = spot;
+    }
+
+    public int getStartPos() {
+        return startPos;
     }
 
     @Override

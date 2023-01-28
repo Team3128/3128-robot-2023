@@ -47,6 +47,7 @@ public class RobotContainer {
     private NAR_Joystick rightStick;
 
     private NAR_XboxController controller;
+    private NAR_Joystick buttonBoard;
 
     private CommandScheduler commandScheduler = CommandScheduler.getInstance();
   
@@ -66,12 +67,14 @@ public class RobotContainer {
         leftStick = new NAR_Joystick(0);
         rightStick = new NAR_Joystick(1);
         controller = new NAR_XboxController(2);
+        buttonBoard = new NAR_Joystick(3);
         CmdMove.setController(rightStick::getX, rightStick::getY, rightStick::getThrottle);
 
         // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
         commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
         initDashboard();
         configureButtonBindings();
+        configureButtonBoard();
         
         if(RobotBase.isSimulation())
             DriverStation.silenceJoystickConnectionWarning(true);
@@ -85,9 +88,10 @@ public class RobotContainer {
         rightStick.getButton(5).onTrue(new RunCommand(()->swerve.drive(new Translation2d(0,0.5),0,true)));
         rightStick.getButton(6).onTrue(new RunCommand(()->swerve.drive(new Translation2d(0.5,0),0,false)));
         rightStick.getButton(7).onTrue(new RunCommand(()->swerve.drive(new Translation2d(0,0.5),0,false)));
-        for (int i = 0; i < VisionConstants.SCORES.length; i++) {
-            leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP[i/3],VisionConstants.SCORES[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
-        }
+        
+        // for (int i = 0; i < VisionConstants.SCORES.length; i++) {
+        //     leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP[i/3],VisionConstants.SCORES[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
+        // }
 
         // rightStick.getButton(6).whenActive(new InstantCommand(()-> {
         //     if(vision.hasValidTarget(Camera.SHOOTER.hostname)) {
@@ -101,6 +105,18 @@ public class RobotContainer {
 
         rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
 
+    }
+
+    private void configureButtonBoard() {
+
+        for (int i = 0; i < 3; i++) {
+            int x = i;
+            buttonBoard.getButton(i+1).onTrue(new InstantCommand(() -> vision.setStartPos(x))).onFalse(null);
+        }  
+        
+        for (int i = 0; i < VisionConstants.SCORES.length; i++) {
+            buttonBoard.getButton(i+4).onTrue(new CmdMove(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP[vision.getStartPos()],VisionConstants.SCORES[vision.getStartPos() * 3 + i % 3])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
+        }
     }
 
     public void init() {
