@@ -58,7 +58,6 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.enableVoltageCompensation(12.0);
         m_rotateMotor.setIdleMode(IdleMode.kBrake);
 
-
         // m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 0); 
         // m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 0);
         // m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 0);
@@ -75,7 +74,6 @@ public class Pivot extends PIDSubsystem {
     }
 
     public void zeroEncoder() {
-        // m_rotateMotor.setEncoderPosition(0)
         m_encoder.setPosition(0);
     }
 
@@ -83,14 +81,7 @@ public class Pivot extends PIDSubsystem {
     public void periodic() {
         NAR_Shuffleboard.addData("pivot","pivot angle", getMeasurement(),0,0);
         NAR_Shuffleboard.addData("pivot", "pivot setpoint", getSetpoint(), 0, 1);
-        // NAR_Shuffleboard.addData("pivot", "")
         super.periodic();
-    }
-
-    public void startPID(PivotAngles anglePos) {        
-        enable();
-        super.setSetpoint(anglePos.angle);
-        getController().setTolerance(PIVOT_TOLERANCE);
     }
 
     public void startPID(double anglePos) {        
@@ -112,5 +103,4 @@ public class Pivot extends PIDSubsystem {
        return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
     }
 
-    
 }

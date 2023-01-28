@@ -83,9 +83,9 @@ public class Telescope extends PIDSubsystem {
         m_encoder.setPositionConversionFactor(ENC_CONV); // TODO: ticks --> inches using gear ratio
     }
 
-    public void startPID(TeleDists teleDist) {        
+    public void startPID(double dist) {        
         enable();
-        super.setSetpoint(teleDist.dist);
+        super.setSetpoint(dist);
         getController().setTolerance(TELE_TOLERANCE);
     }
 
