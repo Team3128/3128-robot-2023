@@ -63,7 +63,7 @@ public class Constants {
         public static final double DRIVE_TOLERANCE = 0.2;
 
         /* Translation PID Values */
-        public static final double translationKP = 0.1;
+        public static final double translationKP = 3;
         public static final double translationKI = 0;
         public static final double translationKD = 0;
 
@@ -266,15 +266,13 @@ public class Constants {
         public static final int SENSOR_RIGHT_ID = 1;
     }
 
-    public static class BalanceConstants {
-        public static final double turnKP = 0;
+    public static class BalanceConstants{
+        public static final double turnKP = 0.5;
         public static final double turnKI = 0;
         public static final double turnKD = 0;
-
-        public static final double kTurnToleranceDeg = 0;
-        public static final double kTurnRateToleranceDegPerS = 0;
-
-        public static final int BEAM_BALANCED_GOAL_DEGREES = 0;
+        public static final int TURN_TOLERANCE = 1;
+        public static final double CHARGE_STATION_X = 5;
+        public static final double CHARGE_STATION_Y = 5;
     }
 
 }
