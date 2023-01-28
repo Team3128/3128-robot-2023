@@ -6,18 +6,17 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.VisionConstants.TX_THRESHOLD;
 
-import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
 
 public class CmdAlign extends PIDCommand {
 
-    public CmdAlign() {
+    public CmdAlign(String camera) {
         super(
-            new PIDController(turnKP,turnKI,turnKD),
-            ()-> Vision.getInstance().getTx(Camera.SHOOTER.hostname),
+            new PIDController(alignKP,alignKI,alignKD),
+            ()-> Vision.getInstance().getTx(camera),
             0,
-            output -> Swerve.getInstance().drive(new Translation2d(), -output - Math.copySign(turnKF,output), false),
+            output -> Swerve.getInstance().drive(new Translation2d(), -output, false),
             Swerve.getInstance()
         );
         m_controller.enableContinuousInput(-180, 180);
