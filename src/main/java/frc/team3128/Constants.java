@@ -210,13 +210,13 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 0;
+        public static final double kP = 1E-1;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0;
+        public static final double kF = 5E-1;
         public static final int PIVOT_MOTOR_ID = 19;
-        public static final double ENC_CONV = 60*42/16;
-        public static final double PIVOT_TOLERANCE = 0;
+        public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
+        public static final double PIVOT_TOLERANCE = 5.0;
         public static final double MIN_ANGLE = 0;
         public static final double MAX_ANGLE = 90;
         public static final int PIVOT_CURRENT_LIMIT = 10;
