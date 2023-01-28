@@ -77,7 +77,7 @@ public class RobotContainer {
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
         rightStick.getButton(3).onTrue(new CmdReset());
-        rightStick.getButton(4).onTrue(new RunCommand(()->swerve.drive(new Translation2d(-0.5,0),0,true),swerve));
+        rightStick.getButton(4).onTrue(new InstantCommand(()->swerve.zeroGyro(180)));
         rightStick.getButton(5).onTrue(new RunCommand(()->swerve.drive(new Translation2d(0,0.5),0,true)));
         rightStick.getButton(6).onTrue(new RunCommand(()->swerve.drive(new Translation2d(0.5,0),0,false)));
         rightStick.getButton(7).onTrue(new RunCommand(()->swerve.drive(new Translation2d(0,0.5),0,false)));
@@ -110,8 +110,8 @@ public class RobotContainer {
             //SmartDashboard.putData("Swerve", swerve);
         }
 
-        // swerve.initShuffleboard();
-        // vision.initShuffleboard();
+        swerve.initShuffleboard();
+        vision.initShuffleboard();
 
         NarwhalDashboard.startServer();   
         
@@ -132,6 +132,6 @@ public class RobotContainer {
         SmartDashboard.putNumber("LeftY",controller.getLeftY());
         SmartDashboard.putNumber("RightX",controller.getRightX());
         SmartDashboard.putNumber("RightY",controller.getRightY());
-        //NAR_Shuffleboard.update();
+        NAR_Shuffleboard.update();
     }
 }

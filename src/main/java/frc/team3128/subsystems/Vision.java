@@ -4,6 +4,7 @@ import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,6 +19,7 @@ import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
 public class Vision extends SubsystemBase{
+    private double prevTime = 0;
     private static Vision instance;
 
     private HashMap<String,NAR_Camera> cameras;
@@ -31,7 +33,7 @@ public class Vision extends SubsystemBase{
 
     public Vision() {
         Swerve swerve = Swerve.getInstance();
-        NAR_Camera.setGyro(swerve::getYaw);
+        NAR_Camera.setGyro(()-> swerve.getYaw());
         NAR_Camera.setOdometry((pose,time) -> swerve.odometry.addVisionMeasurement(pose,time));
         NAR_Camera.setAprilTags(APRIL_TAG_POS);
         NAR_Camera.setVisionTarget(FieldConstants.HUB_POSITION);
@@ -107,14 +109,20 @@ public class Vision extends SubsystemBase{
         SmartDashboard.putNumber("TARGETGUITY",cameras.get(SHOOTER.hostname).targetAmbiguity());
         SmartDashboard.putString("PROCESSED TARGET", cameras.get(SHOOTER.hostname).getProcessedTarget().toString());
         SmartDashboard.putString("SUNSHINE", cameras.get(SHOOTER.hostname).getRawTarget().toString());
+        //System.out.println(hasValidTarget(SHOOTER.hostname));
+        double curTime = Timer.getFPGATimestamp();
+        if (prevTime + 1 < curTime) {
+            System.out.println(cameras.get(SHOOTER.hostname).getProcessedTarget().toString() + ":" + Swerve.getInstance().getHeading());
+            prevTime = curTime;
+        }
     }
-
+    
     public void initShuffleboard() {
         NAR_Camera cam = cameras.get(SHOOTER.hostname);
-        NAR_Shuffleboard.addData("Vision","HasTarget", ()->cam.hasValidTarget(), 1, 1);
-        NAR_Shuffleboard.addData("Vision","Distance",()->cam.getDistance(),2,1);
-        NAR_Shuffleboard.addData("Vision","RawTarget",()->cam.getTarget().toString(),1,2,3,1);
-        NAR_Shuffleboard.addData("Vision", "Processed Target",()->cam.getProcessedTarget().toString(),1,3,3,1);
-        NAR_Shuffleboard.addData("Vision","EstimatedPose", ()-> cam.getPos().toString(),1,4,3,1);
+        NAR_Shuffleboard.addData("Vision","HasTarget", ()->cam.hasValidTarget(), 0, 0);
+        NAR_Shuffleboard.addData("Vision","Distance",()->cam.getDistance(),1,0);
+        NAR_Shuffleboard.addData("Vision","RawTarget",()->cam.getTarget().toString(),0,1,4,1);
+        NAR_Shuffleboard.addData("Vision", "Processed Target",()->cam.getProcessedTarget().toString(),0,2,4,1);
+        NAR_Shuffleboard.addData("Vision","EstimatedPose", ()-> cam.getPos().toString(),0,3,4,1);
     }
 }

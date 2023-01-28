@@ -16,7 +16,7 @@ public class CmdReset extends CommandBase {
     @Override
     public void initialize() {
         if (cam.hasValidTarget()) {
-            swerve.resetOdometry(cam.getPos());
+            swerve.zeroGyro(cam.getPos().getRotation().getDegrees());
         }
     }
 }

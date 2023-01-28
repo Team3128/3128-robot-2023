@@ -31,7 +31,7 @@ import java.io.IOException;
 
 public class Swerve extends SubsystemBase {
     
-    private FileWriter txtFile;
+    private volatile FileWriter txtFile;
     private double prevTime = 0; 
     public SwerveDrivePoseEstimator odometry;
     public SwerveModule[] modules;
@@ -57,10 +57,11 @@ public class Swerve extends SubsystemBase {
         fieldRelative = true;
         estimatedPose = new Pose2d();
 
-        try {
-            txtFile = new FileWriter(new File(Filesystem.getDeployDirectory(),"pose.txt"));
-        } catch (IOException e) {
-        }
+        // try {
+        //     txtFile = new FileWriter(new File(Filesystem.getDeployDirectory(),"pose.txt"));
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
 
         modules = new SwerveModule[] {
             new SwerveModule(0, Mod0.constants),
@@ -169,19 +170,21 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Robot Gyro", getGyroRotation2d().getDegrees());
         SmartDashboard.putString("POSE2D",getPose().toString());
         double currTime = Timer.getFPGATimestamp();
-        if (prevTime + 1 <= currTime) {
-            try {
-                txtFile.write(estimatedPose.getX() + "," + estimatedPose.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + currTime + "\n");
-            } catch (IOException e) {}
-            try {
-                txtFile.flush();
-            } catch (IOException e) {}
-            prevTime = currTime;
-        }
+        // if (prevTime + 1 <= currTime) {
+        //     try {
+        //         txtFile.write(estimatedPose.getX() + "," + estimatedPose.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + currTime + "\n");
+        //     } catch (Exception e) {
+        //         e.printStackTrace();
+        //     }
+        //     try {
+        //         txtFile.flush();
+        //     } catch (IOException e) {}
+        //     prevTime = currTime;
+        // }
     }
 
     public double getYaw() {
-        return gyro.getYaw();
+        return MathUtil.inputModulus(gyro.getYaw(),-180,180);
     }
 
     public double getPitch() {

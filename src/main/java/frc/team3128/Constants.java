@@ -201,9 +201,9 @@ public class Constants {
 
         public static final double TARGET_AREA = 6.25 * 6.25; //inches
 
-        public static final Matrix<N3,N1> SVR_STATE_STD = VecBuilder.fill(0.1,0.1,Units.degreesToRadians(0.1));
+        public static final Matrix<N3,N1> SVR_STATE_STD = VecBuilder.fill(0.1,0.1,Units.degreesToRadians(3));
  
-        public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(1,1,Units.degreesToRadians(5));
+        public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(1,1,Units.degreesToRadians(10));
 
         public static final Pose2d[] SCORES = new Pose2d[]{
             new Pose2d(2.1,0.5,Rotation2d.fromDegrees(180)),
