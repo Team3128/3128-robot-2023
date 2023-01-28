@@ -4,6 +4,7 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -41,6 +42,10 @@ public class Swerve extends SubsystemBase {
     private static Swerve instance;
     public boolean fieldRelative;
 
+    // private SlewRateLimiter xFilter;
+    // private SlewRateLimiter yFilter;
+    // private SlewRateLimiter zFilter;
+
     private Field2d field;
 
     public static synchronized Swerve getInstance() {
@@ -70,6 +75,10 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, Mod3.constants)
         };
 
+        // xFilter = new SlewRateLimiter(xRateLimit);
+        // yFilter = new SlewRateLimiter(yRateLimit);
+        // zFilter = new SlewRateLimiter(zRateLimit);
+
         resetEncoders();
 
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
@@ -81,6 +90,9 @@ public class Swerve extends SubsystemBase {
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
+        // double X = xFilter.calculate(translation.getX());
+        // double Y = yFilter.calculate(translation.getY());
+        // double Z = zFilter.calculate(rotation);
         SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(), translation.getY(), rotation, getRotation2d())

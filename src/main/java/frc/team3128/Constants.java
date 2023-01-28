@@ -121,6 +121,10 @@ public class Constants {
         public static final double maxAcceleration = 2;
         public static final double maxAngularVelocity = 2;//3; //11.5; // citrus: 10
 
+        public static final double xRateLimit = 1.0;
+        public static final double yRateLimit = 1.0;
+        public static final double zRateLimit = 1.0;
+
         /* Motor Inverts */
         public static final boolean driveMotorInvert = true;
         public static final boolean angleMotorInvert = true;
@@ -259,6 +263,39 @@ public class Constants {
                 Rotation2d.fromDegrees(0))
             );
         } 
+    }
+
+    public static class PivotConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kF = 0;
+        public static final int PIVOT_MOTOR_ID = 19;
+        public static final double ENC_CONV = 60*42/16;
+        public static final double PIVOT_TOLERANCE = 0;
+        public static final double MIN_ANGLE = 0;
+        public static final double MAX_ANGLE = 90;
+        public static final int PIVOT_CURRENT_LIMIT = 10;
+        
+        public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
+        public static final double ARM_LENGTH = 56.75; // inches
+        
+    }
+
+    public static class TelescopeConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kF = 0;
+        public static final int TELE_MOTOR_ID = 5;
+        public static final double TELE_MOTOR_POWER = 0.5;
+        public static final double ENC_CONV = 0;
+        public static final double MIN_DIST = 16;
+        public static final double MAX_DIST = 57;
+        public static final double TELE_TOLERANCE = 0;
+        public static final int TELE_CURRENT_LIMIT = 10;
+
+        public static final double ARM_LENGTH = 56.75; // inches
     }
     
     public static class FieldConstants{

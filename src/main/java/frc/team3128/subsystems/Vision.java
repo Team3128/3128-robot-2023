@@ -40,6 +40,7 @@ public class Vision extends SubsystemBase{
         NAR_Camera.multipleTargets = true;
         cameras = new HashMap<String,NAR_Camera>();
         cameras.put(SHOOTER.hostname, new NAR_Camera(SHOOTER));
+        //cameras.put(Camera.SHOOTER.hostname, new NAR_Camera(Camera.SHOOTER));
     }
 
     public Pose2d targetPos(String name, Pose2d robotPos) {
