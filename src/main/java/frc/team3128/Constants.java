@@ -208,6 +208,39 @@ public class Constants {
             new Pose2d(0,0, Rotation2d.fromDegrees(0))
         };
     }
+
+    public static class PivotConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kF = 0;
+        public static final int PIVOT_MOTOR_ID = 19;
+        public static final double ENC_CONV = 60*42/16;
+        public static final double PIVOT_TOLERANCE = 0;
+        public static final double MIN_ANGLE = 0;
+        public static final double MAX_ANGLE = 90;
+        public static final int PIVOT_CURRENT_LIMIT = 10;
+        
+        public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
+        public static final double ARM_LENGTH = 56.75; // inches
+        
+    }
+
+    public static class TelescopeConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kF = 0;
+        public static final int TELE_MOTOR_ID = 5;
+        public static final double TELE_MOTOR_POWER = 0.5;
+        public static final double ENC_CONV = 0;
+        public static final double MIN_DIST = 16;
+        public static final double MAX_DIST = 57;
+        public static final double TELE_TOLERANCE = 0;
+        public static final int TELE_CURRENT_LIMIT = 10;
+
+        public static final double ARM_LENGTH = 56.75; // inches
+    }
     
     public static class FieldConstants{
         public static final Pose2d HUB_POSITION = new Pose2d(Units.inchesToMeters(324), Units.inchesToMeters(162),new Rotation2d(0));
