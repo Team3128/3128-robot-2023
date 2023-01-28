@@ -73,9 +73,14 @@ public class FalconConversions {
      * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
      * @return Falcon Distance Counts
      */
-    public static double falconToM(double distancecount, double circumference, double gearRatio){
-        return (distancecount / 2048 * gearRatio * circumference); // I really hate units - mika
+    public static double falconToMeters(double positionCounts, double circumference, double gearRatio){
+        // return (positionCounts / 2048 * gearRatio * circumference); // I really hate units - mika
+        return positionCounts * (circumference / (gearRatio * 2048.0));
         // in theory 2048 = units/rev (falcon number)
+    }
+
+    public static double metersToFalcon(double meters, double circumference, double gearRatio){
+        return meters / (circumference / (gearRatio * 2048.0));
     }
 
 }

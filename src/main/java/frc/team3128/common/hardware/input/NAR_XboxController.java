@@ -25,6 +25,11 @@ public class NAR_XboxController extends XboxController {
         "LeftStick",
         "RightStick"
     };
+
+    private double leftXDeadband = 0.1;
+    private double leftYDeadband = 0.1;
+    private double rightXDeadband = 0.1;
+    private double rightYDeadband = 0.1;
     
     private HashMap<String, Trigger> buttons;
     private Trigger[] povButtons;
@@ -73,5 +78,25 @@ public class NAR_XboxController extends XboxController {
 
     public Trigger getRightPOVButton() {
         return getPOVButton(2);
+    }
+
+     @Override
+    public double getRightX() {
+        return Math.abs(super.getRightX()) > rightXDeadband ? super.getRightX():0;
+    }
+
+    @Override
+    public double getRightY() {
+        return Math.abs(super.getRightY()) > rightYDeadband ? -super.getRightY():0;
+    }
+
+    @Override
+    public double getLeftX() {
+        return Math.abs(super.getLeftX()) > leftXDeadband ? super.getLeftX():0;
+    }
+
+    @Override
+    public double getLeftY() {
+        return Math.abs(super.getLeftY()) > leftYDeadband ? -super.getLeftY():0;
     }
 }

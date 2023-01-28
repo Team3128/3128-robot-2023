@@ -4,11 +4,13 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -32,6 +34,10 @@ public class Swerve extends SubsystemBase {
     private static Swerve instance;
     public boolean fieldRelative;
 
+    // private SlewRateLimiter xFilter;
+    // private SlewRateLimiter yFilter;
+    // private SlewRateLimiter zFilter;
+
     private Field2d field;
 
     public static synchronized Swerve getInstance() {
@@ -42,14 +48,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public Swerve() {
-        gyro = new WPI_Pigeon2(pigeonID);
+        gyro = new WPI_Pigeon2(pigeonID, "drivetrain");
         gyro.configFactoryDefault();
         zeroGyro();
         fieldRelative = true;
         estimatedPose = new Pose2d();
-
-        odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
-                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
 
         modules = new SwerveModule[] {
             new SwerveModule(0, Mod0.constants),
@@ -58,27 +61,39 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, Mod3.constants)
         };
 
+        // xFilter = new SlewRateLimiter(xRateLimit);
+        // yFilter = new SlewRateLimiter(yRateLimit);
+        // zFilter = new SlewRateLimiter(zRateLimit);
+
+        resetEncoders();
+
+        odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
+                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
+
+
         field = new Field2d();
         SmartDashboard.putData("Field", field);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
+        // double X = xFilter.calculate(translation.getX());
+        // double Y = yFilter.calculate(translation.getY());
+        // double Z = zFilter.calculate(rotation);
         SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(), translation.getY(), rotation, getGyroRotation2d())
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
-        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, maxSpeed);
         setModuleStates(moduleStates);
     }
 
     public void initShuffleboard() {
         // General Tab
-        NAR_Shuffleboard.addData("General","Gyro",this::getHeading,7,2,2,2).withWidget("Gyro");
+        NAR_Shuffleboard.addComplex("General","Gyro",gyro,7,2,2,2);//.withWidget("Gyro");
         NAR_Shuffleboard.addData("General","Heading",this::getHeading,1,2);
-        // Drivetrain Tab
-        NAR_Shuffleboard.addComplex("Field","field",field,0,0,13,7).withWidget("Field");
+        // // Drivetrain Tab
+        NAR_Shuffleboard.addComplex("Field","field",field,0,0,13,7);//.withWidget("Field");
         NAR_Shuffleboard.addData("Drivetrain","Pose",() -> (getPose().toString()),2,0,4,1);
-        NAR_Shuffleboard.addComplex("Drivetrain","Gyro",gyro,3,1,2,2).withWidget("Gyro");
+        NAR_Shuffleboard.addComplex("Drivetrain","Gyro",gyro,3,1,2,2);//.withWidget("Gyro");
         NAR_Shuffleboard.addData("Drivetrain","Yaw",this::getYaw,4,1);
         NAR_Shuffleboard.addData("Drivetrain","Pitch",this::getPitch,5,1);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
@@ -102,7 +117,6 @@ public class Swerve extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) { // TODO: Call this!!!!
-        resetEncoders();
         zeroGyro(pose.getRotation().getDegrees());
         odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
     }

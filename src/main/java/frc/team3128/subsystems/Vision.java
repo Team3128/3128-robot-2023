@@ -25,7 +25,7 @@ public class Vision extends SubsystemBase{
 
     public Vision() {
         cameras = new HashMap<String,NAR_Camera>();
-        cameras.put(Camera.SHOOTER.hostname, new NAR_Camera(Camera.SHOOTER));
+        //cameras.put(Camera.SHOOTER.hostname, new NAR_Camera(Camera.SHOOTER));
     }
 
     public void initShuffleboard() {
@@ -90,15 +90,15 @@ public class Vision extends SubsystemBase{
         for (NAR_Camera cam : getCameras()) {
             cam.update();
         }
-        SmartDashboard.putBoolean("HasTarget", cameras.get(Camera.SHOOTER.hostname).hasValidTarget());
-        SmartDashboard.putNumber("Distance", cameras.get(Camera.SHOOTER.hostname).getDistance());
-        SmartDashboard.putString("EstimatedPose",cameras.get(Camera.SHOOTER.hostname).getPos().toString());
-        // if(cameras.get(Camera.SHOOTER.hostname).hasValidTarget()) {
-        //     Swerve.getInstance().resetOdometry(cameras.get(Camera.SHOOTER.hostname).getPos());
-        // }
-        //SmartDashboard.putString("Aflack",cameras.get(Camera.SHOOTER.hostname).getPos().relativeTo(FieldConstants.HUB_POSITION).toString());
-        SmartDashboard.putNumber("Geico",cameras.get(Camera.SHOOTER.hostname).targetYaw());
-        SmartDashboard.putString("TARGETPOS",cameras.get(Camera.SHOOTER.hostname).getTargetPos(Swerve.getInstance().getPose()).toString());
-        SmartDashboard.putString("RAWTARGET",cameras.get(Camera.SHOOTER.hostname).getTarget().toString());
+        // SmartDashboard.putBoolean("HasTarget", cameras.get(Camera.SHOOTER.hostname).hasValidTarget());
+        // SmartDashboard.putNumber("Distance", cameras.get(Camera.SHOOTER.hostname).getDistance());
+        // SmartDashboard.putString("EstimatedPose",cameras.get(Camera.SHOOTER.hostname).getPos().toString());
+        // // if(cameras.get(Camera.SHOOTER.hostname).hasValidTarget()) {
+        // //     Swerve.getInstance().resetOdometry(cameras.get(Camera.SHOOTER.hostname).getPos());
+        // // }
+        // //SmartDashboard.putString("Aflack",cameras.get(Camera.SHOOTER.hostname).getPos().relativeTo(FieldConstants.HUB_POSITION).toString());
+        // SmartDashboard.putNumber("Geico",cameras.get(Camera.SHOOTER.hostname).targetYaw());
+        // SmartDashboard.putString("TARGETPOS",cameras.get(Camera.SHOOTER.hostname).getTargetPos(Swerve.getInstance().getPose()).toString());
+        // SmartDashboard.putString("RAWTARGET",cameras.get(Camera.SHOOTER.hostname).getTarget().toString());
     }
 }
