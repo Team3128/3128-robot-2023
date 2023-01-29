@@ -39,7 +39,7 @@ public class CmdMove extends CommandBase {
     private static PIDController xController, yController, rController;
     private static DoubleSupplier xAxis, yAxis, throttle;
     private boolean xSetpoint, ySetpoint, rSetpoint, atDestination;
-    private Pose2d[] poses;
+    protected Pose2d[] poses;
     private int index;
     private Type type;
 
@@ -73,11 +73,11 @@ public class CmdMove extends CommandBase {
 
         xController.setTolerance(DRIVE_TOLERANCE);
         yController.setTolerance(DRIVE_TOLERANCE);
-        rController.setTolerance(Math.PI/60);
+        rController.setTolerance(Math.PI/120);
 
-        NAR_Shuffleboard.addComplex("Vision","XCONTROLLER",xController,0,0);
-        NAR_Shuffleboard.addComplex("Vision","YCONTROLLER",yController,0,3);
-        NAR_Shuffleboard.addComplex("Vision","RCONTROLLER",rController,2,3);
+        NAR_Shuffleboard.addComplex("VisionPID","XCONTROLLER",xController,0,0);
+        NAR_Shuffleboard.addComplex("VisionPID","YCONTROLLER",yController,1,0);
+        NAR_Shuffleboard.addComplex("VisionPID","RCONTROLLER",rController,2,0);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class CmdMove extends CommandBase {
         index = 0;
         boolean isRed = DriverStation.getAlliance() == Alliance.Red;
         var xCoord = swerve.getPose().getX();
-        for (int i = 0; i <= poses.length; i++) {
+        for (int i = 0; i < poses.length; i++) {
             poses[i] = allianceFlip(poses[i]);
             if (isRed && xCoord >= poses[i].getX()) {
                 index +=1;

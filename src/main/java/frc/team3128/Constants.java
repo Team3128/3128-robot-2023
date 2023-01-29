@@ -210,15 +210,27 @@ public class Constants {
         public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(1,1,Units.degreesToRadians(10));
 
         public static final Pose2d[] SCORES = new Pose2d[]{
-            new Pose2d(2.1,0.5,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.1,1.05,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.1,1.65,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.1,2.15,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.1,2.75,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.1,3.3,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.1,3.85,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.1,4.45,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.1,5,Rotation2d.fromDegrees(180))
+            new Pose2d(1.9,0.5,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.9,1.05,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.9,1.65,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.9,2.15,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.9,2.75,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.9,3.3,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.9,3.85,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.9,4.45,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.9,5,Rotation2d.fromDegrees(180))
+        };
+
+        public static final Pose2d[][] SCORES_GRID = new Pose2d[][] {
+            new Pose2d[] {
+                SCORES[0], SCORES[3], SCORES[6]
+            },
+            new Pose2d[] {
+                SCORES[1], SCORES[4], SCORES[7]
+            },
+            new Pose2d[] {
+                SCORES[2], SCORES[5], SCORES[8]
+            }
         };
 
         public static final Pose2d[] SCORE_SETUP = new Pose2d[]{

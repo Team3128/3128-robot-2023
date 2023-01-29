@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.commands.CmdAlign;
 import frc.team3128.commands.CmdMove;
+import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdReset;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdTargetPursuit;
@@ -45,6 +46,7 @@ public class RobotContainer {
 
     private NAR_Joystick leftStick;
     private NAR_Joystick rightStick;
+    private NAR_Joystick buttonPad;
 
     private NAR_XboxController controller;
 
@@ -58,7 +60,7 @@ public class RobotContainer {
         vision = Vision.getInstance();
         // ConstantsInt.initTempConstants();
         swerve = Swerve.getInstance();
-        pivot = Pivot.getInstance();
+        //pivot = Pivot.getInstance();
 
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
@@ -66,6 +68,7 @@ public class RobotContainer {
         leftStick = new NAR_Joystick(0);
         rightStick = new NAR_Joystick(1);
         controller = new NAR_XboxController(2);
+        buttonPad = new NAR_Joystick(3);
         CmdMove.setController(rightStick::getX, rightStick::getY, rightStick::getThrottle);
 
         // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
@@ -88,6 +91,14 @@ public class RobotContainer {
         for (int i = 0; i < VisionConstants.SCORES.length; i++) {
             leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP[i/3],VisionConstants.SCORES[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         }
+        buttonPad.getButton(4).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true,VisionConstants.SCORE_SETUP,VisionConstants.SCORES_GRID[0])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
+        buttonPad.getButton(5).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true,VisionConstants.SCORE_SETUP,VisionConstants.SCORES_GRID[1])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
+        buttonPad.getButton(6).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true,VisionConstants.SCORE_SETUP,VisionConstants.SCORES_GRID[2])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
+        buttonPad.getButton(1).onTrue(new InstantCommand(()-> CmdMoveScore.SELECTED_GRID = 0));
+        buttonPad.getButton(2).onTrue(new InstantCommand(()-> CmdMoveScore.SELECTED_GRID = 1));
+        buttonPad.getButton(3).onTrue(new InstantCommand(()-> CmdMoveScore.SELECTED_GRID = 2));
+
+        
 
         // rightStick.getButton(6).whenActive(new InstantCommand(()-> {
         //     if(vision.hasValidTarget(Camera.SHOOTER.hostname)) {
