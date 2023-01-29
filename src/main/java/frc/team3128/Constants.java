@@ -139,9 +139,8 @@ public class Constants {
             public static final int angleMotorID = 1;
             public static final int canCoderID = 20;
             public static final double angleOffset = -157.763671875; // deg
-            public static final String canBus = "drivetrain";
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /* Front Right Module - Module 1 */
@@ -150,9 +149,8 @@ public class Constants {
             public static final int angleMotorID = 3;
             public static final int canCoderID = 21;
             public static final double angleOffset = 129.375; // deg
-            public static final String canBus = "drivetrain";
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
         
         /* Back Left Module - Module 2 */
@@ -161,9 +159,8 @@ public class Constants {
             public static final int angleMotorID = 5;
             public static final int canCoderID = 22;
             public static final double angleOffset = -69.697265625; // deg
-            public static final String canBus = "drivetrain"; 
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /* Back Right Module - Module 3 */
@@ -172,9 +169,8 @@ public class Constants {
             public static final int angleMotorID = 7;
             public static final int canCoderID = 23;
             public static final double angleOffset = -54.31640625; // deg
-            public static final String canBus = "rio";
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
     }
 
