@@ -218,21 +218,21 @@ public class Constants {
         };
 
         public static final Pose2d[][] SCORES_GRID = new Pose2d[][] {
-            new Pose2d[] {
-                SCORES[0], SCORES[3], SCORES[6]
-            },
-            new Pose2d[] {
-                SCORES[1], SCORES[4], SCORES[7]
-            },
-            new Pose2d[] {
-                SCORES[2], SCORES[5], SCORES[8]
-            }
+            new Pose2d[] {SCORES[0], SCORES[3], SCORES[6]},
+            new Pose2d[] {SCORES[1], SCORES[4], SCORES[7]},
+            new Pose2d[] {SCORES[2], SCORES[5], SCORES[8]}
         };
 
         public static final Pose2d[] SCORE_SETUP = new Pose2d[]{
             new Pose2d(5.3,0.75,Rotation2d.fromDegrees(180)),
             new Pose2d(5.3,2.75,Rotation2d.fromDegrees(180)),
             new Pose2d(5.3,4.6,Rotation2d.fromDegrees(180)),
+        };
+
+        public static final Pose2d[] LOADING_ZONE = new Pose2d[] {
+            new Pose2d(15.6,7.3,Rotation2d.fromDegrees(0)),
+            new Pose2d(15.6,6, Rotation2d.fromDegrees(0)),
+            new Pose2d(14.2,7.4, Rotation2d.fromDegrees(90))
         };
 
         public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
