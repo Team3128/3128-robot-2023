@@ -21,8 +21,8 @@ public class Manipulator extends SubsystemBase {
 
     public Manipulator(){
         m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, MANIPULATOR_SOLENOID_FORWARD_CHANNEL_ID, MANIPULATOR_SOLENOID_BACKWARD_CHANNEL_ID);
-        m_solenoid.set(Value.kOff);
         inputSwitch = new DigitalInput(0);
+        m_solenoid.set(Value.kReverse);
         // manipulator_motor  = new NAR_TalonFX( MANIPULATOR_MOTOR_ID );
         // manipulator_motor.setNeutralMode(NeutralMode.Brake);
         
