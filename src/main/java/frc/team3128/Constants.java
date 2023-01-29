@@ -244,4 +244,20 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(324); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
     }
+
+    public static class LedConstants{
+        public static class Yellow{
+            public static final int HUE = 0;
+            public static final int SATURATION = 0;
+            public static final int VALUE = 0;
+        }
+        public static class Purple{
+            public static final int HUE = 1;
+            public static final int SATURATION = 1;
+            public static final int VALUE = 1;
+        }
+
+        public static final int PORT = 0;
+        public static final int LENGTH = 60;
+    }
 }
