@@ -45,7 +45,7 @@ public class CmdMove extends CommandBase {
 
     private boolean joystickOverride;
 
-    private Swerve swerve;
+    protected Swerve swerve;
 
     public CmdMove(Type type, boolean joystickOverride, Pose2d... poses) {
         this.poses = poses;
