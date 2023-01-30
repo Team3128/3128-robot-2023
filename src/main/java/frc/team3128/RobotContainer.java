@@ -91,6 +91,8 @@ public class RobotContainer {
         for (int i = 0; i < VisionConstants.LOADING_ZONE.length; i++) {
             leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.LOADING, true, VisionConstants.LOADING_ZONE[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         }
+        //Test Button to see if skipping works.
+        leftStick.getButton(4).onTrue(new CmdMove(CmdMove.Type.NONE,false, new Pose2d(2.3,2.5,Rotation2d.fromDegrees(180)),new Pose2d(4,2.5,Rotation2d.fromDegrees(180)))).onFalse(new InstantCommand(()->swerve.stop()));
         // for (int i = 0; i < VisionConstants.SCORES.length; i++) {
         //     leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP[i/3],VisionConstants.SCORES[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         // }

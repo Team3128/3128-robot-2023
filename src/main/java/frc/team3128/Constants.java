@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -120,6 +121,7 @@ public class Constants {
         public static final double maxSpeed = 4; //4.5// 4.96824; // citrus: 4.5 //meters per second - 16.3 ft/sec
         public static final double maxAcceleration = 2;
         public static final double maxAngularVelocity = 2;//3; //11.5; // citrus: 10
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
 
         public static final double xRateLimit = 1.0;
         public static final double yRateLimit = 1.0;
@@ -206,15 +208,15 @@ public class Constants {
         public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(1,1,Units.degreesToRadians(10));
 
         public static final Pose2d[] SCORES = new Pose2d[]{
-            new Pose2d(1.9,0.5,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.9,1.05,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.9,1.65,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.9,2.15,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.9,2.75,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.9,3.3,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.9,3.85,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.9,4.45,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.9,5,Rotation2d.fromDegrees(180))
+            new Pose2d(2.0,0.5,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.0,1.05,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.0,1.65,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.0,2.15,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.0,2.75,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.0,3.3,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.0,3.85,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.0,4.45,Rotation2d.fromDegrees(180)),
+            new Pose2d(2.0,5,Rotation2d.fromDegrees(180))
         };
 
         public static final Pose2d[][] SCORES_GRID = new Pose2d[][] {

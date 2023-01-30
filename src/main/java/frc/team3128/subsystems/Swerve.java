@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
@@ -33,6 +34,7 @@ import java.io.IOException;
 public class Swerve extends SubsystemBase {
     
     private volatile FileWriter txtFile;
+    private String poseLogger = "";
     private double prevTime = 0; 
     public SwerveDrivePoseEstimator odometry;
     public SwerveModule[] modules;
@@ -181,18 +183,20 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Robot Y", position.getY());
         SmartDashboard.putNumber("Robot Gyro", getGyroRotation2d().getDegrees());
         SmartDashboard.putString("POSE2D",getPose().toString());
-        double currTime = Timer.getFPGATimestamp();
-        // if (prevTime + 1 <= currTime) {
-        //     try {
-        //         txtFile.write(estimatedPose.getX() + "," + estimatedPose.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + currTime + "\n");
-        //     } catch (Exception e) {
-        //         e.printStackTrace();
-        //     }
-        //     try {
-        //         txtFile.flush();
-        //     } catch (IOException e) {}
-        //     prevTime = currTime;
-        // }
+        double currTime = Math.floor(Timer.getFPGATimestamp());
+        if (prevTime + 1 <= currTime && DriverStation.isEnabled()) {
+            poseLogger += estimatedPose.getX() + "," + estimatedPose.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + currTime + "]";
+            // try {
+            //     txtFile.write(estimatedPose.getX() + "," + estimatedPose.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + currTime + "\n");
+            // } catch (Exception e) {
+            //     e.printStackTrace();
+            // }
+            // try {
+            //     txtFile.flush();
+            // } catch (IOException e) {}
+            prevTime = currTime;
+            NAR_Shuffleboard.addData("Logger","Positions",poseLogger,0,0);
+        }
     }
 
     public double getYaw() {

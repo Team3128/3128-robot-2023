@@ -1,8 +1,10 @@
 package frc.team3128.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -36,7 +38,8 @@ public class CmdMove extends CommandBase {
         }
     }
 
-    private static PIDController xController, yController, rController;
+    private static ProfiledPIDController xController, yController;
+    private static PIDController rController;
     private static DoubleSupplier xAxis, yAxis, throttle;
     private boolean xSetpoint, ySetpoint, rSetpoint, atDestination;
     protected Pose2d[] poses;
@@ -66,8 +69,8 @@ public class CmdMove extends CommandBase {
     }
 
     static {
-        xController = new PIDController(translationKP, translationKI, translationKD);
-        yController = new PIDController(translationKP, translationKI, translationKD);
+        xController = new ProfiledPIDController(translationKP, translationKI, translationKD, CONSTRAINTS);
+        yController = new ProfiledPIDController(translationKP, translationKI, translationKD, CONSTRAINTS);
         rController = new PIDController(rotationKP, rotationKI, rotationKD);
         rController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -83,31 +86,28 @@ public class CmdMove extends CommandBase {
     @Override
     public void initialize() {
         index = 0;
-        boolean isRed = DriverStation.getAlliance() == Alliance.Red;
-        var xCoord = swerve.getPose().getX();
+        boolean keepSkipping = true;
         for (int i = 0; i < poses.length; i++) {
             poses[i] = allianceFlip(poses[i]);
-            if (isRed && xCoord >= poses[i].getX()) {
-                index +=1;
-            }
-            else if (!isRed && xCoord <= poses[i].getX()){
+            if (pastPoint(poses[i]) && !atLastPoint() && keepSkipping) {
                 index += 1;
+                continue;
             }
-            if (index == poses.length - 1) {
-                break;
-            }
+            keepSkipping = false;
         }
         xSetpoint = false;
         ySetpoint = false;
         rSetpoint = false;
         atDestination = false;
 
-        xController.reset();
-        yController.reset();
+        Pose2d pos = swerve.getPose();
+
+        xController.reset(new TrapezoidProfile.State(pos.getX(),0));
+        yController.reset(new TrapezoidProfile.State(pos.getY(),0));
         rController.reset();
 
-        xController.setSetpoint(poses[index].getX());
-        yController.setSetpoint(poses[index].getY());
+        xController.setGoal(poses[index].getX());
+        yController.setGoal(poses[index].getY());
         rController.setSetpoint(poses[index].getRotation().getRadians());
     }
 
@@ -118,8 +118,8 @@ public class CmdMove extends CommandBase {
         double yDistance = yController.calculate(pose.getY()); 
         double rotation = rController.calculate(pose.getRotation().getRadians());
 
-        xSetpoint = xController.atSetpoint();
-        ySetpoint = yController.atSetpoint();
+        xSetpoint = xController.atGoal();
+        ySetpoint = yController.atGoal();
         rSetpoint = rController.atSetpoint();
 
         if (xSetpoint) {
@@ -144,19 +144,16 @@ public class CmdMove extends CommandBase {
 
         swerve.drive(new Translation2d(xDistance, yDistance), rotation, true);
 
-        if (xSetpoint && ySetpoint && rSetpoint) {
+        if (xSetpoint && !atLastPoint()) {
             index += 1;
-            if (index > poses.length - 1) {
-                atDestination = true;
-                return;
-            }
-            xController.setSetpoint(poses[index].getX());
-            yController.setSetpoint(poses[index].getY());
+            xController.setGoal(poses[index].getX());
+            yController.setGoal(poses[index].getY());
             rController.setSetpoint(poses[index].getRotation().getRadians());
             xSetpoint = false;
             ySetpoint = false;
             rSetpoint = false;
         }
+        atDestination = (xSetpoint && ySetpoint && rSetpoint && atLastPoint());
     }
 
     @Override
@@ -183,6 +180,20 @@ public class CmdMove extends CommandBase {
             }
         }
         return true;
+    }
+
+    private boolean pastPoint(Pose2d goalPos) {
+        Pose2d currentPos = swerve.getPose();
+        if (DriverStation.getAlliance() == Alliance.Red) {
+            return (currentPos.getX() > goalPos.getX());
+        }
+        else {
+            return (currentPos.getX() < goalPos.getX());
+        }
+    }
+
+    private boolean atLastPoint() {
+        return index == poses.length - 1;
     }
 
 }
