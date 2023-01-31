@@ -128,9 +128,8 @@ public class Constants {
             public static final int angleMotorID = 1;
             public static final int canCoderID = 20;
             public static final double angleOffset = -157.763671875; // deg
-            public static final String canBus = "drivetrain";
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /* Front Right Module - Module 1 */
@@ -139,9 +138,8 @@ public class Constants {
             public static final int angleMotorID = 3;
             public static final int canCoderID = 21;
             public static final double angleOffset = 129.375; // deg
-            public static final String canBus = "drivetrain";
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
         
         /* Back Left Module - Module 2 */
@@ -150,9 +148,8 @@ public class Constants {
             public static final int angleMotorID = 5;
             public static final int canCoderID = 22;
             public static final double angleOffset = -69.697265625; // deg
-            public static final String canBus = "drivetrain"; 
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /* Back Right Module - Module 3 */
@@ -161,9 +158,8 @@ public class Constants {
             public static final int angleMotorID = 7;
             public static final int canCoderID = 23;
             public static final double angleOffset = -54.31640625; // deg
-            public static final String canBus = "rio";
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
     }
@@ -212,6 +208,39 @@ public class Constants {
             new Pose2d(0,0, Rotation2d.fromDegrees(0)),
             new Pose2d(0,0, Rotation2d.fromDegrees(0))
         };
+    }
+
+    public static class PivotConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kF = 0;
+        public static final int PIVOT_MOTOR_ID = 19;
+        public static final double ENC_CONV = 60*42/16;
+        public static final double PIVOT_TOLERANCE = 0;
+        public static final double MIN_ANGLE = 0;
+        public static final double MAX_ANGLE = 90;
+        public static final int PIVOT_CURRENT_LIMIT = 10;
+        
+        public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
+        public static final double ARM_LENGTH = 56.75; // inches
+        
+    }
+
+    public static class TelescopeConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kF = 0;
+        public static final int TELE_MOTOR_ID = 5;
+        public static final double TELE_MOTOR_POWER = 0.5;
+        public static final double ENC_CONV = 0;
+        public static final double MIN_DIST = 16;
+        public static final double MAX_DIST = 57;
+        public static final double TELE_TOLERANCE = 0;
+        public static final int TELE_CURRENT_LIMIT = 10;
+
+        public static final double ARM_LENGTH = 56.75; // inches
     }
     
     public static class FieldConstants{
