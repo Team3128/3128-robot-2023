@@ -7,15 +7,13 @@ import frc.team3128.Constants.BalanceConstants;
 import frc.team3128.Constants.BalanceConstants.*;
 
 public class CmdDriveUp extends CommandBase{
-    private int direction;
     private double power;
 
-    public CmdDriveUp(int direction) {
-        this.direction = direction;
+    public CmdDriveUp() {
     }
     @Override
     public void initialize() {
-        power = direction*BalanceConstants.DRIVE_UP_POWER;
+        power = .5;
     }
     @Override
     public void execute() {

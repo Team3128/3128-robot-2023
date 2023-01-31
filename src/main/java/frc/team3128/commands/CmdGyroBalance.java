@@ -11,21 +11,19 @@ import static frc.team3128.Constants.BalanceConstants.*;
 
 public class CmdGyroBalance extends PIDCommand {
     public int plateauCount;
-    private int direction;
 
-    public CmdGyroBalance(int direction) {
+    public CmdGyroBalance() {
         super(
             new PIDController(turnKP,turnKI,turnKD),
             () -> Swerve.getInstance().getPitch(),
             0,
-            output -> Swerve.getInstance().drive(new Translation2d(output*direction,0), 0,false),
+            output -> Swerve.getInstance().drive(new Translation2d(output,0), 0,false),
             Swerve.getInstance()
         );
 
         m_controller.enableContinuousInput(-180, 180);
         m_controller.setTolerance(TURN_TOLERANCE);
         plateauCount = 0;
-        this.direction = direction;
     }
 
     @Override
