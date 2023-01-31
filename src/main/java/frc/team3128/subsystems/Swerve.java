@@ -1,5 +1,7 @@
 package frc.team3128.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.music.Orchestra;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
@@ -30,6 +32,7 @@ import static frc.team3128.Constants.VisionConstants.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Swerve extends SubsystemBase {
     
@@ -47,6 +50,8 @@ public class Swerve extends SubsystemBase {
     // private SlewRateLimiter xFilter;
     // private SlewRateLimiter yFilter;
     // private SlewRateLimiter zFilter;
+
+    private Orchestra orchestra;    
 
     private Field2d field;
 
@@ -89,6 +94,12 @@ public class Swerve extends SubsystemBase {
 
         field = new Field2d();
         SmartDashboard.putData("Field", field);
+
+        ArrayList<TalonFX> instruments = new ArrayList<TalonFX>();
+        for (SwerveModule module : modules) {
+            instruments.addAll(module.getInstruments());
+        }
+        orchestra = new Orchestra(instruments);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
@@ -236,5 +247,14 @@ public class Swerve extends SubsystemBase {
         Pose2d location = getPose().relativeTo(FieldConstants.HUB_POSITION);
         double theta = Math.toDegrees(Math.atan2(location.getY(),location.getX()));
         return MathUtil.inputModulus(theta - 180,-180,180);
+    }
+
+    public void playSong(int idx) {
+        orchestra.loadMusic("songs/" + songs[idx] + ".chrp");
+        orchestra.play();
+    }
+
+    public void stopSong() {
+        orchestra.stop();
     }
 }

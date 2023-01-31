@@ -1,6 +1,7 @@
 package frc.team3128.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.team3128.subsystems.Swerve;
 
 public class CmdMoveScore extends CmdMove {
 
@@ -19,7 +20,14 @@ public class CmdMoveScore extends CmdMove {
             newPoses[i] = positions[i][SELECTED_GRID];
         }
         poses = newPoses;
+        swerve.playSong(SELECTED_GRID);
         super.initialize();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.stopSong();
+        super.end(interrupted);
     }
     
 }
