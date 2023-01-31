@@ -38,7 +38,7 @@ public class CmdMove extends CommandBase {
         }
     }
 
-    private static ProfiledPIDController xController, yController;
+    private static PIDController xController, yController;
     private static PIDController rController;
     private static DoubleSupplier xAxis, yAxis, throttle;
     private boolean xSetpoint, ySetpoint, rSetpoint, atDestination;
@@ -69,8 +69,8 @@ public class CmdMove extends CommandBase {
     }
 
     static {
-        xController = new ProfiledPIDController(translationKP, translationKI, translationKD, CONSTRAINTS);
-        yController = new ProfiledPIDController(translationKP, translationKI, translationKD, CONSTRAINTS);
+        xController = new PIDController(translationKP, translationKI, translationKD);
+        yController = new PIDController(translationKP, translationKI, translationKD);
         rController = new PIDController(rotationKP, rotationKI, rotationKD);
         rController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -102,12 +102,12 @@ public class CmdMove extends CommandBase {
 
         Pose2d pos = swerve.getPose();
 
-        xController.reset(new TrapezoidProfile.State(pos.getX(),0));
-        yController.reset(new TrapezoidProfile.State(pos.getY(),0));
+        xController.reset();
+        yController.reset();
         rController.reset();
 
-        xController.setGoal(poses[index].getX());
-        yController.setGoal(poses[index].getY());
+        xController.setSetpoint(poses[index].getX());
+        yController.setSetpoint(poses[index].getY());
         rController.setSetpoint(poses[index].getRotation().getRadians());
     }
 
@@ -118,8 +118,8 @@ public class CmdMove extends CommandBase {
         double yDistance = yController.calculate(pose.getY()); 
         double rotation = rController.calculate(pose.getRotation().getRadians());
 
-        xSetpoint = xController.atGoal();
-        ySetpoint = yController.atGoal();
+        xSetpoint = xController.atSetpoint();
+        ySetpoint = yController.atSetpoint();
         rSetpoint = rController.atSetpoint();
 
         if (xSetpoint) {
@@ -146,8 +146,8 @@ public class CmdMove extends CommandBase {
 
         if (xSetpoint && !atLastPoint()) {
             index += 1;
-            xController.setGoal(poses[index].getX());
-            yController.setGoal(poses[index].getY());
+            xController.setSetpoint(poses[index].getX());
+            yController.setSetpoint(poses[index].getY());
             rController.setSetpoint(poses[index].getRotation().getRadians());
             xSetpoint = false;
             ySetpoint = false;

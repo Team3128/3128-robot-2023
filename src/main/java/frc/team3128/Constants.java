@@ -67,14 +67,14 @@ public class Constants {
 
         public static final double TURN_TOLERANCE = 5;
 
-        public static final double DRIVE_TOLERANCE = 0.05;
+        public static final double DRIVE_TOLERANCE = 0.025;
 
         public static final double translationKP = 3;
         public static final double translationKI = 0;
         public static final double translationKD = 0;
 
         /* Translation PID Values */
-        public static final double distanceKP = 1;
+        public static final double distanceKP = 3;
         public static final double distanceKI = 0;
         public static final double distanceKD = 0;
 
@@ -208,15 +208,15 @@ public class Constants {
         public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(1,1,Units.degreesToRadians(10));
 
         public static final Pose2d[] SCORES = new Pose2d[]{
-            new Pose2d(2.0,0.5,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.0,1.05,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.0,1.65,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.0,2.15,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.0,2.75,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.0,3.3,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.0,3.85,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.0,4.45,Rotation2d.fromDegrees(180)),
-            new Pose2d(2.0,5,Rotation2d.fromDegrees(180))
+            new Pose2d(1.95,0.5,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.95,1.05,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.95,1.65,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.95,2.15,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.95,2.75,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.95,3.3,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.95,3.85,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.95,4.45,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.95,5,Rotation2d.fromDegrees(180))
         };
 
         public static final Pose2d[][] SCORES_GRID = new Pose2d[][] {
@@ -232,9 +232,9 @@ public class Constants {
         };
 
         public static final Pose2d[] LOADING_ZONE = new Pose2d[] {
-            new Pose2d(15.6,7.3,Rotation2d.fromDegrees(0)),
-            new Pose2d(15.6,6, Rotation2d.fromDegrees(0)),
-            new Pose2d(14.2,7.4, Rotation2d.fromDegrees(90))
+            new Pose2d(15.5,7.5,Rotation2d.fromDegrees(0)),
+            new Pose2d(15.5,5.8, Rotation2d.fromDegrees(0)),
+            new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90))
         };
 
         public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
