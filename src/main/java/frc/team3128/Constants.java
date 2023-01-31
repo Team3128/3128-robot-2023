@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.team3128.common.swerve.FalconConversions;
 import frc.team3128.common.swerve.SwerveModuleConstants;
 import frc.team3128.common.utility.interpolation.InterpolatingDouble;
 import frc.team3128.common.utility.interpolation.InterpolatingTreeMap;
@@ -15,7 +16,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 
 public class Constants {
 
@@ -63,7 +63,7 @@ public class Constants {
         public static final double DRIVE_TOLERANCE = 0.2;
 
         /* Translation PID Values */
-        public static final double translationKP = 0.1;
+        public static final double translationKP = 3;
         public static final double translationKI = 0;
         public static final double translationKD = 0;
 
@@ -117,6 +117,10 @@ public class Constants {
         /* Angle Encoder Invert */
         public static final boolean canCoderInvert = false;
 
+        /* Auto-Balance Constants */
+        public static final double BEAM_BALANCED_GOAL_DEGREES = 0;
+        public static final double BEAM_BALANACED_DRIVE_KP = 0.015; // P (Proportional) constant of a PID loop
+
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0 {
@@ -157,6 +161,7 @@ public class Constants {
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
+
     }
 
     public static class DriveConstants {
@@ -244,4 +249,59 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(324); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
     }
+
+
+
+
+    public static class ManipulatorConstants{
+        public static final int MANIPULATOR_MOTOR_ID = 5;
+        public static final double MANIPULATOR_MOTOR_SPEED_PERCENT = 0.57;
+        public static final double MAX_TICKS = 342.00; // this is the estimated maximum release value change once the value has been established
+        public static final double MIN_TICKS_CUBE = 171.00; // this is the estimated maximum release value change once the value has been established
+        public static final double MIN_TICKS_CONE = 42.00; // this is the estimated maximum release value change once the value has been established
+    }
+    public static class IntakeConstants {
+        public static final double WHEELS_POWER = 1.0;
+        public static final double ROLLER_POWER = 0.0;
+        public static final double SERIALIZER_POWER = 0;
+
+        public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
+
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        public static final double ROTATOR_GEAR_RATIO = 1;
+        public static final double ROTATOR_TOLERANCE = FalconConversions.degreesToFalcon(1, ROTATOR_GEAR_RATIO);
+
+        //Motor IDs
+        public static final int INTAKE_WHEELS_ID = 0;
+        public static final int INTAKE_ROTATOR_ID = 1;
+
+        //Solenoid IDs
+        public static final int INTAKE_SOLENOID_FORWARD_CHANNEL_ID = 0;
+        public static final int INTAKE_SOLENOID_BACKWARD_CHANNEL_ID = 1;
+
+        //Sensor IDs
+        public static final int SENSOR_INTAKE_ID = 0;
+        
+    }
+
+    public static class HopperConstants {
+        public static final int SERIALIZER_ID = 2;
+        public static final double SERIALIZER_POWER = 0;
+
+        public static final int SENSOR_LEFT_ID = 0;
+        public static final int SENSOR_RIGHT_ID = 1;
+    }
+
+    public static class BalanceConstants{
+        public static final double turnKP = 0.5;
+        public static final double turnKI = 0;
+        public static final double turnKD = 0;
+        public static final int TURN_TOLERANCE = 1;
+        public static final double CHARGE_STATION_X = 5;
+        public static final double CHARGE_STATION_Y = 5;
+    }
+
 }
