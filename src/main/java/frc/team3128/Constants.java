@@ -174,10 +174,6 @@ public class Constants {
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
-
-        public static String[] songs = new String[] {
-            "imperial_march", "hedwigs_theme", "megalovania"
-        };
     }
 
     public static class DriveConstants {

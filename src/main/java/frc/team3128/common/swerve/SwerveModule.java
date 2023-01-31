@@ -18,8 +18,6 @@ import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.common.swerve.CTREConfigs.*;
 import static frc.team3128.common.swerve.FalconConversions.*;
 
-import java.util.ArrayList;
-
 public class SwerveModule {
     public final int moduleNumber;
     private final double angleOffset;
@@ -114,13 +112,6 @@ public class SwerveModule {
     public void stop() {
         driveMotor.set(ControlMode.PercentOutput, 0);
         angleMotor.set(ControlMode.PercentOutput, 0);
-    }
-
-    public ArrayList<TalonFX> getInstruments() {
-        ArrayList<TalonFX> instruments = new ArrayList<>();
-        instruments.add(angleMotor);
-        instruments.add(driveMotor);
-        return instruments;
     }
     
 }
