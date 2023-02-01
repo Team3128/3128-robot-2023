@@ -17,7 +17,7 @@ public class CmdGyroBalance extends PIDCommand {
             new PIDController(turnKP,turnKI,turnKD),
             () -> Swerve.getInstance().getPitch(),
             0,
-            output -> Swerve.getInstance().drive(new Translation2d(output,0), 0,false),
+            output -> Swerve.getInstance().drive(new Translation2d(output,0), 0,true),
             Swerve.getInstance()
         );
 
@@ -35,8 +35,10 @@ public class CmdGyroBalance extends PIDCommand {
     public void execute() {
         super.execute();
         SmartDashboard.putBoolean("atsetpoint mason bad", m_controller.atSetpoint());
-        if (Swerve.getInstance().getPitch() < TURN_TOLERANCE) {
+        if (Math.abs(Swerve.getInstance().getPitch()) <= TURN_TOLERANCE) {
             plateauCount += 1;
+        } else {
+            plateauCount = 0;
         }
     }
 

@@ -296,9 +296,9 @@ public class Constants {
     }
 
     public static class BalanceConstants{
-        public static final double turnKP = 0.5;
+        public static final double turnKP = 0.05;
         public static final double turnKI = 0;
-        public static final double turnKD = 0;
+        public static final double turnKD = .005;
         public static final int TURN_TOLERANCE = 1;
         public static final double CHARGE_STATION_X = 5;
         public static final double CHARGE_STATION_Y = 5;
