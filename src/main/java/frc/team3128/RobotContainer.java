@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveScore;
-import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdGyroBalance;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.common.hardware.camera.NAR_Camera;
@@ -89,10 +88,10 @@ public class RobotContainer {
             leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.LOADING, true, VisionConstants.LOADING_ZONE[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         }
 
-        rightStick.getButton(3).onTrue(new SequentialCommandGroup(
-            new CmdDriveUp(),
-            new CmdGyroBalance()
-        ));
+        // rightStick.getButton(3).onTrue(new SequentialCommandGroup(
+        //     new CmdDriveUp(),
+        //     new CmdGyroBalance()
+        // ));
 
         rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
 
