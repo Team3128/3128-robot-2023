@@ -90,7 +90,7 @@ public class RobotContainer {
         // .whenActive(new RunCommand(()-> controller.setRumble(RumbleType.kLeftRumble,1)))
         // .whenInactive(new InstantCommand(()-> controller.setRumble(RumbleType.kLeftRumble, 0)));
 
-        rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
+        //rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
 
     }
 

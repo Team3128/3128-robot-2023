@@ -21,8 +21,8 @@ public class CmdRetractArm extends SequentialCommandGroup{
         telescope = Telescope.getInstance();
 
         addCommands(
-            new InstantCommand(() -> telescope.startPID(TeleDists.NEUTRAL), telescope),
-            new InstantCommand(() -> pivot.startPID(PivotAngles.NEUTRAL), pivot)
+            new InstantCommand(() -> telescope.startPID(TeleDists.NEUTRAL.dist), telescope),
+            new InstantCommand(() -> pivot.startPID(PivotAngles.NEUTRAL.angle), pivot)
         );
     }
 }

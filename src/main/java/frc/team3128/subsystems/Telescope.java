@@ -89,6 +89,12 @@ public class Telescope extends PIDSubsystem {
         getController().setTolerance(TELE_TOLERANCE);
     }
 
+    public void startPID(double teleDist) {
+        enable();
+        super.setSetpoint(teleDist);
+        getController().setTolerance(TELE_TOLERANCE);
+    }
+
     @Override
     protected void useOutput(double output, double setpoint) {
         double ff = kF * setpoint; //Need to calculate this
@@ -107,6 +113,9 @@ public class Telescope extends PIDSubsystem {
      * Data for Shuffleboard <-- worry about that later
      */
     public void initShuffleboard() {
+        NAR_Shuffleboard.addData("telescope","telescope angle", getMeasurement(),0,0);
+        NAR_Shuffleboard.addData("telescope", "telescope setpoint", getSetpoint(), 0, 1);
+        super.periodic();
     }
 
     @Override
@@ -121,8 +130,8 @@ public class Telescope extends PIDSubsystem {
         disable();
     }
 
-    public void zeroEncoder() {
-        m_teleMotor.setEncoderPosition(0);
+    public void zeroEncoder() { //returns inches
+        m_encoder.setPosition(0);
     }
 
 }

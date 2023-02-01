@@ -233,7 +233,7 @@ public class Constants {
         public static final double kF = 0;
         public static final int TELE_MOTOR_ID = 5;
         public static final double TELE_MOTOR_POWER = 0.5;
-        public static final double ENC_CONV = 0;
+        public static final double ENC_CONV = 360/5;
         public static final double MIN_DIST = 16;
         public static final double MAX_DIST = 57;
         public static final double TELE_TOLERANCE = 0;
