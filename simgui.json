@@ -1,0 +1,19 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Drivetrain/Drivetrain": "Subsystem",
+      "/Shuffleboard/Drivetrain/Gyro": "Gyro",
+      "/Shuffleboard/Field/field": "Field2d",
+      "/Shuffleboard/General/Gyro": "Gyro",
+      "/Shuffleboard/Vision/RCONTROLLER": "PIDController",
+      "/Shuffleboard/Vision/XCONTROLLER": "PIDController",
+      "/Shuffleboard/Vision/YCONTROLLER": "PIDController",
+      "/Shuffleboard/VisionPID/RCONTROLLER": "PIDController",
+      "/Shuffleboard/VisionPID/XCONTROLLER": "PIDController",
+      "/Shuffleboard/VisionPID/YCONTROLLER": "PIDController",
+      "/SmartDashboard/CommandScheduler": "Scheduler",
+      "/SmartDashboard/Field": "Field2d"
+    }
+  }
+}

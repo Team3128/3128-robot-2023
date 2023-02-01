@@ -13,7 +13,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,8 +27,15 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Swerve extends SubsystemBase {
     
+    private volatile FileWriter txtFile;
+    private String poseLogger = "";
+    private double prevTime = 0; 
     public SwerveDrivePoseEstimator odometry;
     public SwerveModule[] modules;
     public WPI_Pigeon2 gyro;
@@ -54,6 +64,12 @@ public class Swerve extends SubsystemBase {
         fieldRelative = true;
         estimatedPose = new Pose2d();
 
+        // try {
+        //     txtFile = new FileWriter(new File(Filesystem.getDeployDirectory(),"pose.txt"));
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
+
         modules = new SwerveModule[] {
             new SwerveModule(0, Mod0.constants),
             new SwerveModule(1, Mod1.constants),
@@ -68,7 +84,7 @@ public class Swerve extends SubsystemBase {
         resetEncoders();
 
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
-                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
+                                                estimatedPose, SVR_STATE_STD, SVR_VISION_MEASUREMENT_STD);
 
 
         field = new Field2d();
@@ -81,7 +97,7 @@ public class Swerve extends SubsystemBase {
         // double Z = zFilter.calculate(rotation);
         SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                translation.getX(), translation.getY(), rotation, getGyroRotation2d())
+                translation.getX(), translation.getY(), rotation, getRotation2d())
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
         setModuleStates(moduleStates);
     }
@@ -156,21 +172,35 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         odometry.update(getGyroRotation2d(), getPositions());
-        for(SwerveModule module : modules){
-            SmartDashboard.putNumber("Mod " + module.moduleNumber + " Cancoder", module.getCanCoder().getDegrees());
-            SmartDashboard.putNumber("Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);    
-        }
+        // for(SwerveModule module : modules){
+        //     SmartDashboard.putNumber("Mod " + module.moduleNumber + " Cancoder", module.getCanCoder().getDegrees());
+        //     SmartDashboard.putNumber("Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
+        //     SmartDashboard.putNumber("Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);    
+        // }
         estimatedPose = odometry.getEstimatedPosition();
         Translation2d position = estimatedPose.getTranslation();
         SmartDashboard.putNumber("Robot X", position.getX());
         SmartDashboard.putNumber("Robot Y", position.getY());
         SmartDashboard.putNumber("Robot Gyro", getGyroRotation2d().getDegrees());
         SmartDashboard.putString("POSE2D",getPose().toString());
+        double currTime = Math.floor(Timer.getFPGATimestamp());
+        if (prevTime + 1 <= currTime && DriverStation.isEnabled()) {
+            poseLogger += estimatedPose.getX() + "," + estimatedPose.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + currTime + "]";
+            // try {
+            //     txtFile.write(estimatedPose.getX() + "," + estimatedPose.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + currTime + "\n");
+            // } catch (Exception e) {
+            //     e.printStackTrace();
+            // }
+            // try {
+            //     txtFile.flush();
+            // } catch (IOException e) {}
+            prevTime = currTime;
+            NAR_Shuffleboard.addData("Logger","Positions",poseLogger,0,0);
+        }
     }
 
     public double getYaw() {
-        return gyro.getYaw();
+        return MathUtil.inputModulus(gyro.getYaw(),-180,180);
     }
 
     public double getPitch() {
