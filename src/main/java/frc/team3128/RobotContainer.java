@@ -112,6 +112,12 @@ public class RobotContainer {
         //     new CmdDriveUp(),
         //     new CmdGyroBalance()
         // ));
+
+        rightStick.getButton(3).onTrue(new SequentialCommandGroup(
+            new CmdDriveUp(),
+            new CmdGyroBalance()
+        ));
+        rightStick.getButton(4).onTrue(new CmdGyroBalance());
         // rightStick.getButton(3).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         // rightStick.getButton(4).onTrue(new CmdAlign()).onFalse(new InstantCommand(()-> swerve.stop()));
         // rightStick.getButton(5).onTrue(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(Camera.SHOOTER.hostname))));
