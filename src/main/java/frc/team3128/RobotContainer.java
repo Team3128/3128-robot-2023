@@ -11,12 +11,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.commands.CmdAlign;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdReset;
+import frc.team3128.commands.CmdDriveUp;
+import frc.team3128.commands.CmdGyroBalance;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdTargetPursuit;
 import frc.team3128.common.hardware.camera.Camera;
@@ -71,7 +75,7 @@ public class RobotContainer {
         buttonPad = new NAR_Joystick(3);
         CmdMove.setController(controller::getLeftX, controller::getLeftY, controller::getRightX, rightStick::getThrottle);
 
-        // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
+        //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
         commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
         initDashboard();
         configureButtonBindings();
@@ -104,7 +108,14 @@ public class RobotContainer {
         buttonPad.getButton(3).onTrue(new InstantCommand(()-> CmdMoveScore.SELECTED_GRID = 2));
 
 
-        
+        // rightStick.getButton(3).onTrue(new SequentialCommandGroup(
+        //     new CmdDriveUp(),
+        //     new CmdGyroBalance()
+        // ));
+        // rightStick.getButton(3).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
+        // rightStick.getButton(4).onTrue(new CmdAlign()).onFalse(new InstantCommand(()-> swerve.stop()));
+        // rightStick.getButton(5).onTrue(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(Camera.SHOOTER.hostname))));
+        // rightStick.getButton(6).onTrue(new CmdTargetPursuit(Camera.SHOOTER.hostname)).onFalse(new InstantCommand(()->swerve.stop(),swerve));
 
         // rightStick.getButton(6).whenActive(new InstantCommand(()-> {
         //     if(vision.hasValidTarget(Camera.SHOOTER.hostname)) {
@@ -153,5 +164,6 @@ public class RobotContainer {
         SmartDashboard.putNumber("RightX",controller.getRightX());
         SmartDashboard.putNumber("RightY",controller.getRightY());
         NAR_Shuffleboard.update();
+        SmartDashboard.putNumber("Pitch",swerve.getPitch());
     }
 }
