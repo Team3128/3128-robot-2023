@@ -353,8 +353,22 @@ public class Constants {
           }
     }
 
+    public static class LedConstants{
+        public static class Yellow{
+            public static final int HUE = 0;
+            public static final int SATURATION = 0;
+            public static final int VALUE = 0;
+        }
+        public static class Purple{
+            public static final int HUE = 1;
+            public static final int SATURATION = 1;
+            public static final int VALUE = 1;
+        }
 
-
+        public static final int PORT = 0;
+        public static final int LENGTH = 60;
+    }
+}
 
     public static class ManipulatorConstants{
         public static final int MANIPULATOR_MOTOR_ID = 5;
