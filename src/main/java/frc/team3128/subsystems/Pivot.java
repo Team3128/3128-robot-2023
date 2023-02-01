@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.team3128.Constants.PivotConstants.*;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
+import frc.team3128.common.utility.NAR_Shuffleboard;
 
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -53,12 +54,6 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.setSmartCurrentLimit(PIVOT_CURRENT_LIMIT);
         m_rotateMotor.enableVoltageCompensation(12.0);
         m_rotateMotor.setIdleMode(IdleMode.kBrake);
-
-
-        // m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 0); 
-        // m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 0);
-        // m_rotateMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 0);
-        // m_rotateMotor.setControlFramePeriodMs(0);
     }
 
     private void configEncoders() {
@@ -72,12 +67,6 @@ public class Pivot extends PIDSubsystem {
 
     public void zeroEncoder() {
         m_rotateMotor.setEncoderPosition(0);
-    }
-
-    @Override
-    public void periodic() {
-        SmartDashboard.putNumber("pivot angle", getMeasurement());
-        super.periodic();
     }
 
     public void startPID(PivotAngles anglePos) {        
@@ -99,5 +88,9 @@ public class Pivot extends PIDSubsystem {
        return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
     }
 
+    public void initShuffleboard() {
+        NAR_Shuffleboard.addData("Pivot + Tele", "Pivot Angle", () -> getMeasurement(), 0, 0);
+        NAR_Shuffleboard.addComplex("Pivot + Tele", "Pivot PID", getController(), 0, 1);
+    }
     
 }

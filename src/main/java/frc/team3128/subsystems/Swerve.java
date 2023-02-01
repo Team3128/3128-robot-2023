@@ -4,18 +4,14 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,9 +23,7 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
 
-import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 
 public class Swerve extends SubsystemBase {
     
@@ -43,10 +37,6 @@ public class Swerve extends SubsystemBase {
 
     private static Swerve instance;
     public boolean fieldRelative;
-
-    // private SlewRateLimiter xFilter;
-    // private SlewRateLimiter yFilter;
-    // private SlewRateLimiter zFilter;
 
     private Field2d field;
 
@@ -77,10 +67,6 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, Mod3.constants)
         };
 
-        // xFilter = new SlewRateLimiter(xRateLimit);
-        // yFilter = new SlewRateLimiter(yRateLimit);
-        // zFilter = new SlewRateLimiter(zRateLimit);
-
         resetEncoders();
 
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
@@ -92,14 +78,17 @@ public class Swerve extends SubsystemBase {
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
-        // double X = xFilter.calculate(translation.getX());
-        // double Y = yFilter.calculate(translation.getY());
-        // double Z = zFilter.calculate(rotation);
         SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(), translation.getY(), rotation, getRotation2d())
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
         setModuleStates(moduleStates);
+    }
+
+    public void stop() {
+        for (SwerveModule module : modules) {
+            module.stop();
+        }
     }
 
     public void initShuffleboard() {
@@ -114,12 +103,6 @@ public class Swerve extends SubsystemBase {
         NAR_Shuffleboard.addData("Drivetrain","Pitch",this::getPitch,5,1);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
         NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
-    }
-
-    public void stop() {
-        for (SwerveModule module : modules) {
-            module.stop();
-        }
     }
 
     public Pose2d getPose() {
@@ -154,11 +137,7 @@ public class Swerve extends SubsystemBase {
     }
     
     public void toggle() {
-        if (fieldRelative) {
-            fieldRelative = false;
-            return;
-        }
-        fieldRelative = true;
+        fieldRelative = !fieldRelative;
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -172,17 +151,26 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         odometry.update(getGyroRotation2d(), getPositions());
-        // for(SwerveModule module : modules){
-        //     SmartDashboard.putNumber("Mod " + module.moduleNumber + " Cancoder", module.getCanCoder().getDegrees());
-        //     SmartDashboard.putNumber("Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
-        //     SmartDashboard.putNumber("Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);    
-        // }
         estimatedPose = odometry.getEstimatedPosition();
-        Translation2d position = estimatedPose.getTranslation();
-        SmartDashboard.putNumber("Robot X", position.getX());
-        SmartDashboard.putNumber("Robot Y", position.getY());
-        SmartDashboard.putNumber("Robot Gyro", getGyroRotation2d().getDegrees());
-        SmartDashboard.putString("POSE2D",getPose().toString());
+        logPose();
+    }
+
+    public Rotation2d getRotation2d() {
+        return estimatedPose.getRotation();
+    }
+    
+    public double calculateDegreesToTurn(){
+        double alpha = getHeading();
+        return MathUtil.inputModulus(calculateDesiredAngle() - alpha,-180,180);
+    }
+
+    public double calculateDesiredAngle(){
+        Pose2d location = getPose().relativeTo(FieldConstants.HUB_POSITION);
+        double theta = Math.toDegrees(Math.atan2(location.getY(),location.getX()));
+        return MathUtil.inputModulus(theta - 180,-180,180);
+    }
+
+    public void logPose() {
         double currTime = Math.floor(Timer.getFPGATimestamp());
         if (prevTime + 1 <= currTime && DriverStation.isEnabled()) {
             poseLogger += estimatedPose.getX() + "," + estimatedPose.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + currTime + "]";
@@ -203,6 +191,14 @@ public class Swerve extends SubsystemBase {
         return MathUtil.inputModulus(gyro.getYaw(),-180,180);
     }
 
+    public Rotation2d getGyroRotation2d() {
+        return Rotation2d.fromDegrees(getYaw());
+    }
+
+    public double getHeading() {
+        return getRotation2d().getDegrees();
+    }
+
     public double getPitch() {
         return gyro.getPitch();
     }
@@ -216,28 +212,5 @@ public class Swerve extends SubsystemBase {
 
     public void zeroGyro(double reset) {
         gyro.setYaw(reset);
-    }
-
-    public Rotation2d getGyroRotation2d() {
-        return Rotation2d.fromDegrees(getYaw());
-    }
-
-    public Rotation2d getRotation2d() {
-        return estimatedPose.getRotation();
-    }
-
-    public double getHeading() {
-        return getRotation2d().getDegrees();
-    }
-    
-    public double calculateDegreesToTurn(){
-        double alpha = getHeading();
-        return MathUtil.inputModulus(calculateDesiredAngle() - alpha,-180,180);
-    }
-
-    public double calculateDesiredAngle(){
-        Pose2d location = getPose().relativeTo(FieldConstants.HUB_POSITION);
-        double theta = Math.toDegrees(Math.atan2(location.getY(),location.getX()));
-        return MathUtil.inputModulus(theta - 180,-180,180);
     }
 }

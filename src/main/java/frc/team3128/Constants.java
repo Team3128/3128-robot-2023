@@ -16,14 +16,11 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.swerve.FalconConversions;
 import frc.team3128.common.swerve.SwerveModuleConstants;
-import frc.team3128.common.utility.interpolation.InterpolatingDouble;
-import frc.team3128.common.utility.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.util.Units;
 
 public class Constants {
 
@@ -39,21 +36,21 @@ public class Constants {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(26); // Units.inchesToMeters(21.73);
-        public static final double wheelBase = Units.inchesToMeters(26); // Units.inchesToMeters(21.73);
-        public static final double wheelDiameter = Units.inchesToMeters(4); // Units.inchesToMeters(3.94);
+        public static final double trackWidth = Units.inchesToMeters(26); 
+        public static final double wheelBase = Units.inchesToMeters(26); 
+        public static final double wheelDiameter = Units.inchesToMeters(4);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
 
         public static final double closedLoopRamp = 0.0;
 
-        public static final double driveGearRatio = 6.75; // (6.86 / 1.0); //6.86:1
-        public static final double angleGearRatio = (150.0 / 7.0); // 21.43; // (12.8 / 1.0); //12.8:1 
+        public static final double driveGearRatio = 6.75; 
+        public static final double angleGearRatio = (150.0 / 7.0); 
 
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
                 new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
                 new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
-                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); // laser was broken so offset
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); 
 
         /* Swerve Current Limiting */
         public static final int angleContinuousCurrentLimit = 25;
@@ -103,16 +100,16 @@ public class Constants {
         public static final double angleKF = 0.0;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.05;//1.476;//0.05; // citrus: 0.05 //sysid 2.9424
+        public static final double driveKP = 0.05; 
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
         // TODO: sysid this
-        public static final double driveKS = 0.60094;//(0.49321 / 12);
-        public static final double driveKV = 1.1559;//(2.4466 / 12);
-        public static final double driveKA = 0.12348;//(0.22036 / 12);
+        public static final double driveKS = 0.60094;
+        public static final double driveKV = 1.1559; 
+        public static final double driveKA = 0.12348; 
 
         public static final double turnTolerance = 2;
 
@@ -120,14 +117,10 @@ public class Constants {
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double maxSpeed = 4; //4.5// 4.96824; // citrus: 4.5 //meters per second - 16.3 ft/sec
+        public static final double maxSpeed = 4; //meters per second - 16.3 ft/sec
         public static final double maxAcceleration = 2;
-        public static final double maxAngularVelocity = 2;//3; //11.5; // citrus: 10
+        public static final double maxAngularVelocity = 2; //3; //11.5; // citrus: 10
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
-
-        public static final double xRateLimit = 1.0;
-        public static final double yRateLimit = 1.0;
-        public static final double zRateLimit = 1.0;
 
         /* Motor Inverts */
         public static final boolean driveMotorInvert = true;
@@ -183,20 +176,11 @@ public class Constants {
 
     }
 
-    public static class DriveConstants {
-
-        // public static final double ENCODER_DISTANCE_PER_MARK = WHEEL_RADIUS_METERS * 2 * Math.PI / FALCON_ENCODER_RESOLUTION;
-        // public static final double DRIVE_NU_TO_METER = ENCODER_DISTANCE_PER_MARK / DRIVE_GEARING; // meters driven per encoder tick
-        // public static final double DRIVE_NUp100MS_TO_MPS = DRIVE_NU_TO_METER * 10; // sensor units per 100 ms to m/s of drivetrain
-        // public static final double MAX_DRIVE_VEL_NUp100MS = 6380 * FALCON_ENCODER_RESOLUTION / 60 / 10; // max angular velocity of drivetrain (encoder, not wheel) in sensor units per 100 ms - 6380 RPM * RESOLUTION nu/rot * 1 min/60s * 1s/(10*100ms)
-
-    }
-
-    // subsystem constants classes here
-
     public static class VisionConstants {
 
-        public static final Camera SHOOTER = new Camera("Frog", true, 0, 0, 0,  new Transform2d(new Translation2d(Units.inchesToMeters(-7),Units.inchesToMeters(-13.75)), Rotation2d.fromDegrees(0)));
+        public static final Camera FRONT = new Camera("Frog", true, 0, 0, 0, 
+                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-7), 
+                                                        Units.inchesToMeters(-13.75)), Rotation2d.fromDegrees(0)));
 
         public static final double SCREEN_WIDTH = 320;
         public static final double SCREEN_HEIGHT = 240;
@@ -368,7 +352,6 @@ public class Constants {
         public static final int PORT = 0;
         public static final int LENGTH = 60;
     }
-}
 
     public static class ManipulatorConstants{
         public static final int MANIPULATOR_MOTOR_ID = 5;

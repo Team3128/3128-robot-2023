@@ -70,12 +70,6 @@ public class Telescope extends PIDSubsystem {
         m_teleMotor.setSmartCurrentLimit(TELE_CURRENT_LIMIT);
         m_teleMotor.enableVoltageCompensation(12.0);
         m_teleMotor.setIdleMode(IdleMode.kCoast);
-
-        // m_teleMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 0); 
-        // m_teleMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 0);
-        // m_teleMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 0);
-        // m_teleMotor.setControlFramePeriodMs(0);
-
     }
 
     private void configEncoders() {
@@ -103,16 +97,11 @@ public class Telescope extends PIDSubsystem {
        return m_teleMotor.getSelectedSensorPosition() + MIN_DIST;
     }
 
-    /**
-     * Data for Shuffleboard <-- worry about that later
-     */
     public void initShuffleboard() {
+        NAR_Shuffleboard.addData("Pivot + Tele", "Tele Angle", () -> getMeasurement(), 0, 0);
+        NAR_Shuffleboard.addComplex("Pivot + Tele", "Tele PID", getController(), 0, 1);
     }
 
-    @Override
-    public void periodic(){
-        super.periodic();
-    }
 
     /**
      * Telescope goes into neutral position (sets power to 0)

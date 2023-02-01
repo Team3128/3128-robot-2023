@@ -9,8 +9,6 @@ import frc.team3128.subsystems.Pivot.PivotAngles;
 import static frc.team3128.Constants.PivotConstants.*;
 import static frc.team3128.Constants.TelescopeConstants.*;
 
-
-
 public class Superstructure extends SubsystemBase {
 
     private final Pivot pivot;

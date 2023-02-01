@@ -84,6 +84,7 @@ public class CmdMove extends CommandBase {
 
     @Override
     public void initialize() {
+
         index = 0;
         boolean keepSkipping = true;
         for (int i = 0; i < poses.length; i++) {
@@ -94,6 +95,7 @@ public class CmdMove extends CommandBase {
             }
             keepSkipping = false;
         }
+
         xSetpoint = false;
         ySetpoint = false;
         rSetpoint = false;
@@ -119,19 +121,13 @@ public class CmdMove extends CommandBase {
         ySetpoint = yController.atSetpoint();
         rSetpoint = rController.atSetpoint();
 
-        if (xSetpoint) {
-            xDistance = 0;
-        }
-        if (ySetpoint || !canMove(pose.getX())) {
-            yDistance = 0;
-        }
-        if (rSetpoint) {
-            rotation = 0;
-        }
+        if (xSetpoint) xDistance = 0;
+        if (ySetpoint || !canMove(pose.getX())) yDistance = 0;
+        if (rSetpoint) rotation = 0;
 
         if (joystickOverride) {
             int team = DriverStation.getAlliance() == Alliance.Red ? 1 : -1;
-            if (Math.abs(xAxis.getAsDouble()) > 0.05 || Math.abs(yAxis.getAsDouble()) > 0.05 || Math.abs(rAxis.getAsDouble()) >0.5) {
+            if (Math.abs(xAxis.getAsDouble()) > 0.05 || Math.abs(yAxis.getAsDouble()) > 0.05 || Math.abs(rAxis.getAsDouble()) > 0.5) {
                 yDistance = xAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed * team;
                 xDistance = yAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed * -team;
                 rotation = -rAxis.getAsDouble() * maxAngularVelocity;
@@ -149,18 +145,8 @@ public class CmdMove extends CommandBase {
             ySetpoint = false;
             rSetpoint = false;
         }
+
         atDestination = (xSetpoint && ySetpoint && rSetpoint && atLastPoint());
-    }
-
-    @Override
-    public boolean isFinished() {
-        return atDestination;
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        System.out.println("CmdMove ended");
-        swerve.stop();
     }
 
     public boolean canMove(double x) {
@@ -180,16 +166,22 @@ public class CmdMove extends CommandBase {
 
     private boolean pastPoint(Pose2d goalPos) {
         Pose2d currentPos = swerve.getPose();
-        if (DriverStation.getAlliance() == Alliance.Red) {
-            return (currentPos.getX() > goalPos.getX());
-        }
-        else {
-            return (currentPos.getX() < goalPos.getX());
-        }
+        if (DriverStation.getAlliance() == Alliance.Red) return (currentPos.getX() > goalPos.getX());
+        return (currentPos.getX() < goalPos.getX());
     }
 
     private boolean atLastPoint() {
         return index == poses.length - 1;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return atDestination;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.stop();
     }
 
 }

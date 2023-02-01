@@ -14,11 +14,11 @@ import frc.team3128.Constants.LedConstants.*;
 public class Led extends SubsystemBase{
 
     private static Led instance;
-    private AddressableLED m_led;
-    private AddressableLEDBuffer m_ledBuffer;
+    private AddressableLED led;
+    private AddressableLEDBuffer ledBuffer;
 
     public Led(){
-        InitLeds();
+        initLEDs();
     }
     
     public static synchronized Led getInstance() {
@@ -28,33 +28,33 @@ public class Led extends SubsystemBase{
         return instance;
     }
     
-    public void InitLeds() {
-        m_led = new AddressableLED(LedConstants.PORT);
+    public void initLEDs() {
+        led = new AddressableLED(LedConstants.PORT);
 
-        m_ledBuffer = new AddressableLEDBuffer(LedConstants.LENGTH);
-        m_led.setLength(m_ledBuffer.getLength());
+        ledBuffer = new AddressableLEDBuffer(LedConstants.LENGTH);
+        led.setLength(ledBuffer.getLength());
 
-        m_led.setData(m_ledBuffer);
-        m_led.start();
+        led.setData(ledBuffer);
+        led.start();
     }
     
     //general color methods : use variables
     public void setRGB(int r, int g, int b) {
-        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
             // Sets the specified LED to the RGB values
-            m_ledBuffer.setRGB(i, r, g, b);
-         }
+            ledBuffer.setRGB(i, r, g, b);
+        }
          
-         m_led.setData(m_ledBuffer);
+        led.setData(ledBuffer);
     }
     
     public void setHSV(int h, int s, int v) {
-        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
             // Sets the specified LED to the HSV values
-            m_ledBuffer.setHSV(i, h, s, v);
-         }
+            ledBuffer.setHSV(i, h, s, v);
+        }
          
-         m_led.setData(m_ledBuffer);
+        led.setData(ledBuffer);
     }
 
     //custom color methods : use constants
@@ -66,7 +66,4 @@ public class Led extends SubsystemBase{
         setHSV(Purple.HUE, Purple.SATURATION, Purple.VALUE);
     }
 
-
-
-    
 }

@@ -1,11 +1,7 @@
 package frc.team3128.subsystems;
 
-import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -40,8 +36,7 @@ public class Vision extends SubsystemBase{
         NAR_Camera.setVisionTarget(FieldConstants.HUB_POSITION);
         NAR_Camera.multipleTargets = true;
         cameras = new HashMap<String,NAR_Camera>();
-        cameras.put(SHOOTER.hostname, new NAR_Camera(SHOOTER));
-        //cameras.put(Camera.SHOOTER.hostname, new NAR_Camera(Camera.SHOOTER));
+        cameras.put(FRONT.hostname, new NAR_Camera(FRONT));
     }
 
     public Pose2d targetPos(String name, Pose2d robotPos) {
@@ -56,12 +51,12 @@ public class Vision extends SubsystemBase{
         return cameras.get(name).getDistance();
     }
 
-    public double getTx(String name) {
+    public double getTX(String name) {
         NAR_Camera camera = cameras.get(name);
         return camera.targetYaw();
     }
 
-    public double getTy(String name) {
+    public double getTY(String name) {
         NAR_Camera camera = cameras.get(name);
         return camera.targetPitch();
     }
@@ -98,34 +93,27 @@ public class Vision extends SubsystemBase{
         for (NAR_Camera cam : getCameras()) {
             cam.update();
         }
-        SmartDashboard.putBoolean("HasTarget", cameras.get(SHOOTER.hostname).hasValidTarget());
-        SmartDashboard.putNumber("Distance", calculateDistance(SHOOTER.hostname));
-        SmartDashboard.putString("EstimatedPose",cameras.get(SHOOTER.hostname).getPos().toString());
-        // if(cameras.get(Camera.SHOOTER.hostname).hasValidTarget()) {
-        //     Swerve.getInstance().resetOdometry(cameras.get(Camera.SHOOTER.hostname).getPos());
-        // }
-        //SmartDashboard.putString("Aflack",cameras.get(Camera.SHOOTER.hostname).getPos().relativeTo(FieldConstants.HUB_POSITION).toString());
-        SmartDashboard.putNumber("Geico",cameras.get(SHOOTER.hostname).targetYaw());
-        SmartDashboard.putString("TARGETPOS",cameras.get(SHOOTER.hostname).getTargetPos(Swerve.getInstance().getPose()).toString());
-        SmartDashboard.putString("RAWTARGET",cameras.get(SHOOTER.hostname).getTarget().toString());
-        SmartDashboard.putNumber("TARGETGUITY",cameras.get(SHOOTER.hostname).targetAmbiguity());
-        SmartDashboard.putString("PROCESSED TARGET", cameras.get(SHOOTER.hostname).getProcessedTarget().toString());
-        SmartDashboard.putString("SUNSHINE", cameras.get(SHOOTER.hostname).getRawTarget().toString());
-        //System.out.println(hasValidTarget(SHOOTER.hostname));
-        double curTime = Timer.getFPGATimestamp();
-        if (prevTime + 1 < curTime) {
-            System.out.println(cameras.get(SHOOTER.hostname).getProcessedTarget().toString() + ":" + Swerve.getInstance().getHeading());
-            prevTime = curTime;
-        }
     }
     
     public void initShuffleboard() {
-        NAR_Camera cam = cameras.get(SHOOTER.hostname);
+        NAR_Camera cam = cameras.get(FRONT.hostname);
         NAR_Shuffleboard.addData("Vision","HasTarget", ()->cam.hasValidTarget(), 0, 0);
         NAR_Shuffleboard.addData("Vision","Distance",()->cam.getDistance(),1,0);
         NAR_Shuffleboard.addData("Vision","RawTarget",()->cam.getTarget().toString(),0,1,4,1);
         NAR_Shuffleboard.addData("Vision", "Processed Target",()->cam.getProcessedTarget().toString(),0,2,4,1);
         NAR_Shuffleboard.addData("Vision","EstimatedPose", ()-> cam.getPos().toString(),0,3,4,1);
         NAR_Shuffleboard.addData("Test", "Test", ()->CmdMoveScore.SELECTED_GRID,0,0);
+    }
+
+    public void logCameraAll() {
+        NAR_Shuffleboard.addData("Vision Urgent", "HasTarget", cameras.get(FRONT.hostname).hasValidTarget(),0,0);
+        NAR_Shuffleboard.addData("Vision Urgent", "Distance", calculateDistance(FRONT.hostname),1,0);
+        NAR_Shuffleboard.addData("Vision Urgent", "EstimatedPose",cameras.get(FRONT.hostname).getPos().toString(),0,1);
+        NAR_Shuffleboard.addData("Vision Urgent", "GEICO",cameras.get(FRONT.hostname).targetYaw(),2,0);
+        NAR_Shuffleboard.addData("Vision Urgent", "TARGETPOS",cameras.get(FRONT.hostname).getTargetPos(Swerve.getInstance().getPose()).toString(),0,2);
+        NAR_Shuffleboard.addData("Vision Urgent", "RAWTARGET",cameras.get(FRONT.hostname).getTarget().toString(),0,3);
+        NAR_Shuffleboard.addData("Vision Urgent", "TARGETGUITY",cameras.get(FRONT.hostname).targetAmbiguity(),3,0);
+        NAR_Shuffleboard.addData("Vision Urgent", "PROCESSED TARGET", cameras.get(FRONT.hostname).getProcessedTarget().toString(),0,4);
+        NAR_Shuffleboard.addData("Vision Urgent", "SUNSHINE", cameras.get(FRONT.hostname).getRawTarget().toString(),0,5);
     }
 }

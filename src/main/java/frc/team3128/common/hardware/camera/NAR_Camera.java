@@ -111,7 +111,6 @@ public class NAR_Camera extends PhotonCamera {
             for (int i = 0; i < poses.size(); i++) {
                 if (translationOutOfBounds(poses.get(i).getTranslation()))
                     return;
-                //System.out.println("Pain");
                 updatePose.accept(poses.get(i),result.getTimestampSeconds());
             }
             return;
@@ -222,8 +221,7 @@ public class NAR_Camera extends PhotonCamera {
 
     // Relative to Camera
     private double getVisionDistance(PhotonTrackedTarget target) {
-        if (!hasValidTarget())
-            return -1;
+        if (!hasValidTarget()) return -1;
         double ty = Units.degreesToRadians(targetPitch(target) + camera.angle);
         double tx = Units.degreesToRadians(targetYaw(target));
         return Math.abs(camera.targetHeight - camera.height) / (Math.tan(ty) * Math.cos(tx));
@@ -238,16 +236,14 @@ public class NAR_Camera extends PhotonCamera {
     }
 
     private Pose2d getTargetPosApril(Pose2d robotPos, PhotonTrackedTarget target) {
-        if (!hasValidTarget())
-            return new Pose2d();
+        if (!hasValidTarget()) return new Pose2d();
         Pose2d cameraPos = robotPos.transformBy(camera.offset.inverse());
         Transform2d transform = getTarget(target).inverse();
         return cameraPos.plus(transform);
     }
 
     private Pose2d getTargetPosVision(Pose2d robotPos, PhotonTrackedTarget target) {
-        if (!hasValidTarget())
-            return new Pose2d();
+        if (!hasValidTarget()) return new Pose2d();
         Pose2d cameraPos = robotPos.transformBy(camera.offset.inverse());
         Double distance = getVisionDistance(target);
         Double angle = cameraPos.getRotation().getRadians() - Units.degreesToRadians(targetYaw(target));
@@ -274,7 +270,6 @@ public class NAR_Camera extends PhotonCamera {
         Rotation2d angle = target.getRotation().plus(transform.getRotation());
 
         Pose2d pos = new Pose2d(coord,angle);
-        //Pose2d pos = bestTarget.transformBy(transform);
 
         return pos.transformBy(camera.offset);
     }
@@ -290,14 +285,11 @@ public class NAR_Camera extends PhotonCamera {
                 new Rotation2d(Units.degreesToRadians(gyro.getAsDouble())));
         Pose2d pos = visionTarget.transformBy(transform.inverse());
         return pos.transformBy(camera.offset);
-
-        // Pose2d pos = PhotonUtils.estimateFieldToRobot(getRelativeCamPos(gyroAngle),
-        // HUB_POSITION, offset);
     }
 
     // Relative to Robot
     @Deprecated
-private Pose2d visionEstimatedPose(Pose2d pose) {
+    private Pose2d visionEstimatedPose(Pose2d pose) {
         if (!hasValidTarget())
             return new Pose2d();
         double distToHubCenter = getDistance();
