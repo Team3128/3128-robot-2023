@@ -189,7 +189,7 @@ public class Constants {
 
     public static class VisionConstants {
 
-        public static final Camera SHOOTER = new Camera("Frog", true, 0, 0, 0,  new Transform2d(new Translation2d(Units.inchesToMeters(-13),Units.inchesToMeters(-1)), Rotation2d.fromDegrees(0)));
+        public static final Camera SHOOTER = new Camera("Frog", true, 0, 0, 0,  new Transform2d(new Translation2d(Units.inchesToMeters(-7),Units.inchesToMeters(-13.75)), Rotation2d.fromDegrees(0)));
 
         public static final double SCREEN_WIDTH = 320;
         public static final double SCREEN_HEIGHT = 240;
@@ -239,6 +239,8 @@ public class Constants {
 
         public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
 
+        public static final HashMap<Integer,Pose2d> TestTags = new HashMap<Integer, Pose2d>();
+
         static {
             APRIL_TAG_POS.put(1, new Pose2d(
                 new Translation2d(Units.inchesToMeters(610.77), Units.inchesToMeters(42.19)),
@@ -272,6 +274,10 @@ public class Constants {
                 new Translation2d(Units.inchesToMeters(40.45), Units.inchesToMeters(42.19)),
                 Rotation2d.fromDegrees(0))
             );
+
+            TestTags.put(8, APRIL_TAG_POS.get(3));
+            TestTags.put(7, APRIL_TAG_POS.get(2));
+            TestTags.put(6,APRIL_TAG_POS.get(1));
         } 
     }
 
@@ -310,8 +316,8 @@ public class Constants {
     
     public static class FieldConstants{
         public static final Pose2d HUB_POSITION = new Pose2d(Units.inchesToMeters(324), Units.inchesToMeters(162),Rotation2d.fromDegrees(-90));
-        public static final double FIELD_X_LENGTH = Units.inchesToMeters(648); // meters
-        public static final double FIELD_Y_LENGTH = Units.inchesToMeters(324); // meters
+        public static final double FIELD_X_LENGTH = Units.inchesToMeters(651.25); // meters
+        public static final double FIELD_Y_LENGTH = Units.inchesToMeters(315.5); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
 
         public static final double RAMP_X_RIGHT = Units.inchesToMeters(193.25);

@@ -1,10 +1,8 @@
 package frc.team3128.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -40,7 +38,7 @@ public class CmdMove extends CommandBase {
 
     private static PIDController xController, yController;
     private static PIDController rController;
-    private static DoubleSupplier xAxis, yAxis, throttle;
+    private static DoubleSupplier xAxis, yAxis, rAxis, throttle;
     private boolean xSetpoint, ySetpoint, rSetpoint, atDestination;
     protected Pose2d[] poses;
     private int index;
@@ -62,9 +60,10 @@ public class CmdMove extends CommandBase {
         addRequirements(swerve);
     }
 
-    public static void setController(DoubleSupplier x, DoubleSupplier y, DoubleSupplier accel) {
+    public static void setController(DoubleSupplier x, DoubleSupplier y, DoubleSupplier r, DoubleSupplier accel) {
         xAxis = x;
         yAxis = y;
+        rAxis = r;
         throttle = accel;
     }
 
@@ -100,8 +99,6 @@ public class CmdMove extends CommandBase {
         rSetpoint = false;
         atDestination = false;
 
-        Pose2d pos = swerve.getPose();
-
         xController.reset();
         yController.reset();
         rController.reset();
@@ -134,11 +131,10 @@ public class CmdMove extends CommandBase {
 
         if (joystickOverride) {
             int team = DriverStation.getAlliance() == Alliance.Red ? 1 : -1;
-            if (Math.abs(xAxis.getAsDouble()) > 0.05) {
+            if (Math.abs(xAxis.getAsDouble()) > 0.05 || Math.abs(yAxis.getAsDouble()) > 0.05 || Math.abs(rAxis.getAsDouble()) >0.5) {
                 yDistance = xAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed * team;
-            }
-            if (Math.abs(yAxis.getAsDouble()) > 0.05) {
                 xDistance = yAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed * -team;
+                rotation = -rAxis.getAsDouble() * maxAngularVelocity;
             }
         }
 
