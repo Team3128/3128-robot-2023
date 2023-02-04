@@ -7,8 +7,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.team3128.Constants.PivotConstants.*;
 
+import java.util.function.DoubleSupplier;
+
 import javax.print.attribute.standard.MediaSize.NA;
 
+import frc.team3128.Constants.PivotConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
@@ -17,6 +20,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Pivot extends PIDSubsystem {
+
+    private DoubleSupplier kF, setpoint;
 
     public enum PivotAngles {
         TOP_CONE(180 - 81.666), 
@@ -43,6 +48,7 @@ public class Pivot extends PIDSubsystem {
 
         configMotors();
         configEncoders();
+        getController().setTolerance(PIVOT_TOLERANCE);
     }
 
     public static synchronized Pivot getInstance(){
@@ -80,26 +86,31 @@ public class Pivot extends PIDSubsystem {
 
     @Override
     public void periodic() {
-        NAR_Shuffleboard.addData("pivot","pivot angle", getMeasurement(),0,0);
-        NAR_Shuffleboard.addData("pivot", "pivot setpoint", getSetpoint(), 0, 1);
         super.periodic();
+    }
+
+    public void initShuffleboard() {
+        NAR_Shuffleboard.addData("pivot","pivot angle", ()->getMeasurement(),0,0);
+        NAR_Shuffleboard.addData("pivot", "pivot setpoint", ()->getSetpoint(), 0, 1);
+        kF = NAR_Shuffleboard.debug("pivot","kF", PivotConstants.kF, 0,2);
+        setpoint = NAR_Shuffleboard.debug("pivot", "setpoint", 0, 1,2);
+        NAR_Shuffleboard.addComplex("pivot", "Pivot-PID",m_controller, 2, 0);
     }
 
     public void startPID(PivotAngles anglePos) {        
         enable();
         super.setSetpoint(anglePos.angle);
-        getController().setTolerance(PIVOT_TOLERANCE);
     }
 
     public void startPID(double anglePos) {        
         enable();
-        super.setSetpoint(anglePos);
-        getController().setTolerance(PIVOT_TOLERANCE);
+        super.setSetpoint(setpoint.getAsDouble());
+        //super.setSetpoint(anglePos);
     }
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        double ff = kF * Math.sin(Units.degreesToRadians(setpoint)); //Need to calculate this
+        double ff = kF.getAsDouble() * Math.sin(Units.degreesToRadians(setpoint)); //Need to calculate this
         double voltageOutput = output + ff;
 
         m_rotateMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));

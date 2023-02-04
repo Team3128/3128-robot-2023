@@ -43,11 +43,7 @@ public class SwerveModule {
         configAngleMotor();
 
         /* Drive Motor Config */
-        if (moduleNumber == 1) {
-            driveMotor = new TalonFX(moduleConstants.driveMotorID, "rio");
-        } else {
-            driveMotor = new TalonFX(moduleConstants.driveMotorID, moduleConstants.canBus);
-        }
+        driveMotor = new TalonFX(moduleConstants.driveMotorID, moduleConstants.canBus); 
         
         configDriveMotor();
 

@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.Encoder;
 import static frc.team3128.Constants.TelescopeConstants.*;
 import static frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.*;
 
+import java.util.function.DoubleSupplier;
+
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
@@ -27,6 +29,8 @@ import static frc.team3128.Constants.TelescopeConstants;
  */
 
 public class Telescope extends PIDSubsystem {
+
+    private DoubleSupplier kG, kF, setpoint;
 
     public enum TeleDists {
         TOP_CONE(56.75), 
@@ -54,6 +58,7 @@ public class Telescope extends PIDSubsystem {
 
         configMotors();
         configEncoders();
+        getController().setTolerance(TELE_TOLERANCE);
     }
 
     public static synchronized Telescope getInstance() {
@@ -86,20 +91,19 @@ public class Telescope extends PIDSubsystem {
     public void startPID(TeleDists teleDist) {        
         enable();
         super.setSetpoint(teleDist.dist);
-        getController().setTolerance(TELE_TOLERANCE);
     }
 
     public void startPID(double teleDist) {
         enable();
-        super.setSetpoint(teleDist);
-        getController().setTolerance(TELE_TOLERANCE);
+        super.setSetpoint(setpoint.getAsDouble());
+        //super.setSetpoint(teleDist);
     }
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        double ff = kF * setpoint; //Need to calculate this
+        double pivotAngle = Math.toRadians(Pivot.getInstance().getMeasurement());
+        double ff = -kG.getAsDouble() * Math.cos(pivotAngle) + kF.getAsDouble();
         double voltageOutput = output + ff;
-        // TODO: account for rotation in pivot b/c gravity
 
         m_teleMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
     }
@@ -115,6 +119,12 @@ public class Telescope extends PIDSubsystem {
     public void initShuffleboard() {
         NAR_Shuffleboard.addData("telescope","telescope angle", getMeasurement(),0,0);
         NAR_Shuffleboard.addData("telescope", "telescope setpoint", getSetpoint(), 0, 1);
+
+        kG = NAR_Shuffleboard.debug("telescope","kG", TelescopeConstants.kG,0,2);
+        kF = NAR_Shuffleboard.debug("telescope", "kF", TelescopeConstants.kF, 1, 2);
+        setpoint = NAR_Shuffleboard.debug("telescope","setpoint", TelescopeConstants.MIN_DIST, 2,0);
+        NAR_Shuffleboard.addComplex("telescope", "tele-PID", m_controller, 2, 0);
+        
         super.periodic();
     }
 

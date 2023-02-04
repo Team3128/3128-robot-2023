@@ -22,6 +22,7 @@ import frc.team3128.common.utility.Log;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 
 /**
@@ -37,6 +38,7 @@ public class RobotContainer {
     private Vision vision;
     private NAR_Camera cam;
     private Pivot pivot;
+    private Telescope telescope;
 
     private NAR_Joystick leftStick;
     private NAR_Joystick rightStick;
@@ -54,6 +56,8 @@ public class RobotContainer {
         // ConstantsInt.initTempConstants();
         swerve = Swerve.getInstance();
         pivot = Pivot.getInstance();
+        telescope = Telescope.getInstance();
+
 
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
@@ -74,6 +78,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
+        rightStick.getButton(3).onTrue(new InstantCommand(()->pivot.startPID(90)));
+        rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.startPID(90)));
 
         // rightStick.getButton(3).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         // rightStick.getButton(4).onTrue(new CmdAlign()).onFalse(new InstantCommand(()-> swerve.stop()));
@@ -106,6 +112,9 @@ public class RobotContainer {
 
         swerve.initShuffleboard();
         vision.initShuffleboard();
+        telescope.initShuffleboard();
+        pivot.initShuffleboard();
+        
 
         NarwhalDashboard.startServer();   
         
