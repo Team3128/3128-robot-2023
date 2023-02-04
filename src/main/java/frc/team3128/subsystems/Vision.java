@@ -103,6 +103,7 @@ public class Vision extends SubsystemBase{
         NAR_Shuffleboard.addData("Vision", "Processed Target",()->cam.getProcessedTarget().toString(),0,2,4,1);
         NAR_Shuffleboard.addData("Vision","EstimatedPose", ()-> cam.getPos().toString(),0,3,4,1);
         NAR_Shuffleboard.addData("Test", "Test", ()->CmdMoveScore.SELECTED_GRID,0,0);
+        NAR_Shuffleboard.addData("Test", "TESTING", ()->cam.getTest().toString(),0,1,3,1);
     }
 
     public void logCameraAll() {
