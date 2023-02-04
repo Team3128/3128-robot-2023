@@ -42,14 +42,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public Swerve() {
-        gyro = new WPI_Pigeon2(pigeonID);
+        gyro = new WPI_Pigeon2(pigeonID, "drivetrain");
         gyro.configFactoryDefault();
         zeroGyro();
         fieldRelative = true;
         estimatedPose = new Pose2d();
-
-        odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
-                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
 
         modules = new SwerveModule[] {
             new SwerveModule(0, Mod0.constants),
@@ -57,6 +54,11 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(2, Mod2.constants),
             new SwerveModule(3, Mod3.constants)
         };
+
+        odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
+                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
+
+        
 
         field = new Field2d();
         SmartDashboard.putData("Field", field);

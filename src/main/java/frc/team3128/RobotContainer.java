@@ -21,6 +21,8 @@ import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
+import frc.team3128.subsystems.Manipulator;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -34,6 +36,7 @@ public class RobotContainer {
     private Swerve swerve;
     private Vision vision;
     private NAR_Camera cam;
+    private Manipulator manipulator;
 
     private NAR_Joystick leftStick;
     private NAR_Joystick rightStick;
@@ -50,6 +53,7 @@ public class RobotContainer {
         vision = Vision.getInstance();
         // ConstantsInt.initTempConstants();
         swerve = Swerve.getInstance();
+        manipulator = Manipulator.getInstance();
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
 
@@ -57,7 +61,7 @@ public class RobotContainer {
         rightStick = new NAR_Joystick(1);
         controller = new NAR_XboxController(2);
 
-        commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
+        // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
         //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
         initDashboard();
         configureButtonBindings();
@@ -67,12 +71,16 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        rightStick.getButton(1).whenActive(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        rightStick.getButton(2).whenActive(new InstantCommand(swerve::toggle));
-        rightStick.getButton(3).whenActive(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        rightStick.getButton(4).whenActive(new CmdAlign()).whenInactive(new InstantCommand(()-> swerve.stop()));
-        rightStick.getButton(5).whenActive(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(Camera.SHOOTER.hostname))));
-        rightStick.getButton(6).whenActive(new CmdTargetPursuit(Camera.SHOOTER.hostname)).whenInactive(new InstantCommand(()->swerve.stop(),swerve));
+        // rightStick.getButton(1).whenActive(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
+        // rightStick.getButton(2).whenActive(new InstantCommand(swerve::toggle));
+        // rightStick.getButton(3).whenActive(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
+        // rightStick.getButton(4).whenActive(new CmdAlign()).whenInactive(new InstantCommand(()-> swerve.stop()));
+        // rightStick.getButton(5).whenActive(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(Camera.SHOOTER.hostname))));
+        // rightStick.getButton(6).whenActive(new CmdTargetPursuit(Camera.SHOOTER.hostname)).whenInactive(new InstantCommand(()->swerve.stop(),swerve));
+
+        rightStick.getButton(1).onTrue(new InstantCommand(() -> manipulator.openClaw()));
+        rightStick.getButton(2).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+
         // rightStick.getButton(6).whenActive(new InstantCommand(()-> {
         //     if(vision.hasValidTarget(Camera.SHOOTER.hostname)) {
         //         Trajectories.lineCmd(swerve.getPose(),vision.targetPos(Camera.SHOOTER.hostname, swerve.getPose()));
