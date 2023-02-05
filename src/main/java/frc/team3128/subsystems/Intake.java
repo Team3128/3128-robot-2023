@@ -75,6 +75,10 @@ public class Intake extends SubsystemBase {
         m_intakeWheels.set(WHEELS_POWER);
     }
 
+    public void enableWheels(double wheelsPower) {
+        m_intakeWheels.set(wheelsPower);
+    }
+
     public void disableWheels() {
         m_intakeWheels.set(0);
     }
