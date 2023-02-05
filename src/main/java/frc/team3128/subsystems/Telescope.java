@@ -113,12 +113,20 @@ public class Telescope extends PIDSubsystem {
        return m_teleMotor.getSelectedSensorPosition() + MIN_DIST;
     }
 
+    public void extend() {
+        m_teleMotor.set(1);
+    }
+
+    public void retract() {
+        m_teleMotor.set(-1);
+    }
+
     /**
      * Data for Shuffleboard <-- worry about that later
      */
     public void initShuffleboard() {
-        NAR_Shuffleboard.addData("telescope","telescope angle", getMeasurement(),0,0);
-        NAR_Shuffleboard.addData("telescope", "telescope setpoint", getSetpoint(), 0, 1);
+        NAR_Shuffleboard.addData("telescope","telescope dist", ()->getMeasurement(),0,0);
+        NAR_Shuffleboard.addData("telescope", "telescope setpoint",()->getSetpoint(), 0, 1);
 
         kG = NAR_Shuffleboard.debug("telescope","kG", TelescopeConstants.kG,0,2);
         kF = NAR_Shuffleboard.debug("telescope", "kF", TelescopeConstants.kF, 1, 2);
@@ -131,6 +139,7 @@ public class Telescope extends PIDSubsystem {
     @Override
     public void periodic(){
         super.periodic();
+        NAR_Shuffleboard.addData("telescope", "tele speed", m_encoder.getVelocity(), 3, 0);
     }
 
     /**

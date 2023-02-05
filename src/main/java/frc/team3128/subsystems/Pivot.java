@@ -49,6 +49,7 @@ public class Pivot extends PIDSubsystem {
         configMotors();
         configEncoders();
         getController().setTolerance(PIVOT_TOLERANCE);
+        // startPID(-45);
     }
 
     public static synchronized Pivot getInstance(){
@@ -76,12 +77,20 @@ public class Pivot extends PIDSubsystem {
         m_encoder.setPositionConversionFactor(ENC_CONV);
     }
 
+    public void setPower(double power) {
+        m_rotateMotor.set(power);
+    }
+
     public void stopPivot() {
         disable();
     }
 
     public void zeroEncoder() {
         m_encoder.setPosition(0);
+    }
+
+    public void resetEncoder90() {
+        m_encoder.setPosition(-90);
     }
 
     @Override

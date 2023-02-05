@@ -120,8 +120,8 @@ public class Constants {
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0 {
-            public static final int driveMotorID = 0;
-            public static final int angleMotorID = 1;
+            public static final int driveMotorID = 1;
+            public static final int angleMotorID = 2;
             public static final int canCoderID = 20;
             public static final double angleOffset = -157.763671875; // deg
             public static final String canBus = "drivetrain";
@@ -131,8 +131,8 @@ public class Constants {
 
         /* Front Right Module - Module 1 */
         public static final class Mod1 {
-            public static final int driveMotorID = 2;
-            public static final int angleMotorID = 3;
+            public static final int driveMotorID = 3;
+            public static final int angleMotorID = 4;
             public static final int canCoderID = 21;
             public static final double angleOffset = 129.375; // deg
             public static final String canBus = "drivetrain";
@@ -142,8 +142,8 @@ public class Constants {
         
         /* Back Left Module - Module 2 */
         public static final class Mod2 {
-            public static final int driveMotorID = 4;
-            public static final int angleMotorID = 5;
+            public static final int driveMotorID = 5;
+            public static final int angleMotorID = 6;
             public static final int canCoderID = 22;
             public static final double angleOffset = -69.697265625; // deg
             public static final String canBus = "drivetrain"; 
@@ -153,8 +153,8 @@ public class Constants {
 
         /* Back Right Module - Module 3 */
         public static final class Mod3 {
-            public static final int driveMotorID = 6;
-            public static final int angleMotorID = 7;
+            public static final int driveMotorID = 7;
+            public static final int angleMotorID = 8;
             public static final int canCoderID = 23;
             public static final double angleOffset = -54.31640625; // deg
             public static final String canBus = "drivetrain";
@@ -210,11 +210,11 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 1E-1;
+        public static final double kP = 5E-1;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 5E-1;
-        public static final int PIVOT_MOTOR_ID = 19;
+        public static final double kF = 1;
+        public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 5.0;
         public static final double MIN_ANGLE = 0;
@@ -232,9 +232,9 @@ public class Constants {
         public static final double kD = 0;
         public static final double kF = 0;
         public static final double kG = 0;
-        public static final int TELE_MOTOR_ID = 5;
+        public static final int TELE_MOTOR_ID = 10;
         public static final double TELE_MOTOR_POWER = 0.5;
-        public static final double ENC_CONV = 1/5;
+        public static final double ENC_CONV = 15.0;
         public static final double MIN_DIST = 16;
         public static final double MAX_DIST = 57;
         public static final double TELE_TOLERANCE = 3;

@@ -58,7 +58,7 @@ public class RobotContainer {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
 
-
+        // pivot.enable();
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
 
@@ -67,7 +67,7 @@ public class RobotContainer {
         controller = new NAR_XboxController(2);
 
         // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
-        commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
+        // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
         initDashboard();
         configureButtonBindings();
         
@@ -78,8 +78,19 @@ public class RobotContainer {
     private void configureButtonBindings() {
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
-        rightStick.getButton(3).onTrue(new InstantCommand(()->pivot.startPID(90)));
-        rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.startPID(90)));
+
+        rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(90)));
+        rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(40)));
+        rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
+        rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.resetEncoder90()));
+        rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
+
+        rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele()));
+        rightStick.getButton(10).onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele()));
+        
+        // rightStick.getButton(8).onTrue(new InstantCommand(()->pivot.setPower(0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        // rightStick.getButton(9).onTrue(new InstantCommand(()->pivot.setPower(-0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+
 
         // rightStick.getButton(3).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         // rightStick.getButton(4).onTrue(new CmdAlign()).onFalse(new InstantCommand(()-> swerve.stop()));
