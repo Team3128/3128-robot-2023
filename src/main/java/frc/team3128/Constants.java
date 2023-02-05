@@ -116,8 +116,8 @@ public class Constants {
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0 {
-            public static final int driveMotorID = 0;
-            public static final int angleMotorID = 1;
+            public static final int driveMotorID = 1;
+            public static final int angleMotorID = 2;
             public static final int canCoderID = 20;
             public static final double angleOffset = -157.763671875; // deg
             public static final SwerveModuleConstants constants = 
@@ -126,8 +126,8 @@ public class Constants {
 
         /* Front Right Module - Module 1 */
         public static final class Mod1 {
-            public static final int driveMotorID = 2;
-            public static final int angleMotorID = 3;
+            public static final int driveMotorID = 3;
+            public static final int angleMotorID = 4;
             public static final int canCoderID = 21;
             public static final double angleOffset = 129.375; // deg
             public static final SwerveModuleConstants constants = 
@@ -136,8 +136,8 @@ public class Constants {
         
         /* Back Left Module - Module 2 */
         public static final class Mod2 {
-            public static final int driveMotorID = 4;
-            public static final int angleMotorID = 5;
+            public static final int driveMotorID = 5;
+            public static final int angleMotorID = 6;
             public static final int canCoderID = 22;
             public static final double angleOffset = -69.697265625; // deg
             public static final SwerveModuleConstants constants = 
@@ -146,8 +146,8 @@ public class Constants {
 
         /* Back Right Module - Module 3 */
         public static final class Mod3 {
-            public static final int driveMotorID = 6;
-            public static final int angleMotorID = 7;
+            public static final int driveMotorID = 7;
+            public static final int angleMotorID = 8;
             public static final int canCoderID = 23;
             public static final double angleOffset = -54.31640625; // deg
             public static final SwerveModuleConstants constants = 
@@ -212,8 +212,8 @@ public class Constants {
     public static class ManipulatorConstants{
         public static final int MANIPULATOR_MOTOR_ID = 5;
 
-        public static final int MANIPULATOR_SOLENOID_FORWARD_CHANNEL_ID = 1;
-        public static final int MANIPULATOR_SOLENOID_BACKWARD_CHANNEL_ID = 2;
+        public static final int MANIPULATOR_SOLENOID_FORWARD_CHANNEL_ID = 3;
+        public static final int MANIPULATOR_SOLENOID_BACKWARD_CHANNEL_ID = 4;
 
         public static final double MANIPULATOR_MOTOR_SPEED_PERCENT = 0.57;
         public static final double MAX_TICKS = 342.00; // this is the estimated maximum release value change once the value has been established
