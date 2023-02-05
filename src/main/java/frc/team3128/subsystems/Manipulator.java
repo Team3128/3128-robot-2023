@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.common.hardware.motor.NAR_Motor;
 import frc.team3128.common.hardware.motorcontroller.NAR_TalonFX;
+import frc.team3128.common.utility.Log;
+import frc.team3128.common.utility.NAR_Shuffleboard;
+
 import static frc.team3128.Constants.ManipulatorConstants.*;
 
 public class Manipulator extends SubsystemBase {
@@ -21,7 +24,7 @@ public class Manipulator extends SubsystemBase {
 
     public Manipulator(){
         m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, MANIPULATOR_SOLENOID_FORWARD_CHANNEL_ID, MANIPULATOR_SOLENOID_BACKWARD_CHANNEL_ID);
-        inputSwitch = new DigitalInput(0);
+        // inputSwitch = new DigitalInput(0);
         m_solenoid.set(Value.kReverse);
         // manipulator_motor  = new NAR_TalonFX( MANIPULATOR_MOTOR_ID );
         // manipulator_motor.setNeutralMode(NeutralMode.Brake);
@@ -30,22 +33,23 @@ public class Manipulator extends SubsystemBase {
 
     @Override
     public void periodic(){
-        switchDesiredState();
+        NAR_Shuffleboard.addData("Manipulator","Value",getClawState().toString(),0,0);
     }
     public static Manipulator getInstance() {
-        if(instance == null){
+        if (instance == null){
             instance = new Manipulator() ;  
         }
+        
         return instance;
     }
     public void openClaw(){
         m_solenoid.set(Value.kReverse);
-        desiredState = true;
+        // desiredState = true;
         //manipulator_motor.set(-MANIPULATOR_MOTOR_SPEED_PERCENT);
     }
     public void closeClaw(){
         m_solenoid.set(Value.kForward);
-        desiredState = false;
+        // desiredState = false;
         //manipulator_motor.set(MANIPULATOR_MOTOR_SPEED_PERCENT);
     }
 
@@ -57,16 +61,16 @@ public class Manipulator extends SubsystemBase {
         if (getClawState() == Value.kForward) {
             openClaw();
         }
-        else if (getClawState() == Value.kReverse || getClawState() == Value.kOff) {
+        else if (getClawState() == Value.kReverse) {
             closeClaw();
         }
     }
 
-    public void switchDesiredState(){
-        if (!(inputSwitch.get()) && desiredState){
-            closeClaw();
-        }
-    }
+    // public void switchDesiredState(){
+    //     if (!(inputSwitch.get()) && desiredState){
+    //         closeClaw();
+    //     }
+    // }
 
     // public void stop(){
     //     manipulator_motor.set(0);
