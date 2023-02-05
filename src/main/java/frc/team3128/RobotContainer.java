@@ -51,7 +51,6 @@ public class RobotContainer {
 
     public RobotContainer() {
         vision = Vision.getInstance();
-        // ConstantsInt.initTempConstants();
         swerve = Swerve.getInstance();
         manipulator = Manipulator.getInstance();
 
@@ -81,6 +80,12 @@ public class RobotContainer {
         rightStick.getButton(1).onTrue(new InstantCommand(() -> manipulator.openClaw()));
         rightStick.getButton(2).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
 
+
+        /* MANIPULATOR BUTTONS:
+        rightStick.getButton(10).onTrue(new InstantCommand(() -> manipulator.openClaw()));
+        rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        */
+
         // rightStick.getButton(6).whenActive(new InstantCommand(()-> {
         //     if(vision.hasValidTarget(Camera.SHOOTER.hostname)) {
         //         Trajectories.lineCmd(swerve.getPose(),vision.targetPos(Camera.SHOOTER.hostname, swerve.getPose()));
@@ -90,7 +95,6 @@ public class RobotContainer {
         // hasTarget = new Trigger(()-> vision.hasValidTarget(Camera.SHOOTER.hostname))
         // .whenActive(new RunCommand(()-> controller.setRumble(RumbleType.kLeftRumble,1)))
         // .whenInactive(new InstantCommand(()-> controller.setRumble(RumbleType.kLeftRumble, 0)));
-
     }
 
     public void init() {
@@ -105,6 +109,7 @@ public class RobotContainer {
 
         swerve.initShuffleboard();
         vision.initShuffleboard();
+        manipulator.initShuffleboard();
 
         NarwhalDashboard.startServer();   
         
