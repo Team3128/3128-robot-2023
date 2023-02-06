@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.team3128.common.swerve.FalconConversions;
 import frc.team3128.common.swerve.SwerveModuleConstants;
 import frc.team3128.common.utility.interpolation.InterpolatingDouble;
 import frc.team3128.common.utility.interpolation.InterpolatingTreeMap;
@@ -248,5 +249,11 @@ public class Constants {
         public static final double FIELD_X_LENGTH = Units.inchesToMeters(648); // meters
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(324); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
+    }
+
+
+    public static class ManipulatorConstants{
+        public static final int SOLENOID_FORWARD_CHANNEL_ID = 3;
+        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 4;
     }
 }

@@ -24,6 +24,8 @@ import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
+import frc.team3128.subsystems.Manipulator;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,6 +41,7 @@ public class RobotContainer {
     private NAR_Camera cam;
     private Pivot pivot;
     private Telescope telescope;
+    private Manipulator manipulator;
 
     private NAR_Joystick leftStick;
     private NAR_Joystick rightStick;
@@ -53,12 +56,10 @@ public class RobotContainer {
 
     public RobotContainer() {
         vision = Vision.getInstance();
-        // ConstantsInt.initTempConstants();
         swerve = Swerve.getInstance();
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
-
-        // pivot.enable();
+        manipulator = Manipulator.getInstance();
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
 
@@ -68,6 +69,7 @@ public class RobotContainer {
 
         // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
         // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
+
         initDashboard();
         configureButtonBindings();
         
@@ -91,24 +93,11 @@ public class RobotContainer {
         // rightStick.getButton(8).onTrue(new InstantCommand(()->pivot.setPower(0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         // rightStick.getButton(9).onTrue(new InstantCommand(()->pivot.setPower(-0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
 
-
-        // rightStick.getButton(3).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        // rightStick.getButton(4).onTrue(new CmdAlign()).onFalse(new InstantCommand(()-> swerve.stop()));
-        // rightStick.getButton(5).onTrue(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(Camera.SHOOTER.hostname))));
-        // rightStick.getButton(6).onTrue(new CmdTargetPursuit(Camera.SHOOTER.hostname)).onFalse(new InstantCommand(()->swerve.stop(),swerve));
-
-        // rightStick.getButton(6).whenActive(new InstantCommand(()-> {
-        //     if(vision.hasValidTarget(Camera.SHOOTER.hostname)) {
-        //         Trajectories.lineCmd(swerve.getPose(),vision.targetPos(Camera.SHOOTER.hostname, swerve.getPose()));
-        //     }
-        // })).whenInactive(new InstantCommand(swerve::stop,swerve));
-
-        // hasTarget = new Trigger(()-> vision.hasValidTarget(Camera.SHOOTER.hostname))
-        // .whenActive(new RunCommand(()-> controller.setRumble(RumbleType.kLeftRumble,1)))
-        // .whenInactive(new InstantCommand(()-> controller.setRumble(RumbleType.kLeftRumble, 0)));
-
-        //rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
-
+        // rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
+        
+        rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.openClaw()));
+        rightStick.getButton(12).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        
     }
 
     public void init() {
@@ -125,7 +114,7 @@ public class RobotContainer {
         vision.initShuffleboard();
         telescope.initShuffleboard();
         pivot.initShuffleboard();
-        
+        manipulator.initShuffleboard();
 
         NarwhalDashboard.startServer();   
         
