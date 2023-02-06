@@ -19,7 +19,10 @@ import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
+import frc.team3128.common.utility.NAR_Shuffleboard;
+import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import frc.team3128.subsystems.Manipulator;
 
@@ -36,6 +39,8 @@ public class RobotContainer {
     private Swerve swerve;
     private Vision vision;
     private NAR_Camera cam;
+    private Pivot pivot;
+    private Telescope telescope;
     private Manipulator manipulator;
 
     private NAR_Joystick leftStick;
@@ -52,6 +57,8 @@ public class RobotContainer {
     public RobotContainer() {
         vision = Vision.getInstance();
         swerve = Swerve.getInstance();
+        pivot = Pivot.getInstance();
+        telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
@@ -61,7 +68,8 @@ public class RobotContainer {
         controller = new NAR_XboxController(2);
 
         // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
-        //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
+        // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
+
         initDashboard();
         configureButtonBindings();
         
@@ -70,9 +78,25 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
+        rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
+        rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
 
-        rightStick.getButton(10).onTrue(new InstantCommand(() -> manipulator.openClaw()));
-        rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(90)));
+        rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(40)));
+        rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
+        rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.resetEncoder90()));
+        rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
+
+        rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele()));
+        rightStick.getButton(10).onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele()));
+        
+        // rightStick.getButton(8).onTrue(new InstantCommand(()->pivot.setPower(0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        // rightStick.getButton(9).onTrue(new InstantCommand(()->pivot.setPower(-0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+
+        // rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
+        
+        rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.openClaw()));
+        rightStick.getButton(12).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
         
     }
 
@@ -88,6 +112,8 @@ public class RobotContainer {
 
         swerve.initShuffleboard();
         vision.initShuffleboard();
+        telescope.initShuffleboard();
+        pivot.initShuffleboard();
         manipulator.initShuffleboard();
 
         NarwhalDashboard.startServer();   
@@ -109,5 +135,6 @@ public class RobotContainer {
         SmartDashboard.putNumber("LeftY",controller.getLeftY());
         SmartDashboard.putNumber("RightX",controller.getRightX());
         SmartDashboard.putNumber("RightY",controller.getRightY());
+        NAR_Shuffleboard.update();
     }
 }
