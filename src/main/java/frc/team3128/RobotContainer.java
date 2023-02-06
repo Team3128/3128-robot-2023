@@ -70,31 +70,10 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        // rightStick.getButton(1).whenActive(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        // rightStick.getButton(2).whenActive(new InstantCommand(swerve::toggle));
-        // rightStick.getButton(3).whenActive(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        // rightStick.getButton(4).whenActive(new CmdAlign()).whenInactive(new InstantCommand(()-> swerve.stop()));
-        // rightStick.getButton(5).whenActive(new InstantCommand(()->swerve.resetOdometry(vision.robotPos(Camera.SHOOTER.hostname))));
-        // rightStick.getButton(6).whenActive(new CmdTargetPursuit(Camera.SHOOTER.hostname)).whenInactive(new InstantCommand(()->swerve.stop(),swerve));
 
-        rightStick.getButton(1).onTrue(new InstantCommand(() -> manipulator.openClaw()));
-        rightStick.getButton(2).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
-
-
-        /* MANIPULATOR BUTTONS:
         rightStick.getButton(10).onTrue(new InstantCommand(() -> manipulator.openClaw()));
         rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
-        */
-
-        // rightStick.getButton(6).whenActive(new InstantCommand(()-> {
-        //     if(vision.hasValidTarget(Camera.SHOOTER.hostname)) {
-        //         Trajectories.lineCmd(swerve.getPose(),vision.targetPos(Camera.SHOOTER.hostname, swerve.getPose()));
-        //     }
-        // })).whenInactive(new InstantCommand(swerve::stop,swerve));
-
-        // hasTarget = new Trigger(()-> vision.hasValidTarget(Camera.SHOOTER.hostname))
-        // .whenActive(new RunCommand(()-> controller.setRumble(RumbleType.kLeftRumble,1)))
-        // .whenInactive(new InstantCommand(()-> controller.setRumble(RumbleType.kLeftRumble, 0)));
+        
     }
 
     public void init() {

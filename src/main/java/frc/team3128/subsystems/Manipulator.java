@@ -36,7 +36,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void closeClaw(){
-        m_solenoid.set(Value.kReverse);
+        m_solenoid.set(Value.kForward);
     }
     
     public void toggleClaw() {
