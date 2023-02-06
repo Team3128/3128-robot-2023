@@ -19,8 +19,10 @@ import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
+import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
+import frc.team3128.subsystems.Intake.IntakeState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -34,6 +36,7 @@ public class RobotContainer {
     private Swerve swerve;
     private Vision vision;
     private NAR_Camera cam;
+    private Intake intake;
 
     private NAR_Joystick leftStick;
     private NAR_Joystick rightStick;
@@ -50,6 +53,7 @@ public class RobotContainer {
         vision = Vision.getInstance();
         // ConstantsInt.initTempConstants();
         swerve = Swerve.getInstance();
+        intake = Intake.getInstance();
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
 
@@ -83,6 +87,16 @@ public class RobotContainer {
         // .whenActive(new RunCommand(()-> controller.setRumble(RumbleType.kLeftRumble,1)))
         // .whenInactive(new InstantCommand(()-> controller.setRumble(RumbleType.kLeftRumble, 0)));
 
+        /* Intake Buttons
+         * rightStick.getButton(20).onTrue(new InstantCommand(() -> intake.setIntakeState(IntakeState.DEPLOYED), intake));
+         * rightStick.getButton(21).onTrue(new InstantCommand(() -> intake.setIntakeState(IntakeState.RETRACTED), intake));
+         * rightStick.getButton(22).onTrue(new InstantCommand(() -> intake.setIntakeState(IntakeState.SEMI_DEPLOYED), intake));
+         * rightStick.getButton(23).onTrue(new InstantCommand(() -> intake.setIntakeState(IntakeState.DESPOSIT), intake));
+         * 
+         * rightStick.getButton(24).onTrue(new InstantCommand(() -> intake.enableRollersForward(), intake)).onFalse(new InstantCommand(() -> intake.disableRollers()));
+         * rightStick.getButton(25).onTrue(new InstantCommand(() -> intake.enableRollersReverse(), intake)).onFalse(new InstantCommand(() -> intake.disableRollers()));
+         */
+
     }
 
     public void init() {
@@ -97,6 +111,7 @@ public class RobotContainer {
 
         swerve.initShuffleboard();
         vision.initShuffleboard();
+        intake.initShuffleboard();
 
         NarwhalDashboard.startServer();   
         

@@ -207,20 +207,8 @@ public class Constants {
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
     }
 
-
-
-
-    public static class ManipulatorConstants{
-        public static final int MANIPULATOR_MOTOR_ID = 5;
-        public static final double MANIPULATOR_MOTOR_SPEED_PERCENT = 0.57;
-        public static final double MAX_TICKS = 342.00; // this is the estimated maximum release value change once the value has been established
-        public static final double MIN_TICKS_CUBE = 171.00; // this is the estimated maximum release value change once the value has been established
-        public static final double MIN_TICKS_CONE = 42.00; // this is the estimated maximum release value change once the value has been established
-    }
     public static class IntakeConstants {
-        public static final double WHEELS_POWER = 1.0;
-        public static final double ROLLER_POWER = 0.0;
-        public static final double SERIALIZER_POWER = 0;
+        public static final double ROLLER_POWER = 1.0;
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
@@ -228,29 +216,26 @@ public class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
 
+        public static final double kG = 0;
+        public static final double kS = 0;
+        public static final double kV = 0;
+
         public static final double ROTATOR_GEAR_RATIO = 1;
         public static final double ROTATOR_TOLERANCE = FalconConversions.degreesToFalcon(1, ROTATOR_GEAR_RATIO);
 
-        //Motor IDs
-        public static final int INTAKE_WHEELS_ID = 0;
-        public static final int INTAKE_ROTATOR_ID = 1;
+        public static final double ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES = 360/42;
 
-        //Solenoid IDs
-        public static final int INTAKE_SOLENOID_FORWARD_CHANNEL_ID = 0;
-        public static final int INTAKE_SOLENOID_BACKWARD_CHANNEL_ID = 1;
+        public static final double VELOCITY_SETPOINT = 0.5;
+
+        //Motor IDs
+        public static final int INTAKE_PIVOT_ID = 0;
+        public static final int INTAKE_ROLLERS_ID = 1;
 
         //Sensor IDs
-        public static final int SENSOR_INTAKE_ID = 0;
+        public static final int CONE_SENSOR_ID = 0;
+        public static final int INTAKE_SENSOR_LEFT_ID = 1;
+        public static final int INTAKE_SENSOR_RIGHT_ID = 2;
         
     }
-
-    public static class HopperConstants {
-        public static final int SERIALIZER_ID = 2;
-        public static final double SERIALIZER_POWER = 0;
-
-        public static final int SENSOR_LEFT_ID = 0;
-        public static final int SENSOR_RIGHT_ID = 1;
-    }
-
 }
 
