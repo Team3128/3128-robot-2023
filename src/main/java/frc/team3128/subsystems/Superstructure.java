@@ -3,21 +3,12 @@ package frc.team3128.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.Constants.PivotConstants;
 import frc.team3128.Constants.TelescopeConstants;
-import frc.team3128.subsystems.Pivot.*;
-import frc.team3128.subsystems.Telescope.*;
-import frc.team3128.subsystems.Pivot.PivotAngles;
 import static frc.team3128.Constants.PivotConstants.*;
-import static frc.team3128.Constants.TelescopeConstants.*;
-
-
 
 public class Superstructure extends SubsystemBase {
 
     private final Pivot pivot;
     private final Telescope telescope;
-
-    private ScoringPosition m_ScoringPosition = ScoringPosition.NEUTRAL;
-
 
     public Superstructure() {
         pivot = Pivot.getInstance();
@@ -34,84 +25,47 @@ public class Superstructure extends SubsystemBase {
     }
 
     public enum ScoringPosition {
-        TOP_CONE, 
-        TOP_CUBE, 
-        MID_CONE, 
-        MID_CUBE, 
-        LOW_FLOOR, 
-        HP_PICK_UP, 
-        INT_PICK_UP, 
-        NEUTRAL
-    }
+        TOP_CONE(180 - 81.666, 56.75), 
+        TOP_CUBE(180 - 92.221, 56.75), 
+        MID_CONE(180 - 95.559, 40.027), 
+        MID_CUBE(180 - 110.041, 39.031), 
+        LOW_FLOOR(180 - 155.114, 16.0), 
+        HP_PICK_UP(0.0, 16.0), 
+        INT_PICK_UP(0.0, 16.0), 
+        NEUTRAL(0.0, 16.0);
 
-    @Override
-    public void periodic() {
-        superstructureLoop();
-    }
+        public double pivotAngle;
+        public double teleDist;
 
-    public void superstructureLoop() {
-        checkMin();
-        checkMax();
-        checkAngleLength();
-        switch (m_ScoringPosition) {
-            case TOP_CONE:
-                pivot.startPID(PivotAngles.TOP_CONE.angle);
-                telescope.startPID(TeleDists.TOP_CONE.dist);
-                break;
-            case TOP_CUBE:
-                pivot.startPID(PivotAngles.TOP_CUBE.angle);
-                telescope.startPID(TeleDists.TOP_CUBE.dist);
-                break;
-            case MID_CONE:
-                pivot.startPID(PivotAngles.MID_CONE.angle);
-                telescope.startPID(TeleDists.MID_CONE.dist);
-                break;
-            case MID_CUBE:
-                pivot.startPID(PivotAngles.MID_CUBE.angle);
-                telescope.startPID(TeleDists.MID_CUBE.dist);
-                break;
-            case LOW_FLOOR: 
-                pivot.startPID(PivotAngles.LOW_FLOOR.angle);
-                telescope.startPID(TeleDists.LOW_FLOOR.dist);
-                break;
-            case HP_PICK_UP:
-                pivot.startPID(PivotAngles.HP_PICK_UP.angle);
-                telescope.startPID(TeleDists.HP_PICK_UP.dist);
-                break;
-            case INT_PICK_UP:
-                pivot.startPID(PivotAngles.INT_PICK_UP.angle);
-                telescope.startPID(TeleDists.INT_PICK_UP.dist);
-                break;
-            case NEUTRAL:
-                pivot.startPID(PivotAngles.NEUTRAL.angle);
-                telescope.startPID(TeleDists.NEUTRAL.dist);
-                break;
-
+        private ScoringPosition(double pivotAngle, double teleDist) {
+            this.pivotAngle = pivotAngle;
+            this.teleDist = teleDist;
         }
-    } 
+    }
 
     // soft limits don't work
+    // TODO: stop tele/pivot (ie set them to stay where they are at pid) when it is at max
 
     //stop telescope and/or pivot if they are at the max
     public void checkMax() {
         if (telescope.getMeasurement() >= TelescopeConstants.MAX_DIST) {
             // telescope.stopTele(); // set to max
-            telescope.startPID(TeleDists.TOP_CONE.dist);
+            telescope.startPID(ScoringPosition.TOP_CONE.teleDist);
         }
         
         if (pivot.getMeasurement() >= PivotConstants.MAX_ANGLE) {
             // pivot.stopPivot();
-            pivot.startPID(PivotAngles.TOP_CONE.angle);
+            pivot.startPID(ScoringPosition.TOP_CONE.pivotAngle);
         }
     } 
 
     public void checkMin() {
         if (telescope.getMeasurement() <= TelescopeConstants.MIN_DIST) {
-            telescope.startPID(TeleDists.NEUTRAL.dist);
+            telescope.startPID(ScoringPosition.NEUTRAL.teleDist);
         }
         
         if (pivot.getMeasurement() <= PivotConstants.MIN_ANGLE) {
-            pivot.startPID(PivotAngles.NEUTRAL.angle);
+            pivot.startPID(ScoringPosition.NEUTRAL.pivotAngle);
         }
     } 
 
