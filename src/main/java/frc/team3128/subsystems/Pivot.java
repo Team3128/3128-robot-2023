@@ -113,8 +113,8 @@ public class Pivot extends PIDSubsystem {
 
     public void startPID(double anglePos) {        
         enable();
-        super.setSetpoint(setpoint.getAsDouble());
-        //super.setSetpoint(anglePos);
+        // super.setSetpoint(setpoint.getAsDouble());
+        super.setSetpoint(anglePos);
     }
 
     @Override
@@ -128,6 +128,10 @@ public class Pivot extends PIDSubsystem {
     @Override
     protected double getMeasurement() { // returns degrees
        return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
+    }
+
+    public double getAngle() {
+        return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
     }
 
     

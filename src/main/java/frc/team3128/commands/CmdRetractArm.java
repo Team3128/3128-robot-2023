@@ -16,13 +16,16 @@ public class CmdRetractArm extends SequentialCommandGroup{
     private Telescope telescope;
 
 
-    public CmdRetractArm () {
+    public CmdRetractArm (double dist, double angle) {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
 
         addCommands(
-            new InstantCommand(() -> telescope.startPID(TeleDists.NEUTRAL.dist), telescope),
-            new InstantCommand(() -> pivot.startPID(PivotAngles.NEUTRAL.angle), pivot)
+            // new InstantCommand(() -> telescope.startPID(TeleDists.NEUTRAL.dist), telescope),
+            // new InstantCommand(() -> pivot.startPID(PivotAngles.NEUTRAL.angle), pivot)
+            new InstantCommand(() -> pivot.startPID(angle), pivot),
+            new InstantCommand(() -> telescope.startPID(dist), telescope)
+
         );
     }
 }

@@ -7,10 +7,12 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdAlign;
+import frc.team3128.commands.CmdRetractArm;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdTargetPursuit;
 import frc.team3128.common.hardware.camera.Camera;
@@ -80,23 +82,26 @@ public class RobotContainer {
     private void configureButtonBindings() {
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
+        rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
+        rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.resetEncoder90()));
 
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(90)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(40)));
         rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
-        rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.resetEncoder90()));
-        rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
 
         rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele()));
         rightStick.getButton(10).onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele()));
         
-        // rightStick.getButton(8).onTrue(new InstantCommand(()->pivot.setPower(0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        // rightStick.getButton(9).onTrue(new InstantCommand(()->pivot.setPower(-0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
 
         // rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
         
-        rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.openClaw()));
-        rightStick.getButton(12).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        rightStick.getButton(14).onTrue(new InstantCommand(() -> manipulator.openClaw()));
+
+
+        rightStick.getButton(15).onTrue(new CmdRetractArm(40, 90)).onFalse(new InstantCommand(() -> telescope.stopTele()));
+        rightStick.getButton(16).onTrue(new CmdRetractArm(18, 120)).onFalse(new InstantCommand(() -> telescope.stopTele()));
         
     }
 

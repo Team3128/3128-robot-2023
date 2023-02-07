@@ -88,9 +88,9 @@ public class Superstructure extends SubsystemBase {
                 break;
 
         }
-    }
+    } 
 
-
+    // soft limits don't work
 
     //stop telescope and/or pivot if they are at the max
     public void checkMax() {

@@ -228,17 +228,17 @@ public class Constants {
     }
 
     public static class TelescopeConstants {
-        public static final double kP = 0;
+        public static final double kP = 2.5;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0;
-        public static final double kG = 0;
+        public static final double kF = 0.1;
+        public static final double kG = 0.5;
         public static final int TELE_MOTOR_ID = 10;
         public static final double TELE_MOTOR_POWER = 0.5;
-        public static final double ENC_CONV = 15.0;
+        public static final double ENC_CONV = (1/15.0) * 2 * Math.PI * 0.4;
         public static final double MIN_DIST = 16;
         public static final double MAX_DIST = 57;
-        public static final double TELE_TOLERANCE = 3;
+        public static final double TELE_TOLERANCE = 0.5;
         public static final int TELE_CURRENT_LIMIT = 10;
 
         public static final double ARM_LENGTH = 56.75; // inches

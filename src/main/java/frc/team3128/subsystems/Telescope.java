@@ -74,7 +74,7 @@ public class Telescope extends PIDSubsystem {
         m_teleMotor = new NAR_CANSparkMax(TELE_MOTOR_ID, MotorType.kBrushless);
         m_teleMotor.setSmartCurrentLimit(TELE_CURRENT_LIMIT);
         m_teleMotor.enableVoltageCompensation(12.0);
-        m_teleMotor.setIdleMode(IdleMode.kCoast);
+        m_teleMotor.setIdleMode(IdleMode.kBrake);
 
         // m_teleMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 0); 
         // m_teleMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 0);
@@ -95,8 +95,8 @@ public class Telescope extends PIDSubsystem {
 
     public void startPID(double teleDist) {
         enable();
-        super.setSetpoint(setpoint.getAsDouble());
-        //super.setSetpoint(teleDist);
+        // super.setSetpoint(setpoint.getAsDouble());
+        super.setSetpoint(teleDist);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class Telescope extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() {
-       return m_teleMotor.getSelectedSensorPosition() + MIN_DIST;
+       return m_teleMotor.getSelectedSensorPosition() * 2 * Math.PI * 0.4 + MIN_DIST;
     }
 
     public void extend() {
