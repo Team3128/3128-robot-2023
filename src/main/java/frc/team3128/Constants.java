@@ -3,7 +3,9 @@ package frc.team3128;
 import static frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.FALCON_ENCODER_RESOLUTION;
 import static frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.SPARKMAX_ENCODER_RESOLUTION;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -216,6 +218,14 @@ public class Constants {
             new Pose2d[] {SCORES[2], SCORES[5], SCORES[8]}
         };
 
+        public static final boolean[][] RAMP_OVERRIDE = new boolean[][] {
+            new boolean[] {false, true, true},
+            new boolean[] {false, true, false},
+            new boolean[] {true, true, false}
+        };
+
+        public static final ArrayList<Pose2d> RAMP_AVOID_SCORE = new ArrayList<Pose2d>();
+
         public static final Pose2d[] SCORE_SETUP = new Pose2d[]{
             new Pose2d(5.3,0.75,Rotation2d.fromDegrees(180)),
             new Pose2d(5.3,2.75,Rotation2d.fromDegrees(180)),
@@ -227,6 +237,8 @@ public class Constants {
             new Pose2d(15.5,5.8, Rotation2d.fromDegrees(0)),
             new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90))
         };
+
+        public static final Pose2d RAMP_AVOID_LOADING = new Pose2d(10, 1.12, new Rotation2d());
 
         public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
 
@@ -269,6 +281,9 @@ public class Constants {
             TestTags.put(8, APRIL_TAG_POS.get(3));
             TestTags.put(7, APRIL_TAG_POS.get(2));
             TestTags.put(6,APRIL_TAG_POS.get(1));
+
+            RAMP_AVOID_SCORE.add(new Pose2d(1.7,4.35, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(1.7, 1.12, Rotation2d.fromDegrees(180)));
         } 
     }
 
@@ -311,16 +326,28 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(315.5); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
 
-        public static final double RAMP_X_RIGHT = Units.inchesToMeters(193.25);
-        public static final double RAMP_X_LEFT = Units.inchesToMeters(117.125);
         public static final double LOADING_X_LEFT = 13.2; // meters
         public static final double LOADING_X_RIGHT = FIELD_X_LENGTH;
+        public static final double tapeWidth = Units.inchesToMeters(2.0);
+        public static final double midX = Units.inchesToMeters(132.375); // Tape to the left of charging station
+        public static final double outerX = Units.inchesToMeters(193.25); // Tape to the right of charging station
+        public static final double leftY = Units.feetToMeters(18.0);
+        public static final double midY = leftY - Units.inchesToMeters(59.39) + tapeWidth;
 
         public static final double chargingStationLength = Units.inchesToMeters(76.125);
         public static final double chargingStationWidth = Units.inchesToMeters(97.25);
+        public static final double chargingStationOuterX = outerX - tapeWidth;
+        public static final double chargingStationInnerX = chargingStationOuterX - chargingStationLength;
+        public static final double chargingStationLeftY = midY - tapeWidth;
+        public static final double chargingStationRightY = chargingStationLeftY - chargingStationWidth;
+        public static final Translation2d[] chargingStationCorners =
+        new Translation2d[] {
+          new Translation2d(chargingStationInnerX, chargingStationRightY),
+          new Translation2d(chargingStationInnerX, chargingStationLeftY),
+          new Translation2d(chargingStationOuterX, chargingStationRightY),
+          new Translation2d(chargingStationOuterX, chargingStationLeftY)
+        };
 
-        public static final double chargingStationLeftY = Units.inchesToMeters(156.61);
-        public static final double chargingStationRightY = Units.inchesToMeters(59.36);
 
         public static Pose2d allianceFlip(Pose2d pose) {
             if (DriverStation.getAlliance() == Alliance.Red) {

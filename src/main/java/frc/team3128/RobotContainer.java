@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -96,12 +97,17 @@ public class RobotContainer {
         rightStick.getButton(7).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
 
         // grid system
-        buttonPad.getButton(4).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true,VisionConstants.SCORE_SETUP,VisionConstants.SCORES_GRID[0])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
-        buttonPad.getButton(5).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true,VisionConstants.SCORE_SETUP,VisionConstants.SCORES_GRID[1])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
-        buttonPad.getButton(6).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true,VisionConstants.SCORE_SETUP,VisionConstants.SCORES_GRID[2])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
-        buttonPad.getButton(1).onTrue(new InstantCommand(()-> CmdMoveScore.SELECTED_GRID = 0));
-        buttonPad.getButton(2).onTrue(new InstantCommand(()-> CmdMoveScore.SELECTED_GRID = 1));
-        buttonPad.getButton(3).onTrue(new InstantCommand(()-> CmdMoveScore.SELECTED_GRID = 2));
+        
+        buttonPad.getButton(4).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
+        buttonPad.getButton(5).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
+        buttonPad.getButton(6).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
+        buttonPad.getButton(1).onTrue(new InstantCommand(()-> {
+            Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 0 : 2;
+        }));
+        buttonPad.getButton(2).onTrue(new InstantCommand(()-> Vision.SELECTED_GRID = 1));
+        buttonPad.getButton(3).onTrue(new InstantCommand(()-> {
+            Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 2 : 0;
+        }));
 
         // non-grid system
         // for (int i = 0; i < VisionConstants.SCORES.length; i++) {

@@ -16,23 +16,42 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
 
 public class CmdMove extends CommandBase {
-
+    
     public enum Type {
         SCORE(
             new double[][] {
-                new double[] {RAMP_X_LEFT - trackWidth/2, RAMP_X_RIGHT + trackWidth/2},
+                new double[] {chargingStationInnerX - trackWidth/2, chargingStationOuterX + trackWidth/2},
                 new double[] {LOADING_X_LEFT - trackWidth/2, LOADING_X_RIGHT}
-             }),
+            },
+            new double[] {   //Rectangular Constraint
+                chargingStationOuterX + trackWidth/2,
+                chargingStationOuterX + trackWidth,
+                chargingStationLeftY + trackWidth/2,
+                chargingStationRightY - trackWidth/2
+            },
+            true
+        ),
         LOADING(
             new double[][] {
-                new double[] {0,RAMP_X_RIGHT + trackWidth/2}
-            }
+                new double[] {0,chargingStationOuterX + trackWidth/2}
+            },
+            new double[] {   //Rectangular Constraint
+                chargingStationInnerX - trackWidth,
+                chargingStationInnerX - trackWidth/2,
+                chargingStationLeftY + trackWidth/2,
+                chargingStationRightY - trackWidth/2
+            },
+            false
         ),
-        NONE(null);
-        public double[][] constraints;
+        NONE(null,null, false);
+        public double[][] xConstraints;
+        public double[] boxConstraints;
+        public boolean movingLeft; //Relative to Blue
 
-        private Type(double[][] constraints) {
-            this.constraints = constraints;
+        private Type(double[][] xConstraints, double[] boxConstraints, boolean movingLeft) {
+            this.xConstraints = xConstraints;
+            this.boxConstraints = boxConstraints;
+            this.movingLeft = movingLeft;
         }
     }
 
@@ -46,7 +65,7 @@ public class CmdMove extends CommandBase {
 
     private boolean joystickOverride;
 
-    private Swerve swerve;
+    protected Swerve swerve;
 
     public CmdMove(Type type, boolean joystickOverride, Pose2d... poses) {
         this.poses = poses;
@@ -86,14 +105,16 @@ public class CmdMove extends CommandBase {
     public void initialize() {
 
         index = 0;
-        boolean keepSkipping = true;
-        for (int i = 0; i < poses.length; i++) {
-            poses[i] = allianceFlip(poses[i]);
-            if (pastPoint(poses[i]) && !atLastPoint() && keepSkipping) {
-                index += 1;
-                continue;
+        if (type != Type.NONE) {
+            boolean keepSkipping = true;
+            for (int i = 0; i < poses.length; i++) {
+                poses[i] = allianceFlip(poses[i]);
+                if (pastX(poses[i].getX()) && !atLastPoint() && keepSkipping) {
+                    index += 1;
+                    continue;
+                }
+                keepSkipping = false;
             }
-            keepSkipping = false;
         }
 
         xSetpoint = false;
@@ -121,13 +142,13 @@ public class CmdMove extends CommandBase {
         ySetpoint = yController.atSetpoint();
         rSetpoint = rController.atSetpoint();
 
-        if (xSetpoint) xDistance = 0;
-        if (ySetpoint || !canMove(pose.getX())) yDistance = 0;
+        if (xSetpoint || !canMoveX(pose)) xDistance = 0;
+        if (ySetpoint || !canMoveY(pose)) yDistance = 0;
         if (rSetpoint) rotation = 0;
 
         if (joystickOverride) {
             int team = DriverStation.getAlliance() == Alliance.Red ? 1 : -1;
-            if (Math.abs(xAxis.getAsDouble()) > 0.05 || Math.abs(yAxis.getAsDouble()) > 0.05 || Math.abs(rAxis.getAsDouble()) > 0.5) {
+            if (Math.abs(xAxis.getAsDouble()) > 0.05 || Math.abs(yAxis.getAsDouble()) > 0.05 || Math.abs(rAxis.getAsDouble()) > 0.05) {
                 yDistance = xAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed * team;
                 xDistance = yAxis.getAsDouble() * throttle.getAsDouble() * maxSpeed * -team;
                 rotation = -rAxis.getAsDouble() * maxAngularVelocity;
@@ -136,41 +157,66 @@ public class CmdMove extends CommandBase {
 
         swerve.drive(new Translation2d(xDistance, yDistance), rotation, true);
 
-        if (xSetpoint && !atLastPoint()) {
-            index += 1;
-            xController.setSetpoint(poses[index].getX());
-            yController.setSetpoint(poses[index].getY());
-            rController.setSetpoint(poses[index].getRotation().getRadians());
-            xSetpoint = false;
-            ySetpoint = false;
-            rSetpoint = false;
+        if (xSetpoint && ySetpoint && !atLastPoint()) {
+            nextPoint();
         }
 
         atDestination = (xSetpoint && ySetpoint && rSetpoint && atLastPoint());
     }
 
-    public boolean canMove(double x) {
-        if (type == Type.NONE) {
-            return true;
-        }
-        double[][] constraints = type.constraints;
+    private boolean canMoveX(Pose2d pose) {
+        if (type == Type.NONE) return true;
+        double[] xConstraints = new double[] {type.boxConstraints[0], type.boxConstraints[1]};
+        double[] yConstraints = new double[] {type.boxConstraints[2], type.boxConstraints[3]};
+        return (!inXConstraints(xConstraints, pose.getX()) || !inYConstraints(yConstraints, pose.getY()));
+    }
+
+    private boolean canMoveY(Pose2d pose) {
+        if (type == Type.NONE) return true;
+        double[][] constraints = type.xConstraints;
         for (int i = 0; i < constraints.length; i ++) {
-            double left = DriverStation.getAlliance() == Alliance.Red ? FIELD_X_LENGTH - constraints[i][1] : constraints[i][0];
-            double right = DriverStation.getAlliance() == Alliance.Red ? FIELD_X_LENGTH - constraints[i][0] : constraints[i][1];
-            if (x >= left && x <= right){
+            if (inXConstraints(constraints[i], pose.getX())){
                 return false;
             }
         }
         return true;
     }
 
-    private boolean pastPoint(Pose2d goalPos) {
-        Pose2d currentPos = swerve.getPose();
-        if (DriverStation.getAlliance() == Alliance.Red) return (currentPos.getX() > goalPos.getX());
-        return (currentPos.getX() < goalPos.getX());
+    private boolean inXConstraints(double[] constraints, double xPos) {
+        double left = DriverStation.getAlliance() == Alliance.Red ? FIELD_X_LENGTH - constraints[1] : constraints[0];
+        double right = DriverStation.getAlliance() == Alliance.Red ? FIELD_X_LENGTH - constraints[0] : constraints[1];
+        return (xPos >= left && xPos <= right);
     }
 
-    private boolean atLastPoint() {
+    private boolean inYConstraints(double[] constraints, double yPos) {
+        double top = constraints[0];
+        double bottom = constraints[1];
+        return (yPos >= bottom && yPos <= top);
+    }
+
+    protected void nextPoint() {
+        if (atLastPoint()) return;
+        index += 1;
+        setPoint(poses[index]);
+    }
+
+    protected void setPoint(Pose2d pose) {
+        xController.setSetpoint(pose.getX());
+        yController.setSetpoint(pose.getY());
+        rController.setSetpoint(pose.getRotation().getRadians());
+        xSetpoint = false;
+        ySetpoint = false;
+        rSetpoint = false;
+    }
+
+    protected boolean pastX(double x) {
+        Pose2d currentPos = swerve.getPose();
+        boolean movingLeft = (type.movingLeft && DriverStation.getAlliance() == Alliance.Blue) || (!type.movingLeft && DriverStation.getAlliance() == Alliance.Red);
+        if (movingLeft) return (currentPos.getX() < x);
+        return (currentPos.getX() > x);
+    }
+
+    protected boolean atLastPoint() {
         return index == poses.length - 1;
     }
 

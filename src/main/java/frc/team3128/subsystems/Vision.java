@@ -16,6 +16,8 @@ import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
 public class Vision extends SubsystemBase{
+    public static int SELECTED_GRID = 0;
+
     private double prevTime = 0;
     private static Vision instance;
 
@@ -102,7 +104,7 @@ public class Vision extends SubsystemBase{
         NAR_Shuffleboard.addData("Vision","RawTarget",()->cam.getTarget().toString(),0,1,4,1);
         NAR_Shuffleboard.addData("Vision", "Processed Target",()->cam.getProcessedTarget().toString(),0,2,4,1);
         NAR_Shuffleboard.addData("Vision","EstimatedPose", ()-> cam.getPos().toString(),0,3,4,1);
-        NAR_Shuffleboard.addData("Test", "Test", ()->CmdMoveScore.SELECTED_GRID,0,0);
+        NAR_Shuffleboard.addData("Test", "Test", ()->SELECTED_GRID,0,0);
         NAR_Shuffleboard.addData("Test", "TESTING", ()->cam.getTest().toString(),0,1,3,1);
     }
 
