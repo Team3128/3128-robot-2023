@@ -14,23 +14,18 @@ public class CmdMoveLoading extends CmdMove {
     private int currentSelectedGrid; 
     private double PASS_LINE;
 
-    public CmdMoveLoading(Type type, boolean joystickOverride, Pose2d... positions) {
-        super(type, joystickOverride, positions);
+    public CmdMoveLoading(Pose2d... positions) {
+        super(CmdMove.Type.LOADING, true, positions);
         this.positions = positions;
     }
 
     @Override
     public void initialize() {
         currentSelectedGrid = Vision.SELECTED_GRID;
-        var newPoses = new Pose2d[positions.length];
-        int extraPoint = 0;
-        if (currentSelectedGrid == 0) {
-            extraPoint = 1;
-            newPoses = new Pose2d[positions.length + 1];
-            newPoses[0] = VisionConstants.RAMP_AVOID_LOADING;
-        }
-        for (int i = extraPoint; i < positions.length; i ++) {
-            newPoses[i] = positions[i - extraPoint];
+        var newPoses = new Pose2d[positions.length + 1];
+        newPoses[0] = currentSelectedGrid == 0 ? VisionConstants.RAMP_AVOID_LOADING[0] : VisionConstants.RAMP_AVOID_LOADING[1];
+        for (int i = 1; i < positions.length; i ++) {
+            newPoses[i] = positions[i - 1];
         }
         super.initialize();
         PASS_LINE = FieldConstants.chargingStationInnerX + SwerveConstants.trackWidth/2 + 0.02;

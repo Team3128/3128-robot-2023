@@ -18,8 +18,8 @@ public class CmdMoveScore extends CmdMove {
     private Pose2d[][] positions;
     private int currSelectedGrid;
 
-    public CmdMoveScore(Type type, boolean joystickOverride, boolean[] overrides, Pose2d[]... positions) {
-        super(type, joystickOverride, positions[0]);
+    public CmdMoveScore(boolean[] overrides, Pose2d[]... positions) {
+        super(CmdMove.Type.SCORE, true, positions[0]);
         this.positions = positions;
         this.overrides = overrides;
         avoidRamp = new ArrayList<Pose2d>();

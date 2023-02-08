@@ -238,7 +238,10 @@ public class Constants {
             new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90))
         };
 
-        public static final Pose2d RAMP_AVOID_LOADING = new Pose2d(10, 1.12, new Rotation2d());
+        public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
+            new Pose2d(10, 1.12, new Rotation2d()),
+            new Pose2d(10, 4.7, new Rotation2d())
+        };
 
         public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
 
