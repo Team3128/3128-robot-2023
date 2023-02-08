@@ -1,9 +1,11 @@
 package frc.team3128.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ScoringPosition;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
@@ -16,13 +18,14 @@ public class CmdScore extends SequentialCommandGroup {
     private Telescope telescope;
     private Manipulator manipulator;
 
-    public CmdScore(ScoringPosition position) {
+    public CmdScore(ScoringPosition position, Pose2d[] positions) {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
 
         addCommands(
             new InstantCommand(() -> pivot.startPID(position.pivotAngle), pivot),
+            new CmdMoveScore(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP, positions),
             
             new WaitUntilCommand(()-> pivot.atSetpoint()),
             // cmd move
