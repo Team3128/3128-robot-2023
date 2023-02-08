@@ -7,15 +7,11 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.team3128.commands.CmdAlign;
 import frc.team3128.commands.CmdRetractArm;
-import frc.team3128.commands.CmdSwerveDrive;
-import frc.team3128.commands.CmdTargetPursuit;
-import frc.team3128.common.hardware.camera.Camera;
+import frc.team3128.commands.CmdScore;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
@@ -27,7 +23,7 @@ import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import frc.team3128.subsystems.Manipulator;
-
+import static frc.team3128.Constants.ArmConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -64,8 +60,8 @@ public class RobotContainer {
         manipulator = Manipulator.getInstance();
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
-        pivot.enable();
-        telescope.enable();
+        //pivot.enable();
+        //telescope.enable();
 
         leftStick = new NAR_Joystick(0);
         rightStick = new NAR_Joystick(1);
@@ -82,8 +78,10 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
+        rightStick.getButton(1).onTrue(new InstantCommand(()-> manipulator.openClaw()));
+        rightStick.getButton(2).onTrue(new InstantCommand(()-> manipulator.closeClaw()));
+        // rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
+        // rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
 
         // zeroing
         rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
@@ -94,19 +92,34 @@ public class RobotContainer {
         // rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(40)));
 
         // manual controls
-        rightStick.getButton(9).whileTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
-        rightStick.getButton(10).whileTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
+        rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
+        rightStick.getButton(10).onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
         
-        rightStick.getButton(11).whileTrue(new InstantCommand(()->pivot.setPower(0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        rightStick.getButton(12).whileTrue(new InstantCommand(()->pivot.setPower(-0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         
         rightStick.getButton(13).onTrue(new InstantCommand(() -> manipulator.openClaw()));
         rightStick.getButton(14).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
 
         // command controls
-        rightStick.getButton(15).whileTrue(new CmdRetractArm(40, 90));
+        rightStick.getButton(15).whileTrue(new CmdRetractArm(40, -90));
         rightStick.getButton(16).whileTrue(new CmdRetractArm(18, 120));
-        
+
+        //leftStick.getButton(1).onTrue(new CmdScore(ScoringPosition.NEUTRAL));
+        //leftStick.getButton(2).onTrue(new InstantCommand(() -> manipulator.openClaw()));
+        leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR));
+        leftStick.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR));
+        leftStick.getButton(6).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR));
+        leftStick.getButton(7).onTrue(new CmdScore(ScoringPosition.MID_CONE));
+        leftStick.getButton(8).onTrue(new CmdScore(ScoringPosition.MID_CUBE));
+        leftStick.getButton(9).onTrue(new CmdScore(ScoringPosition.MID_CONE));
+        leftStick.getButton(10).onTrue(new CmdScore(ScoringPosition.TOP_CONE));
+        leftStick.getButton(11).onTrue(new CmdScore(ScoringPosition.TOP_CUBE));
+        leftStick.getButton(12).onTrue(new CmdScore(ScoringPosition.TOP_CONE));
+        leftStick.getButton(1).onTrue(new InstantCommand(()-> telescope.startPID(90)));
+        leftStick.getButton(2).onTrue(new InstantCommand(()-> pivot.startPID(90)));
+
     }
 
     public void init() {

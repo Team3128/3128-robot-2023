@@ -51,10 +51,10 @@ public class Pivot extends PIDSubsystem {
     private void configEncoders() {
         m_encoder = (SparkMaxRelativeEncoder) m_rotateMotor.getEncoder();
         m_encoder.setPositionConversionFactor(ENC_CONV);
-        zeroEncoder();
     }
 
     public void setPower(double power) {
+        disable();
         m_rotateMotor.set(power);
     }
 
@@ -63,7 +63,7 @@ public class Pivot extends PIDSubsystem {
     }
 
     public void zeroEncoder() {
-        m_encoder.setPosition(0);
+        m_encoder.setPosition(90);
     }
 
     public void initShuffleboard() {
@@ -72,11 +72,13 @@ public class Pivot extends PIDSubsystem {
         kF = NAR_Shuffleboard.debug("pivot","kF", PivotConstants.kF, 0,2);
         setpoint = NAR_Shuffleboard.debug("pivot", "setpoint", 0, 1,2);
         NAR_Shuffleboard.addComplex("pivot", "Pivot-PID",m_controller, 2, 0);
-        NAR_Shuffleboard.addData("pivot", "atSetpoint", getController().atSetpoint(), 3, 0);
+        NAR_Shuffleboard.addData("pivot", "atSetpoint", ()->getController().atSetpoint(), 3, 0);
+        NAR_Shuffleboard.addData("pivot", "isEnabled", ()->isEnabled(), 4, 0);
     }
 
     public void startPID(double anglePos) {        
         // super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
+        enable();
         setSetpoint(anglePos);
     }
 
@@ -95,6 +97,10 @@ public class Pivot extends PIDSubsystem {
 
     public void stopPivot() {
         m_rotateMotor.set(0);
+    }
+
+    public boolean atSetpoint() {
+        return getController().atSetpoint();
     }
     
 }
