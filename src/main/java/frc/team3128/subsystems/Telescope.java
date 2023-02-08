@@ -1,22 +1,16 @@
 package frc.team3128.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlFrame;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
-
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.math.controller.PIDController;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Encoder;
 import static frc.team3128.Constants.TelescopeConstants.*;
-import static frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.*;
+import java.util.function.DoubleSupplier;
 
+import frc.team3128.Constants.PivotConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
@@ -28,21 +22,7 @@ import static frc.team3128.Constants.TelescopeConstants;
 
 public class Telescope extends PIDSubsystem {
 
-    public enum TeleDists {
-        TOP_CONE(56.75), 
-        TOP_CUBE(56.75), 
-        MID_CONE(40.027), 
-        MID_CUBE(39.031), 
-        LOW_FLOOR(16),
-        HP_PICK_UP(0.0), //get value from mech
-        INT_PICK_UP(0.0), //get value from mech
-        NEUTRAL(16);
-
-        public double dist; 
-        private TeleDists(double dist) {
-            this.dist = dist;
-        }
-    }
+    private DoubleSupplier kG, kF, setpoint;
     
     private static Telescope instance;
 
@@ -54,6 +34,9 @@ public class Telescope extends PIDSubsystem {
 
         configMotors();
         configEncoders();
+        getController().setTolerance(TELE_TOLERANCE);
+
+        setSetpoint(MIN_DIST);
     }
 
     public static synchronized Telescope getInstance() {
@@ -69,49 +52,83 @@ public class Telescope extends PIDSubsystem {
         m_teleMotor = new NAR_CANSparkMax(TELE_MOTOR_ID, MotorType.kBrushless);
         m_teleMotor.setSmartCurrentLimit(TELE_CURRENT_LIMIT);
         m_teleMotor.enableVoltageCompensation(12.0);
-        m_teleMotor.setIdleMode(IdleMode.kCoast);
+        m_teleMotor.setIdleMode(IdleMode.kBrake);
+
     }
 
     private void configEncoders() {
         m_encoder = (SparkMaxRelativeEncoder) m_teleMotor.getEncoder();
-        m_encoder.setPositionConversionFactor(ENC_CONV); // TODO: ticks --> inches using gear ratio
+        m_encoder.setPositionConversionFactor(ENC_CONV); 
     }
 
-    public void startPID(TeleDists teleDist) {        
+    public void startPID(double teleDist) {
+        // super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
         enable();
-        super.setSetpoint(teleDist.dist);
-        getController().setTolerance(TELE_TOLERANCE);
+        setSetpoint(teleDist);
+        //checkConstraints();
     }
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        double ff = kF * setpoint; //Need to calculate this
+
+        double pivotAngle = Math.toRadians(Pivot.getInstance().getMeasurement());
+        double ff = -kG.getAsDouble() * Math.cos(pivotAngle) + kF.getAsDouble();
         double voltageOutput = output + ff;
-        // TODO: account for rotation in pivot b/c gravity
+        NAR_Shuffleboard.addData("Testing", "Voltage Output", voltageOutput, 0, 0);
 
         m_teleMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
     }
 
+
     @Override
     protected double getMeasurement() {
-       return m_teleMotor.getSelectedSensorPosition() + MIN_DIST;
+       return m_encoder.getPosition() + MIN_DIST;
     }
 
+    public void extend() {
+        disable();
+        m_teleMotor.set(0.3);
+    }
+
+    public void retract() {
+        disable();
+        m_teleMotor.set(-0.3);
+    }
+
+    /**
+     * Data for Shuffleboard
+     */
     public void initShuffleboard() {
-        NAR_Shuffleboard.addData("Pivot + Tele", "Tele Angle", () -> getMeasurement(), 0, 0);
-        NAR_Shuffleboard.addComplex("Pivot + Tele", "Tele PID", getController(), 0, 1);
-    }
+        NAR_Shuffleboard.addData("telescope","telescope dist", ()->getMeasurement(),0,0);
+        NAR_Shuffleboard.addData("telescope", "telescope setpoint",()->getSetpoint(), 0, 1);
 
+        kG = NAR_Shuffleboard.debug("telescope","kG", TelescopeConstants.kG,0,2);
+        kF = NAR_Shuffleboard.debug("telescope", "kF", TelescopeConstants.kF, 1, 2);
+        setpoint = NAR_Shuffleboard.debug("telescope","setpoint", TelescopeConstants.MIN_DIST, 2,0);
+        NAR_Shuffleboard.addComplex("telescope", "tele-PID", m_controller, 2, 0);
+
+        NAR_Shuffleboard.addData("telescope", "atSetpoint", ()->getController().atSetpoint(), 3, 0);
+        NAR_Shuffleboard.addData("telescope", "isEnabled", ()->isEnabled(), 4, 0);
+        
+    }
 
     /**
      * Telescope goes into neutral position (sets power to 0)
      */
-    public void stopTele() {
-        disable();
+    public void resetToDefault() {
+        startPID(MIN_DIST);
     }
 
-    public void zeroEncoder() {
-        m_teleMotor.setEncoderPosition(0);
+    public void stopTele() {
+        m_teleMotor.set(0);
+    }
+
+    public void zeroEncoder() { //returns inches
+        m_encoder.setPosition(0);
+    }
+
+    public boolean atSetpoint() {
+        return getController().atSetpoint();
     }
 
 }

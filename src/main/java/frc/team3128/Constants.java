@@ -136,42 +136,46 @@ public class Constants {
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0 {
-            public static final int driveMotorID = 0;
-            public static final int angleMotorID = 1;
+            public static final int driveMotorID = 1;
+            public static final int angleMotorID = 2;
             public static final int canCoderID = 20;
             public static final double angleOffset = -157.763671875; // deg
+            public static final String canBus = "drivetrain";
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
         }
 
         /* Front Right Module - Module 1 */
         public static final class Mod1 {
-            public static final int driveMotorID = 2;
-            public static final int angleMotorID = 3;
+            public static final int driveMotorID = 3;
+            public static final int angleMotorID = 4;
             public static final int canCoderID = 21;
             public static final double angleOffset = 129.375; // deg
+            public static final String canBus = "drivetrain";
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
         }
         
         /* Back Left Module - Module 2 */
         public static final class Mod2 {
-            public static final int driveMotorID = 4;
-            public static final int angleMotorID = 5;
+            public static final int driveMotorID = 5;
+            public static final int angleMotorID = 6;
             public static final int canCoderID = 22;
             public static final double angleOffset = -69.697265625; // deg
+            public static final String canBus = "drivetrain"; 
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
         }
 
         /* Back Right Module - Module 3 */
         public static final class Mod3 {
-            public static final int driveMotorID = 6;
-            public static final int angleMotorID = 7;
+            public static final int driveMotorID = 7;
+            public static final int angleMotorID = 8;
             public static final int canCoderID = 23;
             public static final double angleOffset = -54.31640625; // deg
+            public static final String canBus = "drivetrain";
             public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset, canBus);
         }
 
     }
@@ -273,16 +277,16 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 0;
+        public static final double kP = 5E-1;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0;
-        public static final int PIVOT_MOTOR_ID = 19;
-        public static final double ENC_CONV = 60*42/16;
-        public static final double PIVOT_TOLERANCE = 0;
+        public static final double kF = 1;
+        public static final int PIVOT_MOTOR_ID = 9;
+        public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
+        public static final double PIVOT_TOLERANCE = 3.0;
         public static final double MIN_ANGLE = 0;
         public static final double MAX_ANGLE = 90;
-        public static final int PIVOT_CURRENT_LIMIT = 10;
+        public static final int PIVOT_CURRENT_LIMIT = 40;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -290,19 +294,41 @@ public class Constants {
     }
 
     public static class TelescopeConstants {
-        public static final double kP = 0;
+        public static final double kP = 2;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0;
-        public static final int TELE_MOTOR_ID = 5;
+        public static final double kF = 0.1;
+        public static final double kG = 0.5;
+        public static final int TELE_MOTOR_ID = 10;
         public static final double TELE_MOTOR_POWER = 0.5;
-        public static final double ENC_CONV = 0;
-        public static final double MIN_DIST = 16;
-        public static final double MAX_DIST = 57;
-        public static final double TELE_TOLERANCE = 0;
-        public static final int TELE_CURRENT_LIMIT = 10;
+        public static final double ENC_CONV = (1/5.0) * 2 * Math.PI * 0.4;
+        public static final double MIN_DIST = 11.5;
+        public static final double MAX_DIST = 48;
+        public static final double TELE_TOLERANCE = 0.5;
+        public static final int TELE_CURRENT_LIMIT = 40;
 
         public static final double ARM_LENGTH = 56.75; // inches
+    }
+
+    public static class ArmConstants {
+        public enum ScoringPosition {
+            TOP_CONE(180 - 81.666, 56.75), 
+            TOP_CUBE(180 - 92.221, 56.75), 
+            MID_CONE(180 - 95.559, 40.027), 
+            MID_CUBE(180 - 110.041, 39.031), 
+            LOW_FLOOR(180 - 155.114, 16.0), 
+            HP_PICK_UP(0.0, 16.0), 
+            INT_PICK_UP(0.0, 16.0), 
+            NEUTRAL(0.0, 16.0);
+    
+            public final double pivotAngle;
+            public final double teleDist;
+    
+            private ScoringPosition(double pivotAngle, double teleDist) {
+                this.pivotAngle = pivotAngle;
+                this.teleDist = teleDist;
+            }
+        }
     }
     
     public static class FieldConstants{
@@ -403,5 +429,6 @@ public class Constants {
         public static final double CHARGE_STATION_X = 5;
         public static final double CHARGE_STATION_Y = 5;
     }
+
 
 }
