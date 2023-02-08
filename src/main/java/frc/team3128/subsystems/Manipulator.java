@@ -27,7 +27,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void configPneumatics(){
-        m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID, SOLENOID_BACKWARD_CHANNEL_ID);
+        m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 3, 4);
         m_solenoid.set(Value.kForward);
     }
 

@@ -319,7 +319,7 @@ public class Constants {
             LOW_FLOOR(180 - 155.114, 16.0), 
             HP_PICK_UP(0.0, 16.0), 
             INT_PICK_UP(0.0, 16.0), 
-            NEUTRAL(0.0, 16.0);
+            NEUTRAL(0.0, 11.5);
     
             public final double pivotAngle;
             public final double teleDist;

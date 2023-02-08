@@ -118,7 +118,7 @@ public class RobotContainer {
         //leftStick.getButton(1).onTrue(new CmdScore(ScoringPosition.NEUTRAL));
         //leftStick.getButton(2).onTrue(new InstantCommand(() -> manipulator.openClaw()));
         leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
-        leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR));
+        leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.NEUTRAL));
         leftStick.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR));
         leftStick.getButton(6).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR));
         leftStick.getButton(7).onTrue(new CmdScore(ScoringPosition.MID_CONE));

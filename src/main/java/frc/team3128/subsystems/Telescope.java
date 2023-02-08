@@ -62,9 +62,9 @@ public class Telescope extends PIDSubsystem {
     }
 
     public void startPID(double teleDist) {
-        // super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
+        super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
         enable();
-        setSetpoint(teleDist);
+        // setSetpoint(teleDist);
         //checkConstraints();
     }
 
