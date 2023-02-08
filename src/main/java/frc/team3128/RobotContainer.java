@@ -111,10 +111,6 @@ public class RobotContainer {
         rightStick.getButton(13).onTrue(new InstantCommand(() -> manipulator.openClaw()));
         rightStick.getButton(14).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
 
-        // command controls
-        rightStick.getButton(15).whileTrue(new CmdRetractArm(40, -90));
-        rightStick.getButton(16).whileTrue(new CmdRetractArm(18, 120));
-
         //leftStick.getButton(1).onTrue(new CmdScore(ScoringPosition.NEUTRAL));
         //leftStick.getButton(2).onTrue(new InstantCommand(() -> manipulator.openClaw()));
         leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));

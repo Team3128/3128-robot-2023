@@ -40,10 +40,6 @@ public class Swerve extends SubsystemBase {
     private static Swerve instance;
     public boolean fieldRelative;
 
-    // private SlewRateLimiter xFilter;
-    // private SlewRateLimiter yFilter;
-    // private SlewRateLimiter zFilter;
-
     private Field2d field;
 
     public static synchronized Swerve getInstance() {
