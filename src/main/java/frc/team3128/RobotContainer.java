@@ -2,6 +2,7 @@ package frc.team3128;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -9,9 +10,16 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdRetractArm;
 import frc.team3128.commands.CmdScore;
+import frc.team3128.Constants.VisionConstants;
+import frc.team3128.commands.CmdMove;
+import frc.team3128.commands.CmdMoveScore;
+import frc.team3128.commands.CmdGyroBalance;
+import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
@@ -43,6 +51,7 @@ public class RobotContainer {
 
     private NAR_Joystick leftStick;
     private NAR_Joystick rightStick;
+    private NAR_Joystick buttonPad;
 
     private NAR_XboxController controller;
 
@@ -66,10 +75,11 @@ public class RobotContainer {
         leftStick = new NAR_Joystick(0);
         rightStick = new NAR_Joystick(1);
         controller = new NAR_XboxController(2);
+        buttonPad = new NAR_Joystick(3);
+        CmdMove.setController(controller::getLeftX, controller::getLeftY, controller::getRightX, rightStick::getThrottle);
 
-        // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
-        // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
-
+        //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
+        commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
         initDashboard();
         configureButtonBindings();
         
@@ -120,6 +130,25 @@ public class RobotContainer {
         leftStick.getButton(1).onTrue(new InstantCommand(()-> telescope.startPID(90)));
         leftStick.getButton(2).onTrue(new InstantCommand(()-> pivot.startPID(90)));
 
+        // rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
+        // rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
+        // rightStick.getButton(4).onTrue(new InstantCommand(()->swerve.zeroGyro(180)));
+        // for (int i = 0; i < VisionConstants.LOADING_ZONE.length; i++) {
+        //     leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.LOADING, true, VisionConstants.LOADING_ZONE[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
+        // }
+        // grid system
+        buttonPad.getButton(4).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true,VisionConstants.SCORE_SETUP,VisionConstants.SCORES_GRID[0])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
+        buttonPad.getButton(5).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true,VisionConstants.SCORE_SETUP,VisionConstants.SCORES_GRID[1])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
+        buttonPad.getButton(6).onTrue(new CmdMoveScore(CmdMove.Type.SCORE, true,VisionConstants.SCORE_SETUP,VisionConstants.SCORES_GRID[2])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
+        buttonPad.getButton(1).onTrue(new InstantCommand(()-> CmdMoveScore.SELECTED_GRID = 0));
+        buttonPad.getButton(2).onTrue(new InstantCommand(()-> CmdMoveScore.SELECTED_GRID = 1));
+        buttonPad.getButton(3).onTrue(new InstantCommand(()-> CmdMoveScore.SELECTED_GRID = 2));
+
+        // non-grid system
+        // for (int i = 0; i < VisionConstants.SCORES.length; i++) {
+        //     leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP[i/3],VisionConstants.SCORES[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
+        // }
+
     }
 
     public void init() {
@@ -158,5 +187,6 @@ public class RobotContainer {
         SmartDashboard.putNumber("RightX",controller.getRightX());
         SmartDashboard.putNumber("RightY",controller.getRightY());
         NAR_Shuffleboard.update();
+        SmartDashboard.putNumber("Pitch",swerve.getPitch());
     }
 }

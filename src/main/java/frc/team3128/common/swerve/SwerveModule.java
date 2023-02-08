@@ -35,7 +35,6 @@ public class SwerveModule {
         angleOffset = moduleConstants.angleOffset;
         
         /* Angle Encoder Config */
-
         angleEncoder = new CANCoder(moduleConstants.cancoderID, "drivetrain");
         configAngleEncoder();
 
@@ -60,8 +59,8 @@ public class SwerveModule {
         angleMotor.set(ControlMode.Position, degreesToFalcon(angle, angleGearRatio)); 
         lastAngle = angle;
 
-        SmartDashboard.putNumber("angle curr position" + moduleNumber, falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio));
-        SmartDashboard.putNumber("angle set position" + moduleNumber, desiredState.angle.getDegrees());
+        // SmartDashboard.putNumber("angle curr position" + moduleNumber, falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio));
+        // SmartDashboard.putNumber("angle set position" + moduleNumber, desiredState.angle.getDegrees());
     }
 
     public void resetEncoders() {

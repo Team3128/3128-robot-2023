@@ -9,7 +9,6 @@ import java.util.List;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team3128.Constants;
 import frc.team3128.Constants.ConversionConstants;
-import frc.team3128.Constants.DriveConstants;
 import frc.team3128.Constants.SwerveConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.utility.Log;
@@ -26,7 +25,6 @@ public class ConstantsInt extends Constants {
     //IMPORTANT: Omit "final" when temporarily adding constants to this class
     
     public static class ConversionConstants extends Constants.ConversionConstants {}
-    public static class DriveConstants extends Constants.DriveConstants {}
     public static class SwerveConstants extends Constants.SwerveConstants {}
     public static class VisionConstants extends Constants.VisionConstants {}
 
@@ -36,7 +34,6 @@ public class ConstantsInt extends Constants {
         constants = new HashMap<String, List<Field>>();
         primitiveNumbers = Arrays.asList(int.class, long.class, double.class, byte.class, short.class);
         categories.put("ConversionConstants", ConstantsInt.ConversionConstants.class);
-        categories.put("DriveConstants", ConstantsInt.DriveConstants.class);
         categories.put("SwerveConstants", ConstantsInt.SwerveConstants.class);
         categories.put("VisionConstants", ConstantsInt.VisionConstants.class);
 

@@ -13,7 +13,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,8 +25,13 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
 
+import java.io.FileWriter;
+
 public class Swerve extends SubsystemBase {
     
+    private volatile FileWriter txtFile;
+    private String poseLogger = "";
+    private double prevTime = 0; 
     public SwerveDrivePoseEstimator odometry;
     public SwerveModule[] modules;
     public WPI_Pigeon2 gyro;
@@ -54,6 +60,12 @@ public class Swerve extends SubsystemBase {
         fieldRelative = true;
         estimatedPose = new Pose2d();
 
+        // try {
+        //     txtFile = new FileWriter(new File(Filesystem.getDeployDirectory(),"pose.txt"));
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
+
         modules = new SwerveModule[] {
             new SwerveModule(0, Mod0.constants),
             new SwerveModule(1, Mod1.constants),
@@ -64,7 +76,7 @@ public class Swerve extends SubsystemBase {
         resetEncoders();
 
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
-                                                estimatedPose, SVR_VISION_MEASUREMENT_STD, SVR_STATE_STD);
+                                                estimatedPose, SVR_STATE_STD, SVR_VISION_MEASUREMENT_STD);
 
 
         field = new Field2d();
@@ -75,9 +87,15 @@ public class Swerve extends SubsystemBase {
 
         SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                translation.getX(), translation.getY(), rotation, getGyroRotation2d())
+                translation.getX(), translation.getY(), rotation, getRotation2d())
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
         setModuleStates(moduleStates);
+    }
+
+    public void stop() {
+        for (SwerveModule module : modules) {
+            module.stop();
+        }
     }
 
     public void initShuffleboard() {
@@ -92,12 +110,6 @@ public class Swerve extends SubsystemBase {
         NAR_Shuffleboard.addData("Drivetrain","Pitch",this::getPitch,5,1);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
         NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
-    }
-
-    public void stop() {
-        for (SwerveModule module : modules) {
-            module.stop();
-        }
     }
 
     public Pose2d getPose() {
@@ -132,11 +144,7 @@ public class Swerve extends SubsystemBase {
     }
     
     public void toggle() {
-        if (fieldRelative) {
-            fieldRelative = false;
-            return;
-        }
-        fieldRelative = true;
+        fieldRelative = !fieldRelative;
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -150,45 +158,12 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         odometry.update(getGyroRotation2d(), getPositions());
-        for(SwerveModule module : modules){
-            SmartDashboard.putNumber("Mod " + module.moduleNumber + " Cancoder", module.getCanCoder().getDegrees());
-            SmartDashboard.putNumber("Mod " + module.moduleNumber + " Integrated", module.getState().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);    
-        }
         estimatedPose = odometry.getEstimatedPosition();
-        Translation2d position = estimatedPose.getTranslation();
-        SmartDashboard.putNumber("Robot X", position.getX());
-        SmartDashboard.putNumber("Robot Y", position.getY());
-        SmartDashboard.putNumber("Robot Gyro", getGyroRotation2d().getDegrees());
-        SmartDashboard.putString("POSE2D",getPose().toString());
-    }
-
-    public double getYaw() {
-        return gyro.getYaw();
-    }
-
-    public double getPitch() {
-        return gyro.getPitch();
-    }
-
-    public void zeroGyro() {
-        gyro.reset();
-    }
-
-    public void zeroGyro(double reset) {
-        gyro.setYaw(reset);
-    }
-
-    public Rotation2d getGyroRotation2d() {
-        return Rotation2d.fromDegrees(getYaw());
+        logPose();
     }
 
     public Rotation2d getRotation2d() {
         return estimatedPose.getRotation();
-    }
-
-    public double getHeading() {
-        return getRotation2d().getDegrees();
     }
     
     public double calculateDegreesToTurn(){
@@ -200,5 +175,49 @@ public class Swerve extends SubsystemBase {
         Pose2d location = getPose().relativeTo(FieldConstants.HUB_POSITION);
         double theta = Math.toDegrees(Math.atan2(location.getY(),location.getX()));
         return MathUtil.inputModulus(theta - 180,-180,180);
+    }
+
+    public void logPose() {
+        double currTime = Math.floor(Timer.getFPGATimestamp());
+        if (prevTime + 1 <= currTime && DriverStation.isEnabled()) {
+            poseLogger += estimatedPose.getX() + "," + estimatedPose.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + currTime + "]";
+            // try {
+            //     txtFile.write(estimatedPose.getX() + "," + estimatedPose.getY() + "," + estimatedPose.getRotation().getDegrees() + "," + currTime + "\n");
+            // } catch (Exception e) {
+            //     e.printStackTrace();
+            // }
+            // try {
+            //     txtFile.flush();
+            // } catch (IOException e) {}
+            prevTime = currTime;
+            NAR_Shuffleboard.addData("Logger","Positions",poseLogger,0,0);
+        }
+    }
+
+    public double getYaw() {
+        return MathUtil.inputModulus(gyro.getYaw(),-180,180);
+    }
+
+    public Rotation2d getGyroRotation2d() {
+        return Rotation2d.fromDegrees(getYaw());
+    }
+
+    public double getHeading() {
+        return getRotation2d().getDegrees();
+    }
+
+    public double getPitch() {
+        return gyro.getPitch();
+    }
+    public double getRoll() {
+        return gyro.getRoll();
+    }
+
+    public void zeroGyro() {
+        gyro.reset();
+    }
+
+    public void zeroGyro(double reset) {
+        gyro.setYaw(reset);
     }
 }
