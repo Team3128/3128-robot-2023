@@ -326,8 +326,8 @@ public class Constants {
 
     public static class ArmConstants {
         public enum ScoringPosition {
-            TOP_CONE(180 - 81.666, 56.75), 
-            TOP_CUBE(180 - 92.221, 56.75), 
+            TOP_CONE(180 - 81.666, 52), 
+            TOP_CUBE(180 - 92.221, 52), 
             MID_CONE(180 - 95.559, 40.027), 
             MID_CUBE(180 - 110.041, 39.031), 
             LOW_FLOOR(180 - 155.114, 16.0), 

@@ -36,7 +36,7 @@ public class Telescope extends PIDSubsystem {
         configEncoders();
         getController().setTolerance(TELE_TOLERANCE);
 
-        setSetpoint(MIN_DIST);
+        setSetpoint(getMeasurement());
     }
 
     public static synchronized Telescope getInstance() {

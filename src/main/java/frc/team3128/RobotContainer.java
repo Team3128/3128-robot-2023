@@ -70,8 +70,8 @@ public class RobotContainer {
         manipulator = Manipulator.getInstance();
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
-        //pivot.enable();
-        //telescope.enable();
+        pivot.enable();
+        telescope.enable();
 
         leftStick = new NAR_Joystick(0);
         rightStick = new NAR_Joystick(1);
@@ -89,18 +89,16 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        rightStick.getButton(1).onTrue(new InstantCommand(()-> manipulator.openClaw()));
-        rightStick.getButton(2).onTrue(new InstantCommand(()-> manipulator.closeClaw()));
-        // rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        // rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
+        rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
+        rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
 
         // zeroing
         rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
         rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
 
         // shuffleboard things
-        // rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(90)));
-        // rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(40)));
+        rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(90)));
+        rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(30)));
 
         // manual controls
         rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
@@ -112,8 +110,8 @@ public class RobotContainer {
         rightStick.getButton(13).onTrue(new InstantCommand(() -> manipulator.openClaw()));
         rightStick.getButton(14).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
 
-        //leftStick.getButton(1).onTrue(new CmdScore(ScoringPosition.NEUTRAL));
-        //leftStick.getButton(2).onTrue(new InstantCommand(() -> manipulator.openClaw()));
+        leftStick.getButton(1).onTrue(new CmdRetractArm());
+        leftStick.getButton(2).onTrue(new InstantCommand(() -> manipulator.openClaw()));
         leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
         leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
         leftStick.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
@@ -124,8 +122,8 @@ public class RobotContainer {
         leftStick.getButton(10).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
         leftStick.getButton(11).onTrue(new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
         leftStick.getButton(12).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        leftStick.getButton(1).onTrue(new InstantCommand(()-> telescope.startPID(20)));
-        leftStick.getButton(2).onTrue(new InstantCommand(()-> pivot.startPID(90)));
+        // leftStick.getButton(1).onTrue(new InstantCommand(()-> telescope.startPID(20)));
+        // leftStick.getButton(2).onTrue(new InstantCommand(()-> pivot.startPID(90)));
 
         // rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         // rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
