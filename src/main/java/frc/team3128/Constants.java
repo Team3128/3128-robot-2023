@@ -181,8 +181,8 @@ public class Constants {
     public static class VisionConstants {
 
         public static final Camera FRONT = new Camera("Frog", true, 0, 0, 0, 
-                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-7), 
-                                                        Units.inchesToMeters(-13.75)), Rotation2d.fromDegrees(0)));
+                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-5.5), 
+                                                        Units.inchesToMeters(-12.75)), Rotation2d.fromDegrees(0)));
 
         public static final double SCREEN_WIDTH = 320;
         public static final double SCREEN_HEIGHT = 240;
@@ -315,7 +315,7 @@ public class Constants {
         public static final double kG = 0.5;
         public static final int TELE_MOTOR_ID = 10;
         public static final double TELE_MOTOR_POWER = 0.5;
-        public static final double ENC_CONV = (1/5.0) * 2 * Math.PI * 0.4;
+        public static final double ENC_CONV = (1/5.0) * 2 * Math.PI * 0.4; //55.0 /35.0
         public static final double MIN_DIST = 11.5;
         public static final double MAX_DIST = 48;
         public static final double TELE_TOLERANCE = 0.5;
@@ -326,11 +326,11 @@ public class Constants {
 
     public static class ArmConstants {
         public enum ScoringPosition {
-            TOP_CONE(180 - 81.666, 52), 
-            TOP_CUBE(180 - 92.221, 52), 
-            MID_CONE(180 - 95.559, 40.027), 
-            MID_CUBE(180 - 110.041, 39.031), 
-            LOW_FLOOR(180 - 155.114, 16.0), 
+            TOP_CONE(90.0 + 18.54, 52), 
+            TOP_CUBE(90.0 + 6.4, 52), 
+            MID_CONE(90.0 + 11.23, 39.9), 
+            MID_CUBE(90.0 - 7.17, 41.6), 
+            LOW_FLOOR(90.0 - 41.86, 33.4), 
             HP_PICK_UP(0.0, 16.0), 
             INT_PICK_UP(0.0, 16.0), 
             NEUTRAL(0.0, 11.5);

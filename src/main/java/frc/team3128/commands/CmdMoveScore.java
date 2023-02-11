@@ -40,10 +40,13 @@ public class CmdMoveScore extends CmdMove {
             }
             newPoses[0] = currentPose.nearest(VisionConstants.RAMP_AVOID_SCORE);
         }
-        for (int i = extraPoint; i < positions.length; i++) {
+        for (int i = extraPoint; i < positions.length + extraPoint; i++) {
             newPoses[i] = positions[i - extraPoint][currSelectedGrid];
         }
         poses = newPoses;
+        for (int i = 0; i < newPoses.length; i++) {
+            System.out.println(newPoses[i]);
+        }
         PASS_LINE = FieldConstants.chargingStationOuterX - SwerveConstants.trackWidth/2 - 0.02;
         PASS_LINE = DriverStation.getAlliance() == Alliance.Red ? FieldConstants.FIELD_X_LENGTH - PASS_LINE : PASS_LINE;
         super.initialize();

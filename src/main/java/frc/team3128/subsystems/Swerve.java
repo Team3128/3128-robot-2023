@@ -83,7 +83,7 @@ public class Swerve extends SubsystemBase {
 
         SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                translation.getX(), translation.getY(), rotation, getRotation2d())
+                translation.getX(), translation.getY(), rotation, getGyroRotation2d())
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
         setModuleStates(moduleStates);
     }
@@ -110,6 +110,10 @@ public class Swerve extends SubsystemBase {
 
     public Pose2d getPose() {
         return estimatedPose;
+    }
+
+    public void addVisionMeasurement(Pose2d pose, double timeStamp) {
+        odometry.addVisionMeasurement(new Pose2d(pose.getTranslation(), getGyroRotation2d()), timeStamp);
     }
 
     public void resetEncoders() {

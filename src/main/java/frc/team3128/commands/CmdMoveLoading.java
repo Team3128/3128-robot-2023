@@ -24,7 +24,7 @@ public class CmdMoveLoading extends CmdMove {
         currentSelectedGrid = Vision.SELECTED_GRID;
         var newPoses = new Pose2d[positions.length + 1];
         newPoses[0] = currentSelectedGrid == 0 ? VisionConstants.RAMP_AVOID_LOADING[0] : VisionConstants.RAMP_AVOID_LOADING[1];
-        for (int i = 1; i < positions.length; i ++) {
+        for (int i = 1; i < positions.length + 1; i ++) {
             newPoses[i] = positions[i - 1];
         }
         super.initialize();

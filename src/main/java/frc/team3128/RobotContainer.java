@@ -48,7 +48,7 @@ public class RobotContainer {
     private NAR_Camera cam;
     private Pivot pivot;
     private Telescope telescope;
-    private Manipulator manipulator;
+    // private Manipulator manipulator;
 
     private NAR_Joystick leftStick;
     private NAR_Joystick rightStick;
@@ -63,15 +63,15 @@ public class RobotContainer {
     private Trigger hasTarget;
 
     public RobotContainer() {
-        vision = Vision.getInstance();
         swerve = Swerve.getInstance();
+        vision = Vision.getInstance();
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
-        manipulator = Manipulator.getInstance();
+        //manipulator = Manipulator.getInstance();
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
-        pivot.enable();
-        telescope.enable();
+        // pivot.enable();
+        // telescope.enable();
 
         leftStick = new NAR_Joystick(0);
         rightStick = new NAR_Joystick(1);
@@ -107,12 +107,12 @@ public class RobotContainer {
         rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         
-        rightStick.getButton(13).onTrue(new InstantCommand(() -> manipulator.openClaw()));
-        rightStick.getButton(14).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        // rightStick.getButton(13).onTrue(new InstantCommand(() -> manipulator.openClaw()));
+        // rightStick.getButton(14).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
 
         leftStick.getButton(1).onTrue(new CmdRetractArm());
-        leftStick.getButton(2).onTrue(new InstantCommand(() -> manipulator.openClaw()));
-        leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        // leftStick.getButton(2).onTrue(new InstantCommand(() -> manipulator.openClaw()));
+        // leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
         leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
         leftStick.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
         leftStick.getButton(6).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
@@ -165,7 +165,7 @@ public class RobotContainer {
         vision.initShuffleboard();
         telescope.initShuffleboard();
         pivot.initShuffleboard();
-        manipulator.initShuffleboard();
+        // manipulator.initShuffleboard();
 
         NarwhalDashboard.startServer();   
         
