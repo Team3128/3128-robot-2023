@@ -199,10 +199,24 @@ public class NAR_Camera extends PhotonCamera {
         double hypotenuse = getAprilDistance(target);
         Rotation2d angle = getTarget().getRotation();
         double targetAngle = AprilTags.get(targetId(target)).getRotation().getDegrees();
-        double deltaY = hypotenuse * Math.sin(Units.degreesToRadians(gyro.getAsDouble() + targetAngle));
+        double deltaY = hypotenuse * Math.sin(Units.degreesToRadians(gyro.getAsDouble() + targetAngle + camera.angle));
         Transform2d vector = getTarget(target);
         return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), angle);
     }
+
+    public Transform2d getTest() {
+        return getTest(bestTarget);
+    }
+
+    private Transform2d getTest(PhotonTrackedTarget target) {
+        if (!hasValidTarget() || !AprilTags.containsKey(targetId(target))) return new Transform2d();
+        Rotation2d angle = getTarget().getRotation();
+        double targetAngle = AprilTags.get(targetId(target)).getRotation().getDegrees();
+        Transform2d vector = getTarget(target);
+        double deltaY = vector.getX() * Math.tan(Units.degreesToRadians(gyro.getAsDouble() + targetAngle));
+        return new Transform2d(new Translation2d(vector.getX(), vector.getY() + deltaY), angle);
+    }
+    
 
     public boolean hasValidTarget() {
         return targets != null;

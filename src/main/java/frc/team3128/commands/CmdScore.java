@@ -18,17 +18,17 @@ public class CmdScore extends SequentialCommandGroup {
     private Telescope telescope;
     private Manipulator manipulator;
 
-    public CmdScore(ScoringPosition position, Pose2d[] positions) {
+    public CmdScore(ScoringPosition position, boolean[] overrides, Pose2d[]... positions) {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
 
         addCommands(
             new InstantCommand(() -> pivot.startPID(position.pivotAngle), pivot),
-            new CmdMoveScore(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP, positions),
+            new CmdMoveScore(overrides, positions),
             
             new WaitUntilCommand(()-> pivot.atSetpoint()),
-            // cmd move
+            
             new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
             new InstantCommand(() -> manipulator.openClaw(), manipulator)

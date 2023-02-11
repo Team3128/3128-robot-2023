@@ -16,6 +16,8 @@ import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
 public class Vision extends SubsystemBase{
+    public static int SELECTED_GRID = 0;
+
     private double prevTime = 0;
     private static Vision instance;
 
@@ -31,10 +33,10 @@ public class Vision extends SubsystemBase{
     public Vision() {
         Swerve swerve = Swerve.getInstance();
         NAR_Camera.setGyro(()-> swerve.getYaw());
-        NAR_Camera.setOdometry((pose,time) -> swerve.odometry.addVisionMeasurement(pose,time));
+        NAR_Camera.setOdometry((pose,time) -> swerve.addVisionMeasurement(pose,time));
         NAR_Camera.setAprilTags(APRIL_TAG_POS);
         NAR_Camera.setVisionTarget(FieldConstants.HUB_POSITION);
-        NAR_Camera.multipleTargets = true;
+        NAR_Camera.multipleTargets = false;
         cameras = new HashMap<String,NAR_Camera>();
         cameras.put(FRONT.hostname, new NAR_Camera(FRONT));
     }
@@ -102,7 +104,8 @@ public class Vision extends SubsystemBase{
         NAR_Shuffleboard.addData("Vision","RawTarget",()->cam.getTarget().toString(),0,1,4,1);
         NAR_Shuffleboard.addData("Vision", "Processed Target",()->cam.getProcessedTarget().toString(),0,2,4,1);
         NAR_Shuffleboard.addData("Vision","EstimatedPose", ()-> cam.getPos().toString(),0,3,4,1);
-        NAR_Shuffleboard.addData("Test", "Test", ()->CmdMoveScore.SELECTED_GRID,0,0);
+        NAR_Shuffleboard.addData("Test", "Test", ()->SELECTED_GRID,0,0);
+        NAR_Shuffleboard.addData("Test", "TESTING", ()->cam.getTest().toString(),0,1,3,1);
     }
 
     public void logCameraAll() {

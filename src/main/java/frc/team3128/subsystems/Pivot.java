@@ -31,7 +31,7 @@ public class Pivot extends PIDSubsystem {
         configEncoders();
         getController().setTolerance(PIVOT_TOLERANCE);
 
-        setSetpoint(0);
+        setSetpoint(getMeasurement());
     }
 
     public static synchronized Pivot getInstance(){
