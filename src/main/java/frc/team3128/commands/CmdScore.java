@@ -25,13 +25,16 @@ public class CmdScore extends SequentialCommandGroup {
 
         addCommands(
             new InstantCommand(() -> pivot.startPID(position.pivotAngle), pivot),
-            new CmdMoveScore(overrides, positions),
+            // new CmdMoveScore(overrides, positions),
             
             new WaitUntilCommand(()-> pivot.atSetpoint()),
             
             new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
-            new InstantCommand(() -> manipulator.openClaw(), manipulator)
+            new InstantCommand(() -> manipulator.openClaw(), manipulator),
+            new WaitCommand(0.5),
+            new CmdRetractArm(),
+            new InstantCommand(() -> manipulator.closeClaw(), manipulator)
             // new WaitCommand(2)
             // new InstantCommand(() -> telescope.startPID(ScoringPosition.NEUTRAL.))
         );

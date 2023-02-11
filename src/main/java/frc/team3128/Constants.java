@@ -308,17 +308,17 @@ public class Constants {
     }
 
     public static class TelescopeConstants {
-        public static final double kP = 2;
+        public static final double kP = -2.3;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0.1;
-        public static final double kG = 0.5;
+        public static final double kF = -0.1;
+        public static final double kG = -0.5;
         public static final int TELE_MOTOR_ID = 10;
         public static final double TELE_MOTOR_POWER = 0.5;
         public static final double ENC_CONV = (1/5.0) * 2 * Math.PI * 0.4; //55.0 /35.0
         public static final double MIN_DIST = 11.5;
         public static final double MAX_DIST = 48;
-        public static final double TELE_TOLERANCE = 0.5;
+        public static final double TELE_TOLERANCE = 1;
         public static final int TELE_CURRENT_LIMIT = 40;
 
         public static final double ARM_LENGTH = 56.75; // inches
@@ -326,11 +326,11 @@ public class Constants {
 
     public static class ArmConstants {
         public enum ScoringPosition {
-            TOP_CONE(90.0 + 18.54, 52), 
-            TOP_CUBE(90.0 + 6.4, 52), 
-            MID_CONE(90.0 + 11.23, 39.9), 
-            MID_CUBE(90.0 - 7.17, 41.6), 
-            LOW_FLOOR(90.0 - 41.86, 33.4), 
+            TOP_CONE(130, 45), // angles are off by like 10 (should be like 10 down)
+            TOP_CUBE(120, 40), 
+            MID_CONE(115, 30), 
+            MID_CUBE(100, 25), 
+            LOW_FLOOR(60, 11.5), 
             HP_PICK_UP(0.0, 16.0), 
             INT_PICK_UP(0.0, 16.0), 
             NEUTRAL(0.0, 11.5);
