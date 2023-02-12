@@ -63,7 +63,7 @@ public class Pivot extends PIDSubsystem {
     }
 
     public void zeroEncoder() {
-        m_encoder.setPosition(90);
+        m_encoder.setPosition(0);
     }
 
     public void initShuffleboard() {
@@ -77,9 +77,9 @@ public class Pivot extends PIDSubsystem {
     }
 
     public void startPID(double anglePos) {        
-        super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
+        // super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
         enable();
-        // setSetpoint(anglePos);
+        setSetpoint(anglePos);
     }
 
     @Override

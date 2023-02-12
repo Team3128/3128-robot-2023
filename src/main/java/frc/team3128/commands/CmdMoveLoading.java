@@ -28,7 +28,7 @@ public class CmdMoveLoading extends CmdMove {
             newPoses[i] = positions[i - 1];
         }
         super.initialize();
-        PASS_LINE = FieldConstants.chargingStationInnerX + SwerveConstants.trackWidth/2 + 0.02;
+        PASS_LINE = FieldConstants.chargingStationInnerX + SwerveConstants.robotLength/2 + 0.02;
         PASS_LINE = DriverStation.getAlliance() == Alliance.Red ? FieldConstants.FIELD_X_LENGTH - PASS_LINE : PASS_LINE;
     }
 

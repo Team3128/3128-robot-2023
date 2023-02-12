@@ -62,9 +62,11 @@ public class Telescope extends PIDSubsystem {
     }
 
     public void startPID(double teleDist) {
-        super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
+        // super.setSetpoint(setpoint.getAsDouble() > 50 ? 50 : setpoint.getAsDouble()); // use for shuffleboard tuning
+        // super.setSetpoint(setpoint.getAsDouble() < 11.5 ? 11.5 : setpoint.getAsDouble());
         enable();
-        // setSetpoint(teleDist);
+
+        setSetpoint(teleDist);
         //checkConstraints();
     }
 
@@ -82,7 +84,7 @@ public class Telescope extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() {
-       return m_encoder.getPosition() + MIN_DIST;
+       return -m_encoder.getPosition() + MIN_DIST;
     }
 
     public void extend() {

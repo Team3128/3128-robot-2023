@@ -38,8 +38,10 @@ public class Constants {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
+        public static final double bumperLength = Units.inchesToMeters(4.5);
         public static final double trackWidth = Units.inchesToMeters(26); 
         public static final double wheelBase = Units.inchesToMeters(26); 
+        public static final double robotLength = bumperLength + trackWidth;
         public static final double wheelDiameter = Units.inchesToMeters(4);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
 
@@ -181,7 +183,7 @@ public class Constants {
     public static class VisionConstants {
 
         public static final Camera FRONT = new Camera("Frog", true, 0, 0, 0, 
-                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-5.5), 
+                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-6), 
                                                         Units.inchesToMeters(-12.75)), Rotation2d.fromDegrees(0)));
 
         public static final double SCREEN_WIDTH = 320;
@@ -239,7 +241,7 @@ public class Constants {
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
-            new Pose2d(10, 1.12, new Rotation2d()),
+            new Pose2d(10, 0.95, new Rotation2d()),
             new Pose2d(10, 4.7, new Rotation2d())
         };
 
@@ -285,8 +287,8 @@ public class Constants {
             TestTags.put(7, APRIL_TAG_POS.get(2));
             TestTags.put(6,APRIL_TAG_POS.get(1));
 
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7,4.35, Rotation2d.fromDegrees(180)));
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7, 1.12, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(1.7,4.7, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(1.7, 0.95, Rotation2d.fromDegrees(180)));
         } 
     }
 
@@ -308,17 +310,17 @@ public class Constants {
     }
 
     public static class TelescopeConstants {
-        public static final double kP = 2;
+        public static final double kP = -2.3;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0.1;
-        public static final double kG = 0.5;
+        public static final double kF = -0.1;
+        public static final double kG = -0.5;
         public static final int TELE_MOTOR_ID = 10;
         public static final double TELE_MOTOR_POWER = 0.5;
         public static final double ENC_CONV = (1/5.0) * 2 * Math.PI * 0.4; //55.0 /35.0
         public static final double MIN_DIST = 11.5;
         public static final double MAX_DIST = 48;
-        public static final double TELE_TOLERANCE = 0.5;
+        public static final double TELE_TOLERANCE = 1;
         public static final int TELE_CURRENT_LIMIT = 40;
 
         public static final double ARM_LENGTH = 56.75; // inches
@@ -326,19 +328,31 @@ public class Constants {
 
     public static class ArmConstants {
         public enum ScoringPosition {
-            TOP_CONE(90.0 + 18.54, 52), 
-            TOP_CUBE(90.0 + 6.4, 52), 
-            MID_CONE(90.0 + 11.23, 39.9), 
-            MID_CUBE(90.0 - 7.17, 41.6), 
-            LOW_FLOOR(90.0 - 41.86, 33.4), 
-            HP_PICK_UP(0.0, 16.0), 
-            INT_PICK_UP(0.0, 16.0), 
+            TOP_CONE(125, 48), // angles are off by like 10 (should be like 10 down)
+            TOP_CUBE(120, 42.5), 
+            MID_CONE(115, 30), 
+            MID_CUBE(90, 25), 
+            LOW_FLOOR(60, 11.5), 
             NEUTRAL(0.0, 11.5);
     
             public final double pivotAngle;
             public final double teleDist;
     
             private ScoringPosition(double pivotAngle, double teleDist) {
+                this.pivotAngle = pivotAngle;
+                this.teleDist = teleDist;
+            }
+        }
+
+        public enum IntakePosition {
+            HP_SHELF(108, 20), 
+            INT_PICK_UP(0.0, 16.0), 
+            CONE_POLE(-40, 11.5);
+    
+            public final double pivotAngle;
+            public final double teleDist;
+    
+            private IntakePosition(double pivotAngle, double teleDist) {
                 this.pivotAngle = pivotAngle;
                 this.teleDist = teleDist;
             }
