@@ -2,7 +2,10 @@ package frc.team3128.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team3128.subsystems.Swerve;
@@ -13,15 +16,12 @@ public class CmdSwerveDrive extends CommandBase {
 
     private double rotation;
     private Translation2d translation;
-    
-    private final boolean fieldRelative;
 
     private final DoubleSupplier xAxis;
     private final DoubleSupplier yAxis;
     private final DoubleSupplier zAxis;
     private final DoubleSupplier throttle;
     
-    // when you call this later use getX getY getZ getThrottle
     public CmdSwerveDrive(DoubleSupplier xAxis, DoubleSupplier yAxis, DoubleSupplier zAxis, DoubleSupplier throttle, boolean fieldRelative) {
         this.swerve = Swerve.getInstance();
         addRequirements(swerve);
@@ -30,14 +30,21 @@ public class CmdSwerveDrive extends CommandBase {
         this.yAxis = yAxis;
         this.zAxis = zAxis;
         this.throttle = throttle;
-        this.fieldRelative = fieldRelative;
+        swerve.fieldRelative = fieldRelative;
     }
 
     @Override
     public void execute() {
         // deadbands are taken care of in NAR_Joystick
         // TODO: add in slewratelimiter here
-        translation = new Translation2d(yAxis.getAsDouble(), -xAxis.getAsDouble()).times(throttle.getAsDouble()).times(maxSpeed);
+        translation = new Translation2d(xAxis.getAsDouble(), yAxis.getAsDouble()).times(throttle.getAsDouble()).times(maxSpeed);
+        if (DriverStation.getAlliance() == Alliance.Red || !swerve.fieldRelative) {
+            translation = translation.rotateBy(Rotation2d.fromDegrees(90));
+        }
+        else {
+            translation = translation.rotateBy(Rotation2d.fromDegrees(-90));
+        }
+        
         rotation = -zAxis.getAsDouble() * maxAngularVelocity; // * throttle.getAsDouble();
         SmartDashboard.putBoolean("fieldOriented",swerve.fieldRelative);
         swerve.drive(translation, rotation, swerve.fieldRelative);

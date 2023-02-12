@@ -34,7 +34,7 @@ public class Trajectories {
     private static SwerveAutoBuilder builder;
 
     public static void initTrajectories() {
-        final String[] trajectoryNames = {};
+        final String[] trajectoryNames = {"TestAuto1", "TestAuto2"};
         for (String trajectoryName : trajectoryNames) {
             // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
             trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(maxSpeed, maxAcceleration)));
