@@ -47,7 +47,7 @@ public class CmdMoveScore extends CmdMove {
         for (int i = 0; i < newPoses.length; i++) {
             System.out.println(newPoses[i]);
         }
-        PASS_LINE = FieldConstants.chargingStationOuterX - SwerveConstants.trackWidth/2 - 0.02;
+        PASS_LINE = FieldConstants.chargingStationOuterX - SwerveConstants.robotLength/2 - 0.02;
         PASS_LINE = DriverStation.getAlliance() == Alliance.Red ? FieldConstants.FIELD_X_LENGTH - PASS_LINE : PASS_LINE;
         super.initialize();
     }

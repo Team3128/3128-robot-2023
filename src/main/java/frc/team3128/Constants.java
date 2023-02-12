@@ -38,8 +38,10 @@ public class Constants {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
+        public static final double bumperLength = Units.inchesToMeters(4.5);
         public static final double trackWidth = Units.inchesToMeters(26); 
         public static final double wheelBase = Units.inchesToMeters(26); 
+        public static final double robotLength = bumperLength + trackWidth;
         public static final double wheelDiameter = Units.inchesToMeters(4);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
 
@@ -181,7 +183,7 @@ public class Constants {
     public static class VisionConstants {
 
         public static final Camera FRONT = new Camera("Frog", true, 0, 0, 0, 
-                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-5.5), 
+                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-6), 
                                                         Units.inchesToMeters(-12.75)), Rotation2d.fromDegrees(0)));
 
         public static final double SCREEN_WIDTH = 320;
@@ -239,7 +241,7 @@ public class Constants {
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
-            new Pose2d(10, 1.12, new Rotation2d()),
+            new Pose2d(10, 0.95, new Rotation2d()),
             new Pose2d(10, 4.7, new Rotation2d())
         };
 
@@ -285,8 +287,8 @@ public class Constants {
             TestTags.put(7, APRIL_TAG_POS.get(2));
             TestTags.put(6,APRIL_TAG_POS.get(1));
 
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7,4.35, Rotation2d.fromDegrees(180)));
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7, 1.12, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(1.7,4.7, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(1.7, 0.95, Rotation2d.fromDegrees(180)));
         } 
     }
 
@@ -326,19 +328,31 @@ public class Constants {
 
     public static class ArmConstants {
         public enum ScoringPosition {
-            TOP_CONE(130, 45), // angles are off by like 10 (should be like 10 down)
-            TOP_CUBE(120, 40), 
+            TOP_CONE(125, 48), // angles are off by like 10 (should be like 10 down)
+            TOP_CUBE(120, 42.5), 
             MID_CONE(115, 30), 
-            MID_CUBE(100, 25), 
+            MID_CUBE(90, 25), 
             LOW_FLOOR(60, 11.5), 
-            HP_PICK_UP(0.0, 16.0), 
-            INT_PICK_UP(0.0, 16.0), 
             NEUTRAL(0.0, 11.5);
     
             public final double pivotAngle;
             public final double teleDist;
     
             private ScoringPosition(double pivotAngle, double teleDist) {
+                this.pivotAngle = pivotAngle;
+                this.teleDist = teleDist;
+            }
+        }
+
+        public enum IntakePosition {
+            HP_SHELF(108, 20), 
+            INT_PICK_UP(0.0, 16.0), 
+            CONE_POLE(-40, 11.5);
+    
+            public final double pivotAngle;
+            public final double teleDist;
+    
+            private IntakePosition(double pivotAngle, double teleDist) {
                 this.pivotAngle = pivotAngle;
                 this.teleDist = teleDist;
             }

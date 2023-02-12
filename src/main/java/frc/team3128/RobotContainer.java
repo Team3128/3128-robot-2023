@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdRetractArm;
 import frc.team3128.commands.CmdScore;
+import frc.team3128.commands.CmdShelfPickup;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveScore;
@@ -105,14 +106,14 @@ public class RobotContainer {
         rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
         rightStick.getButton(10).onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
         
-        rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         
         rightStick.getButton(13).onTrue(new InstantCommand(() -> manipulator.openClaw()));
         rightStick.getButton(14).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
 
         leftStick.getButton(1).onTrue(new CmdRetractArm());
-        leftStick.getButton(2).onTrue(new InstantCommand(() -> manipulator.openClaw()));
+        leftStick.getButton(2).onTrue(new CmdShelfPickup());
         leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
         leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
         leftStick.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));

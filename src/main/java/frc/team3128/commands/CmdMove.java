@@ -20,26 +20,26 @@ public class CmdMove extends CommandBase {
     public enum Type {
         SCORE(
             new double[][] {
-                new double[] {chargingStationInnerX - trackWidth/2, chargingStationOuterX + trackWidth/2},
-                new double[] {LOADING_X_LEFT - trackWidth/2, LOADING_X_RIGHT}
+                new double[] {chargingStationInnerX - robotLength/2, chargingStationOuterX + robotLength/2},
+                new double[] {LOADING_X_LEFT - robotLength/2, LOADING_X_RIGHT}
             },
             new double[] {   //Rectangular Constraint
-                chargingStationOuterX + trackWidth/2,
-                chargingStationOuterX + trackWidth,
-                chargingStationLeftY + trackWidth/2,
-                chargingStationRightY - trackWidth/2
+                chargingStationOuterX + robotLength/2,
+                chargingStationOuterX + robotLength * 2,
+                chargingStationLeftY + robotLength/2,
+                chargingStationRightY - robotLength/2
             },
             true
         ),
         LOADING(
             new double[][] {
-                new double[] {0,chargingStationOuterX + trackWidth/2}
+                new double[] {0,chargingStationOuterX + robotLength/2}
             },
             new double[] {   //Rectangular Constraint
-                chargingStationInnerX - trackWidth,
-                chargingStationInnerX - trackWidth/2,
-                chargingStationLeftY + trackWidth/2,
-                chargingStationRightY - trackWidth/2
+                chargingStationInnerX - robotLength,
+                chargingStationInnerX - robotLength/2,
+                chargingStationLeftY + robotLength/2,
+                chargingStationRightY - robotLength/2
             },
             false
         ),
