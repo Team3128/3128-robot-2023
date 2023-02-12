@@ -27,16 +27,17 @@ import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
+import frc.team3128.subsystems.Intake;
+import frc.team3128.subsystems.Manipulator;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
-import frc.team3128.subsystems.Manipulator;
+import frc.team3128.subsystems.Intake.IntakeState;
 import static frc.team3128.Constants.ArmConstants.*;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
  * actually be handled in the {@link Robot} periodic methods (other than the
  * scheduler calls). Instead, the structure of the robot (including subsystems,
@@ -47,6 +48,7 @@ public class RobotContainer {
     private Swerve swerve;
     private Vision vision;
     private NAR_Camera cam;
+    private Intake intake;
     private Pivot pivot;
     private Telescope telescope;
     private Manipulator manipulator;
@@ -65,6 +67,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         swerve = Swerve.getInstance();
+        intake = Intake.getInstance();
         vision = Vision.getInstance();
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
@@ -151,6 +154,16 @@ public class RobotContainer {
         //     leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP[i/3],VisionConstants.SCORES[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         // }
 
+        /* Intake Buttons
+         * rightStick.getButton(20).onTrue(new InstantCommand(() -> intake.setIntakeState(IntakeState.DEPLOYED), intake));
+         * rightStick.getButton(21).onTrue(new InstantCommand(() -> intake.setIntakeState(IntakeState.RETRACTED), intake));
+         * rightStick.getButton(22).onTrue(new InstantCommand(() -> intake.setIntakeState(IntakeState.SEMI_DEPLOYED), intake));
+         * rightStick.getButton(23).onTrue(new InstantCommand(() -> intake.setIntakeState(IntakeState.DESPOSIT), intake));
+         * 
+         * rightStick.getButton(24).onTrue(new InstantCommand(() -> intake.enableRollersForward(), intake)).onFalse(new InstantCommand(() -> intake.disableRollers()));
+         * rightStick.getButton(25).onTrue(new InstantCommand(() -> intake.enableRollersReverse(), intake)).onFalse(new InstantCommand(() -> intake.disableRollers()));
+         */
+
     }
 
     public void init() {
@@ -165,6 +178,7 @@ public class RobotContainer {
 
         swerve.initShuffleboard();
         vision.initShuffleboard();
+        intake.initShuffleboard();
         telescope.initShuffleboard();
         pivot.initShuffleboard();
         manipulator.initShuffleboard();
