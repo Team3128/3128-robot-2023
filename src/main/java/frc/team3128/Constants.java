@@ -38,7 +38,7 @@ public class Constants {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
-        public static final double bumperLength = Units.inchesToMeters(4.5);
+        public static final double bumperLength = Units.inchesToMeters(4);
         public static final double trackWidth = Units.inchesToMeters(26); 
         public static final double wheelBase = Units.inchesToMeters(26); 
         public static final double robotLength = bumperLength + trackWidth;
@@ -241,8 +241,8 @@ public class Constants {
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
-            new Pose2d(10, 0.95, new Rotation2d()),
-            new Pose2d(10, 4.7, new Rotation2d())
+            new Pose2d(10, 0.7, new Rotation2d()),
+            new Pose2d(10, 4.65, new Rotation2d())
         };
 
         public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
@@ -287,8 +287,8 @@ public class Constants {
             TestTags.put(7, APRIL_TAG_POS.get(2));
             TestTags.put(6,APRIL_TAG_POS.get(1));
 
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7,4.7, Rotation2d.fromDegrees(180)));
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7, 0.95, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(1.7,4.65, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(1.7, 0.7, Rotation2d.fromDegrees(180)));
         } 
     }
 

@@ -1,5 +1,6 @@
 package frc.team3128.commands;
 
+import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -25,9 +26,9 @@ public class CmdMove extends CommandBase {
             },
             new double[] {   //Rectangular Constraint
                 chargingStationOuterX + robotLength/2,
-                chargingStationOuterX + robotLength * 2,
-                chargingStationLeftY + robotLength/2,
-                chargingStationRightY - robotLength/2
+                chargingStationOuterX + robotLength * 1.5,
+                chargingStationLeftY + robotLength/2 + 0.1,
+                chargingStationRightY - robotLength/2 - 0.1
             },
             true
         ),
@@ -36,10 +37,10 @@ public class CmdMove extends CommandBase {
                 new double[] {0,chargingStationOuterX + robotLength/2}
             },
             new double[] {   //Rectangular Constraint
-                chargingStationInnerX - robotLength,
+                0, //chargingStationInnerX - robotLength,
                 chargingStationInnerX - robotLength/2,
-                chargingStationLeftY + robotLength/2,
-                chargingStationRightY - robotLength/2
+                chargingStationLeftY + robotLength/2 + 0.1,
+                chargingStationRightY - robotLength/2 - 0.1
             },
             false
         ),
