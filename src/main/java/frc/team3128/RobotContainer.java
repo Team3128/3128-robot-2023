@@ -81,7 +81,7 @@ public class RobotContainer {
         CmdMove.setController(controller::getLeftX, controller::getLeftY, controller::getRightX, rightStick::getThrottle);
 
         //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
-        commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
+        //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
         initDashboard();
         configureButtonBindings();
         
@@ -91,15 +91,18 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
+        rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
+        rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
+        
 
         // zeroing
-        rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
+       // rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
         rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
 
         // shuffleboard things
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
+        rightStick.getButton(7).onTrue(new InstantCommand(()-> telescope.zeroEncoder()));
 
 
         // manual controls
