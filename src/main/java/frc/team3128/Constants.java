@@ -322,6 +322,7 @@ public class Constants {
         public static final double MAX_DIST = 48;
         public static final double TELE_TOLERANCE = 1;
         public static final int TELE_CURRENT_LIMIT = 40;
+        public static final boolean isReversed = true;
 
         public static final double ARM_LENGTH = 56.75; // inches
         public static final int SOLENOID_FORWARD_CHANNEL_ID = 2; 
