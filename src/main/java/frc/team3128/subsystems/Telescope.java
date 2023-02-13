@@ -89,7 +89,7 @@ public class Telescope extends PIDSubsystem {
         releaseBrake();
         double pivotAngle = Math.toRadians(Pivot.getInstance().getMeasurement());
         double ff = -kG.getAsDouble() * Math.cos(pivotAngle) + kF.getAsDouble();
-        double voltageOutput = output + ff;
+        double voltageOutput = isReversed ? -(output + ff) : output + ff;
 
         m_teleMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
     }
@@ -100,12 +100,16 @@ public class Telescope extends PIDSubsystem {
        return -m_encoder.getPosition() + MIN_DIST;
     }
 
+    /*If extends actually extends set isReversed to false,
+    if extends retracts, set isReversed to true*/
     public void extend() {
         disable();
         releaseBrake();
         m_teleMotor.set(0.3);
     }
 
+    /*If retracts actually retracts set isReversed to false,
+    if retracts extends, set isReversed to true*/
     public void retract() {
         disable();
         releaseBrake();
