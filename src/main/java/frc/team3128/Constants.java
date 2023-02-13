@@ -414,14 +414,11 @@ public class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final double kG = 0;
-        public static final double kS = 0;
-        public static final double kV = 0;
+        public static final double kF = 0;
 
-        public static final double ROTATOR_GEAR_RATIO = 1;
-        public static final double ROTATOR_TOLERANCE = FalconConversions.degreesToFalcon(1, ROTATOR_GEAR_RATIO);
+        public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
-        public static final double ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES = 360/42;
+        public static final double ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES = 360 * ROTATOR_GEAR_RATIO;
 
         public static final double VELOCITY_SETPOINT = 0.5;
 
