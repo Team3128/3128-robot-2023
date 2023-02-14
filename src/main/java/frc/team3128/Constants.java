@@ -407,7 +407,7 @@ public class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double ROLLER_POWER = 1.0;
+        public static final double ROLLER_POWER = 0.5;
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
@@ -424,8 +424,8 @@ public class Constants {
         public static final double VELOCITY_SETPOINT = 0.5;
 
         //Motor IDs
-        public static final int INTAKE_PIVOT_ID = 0;
-        public static final int INTAKE_ROLLERS_ID = 1;
+        public static final int INTAKE_PIVOT_ID = 12;
+        public static final int INTAKE_ROLLERS_ID = 11;
 
         //Sensor IDs
         public static final int CONE_SENSOR_ID = 0;

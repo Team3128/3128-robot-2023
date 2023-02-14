@@ -156,7 +156,7 @@ public class RobotContainer {
         buttonPad.getButton(7).onTrue(new InstantCommand(()-> intake.setIntake(0.3), intake)).onFalse(new InstantCommand(()-> intake.stop()));
         buttonPad.getButton(8).onTrue(new InstantCommand(()-> intake.setIntake(-0.3), intake)).onFalse(new InstantCommand(()-> intake.stop()));
         buttonPad.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.stop()));
-        buttonPad.getButton(11).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.stop()));
+        buttonPad.getButton(11).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.stop()));
 
         // non-grid system
         // for (int i = 0; i < VisionConstants.SCORES.length; i++) {
