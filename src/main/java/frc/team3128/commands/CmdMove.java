@@ -21,26 +21,26 @@ public class CmdMove extends CommandBase {
     public enum Type {
         SCORE(
             new double[][] {
-                new double[] {chargingStationInnerX - robotLength/2, chargingStationOuterX + robotLength/2},
-                new double[] {LOADING_X_LEFT - robotLength/2, LOADING_X_RIGHT}
+                new double[] {chargingStationInnerX - robotLength/2.0, chargingStationOuterX + robotLength/2.0},
+                new double[] {LOADING_X_LEFT - robotLength/2.0, LOADING_X_RIGHT}
             },
             new double[] {   //Rectangular Constraint
-                chargingStationOuterX + robotLength/2,
+                chargingStationOuterX + robotLength/2.0,
                 chargingStationOuterX + robotLength * 1.5,
-                chargingStationLeftY + robotLength/2 + 0.1,
-                chargingStationRightY - robotLength/2 - 0.1
+                chargingStationLeftY + robotLength/2.0 + 0.1,
+                chargingStationRightY - robotLength/2.0 - 0.1
             },
             true
         ),
         LOADING(
             new double[][] {
-                new double[] {0,chargingStationOuterX + robotLength/2}
+                new double[] {chargingStationInnerX - robotLength/2.0,chargingStationOuterX + robotLength/2.0}
             },
             new double[] {   //Rectangular Constraint
                 0, //chargingStationInnerX - robotLength,
-                chargingStationInnerX - robotLength/2,
-                chargingStationLeftY + robotLength/2 + 0.1,
-                chargingStationRightY - robotLength/2 - 0.1
+                chargingStationInnerX - robotLength/2.0,
+                chargingStationLeftY + robotLength/2.0 + 0.1,
+                chargingStationRightY - robotLength/2.0 - 0.1
             },
             false
         ),
@@ -145,6 +145,7 @@ public class CmdMove extends CommandBase {
 
         if (xSetpoint || !canMoveX(pose)) xDistance = 0;
         if (ySetpoint || !canMoveY(pose)) yDistance = 0;
+        if (xDistance == 0 && !xSetpoint) yDistance = Math.copySign(maxSpeed, yDistance);
         if (rSetpoint) rotation = 0;
 
         if (joystickOverride) {

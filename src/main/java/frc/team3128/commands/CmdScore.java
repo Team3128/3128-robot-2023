@@ -36,8 +36,8 @@ public class CmdScore extends SequentialCommandGroup {
             new InstantCommand(() -> pivot.startPID(position.pivotAngle + Math.copySign(10, position.pivotAngle))),
             new CmdRetractArm(),
             new InstantCommand(() -> manipulator.closeClaw(), manipulator)
-            // new WaitCommand(2)
-            // new InstantCommand(() -> telescope.startPID(ScoringPosition.NEUTRAL.))
+            // new WaitCommand(2),
+            // new InstantCommand(() -> telescope.startPID(ScoringPosition.NEUTRAL))
         );
     }
 }
