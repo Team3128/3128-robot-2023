@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.team3128.Robot;
+import frc.team3128.RobotContainer;
 import frc.team3128.subsystems.Swerve;
 import static frc.team3128.Constants.SwerveConstants.*;
 
@@ -47,6 +49,8 @@ public class CmdSwerveDrive extends CommandBase {
         
         rotation = -zAxis.getAsDouble() * maxAngularVelocity; // * throttle.getAsDouble();
         SmartDashboard.putBoolean("fieldOriented",swerve.fieldRelative);
+        SmartDashboard.putNumber("yAXIS",yAxis.getAsDouble());
+        SmartDashboard.putNumber("xAXIS",xAxis.getAsDouble());
         swerve.drive(translation, rotation, swerve.fieldRelative);
 
     }

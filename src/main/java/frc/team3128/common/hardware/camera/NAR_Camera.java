@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
+import org.photonvision.RobotPoseEstimator;
 import org.photonvision.SimVisionSystem;
 import org.photonvision.SimVisionTarget;
 import org.photonvision.common.hardware.VisionLEDMode;
@@ -57,9 +58,7 @@ public class NAR_Camera extends PhotonCamera {
     private static BiConsumer<Pose2d,Double> updatePose;
 
     private static HashMap<Integer, Pose2d> AprilTags;
-
     private static Pose2d visionTarget;
-
     public static boolean multipleTargets = false;
 
     public static DoubleSupplier thresh;
