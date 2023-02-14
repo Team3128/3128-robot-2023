@@ -6,6 +6,8 @@
       "/Shuffleboard/Drivetrain/Gyro": "Gyro",
       "/Shuffleboard/Field/field": "Field2d",
       "/Shuffleboard/General/Gyro": "Gyro",
+      "/Shuffleboard/Pivot + Tele/Pivot PID": "PIDController",
+      "/Shuffleboard/Pivot + Tele/Tele PID": "PIDController",
       "/Shuffleboard/Vision/RCONTROLLER": "PIDController",
       "/Shuffleboard/Vision/XCONTROLLER": "PIDController",
       "/Shuffleboard/Vision/YCONTROLLER": "PIDController",
