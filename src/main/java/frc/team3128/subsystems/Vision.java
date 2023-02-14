@@ -14,6 +14,7 @@ import frc.team3128.Constants.FieldConstants;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.hardware.camera.NAR_Camera;
+import frc.team3128.common.utility.NAR_Shuffleboard;
 
 public class Vision extends SubsystemBase{
     public static int SELECTED_GRID = 0;
