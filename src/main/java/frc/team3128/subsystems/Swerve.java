@@ -70,17 +70,6 @@ public class Swerve extends SubsystemBase {
         };
         resetEncoders();
 
-        odometry = new SwerveDrivePoseEstimator(
-            swerveKinematics, 
-            new Rotation2d(), 
-            getPositions(), 
-            estimatedPose, 
-            SVR_STATE_STD, 
-            SVR_VISION_MEASUREMENT_STD);
-
-
-        resetEncoders();
-
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
                                                 estimatedPose, SVR_STATE_STD, SVR_VISION_MEASUREMENT_STD);
 
@@ -93,7 +82,7 @@ public class Swerve extends SubsystemBase {
 
         SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                translation.getX(), translation.getY(), rotation, getRotation2d())
+                translation.getX(), translation.getY(), rotation, getGyroRotation2d())
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
         setModuleStates(moduleStates);
     }
@@ -128,7 +117,7 @@ public class Swerve extends SubsystemBase {
 
     public void resetEncoders() {
         for (SwerveModule module : modules) {
-            module.resetEncoders();
+            module.resetToAbsolute();
         }
     }
 
