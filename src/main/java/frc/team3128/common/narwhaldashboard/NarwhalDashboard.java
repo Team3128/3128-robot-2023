@@ -133,13 +133,18 @@ public class NarwhalDashboard extends WebSocketServer {
         }
     }
 
-    public static void cellSelected(posx, posy){
+    public static void setGridInformation(int selGrid, int posx, int posy) {
+        setGrid(selGrid);
+        setGridCell(posx, posy);
+    }
+
+    public static void setGridCell(int posx, int posy){
             cellSelectedPosX = posx;
             cellSelectedPosY = posy;
             buttonClicked = true;
         
     }
-    public static void cellSelected(selGrid){
+    public static void setGrid(int selGrid){
             numGrid = selGrid;
             gridSelected = true;
 
@@ -173,15 +178,13 @@ public class NarwhalDashboard extends WebSocketServer {
                 if(selectedLimelight != null) {
                     obj.put("selected_pipeline", limelights.get(selectedLimelight).getPipelineIndex());
                 }
-                if(buttonClicked && gridSelected){
+                if(buttonClicked){
                     JSONObject selCellInfo = new JSONObject();
                     selCellInfo.put("x", cellSelectedPosX);
                     selCellInfo.put ("y", cellSelectedPosY);
-                    selCellInfo.put("gridNum", gridNum);
                     obj.put("selectedGridCell", selCellInfo);
                     buttonClicked = false; 
                     gridSelected = false;
-
                 }
 
                 JSONObject constantsObj = new JSONObject();

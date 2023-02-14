@@ -119,15 +119,51 @@ public class RobotContainer {
         leftStick.getButton(2).onTrue(new CmdShelfPickup());
         leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
 
-        leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        leftStick.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        leftStick.getButton(6).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        leftStick.getButton(7).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        leftStick.getButton(8).onTrue(new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        leftStick.getButton(9).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        leftStick.getButton(10).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        leftStick.getButton(11).onTrue(new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        leftStick.getButton(12).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        leftStick.getButton(4).onTrue(new ParallelCommandGroup(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]), 
+        new InstantCommand(() -> {
+            NarwhalDashboard.setGridCell(0,2);
+        })));
+
+        leftStick.getButton(5).onTrue(new ParallelCommandGroup(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
+        new InstantCommand(() -> {
+            NarwhalDashboard.setGridCell(1,2);
+        })));
+
+        leftStick.getButton(6).onTrue(new ParallelCommandGroup(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
+        new InstantCommand(() -> {
+            NarwhalDashboard.setGridCell(2,2);
+        })));
+
+        leftStick.getButton(7).onTrue(new ParallelCommandGroup(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]),
+        new InstantCommand(() -> {
+            NarwhalDashboard.setGridCell(0,1);
+        })));
+
+        leftStick.getButton(8).onTrue(new ParallelCommandGroup(new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
+        new InstantCommand(() -> {
+            NarwhalDashboard.setGridCell(1,1);
+        })));
+
+        leftStick.getButton(9).onTrue(new ParallelCommandGroup(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
+        new InstantCommand(() -> {
+            NarwhalDashboard.setGridCell(2,1);
+        })));
+
+        leftStick.getButton(10).onTrue(new ParallelCommandGroup(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]),
+        new InstantCommand(() -> {
+            NarwhalDashboard.setGridCell(0,0);
+        })));
+
+        leftStick.getButton(11).onTrue(new ParallelCommandGroup(new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
+        new InstantCommand(() -> {
+            NarwhalDashboard.setGridCell(1,0);
+        })));
+
+        leftStick.getButton(12).onTrue(new ParallelCommandGroup(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
+        new InstantCommand(() -> {
+            NarwhalDashboard.setGridCell(2,0);
+        })));
+
         // leftStick.getButton(1).onTrue(new InstantCommand(()-> telescope.startPID(20)));
         // leftStick.getButton(2).onTrue(new InstantCommand(()-> pivot.startPID(90)));
 
