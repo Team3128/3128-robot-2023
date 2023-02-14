@@ -1,5 +1,6 @@
 package frc.team3128.commands;
 
+
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -80,6 +81,7 @@ public class CmdMove extends CommandBase {
         addRequirements(swerve);
     }
 
+
     public static void setController(DoubleSupplier x, DoubleSupplier y, DoubleSupplier r, DoubleSupplier accel) {
         xAxis = x;
         yAxis = y;
@@ -142,6 +144,7 @@ public class CmdMove extends CommandBase {
         xSetpoint = xController.atSetpoint();
         ySetpoint = yController.atSetpoint();
         rSetpoint = rController.atSetpoint();
+
 
         if (xSetpoint || !canMoveX(pose)) xDistance = 0;
         if (ySetpoint || !canMoveY(pose)) yDistance = 0;

@@ -7,11 +7,16 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdRetractArm;
@@ -32,8 +37,10 @@ import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
+
 import frc.team3128.subsystems.Manipulator;
 import static frc.team3128.Constants.ArmConstants.*;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -153,7 +160,6 @@ public class RobotContainer {
         // for (int i = 0; i < VisionConstants.SCORES.length; i++) {
         //     leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP[i/3],VisionConstants.SCORES[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         // }
-
     }
 
     public void init() {

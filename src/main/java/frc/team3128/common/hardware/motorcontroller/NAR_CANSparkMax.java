@@ -5,13 +5,14 @@ import com.revrobotics.REVLibError;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.team3128.common.hardware.motor.NAR_Motor;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class NAR_CANSparkMax extends CANSparkMax {
-
+	
 	private double prevValue = 0;
 	private SparkMaxRelativeEncoder encoder;
 	private SimDeviceSim encoderSim;

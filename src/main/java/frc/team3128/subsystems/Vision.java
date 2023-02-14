@@ -1,5 +1,6 @@
 package frc.team3128.subsystems;
 
+import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,7 +14,6 @@ import frc.team3128.Constants.FieldConstants;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.hardware.camera.NAR_Camera;
-import frc.team3128.common.utility.NAR_Shuffleboard;
 
 public class Vision extends SubsystemBase{
     public static int SELECTED_GRID = 0;
