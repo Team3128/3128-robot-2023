@@ -1,5 +1,6 @@
 package frc.team3128.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -15,7 +16,7 @@ public class CmdShelfPickup extends SequentialCommandGroup{
     private Manipulator manipulator;
 
 
-    public CmdShelfPickup () {
+    public CmdShelfPickup (Pose2d... poses) {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
@@ -24,6 +25,7 @@ public class CmdShelfPickup extends SequentialCommandGroup{
             new InstantCommand(() -> manipulator.openClaw(), manipulator),
             new InstantCommand(() -> pivot.startPID(ArmConstants.IntakePosition.HP_SHELF.pivotAngle), pivot),
             new WaitUntilCommand(()-> pivot.atSetpoint()),
+            new CmdMoveLoading(poses),
             new InstantCommand(() -> telescope.startPID(ArmConstants.IntakePosition.HP_SHELF.teleDist), telescope)
             
             // new InstantCommand(() -> pivot.startPID(angle), pivot),
