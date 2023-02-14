@@ -33,7 +33,6 @@ public class ConstantsInt2 {
         categories = new Hashtable<String, Class<?>>();
         //Add each class to the HashMap
         categories.put("ConversionConstants", ConstantsInt.ConversionConstants.class);
-        categories.put("DriveConstants", ConstantsInt.DriveConstants.class);
         categories.put("SwerveConstants", ConstantsInt.SwerveConstants.class);
         categories.put("VisionConstants", ConstantsInt.VisionConstants.class);
 

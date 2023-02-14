@@ -16,6 +16,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -57,9 +58,7 @@ public class NAR_Camera extends PhotonCamera {
     private static BiConsumer<Pose2d,Double> updatePose;
 
     private static HashMap<Integer, Pose2d> AprilTags;
-
     private static Pose2d visionTarget;
-
     public static boolean multipleTargets = false;
 
     public static DoubleSupplier thresh;
@@ -99,19 +98,19 @@ public class NAR_Camera extends PhotonCamera {
         if (result.hasTargets()) {
             targets = result.getTargets();
             bestTarget = result.getBestTarget();
+            if (!camera.updatePose) return;
             ArrayList<Pose2d> poses = new ArrayList<Pose2d>();
             if (multipleTargets) {
                 for (int i = 0; i < targets.size(); i ++) {
-                    if (targetAmbiguity(targets.get(i)) < 0.5)
-                        poses.add(sPipeline.equals(Pipeline.APRILTAG) ? getPosApril(targets.get(i)) : getPosVision(targets.get(i)));
+                    if (targetAmbiguity(targets.get(i)) < 0.5 && !getPos(targets.get(i)).equals(new Pose2d()))
+                        poses.add(getPos(targets.get(i)));
                 }
             }
-            else poses.add(getPos());
+            else if (!getPos().equals(new Pose2d()))poses.add(getPos());
             for (int i = 0; i < poses.size(); i++) {
                 if (translationOutOfBounds(poses.get(i).getTranslation()))
                     return;
-                System.out.println("Pain");
-                updatePose.accept(poses.get(i),result.getTimestampSeconds() - result.getLatencyMillis() / 1000);
+                updatePose.accept(poses.get(i),result.getTimestampSeconds());
             }
             return;
         }
@@ -183,11 +182,11 @@ public class NAR_Camera extends PhotonCamera {
     public Transform2d getTarget() {
         return getTarget(bestTarget);
     }
-
+    
     private Transform2d getTarget(PhotonTrackedTarget target) {
         if (!hasValidTarget()) return new Transform2d();
         Transform3d transform = getRawTarget(target);
-        return new Transform2d(transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d());
+        return new Transform2d(transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d().unaryMinus());
     }
 
     public Transform2d getProcessedTarget() {
@@ -195,13 +194,28 @@ public class NAR_Camera extends PhotonCamera {
     }
 
     private Transform2d getProcessedTarget(PhotonTrackedTarget target) {
-        if (!hasValidTarget()) return new Transform2d();
+        if (!hasValidTarget() || !AprilTags.containsKey(targetId(target))) return new Transform2d();
         double hypotenuse = getAprilDistance(target);
-        double angle = Units.degreesToRadians(getTarget().getRotation().getDegrees());
-        double deltaY = hypotenuse * Math.sin(angle);
+        Rotation2d angle = getTarget().getRotation();
+        double targetAngle = AprilTags.get(targetId(target)).getRotation().getDegrees();
+        double deltaY = hypotenuse * Math.sin(Units.degreesToRadians(gyro.getAsDouble() + targetAngle + camera.angle));
         Transform2d vector = getTarget(target);
-        return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), Rotation2d.fromDegrees(angle));
+        return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), angle);
     }
+
+    public Transform2d getTest() {
+        return getTest(bestTarget);
+    }
+
+    private Transform2d getTest(PhotonTrackedTarget target) {
+        if (!hasValidTarget() || !AprilTags.containsKey(targetId(target))) return new Transform2d();
+        Rotation2d angle = getTarget().getRotation();
+        double targetAngle = AprilTags.get(targetId(target)).getRotation().getDegrees();
+        Transform2d vector = getTarget(target);
+        double deltaY = vector.getX() * Math.tan(Units.degreesToRadians(gyro.getAsDouble() + targetAngle));
+        return new Transform2d(new Translation2d(vector.getX(), vector.getY() + deltaY), angle);
+    }
+    
 
     public boolean hasValidTarget() {
         return targets != null;
@@ -220,8 +234,7 @@ public class NAR_Camera extends PhotonCamera {
 
     // Relative to Camera
     private double getVisionDistance(PhotonTrackedTarget target) {
-        if (!hasValidTarget())
-            return -1;
+        if (!hasValidTarget()) return -1;
         double ty = Units.degreesToRadians(targetPitch(target) + camera.angle);
         double tx = Units.degreesToRadians(targetYaw(target));
         return Math.abs(camera.targetHeight - camera.height) / (Math.tan(ty) * Math.cos(tx));
@@ -236,16 +249,14 @@ public class NAR_Camera extends PhotonCamera {
     }
 
     private Pose2d getTargetPosApril(Pose2d robotPos, PhotonTrackedTarget target) {
-        if (!hasValidTarget())
-            return new Pose2d();
+        if (!hasValidTarget()) return new Pose2d();
         Pose2d cameraPos = robotPos.transformBy(camera.offset.inverse());
         Transform2d transform = getTarget(target).inverse();
         return cameraPos.plus(transform);
     }
 
     private Pose2d getTargetPosVision(Pose2d robotPos, PhotonTrackedTarget target) {
-        if (!hasValidTarget())
-            return new Pose2d();
+        if (!hasValidTarget()) return new Pose2d();
         Pose2d cameraPos = robotPos.transformBy(camera.offset.inverse());
         Double distance = getVisionDistance(target);
         Double angle = cameraPos.getRotation().getRadians() - Units.degreesToRadians(targetYaw(target));
@@ -254,20 +265,24 @@ public class NAR_Camera extends PhotonCamera {
     }
 
     public Pose2d getPos() {
-        return sPipeline.equals(Pipeline.APRILTAG) ? getPosApril(bestTarget) : getPosVision(bestTarget);
+        return getPos(bestTarget);
+    }
+
+    public Pose2d getPos(PhotonTrackedTarget target) {
+        return sPipeline.equals(Pipeline.APRILTAG) ? getPosApril(target) : getPosVision(target);
     }
 
     // Relative to Robot
     private Pose2d getPosApril(PhotonTrackedTarget tag) {
-        if(!hasValidTarget() || !AprilTags.containsKey(targetId())) return new Pose2d();
+        if(!hasValidTarget() || !AprilTags.containsKey(targetId(tag))) return new Pose2d();
         Transform2d transform = getProcessedTarget(tag);
+        if (!AprilTags.containsKey(targetId(tag)) || transform.getX() > 4) return new Pose2d();
         Pose2d target = AprilTags.get(targetId());
-
+        if (target == null) return new Pose2d();
         Translation2d coord = target.getTranslation().plus(transform.getTranslation().rotateBy(target.getRotation()));
         Rotation2d angle = target.getRotation().plus(transform.getRotation());
 
         Pose2d pos = new Pose2d(coord,angle);
-        //Pose2d pos = bestTarget.transformBy(transform);
 
         return pos.transformBy(camera.offset);
     }
@@ -283,14 +298,11 @@ public class NAR_Camera extends PhotonCamera {
                 new Rotation2d(Units.degreesToRadians(gyro.getAsDouble())));
         Pose2d pos = visionTarget.transformBy(transform.inverse());
         return pos.transformBy(camera.offset);
-
-        // Pose2d pos = PhotonUtils.estimateFieldToRobot(getRelativeCamPos(gyroAngle),
-        // HUB_POSITION, offset);
     }
 
     // Relative to Robot
     @Deprecated
-private Pose2d visionEstimatedPose(Pose2d pose) {
+    private Pose2d visionEstimatedPose(Pose2d pose) {
         if (!hasValidTarget())
             return new Pose2d();
         double distToHubCenter = getDistance();

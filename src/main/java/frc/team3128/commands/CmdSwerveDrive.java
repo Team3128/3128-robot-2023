@@ -18,15 +18,12 @@ public class CmdSwerveDrive extends CommandBase {
 
     private double rotation;
     private Translation2d translation;
-    
-    private final boolean fieldRelative;
 
     private final DoubleSupplier xAxis;
     private final DoubleSupplier yAxis;
     private final DoubleSupplier zAxis;
     private final DoubleSupplier throttle;
     
-    // when you call this later use getX getY getZ getThrottle
     public CmdSwerveDrive(DoubleSupplier xAxis, DoubleSupplier yAxis, DoubleSupplier zAxis, DoubleSupplier throttle, boolean fieldRelative) {
         this.swerve = Swerve.getInstance();
         addRequirements(swerve);
@@ -35,7 +32,7 @@ public class CmdSwerveDrive extends CommandBase {
         this.yAxis = yAxis;
         this.zAxis = zAxis;
         this.throttle = throttle;
-        this.fieldRelative = fieldRelative;
+        swerve.fieldRelative = fieldRelative;
     }
 
     @Override
@@ -50,8 +47,7 @@ public class CmdSwerveDrive extends CommandBase {
             translation = translation.rotateBy(Rotation2d.fromDegrees(-90));
         }
         
-        rotation = -zAxis.getAsDouble() * maxAngularVelocity;
-
+        rotation = -zAxis.getAsDouble() * maxAngularVelocity; // * throttle.getAsDouble();
         SmartDashboard.putBoolean("fieldOriented",swerve.fieldRelative);
         SmartDashboard.putNumber("yAXIS",yAxis.getAsDouble());
         SmartDashboard.putNumber("xAXIS",xAxis.getAsDouble());

@@ -14,7 +14,7 @@ public class CmdAlign extends PIDCommand {
     public CmdAlign(String camera) {
         super(
             new PIDController(alignKP,alignKI,alignKD),
-            ()-> Vision.getInstance().getTx(camera),
+            ()-> Vision.getInstance().getTX(camera),
             0,
             output -> Swerve.getInstance().drive(new Translation2d(), -output, false),
             Swerve.getInstance()

@@ -1,20 +1,14 @@
 package frc.team3128.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.team3128.Constants.VisionConstants.*;
 
-import frc.team3128.Constants.DriveConstants;
 import static frc.team3128.Constants.SwerveConstants.*;
 
-import frc.team3128.common.utility.Log;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
 
@@ -69,7 +63,8 @@ public class CmdTargetPursuit extends CommandBase {
     public void execute() {
         if (vision.hasValidTarget(camera)) {
             Double dist = !atDistance ? distance.calculate(vision.calculateDistance(camera)) : 0;
-            Double spin = !atRotation ? rotation.calculate(vision.getTx(camera)) : 0;
+
+            Double spin = !atRotation ? rotation.calculate(vision.getTX(camera)) : 0;
             drive.drive(new Translation2d(-dist,0).rotateBy(camAngle), -spin,false);
             atDistance = distance.atSetpoint();
             atRotation = rotation.atSetpoint();
@@ -79,8 +74,6 @@ public class CmdTargetPursuit extends CommandBase {
             rotation.reset();
             drive.drive(new Translation2d(0,0), Units.degreesToRadians(120),false);
         }
-        SmartDashboard.putBoolean("Rotation",rotation.atSetpoint());
-        SmartDashboard.putBoolean("DistanceBoolean",distance.atSetpoint());
     }
 
     @Override
