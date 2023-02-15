@@ -91,8 +91,10 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
-        rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
+        rightStick.getButton(2).onTrue(new InstantCommand(()-> manipulator.openClaw()));
+        rightStick.getButton(3).onTrue(new InstantCommand(()-> manipulator.closeClaw()));
+        //rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
+        //rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
         
 
         // zeroing

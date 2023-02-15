@@ -58,9 +58,11 @@ public class CmdMove extends CommandBase {
     }
 
     private static PIDController xController, yController;
+    private static PIDController xDeadController;
     private static PIDController rController;
     private static DoubleSupplier xAxis, yAxis, rAxis, throttle;
     private boolean xSetpoint, ySetpoint, rSetpoint, atDestination;
+    private boolean inXDead;
     protected Pose2d[] poses;
     private int index;
     private Type type;
@@ -92,10 +94,12 @@ public class CmdMove extends CommandBase {
     static {
         xController = new PIDController(translationKP, translationKI, translationKD);
         yController = new PIDController(translationKP, translationKI, translationKD);
+        xDeadController = new PIDController(1, translationKI, translationKD);
         rController = new PIDController(rotationKP, rotationKI, rotationKD);
         rController.enableContinuousInput(-Math.PI, Math.PI);
 
         xController.setTolerance(DRIVE_TOLERANCE);
+        xDeadController.setTolerance(DRIVE_TOLERANCE);
         yController.setTolerance(DRIVE_TOLERANCE);
         rController.setTolerance(Math.PI/120);
 
@@ -125,6 +129,8 @@ public class CmdMove extends CommandBase {
         rSetpoint = false;
         atDestination = false;
 
+        inXDead = false;
+
         xController.reset();
         yController.reset();
         rController.reset();
@@ -132,6 +138,7 @@ public class CmdMove extends CommandBase {
         xController.setSetpoint(poses[index].getX());
         yController.setSetpoint(poses[index].getY());
         rController.setSetpoint(poses[index].getRotation().getRadians());
+        xDeadController.setSetpoint(xDeadLine(type.boxConstraints));
     }
 
     @Override
@@ -148,8 +155,12 @@ public class CmdMove extends CommandBase {
 
         if (xSetpoint || !canMoveX(pose)) xDistance = 0;
         if (ySetpoint || !canMoveY(pose)) yDistance = 0;
-        if (xDistance == 0 && !xSetpoint) yDistance = Math.copySign(maxSpeed, yDistance);
         if (rSetpoint) rotation = 0;
+
+        if ((xDistance == 0) && !xSetpoint) yDistance = Math.copySign(maxSpeed, yDistance);
+        inXDead = !canMoveX(pose);
+        if (inXDead)
+            xDistance = xDeadController.calculate(pose.getX());
 
         if (joystickOverride) {
             int team = DriverStation.getAlliance() == Alliance.Red ? 1 : -1;
@@ -191,6 +202,13 @@ public class CmdMove extends CommandBase {
         double left = DriverStation.getAlliance() == Alliance.Red ? FIELD_X_LENGTH - constraints[1] : constraints[0];
         double right = DriverStation.getAlliance() == Alliance.Red ? FIELD_X_LENGTH - constraints[0] : constraints[1];
         return (xPos >= left && xPos <= right);
+    }
+
+    private double xDeadLine(double[] constraints) {
+        double average = (constraints[0] + constraints[1])/2;
+        if (DriverStation.getAlliance() == Alliance.Red)
+            average = (FIELD_X_LENGTH - constraints[0] + FIELD_X_LENGTH - constraints[1])/2.0;
+        return average;
     }
 
     private boolean inYConstraints(double[] constraints, double yPos) {
