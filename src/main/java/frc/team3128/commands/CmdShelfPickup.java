@@ -25,7 +25,7 @@ public class CmdShelfPickup extends SequentialCommandGroup{
             new InstantCommand(() -> manipulator.openClaw(), manipulator),
             new InstantCommand(() -> pivot.startPID(ArmConstants.IntakePosition.HP_SHELF.pivotAngle), pivot),
             new WaitUntilCommand(()-> pivot.atSetpoint()),
-            new CmdMoveLoading(poses),
+            //new CmdMoveLoading(poses),
             new InstantCommand(() -> telescope.startPID(ArmConstants.IntakePosition.HP_SHELF.teleDist), telescope)
             
             // new InstantCommand(() -> pivot.startPID(angle), pivot),

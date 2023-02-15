@@ -81,7 +81,7 @@ public class RobotContainer {
         CmdMove.setController(controller::getLeftX, controller::getLeftY, controller::getRightX, rightStick::getThrottle);
 
         //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
-        //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
+        commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
         initDashboard();
         configureButtonBindings();
         

@@ -27,6 +27,7 @@ public class Telescope extends PIDSubsystem {
     private DoubleSupplier kG, kF, setpoint;
     
     private static Telescope instance;
+    private int plateauCount = 0;
 
     private NAR_CANSparkMax m_teleMotor;
     private SparkMaxRelativeEncoder m_encoder;
@@ -82,10 +83,16 @@ public class Telescope extends PIDSubsystem {
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        if (getController().atSetpoint()) {
-            engageBrake();
-            return;
-        }
+        // if (getController().atSetpoint()) {
+        //     plateauCount++;
+        // }
+        // else {
+        //     plateauCount = 0;
+        // }
+        // if (plateauCount >= 5) {
+        //     engageBrake();
+        //     return;
+        // }
         releaseBrake();
         double pivotAngle = Math.toRadians(Pivot.getInstance().getMeasurement());
         double ff = -kG.getAsDouble() * Math.cos(pivotAngle) + kF.getAsDouble();
