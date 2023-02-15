@@ -411,17 +411,18 @@ public class Constants {
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
-        public static final double kP = 0;
+        public static final double kP = 0.1;
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final double kF = 0;
+        public static final double kF = 0.6;
 
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES = 360 * ROTATOR_GEAR_RATIO;
 
         public static final double VELOCITY_SETPOINT = 0.5;
+        public static final double INTAKE_TOLERANCE = 0.5;
 
         //Motor IDs
         public static final int INTAKE_PIVOT_ID = 12;

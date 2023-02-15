@@ -31,6 +31,7 @@ public class Intake extends PIDSubsystem {
     private DigitalInput m_intakeSensorRight;
 
     private DoubleSupplier kF;
+    private DoubleSupplier setpoint;
 
     // Encoder
     private SparkMaxRelativeEncoder m_encoder;
@@ -62,6 +63,7 @@ public class Intake extends PIDSubsystem {
         configMotors();
         // configSensors();
         configEncoders();
+        getController().setTolerance(INTAKE_TOLERANCE);
     }
 
     public static Intake getInstance() {
@@ -78,7 +80,7 @@ public class Intake extends PIDSubsystem {
 
         m_intakePivot.setIdleMode(IdleMode.kBrake);
 
-        m_intakePivot.setInverted(false);
+        m_intakePivot.setInverted(true);
         m_intakeRollers.setInverted(false);
     }
 
@@ -107,7 +109,8 @@ public class Intake extends PIDSubsystem {
     }
 
     public void startPID(double setpoint) {
-        setSetpoint(setpoint);
+        //setSetpoint(setpoint);
+        setSetpoint(this.setpoint.getAsDouble());
         enable();
     }
 
@@ -199,6 +202,9 @@ public class Intake extends PIDSubsystem {
         NAR_Shuffleboard.addData("intake", "Angle Setpoint", () -> getSetpoint(), 3, 0);
         NAR_Shuffleboard.addData("intake", "Roller Velocity", () -> m_intakeRollers.getSelectedSensorVelocity() / 4096,
                 4, 0);
+        setpoint = NAR_Shuffleboard.debug("intake", "setpoint", 0, 1,2);
+        NAR_Shuffleboard.addData("intake", "IsEnabled", ()-> isEnabled(), 1, 0);
+        NAR_Shuffleboard.addData("intake", "atSetpoint", ()-> getController().atSetpoint(), 1, 1);
 
         // NAR_Shuffleboard.addData("intake", "Has Object", () -> hasObject(), 0, 1);
         // NAR_Shuffleboard.addData("intake", "Has Cone on Peg", () -> hasConeOnPeg(),
