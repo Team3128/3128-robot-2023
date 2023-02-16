@@ -105,7 +105,7 @@ public class Telescope extends PIDSubsystem {
     public void extend() {
         disable();
         releaseBrake();
-        m_teleMotor.set(0.3);
+        m_teleMotor.set(0.15);
     }
 
     /*If retracts actually retracts set isReversed to false,
@@ -113,7 +113,7 @@ public class Telescope extends PIDSubsystem {
     public void retract() {
         disable();
         releaseBrake();
-        m_teleMotor.set(-0.3);
+        m_teleMotor.set(-0.15);
     }
 
     public void releaseBrake(){

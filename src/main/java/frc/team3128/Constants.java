@@ -123,7 +123,7 @@ public class Constants {
         // For safety, use less than theoretical and real values
         public static final double maxSpeed = 4; //meters per second - 16.3 ft/sec
         public static final double maxAcceleration = 2;
-        public static final double maxAngularVelocity = 2; //3; //11.5; // citrus: 10
+        public static final double maxAngularVelocity = 2.25; //3; //11.5; // citrus: 10
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
 
         /* Motor Inverts */
@@ -331,12 +331,12 @@ public class Constants {
 
     public static class ArmConstants {
         public enum ScoringPosition {
-            TOP_CONE(125, 48), // angles are off by like 10 (should be like 10 down)
-            TOP_CUBE(120, 42.5), 
-            MID_CONE(115, 30), 
-            MID_CUBE(90, 25), 
-            LOW_FLOOR(60, 11.5), 
-            NEUTRAL(0.0, 11.5);
+            TOP_CONE(115, 42), // angles are off by like 10 (should be like 10 down)
+            TOP_CUBE(107.5, 42), 
+            MID_CONE(105, 24), 
+            MID_CUBE(90, 24), 
+            LOW_FLOOR(45, 11.5), 
+            NEUTRAL(45, 11.5); //pivot should be 0
     
             public final double pivotAngle;
             public final double teleDist;
@@ -348,7 +348,7 @@ public class Constants {
         }
 
         public enum IntakePosition {
-            HP_SHELF(108, 20), 
+            HP_SHELF(105, 20), //105
             INT_PICK_UP(0.0, 16.0), 
             CONE_POLE(-40, 11.5);
     
