@@ -92,7 +92,7 @@ public class Pivot extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() { // returns degrees
-       return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
+       return -(m_rotateMotor.getSelectedSensorPosition()) + MIN_ANGLE;
     }
 
     public void stopPivot() {

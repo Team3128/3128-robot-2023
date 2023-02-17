@@ -80,7 +80,7 @@ public class Constants {
 
         public static final double TURN_TOLERANCE = 5;
 
-        public static final double DRIVE_TOLERANCE = 0.025;
+        public static final double DRIVE_TOLERANCE = 0.01;
 
         /* Translation PID Values */
         public static final double translationKP = 3;
@@ -122,9 +122,9 @@ public class Constants {
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double driveKS = 0.60094;
-        public static final double driveKV = 1.1559; 
-        public static final double driveKA = 0.12348; 
+        public static final double driveKS = 0.19255;//0.60094; // 0.19225;
+        public static final double driveKV = 2.4366;//1.1559;  // 2.4366
+        public static final double driveKA = 0.34415; //0.12348; // 0.34415
         public static final double turnTolerance = 2;
 
         /* Swerve Profiling Values */

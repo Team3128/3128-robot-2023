@@ -94,6 +94,7 @@ public class RobotContainer {
         // rightStick.getButton(2).onTrue(new InstantCommand(()-> manipulator.openClaw()));
         // rightStick.getButton(3).onTrue(new InstantCommand(()-> manipulator.closeClaw()));
         rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
+        //rightStick.getButton(2).onTrue(new RunCommand(()-> swerve.drive(new Translation2d(0.5,0),0, true)));
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
         
 
@@ -141,9 +142,15 @@ public class RobotContainer {
         // }
         // grid system
         
-        buttonPad.getButton(4).onTrue(new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
-        buttonPad.getButton(5).onTrue(new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
-        buttonPad.getButton(6).onTrue(new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2])).onFalse(new InstantCommand(()->swerve.stop(),swerve));;
+        buttonPad.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        buttonPad.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        buttonPad.getButton(6).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        buttonPad.getButton(7).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        buttonPad.getButton(8).onTrue(new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        buttonPad.getButton(9).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        buttonPad.getButton(10).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        buttonPad.getButton(11).onTrue(new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        buttonPad.getButton(12).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
         buttonPad.getButton(1).onTrue(new InstantCommand(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 0 : 2;
         }));

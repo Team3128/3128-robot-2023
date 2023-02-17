@@ -101,7 +101,7 @@ public class CmdMove extends CommandBase {
         xController.setTolerance(DRIVE_TOLERANCE);
         xDeadController.setTolerance(DRIVE_TOLERANCE);
         yController.setTolerance(DRIVE_TOLERANCE);
-        rController.setTolerance(Math.PI/120);
+        rController.setTolerance(Math.PI/180);
 
         NAR_Shuffleboard.addComplex("VisionPID","XCONTROLLER",xController,0,0);
         NAR_Shuffleboard.addComplex("VisionPID","YCONTROLLER",yController,1,0);
