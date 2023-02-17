@@ -1,7 +1,25 @@
 package frc.team3128.subsystems;
 
+import static frc.team3128.Constants.IntakeConstants.CONE_SENSOR_ID;
+import static frc.team3128.Constants.IntakeConstants.ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES;
+import static frc.team3128.Constants.IntakeConstants.INTAKE_PIVOT_ID;
+import static frc.team3128.Constants.IntakeConstants.INTAKE_ROLLERS_ID;
+import static frc.team3128.Constants.IntakeConstants.INTAKE_SENSOR_LEFT_ID;
+import static frc.team3128.Constants.IntakeConstants.INTAKE_SENSOR_RIGHT_ID;
+import static frc.team3128.Constants.IntakeConstants.INTAKE_TOLERANCE;
+import static frc.team3128.Constants.IntakeConstants.ROLLER_POWER;
+import static frc.team3128.Constants.IntakeConstants.kD;
+import static frc.team3128.Constants.IntakeConstants.kI;
+import static frc.team3128.Constants.IntakeConstants.kP;
+
+import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxRelativeEncoder;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -10,14 +28,6 @@ import frc.team3128.Constants.IntakeConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.hardware.motorcontroller.NAR_TalonSRX;
 import frc.team3128.common.utility.NAR_Shuffleboard;
-
-import static frc.team3128.Constants.IntakeConstants.*;
-
-import java.util.function.DoubleSupplier;
-
-import com.revrobotics.SparkMaxRelativeEncoder;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Intake extends PIDSubsystem {
 
@@ -31,7 +41,7 @@ public class Intake extends PIDSubsystem {
     private DigitalInput m_intakeSensorRight;
 
     private DoubleSupplier kF;
-    private DoubleSupplier setpoint;
+    private DoubleSupplier setpoint, power;
 
     // Encoder
     private SparkMaxRelativeEncoder m_encoder;
@@ -82,6 +92,7 @@ public class Intake extends PIDSubsystem {
 
         m_intakePivot.setInverted(true);
         m_intakeRollers.setInverted(false);
+        
     }
 
     public void configSensors() {
@@ -104,7 +115,7 @@ public class Intake extends PIDSubsystem {
         return m_encoder.getPosition();
     }
 
-    public void setIntakeState(IntakeState desiredState) {
+    public void startPID(IntakeState desiredState) {
         startPID(desiredState.getAngleSetpoint());
     }
 
@@ -112,6 +123,20 @@ public class Intake extends PIDSubsystem {
         //setSetpoint(setpoint);
         setSetpoint(this.setpoint.getAsDouble());
         enable();
+    }
+
+    @Override
+    public void periodic() {
+        // TODO Auto-generated method stub
+        super.periodic();
+        NAR_Shuffleboard.addData("intake", "output current", m_intakeRollers.getStatorCurrent(), 4, 1);
+        NAR_Shuffleboard.addData("intake", "input current", m_intakeRollers.getSupplyCurrent(), 4, 2);
+        NAR_Shuffleboard.addData("intake", "output voltage", m_intakeRollers.getMotorOutputVoltage(), 5, 1);
+        //if (Math.abs(m_intakeRollers.getStatorCurrent()) >= 20) disableRollers();
+    }
+
+    public double getCurrent() {
+        return m_intakeRollers.getStatorCurrent();
     }
 
     @Override
@@ -141,11 +166,11 @@ public class Intake extends PIDSubsystem {
 
     // Roller Control
     public void enableRollersForward() {
-        enableRollers(ROLLER_POWER);
+        enableRollers(power.getAsDouble());
     }
 
     public void enableRollersReverse() {
-        enableRollers(-ROLLER_POWER);
+        enableRollers(-power.getAsDouble());
     }
 
     public void enableRollers(double wheelsPower) {
@@ -154,6 +179,10 @@ public class Intake extends PIDSubsystem {
 
     public void disableRollers() {
         m_intakeRollers.set(0);
+    }
+
+    public boolean atSetpoint() {
+        return getController().atSetpoint();
     }
 
     // Sensor Methods
@@ -205,6 +234,7 @@ public class Intake extends PIDSubsystem {
         setpoint = NAR_Shuffleboard.debug("intake", "setpoint", 0, 1,2);
         NAR_Shuffleboard.addData("intake", "IsEnabled", ()-> isEnabled(), 1, 0);
         NAR_Shuffleboard.addData("intake", "atSetpoint", ()-> getController().atSetpoint(), 1, 1);
+        power = NAR_Shuffleboard.debug("intake", "power", 0.1, 1, 4);
 
         // NAR_Shuffleboard.addData("intake", "Has Object", () -> hasObject(), 0, 1);
         // NAR_Shuffleboard.addData("intake", "Has Cone on Peg", () -> hasConeOnPeg(),

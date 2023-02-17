@@ -407,11 +407,11 @@ public class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double ROLLER_POWER = 0.5;
+        public static final double ROLLER_POWER = 3.0/12.0;
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
-        public static final double kP = 0.1;
+        public static final double kP = 0.075;
         public static final double kI = 0;
         public static final double kD = 0;
 

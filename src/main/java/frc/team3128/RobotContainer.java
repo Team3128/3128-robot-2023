@@ -21,6 +21,7 @@ import frc.team3128.Constants.VisionConstants;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdGyroBalance;
+import frc.team3128.commands.CmdIntakeCone;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_Joystick;
@@ -84,7 +85,7 @@ public class RobotContainer {
         CmdMove.setController(controller::getLeftX, controller::getLeftY, controller::getRightX, rightStick::getThrottle);
 
         //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, rightStick::getThrottle, true));
-        //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
+        commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, rightStick::getThrottle, true));
         initDashboard();
         configureButtonBindings();
         
@@ -155,12 +156,12 @@ public class RobotContainer {
         }));
 
         //Intake Buttons
-        buttonPad.getButton(7).onTrue(new InstantCommand(()-> intake.setIntake(0.3), intake)).onFalse(new InstantCommand(()-> intake.stop()));
-        buttonPad.getButton(8).onTrue(new InstantCommand(()-> intake.setIntake(-0.3), intake)).onFalse(new InstantCommand(()-> intake.stop()));
-        buttonPad.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.stop()));
-        buttonPad.getButton(11).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.stop()));
-        buttonPad.getButton(12).onTrue(new InstantCommand(()-> intake.startPID(30)));
-        buttonPad.getButton(13).onTrue(new InstantCommand(()-> intake.resetEncoders()));
+        buttonPad.getButton(7).onTrue(new InstantCommand(()-> intake.setIntake(0.3), intake)).onFalse(new InstantCommand(()-> intake.disableRollers()));
+        buttonPad.getButton(8).onTrue(new CmdIntakeCone()).onFalse(new InstantCommand(()->intake.disableRollers()));
+        buttonPad.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
+        buttonPad.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));
+        buttonPad.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(30)));
+        buttonPad.getButton(12).onTrue(new InstantCommand(()-> intake.resetEncoders()));
 
         // non-grid system
         // for (int i = 0; i < VisionConstants.SCORES.length; i++) {
