@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
+import org.photonvision.RobotPoseEstimator;
 import org.photonvision.SimVisionSystem;
 import org.photonvision.SimVisionTarget;
 import org.photonvision.common.hardware.VisionLEDMode;
@@ -57,9 +58,7 @@ public class NAR_Camera extends PhotonCamera {
     private static BiConsumer<Pose2d,Double> updatePose;
 
     private static HashMap<Integer, Pose2d> AprilTags;
-
     private static Pose2d visionTarget;
-
     public static boolean multipleTargets = false;
 
     public static DoubleSupplier thresh;
@@ -107,7 +106,7 @@ public class NAR_Camera extends PhotonCamera {
                         poses.add(getPos(targets.get(i)));
                 }
             }
-            else poses.add(getPos());
+            else if (!getPos().equals(new Pose2d()))poses.add(getPos());
             for (int i = 0; i < poses.size(); i++) {
                 if (translationOutOfBounds(poses.get(i).getTranslation()))
                     return;
@@ -199,10 +198,24 @@ public class NAR_Camera extends PhotonCamera {
         double hypotenuse = getAprilDistance(target);
         Rotation2d angle = getTarget().getRotation();
         double targetAngle = AprilTags.get(targetId(target)).getRotation().getDegrees();
-        double deltaY = hypotenuse * Math.sin(Units.degreesToRadians(gyro.getAsDouble() + targetAngle));
+        double deltaY = hypotenuse * Math.sin(Units.degreesToRadians(gyro.getAsDouble() + targetAngle + camera.angle));
         Transform2d vector = getTarget(target);
         return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), angle);
     }
+
+    public Transform2d getTest() {
+        return getTest(bestTarget);
+    }
+
+    private Transform2d getTest(PhotonTrackedTarget target) {
+        if (!hasValidTarget() || !AprilTags.containsKey(targetId(target))) return new Transform2d();
+        Rotation2d angle = getTarget().getRotation();
+        double targetAngle = AprilTags.get(targetId(target)).getRotation().getDegrees();
+        Transform2d vector = getTarget(target);
+        double deltaY = vector.getX() * Math.tan(Units.degreesToRadians(gyro.getAsDouble() + targetAngle));
+        return new Transform2d(new Translation2d(vector.getX(), vector.getY() + deltaY), angle);
+    }
+    
 
     public boolean hasValidTarget() {
         return targets != null;
@@ -263,7 +276,7 @@ public class NAR_Camera extends PhotonCamera {
     private Pose2d getPosApril(PhotonTrackedTarget tag) {
         if(!hasValidTarget() || !AprilTags.containsKey(targetId(tag))) return new Pose2d();
         Transform2d transform = getProcessedTarget(tag);
-        if (!AprilTags.containsKey(targetId(tag))) return new Pose2d();
+        if (!AprilTags.containsKey(targetId(tag)) || transform.getX() > 4 || Math.abs(transform.getRotation().getDegrees()) < 150) return new Pose2d();
         Pose2d target = AprilTags.get(targetId());
         if (target == null) return new Pose2d();
         Translation2d coord = target.getTranslation().plus(transform.getTranslation().rotateBy(target.getRotation()));

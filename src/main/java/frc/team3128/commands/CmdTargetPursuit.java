@@ -63,6 +63,7 @@ public class CmdTargetPursuit extends CommandBase {
     public void execute() {
         if (vision.hasValidTarget(camera)) {
             Double dist = !atDistance ? distance.calculate(vision.calculateDistance(camera)) : 0;
+
             Double spin = !atRotation ? rotation.calculate(vision.getTX(camera)) : 0;
             drive.drive(new Translation2d(-dist,0).rotateBy(camAngle), -spin,false);
             atDistance = distance.atSetpoint();

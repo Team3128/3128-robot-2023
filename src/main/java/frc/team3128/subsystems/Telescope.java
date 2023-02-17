@@ -5,7 +5,9 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.math.controller.PIDController;
-
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.math.MathUtil;
 import static frc.team3128.Constants.TelescopeConstants.*;
 import java.util.function.DoubleSupplier;
@@ -25,18 +27,21 @@ public class Telescope extends PIDSubsystem {
     private DoubleSupplier kG, kF, setpoint;
     
     private static Telescope instance;
+    private int plateauCount = 0;
 
     private NAR_CANSparkMax m_teleMotor;
     private SparkMaxRelativeEncoder m_encoder;
+    private DoubleSolenoid m_solenoid; 
 
     public Telescope() {
         super(new PIDController(kP, kI, kD));
 
         configMotors();
         configEncoders();
+        configPneumatics();
         getController().setTolerance(TELE_TOLERANCE);
 
-        setSetpoint(MIN_DIST);
+        setSetpoint(getMeasurement());
     }
 
     public static synchronized Telescope getInstance() {
@@ -56,25 +61,42 @@ public class Telescope extends PIDSubsystem {
 
     }
 
+    public void configPneumatics(){
+        m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID, SOLENOID_BACKWARD_CHANNEL_ID);
+        engageBrake();
+    }
+
     private void configEncoders() {
         m_encoder = (SparkMaxRelativeEncoder) m_teleMotor.getEncoder();
         m_encoder.setPositionConversionFactor(ENC_CONV); 
     }
 
     public void startPID(double teleDist) {
-        super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
+        // super.setSetpoint(setpoint.getAsDouble() > 50 ? 50 : setpoint.getAsDouble()); // use for shuffleboard tuning
+        // super.setSetpoint(setpoint.getAsDouble() < 11.5 ? 11.5 : setpoint.getAsDouble());
+        releaseBrake();
         enable();
-        // setSetpoint(teleDist);
+
+        setSetpoint(teleDist);
         //checkConstraints();
     }
 
     @Override
     protected void useOutput(double output, double setpoint) {
-
+        // if (getController().atSetpoint()) {
+        //     plateauCount++;
+        // }
+        // else {
+        //     plateauCount = 0;
+        // }
+        // if (plateauCount >= 5) {
+        //     engageBrake();
+        //     return;
+        // }
+        releaseBrake();
         double pivotAngle = Math.toRadians(Pivot.getInstance().getMeasurement());
         double ff = -kG.getAsDouble() * Math.cos(pivotAngle) + kF.getAsDouble();
-        double voltageOutput = output + ff;
-        NAR_Shuffleboard.addData("Testing", "Voltage Output", voltageOutput, 0, 0);
+        double voltageOutput = isReversed ? -(output + ff) : output + ff;
 
         m_teleMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
     }
@@ -82,17 +104,31 @@ public class Telescope extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() {
-       return m_encoder.getPosition() + MIN_DIST;
+       return -m_encoder.getPosition() + MIN_DIST;
     }
 
+    /*If extends actually extends set isReversed to false,
+    if extends retracts, set isReversed to true*/
     public void extend() {
         disable();
-        m_teleMotor.set(0.3);
+        releaseBrake();
+        m_teleMotor.set(0.25);
     }
 
+    /*If retracts actually retracts set isReversed to false,
+    if retracts extends, set isReversed to true*/
     public void retract() {
         disable();
-        m_teleMotor.set(-0.3);
+        releaseBrake();
+        m_teleMotor.set(-0.25);
+    }
+
+    public void releaseBrake(){
+        m_solenoid.set(Value.kReverse);
+    }
+
+    public void engageBrake(){
+        m_solenoid.set(Value.kForward);
     }
 
     /**

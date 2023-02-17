@@ -31,7 +31,7 @@ public class Pivot extends PIDSubsystem {
         configEncoders();
         getController().setTolerance(PIVOT_TOLERANCE);
 
-        setSetpoint(0);
+        setSetpoint(getMeasurement());
     }
 
     public static synchronized Pivot getInstance(){
@@ -63,7 +63,7 @@ public class Pivot extends PIDSubsystem {
     }
 
     public void zeroEncoder() {
-        m_encoder.setPosition(90);
+        m_encoder.setPosition(0);
     }
 
     public void initShuffleboard() {
@@ -77,9 +77,9 @@ public class Pivot extends PIDSubsystem {
     }
 
     public void startPID(double anglePos) {        
-        super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
+        //super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
         enable();
-        // setSetpoint(anglePos);
+        setSetpoint(anglePos);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class Pivot extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() { // returns degrees
-       return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
+       return -(m_rotateMotor.getSelectedSensorPosition()) + MIN_ANGLE;
     }
 
     public void stopPivot() {

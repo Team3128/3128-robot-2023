@@ -59,15 +59,11 @@ public class SwerveModule {
         angleMotor.set(ControlMode.Position, degreesToFalcon(angle, angleGearRatio)); 
         lastAngle = angle;
 
-        // SmartDashboard.putNumber("angle curr position" + moduleNumber, falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio));
-        // SmartDashboard.putNumber("angle set position" + moduleNumber, desiredState.angle.getDegrees());
+        SmartDashboard.putNumber("angle curr position" + moduleNumber, falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio));
+        SmartDashboard.putNumber("angle set position" + moduleNumber, desiredState.angle.getDegrees());
     }
 
-    public void resetEncoders() {
-        resetToAbsolute();
-    }
-
-    private void resetToAbsolute(){
+    public void resetToAbsolute(){
         double absolutePosition = degreesToFalcon(getCanCoder().getDegrees(), angleGearRatio);
         angleMotor.setSelectedSensorPosition(absolutePosition);
     }
