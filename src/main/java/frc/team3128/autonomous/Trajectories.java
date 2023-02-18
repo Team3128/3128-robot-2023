@@ -20,8 +20,19 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 import static frc.team3128.Constants.SwerveConstants.*;
+
+import frc.team3128.Constants.ArmConstants.ScoringPosition;
+import frc.team3128.commands.CmdMove;
+import frc.team3128.commands.CmdMoveScore;
+import frc.team3128.commands.CmdScore;
+import frc.team3128.common.constantsint.ConstantsInt.VisionConstants;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Vision;
 
 /**
  * Store trajectories for autonomous. Edit points here. 
@@ -33,8 +44,32 @@ public class Trajectories {
 
     private static SwerveAutoBuilder builder;
 
+    private static HashMap<String, Command> CommandEventMap;
+
     public static void initTrajectories() {
-        final String[] trajectoryNames = {"TestAuto1", "TestAuto2"};
+        final String[] trajectoryNames = {"r_top_1Cone", "r_top_1Cone+1Cube", "r_top_1Cone+1Cube+Climb",
+                                            "b_top_1Cone", "b_top_1Cone+1Cube", "b_top_1Cone+1Cube+Climb",
+
+                                            "r_mid_1Cone", "r_mid_1Cone+Climb",
+                                            "b_mid_1Cone", "b_mid_1Cone+Climb",
+
+                                            "r_bottom_1Cone", "r_bottom_1Cone+1Cube", "r_bottom_1Cone+1Cube+Climb",
+                                            "b_bottom_1Cone", "b_bottom_1Cone+1Cube", "b_bottom_1Cone+1Cube+Climb",
+                                            };
+
+        CommandEventMap.put("Score[1,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
+                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
+                                                ));
+        CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
+                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                ));
+        
+        CommandEventMap.put("IntakeCone", null);
+        CommandEventMap.put("IntakeCube", null);
+        CommandEventMap.put("Climb", null);
+        
         for (String trajectoryName : trajectoryNames) {
             // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
             trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(maxSpeed, maxAcceleration)));
@@ -47,7 +82,7 @@ public class Trajectories {
             new PIDConstants(translationKP,translationKI,translationKD),
             new PIDConstants(rotationKP,rotationKI,rotationKD),
             Swerve.getInstance()::setModuleStates,
-            new HashMap<String,Command>(),
+            CommandEventMap,
             Swerve.getInstance()
         );
     }
