@@ -8,6 +8,7 @@ import static frc.team3128.Constants.PivotConstants.*;
 
 import java.util.function.DoubleSupplier;
 
+import frc.team3128.RobotContainer;
 import frc.team3128.Constants.PivotConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
@@ -76,8 +77,10 @@ public class Pivot extends PIDSubsystem {
         NAR_Shuffleboard.addData("pivot", "isEnabled", ()->isEnabled(), 4, 0);
     }
 
-    public void startPID(double anglePos) {        
-        //super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
+    public void startPID(double anglePos) {
+        anglePos = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : anglePos;
+        anglePos = Math.abs(anglePos) > 135 ? 135 * Math.signum(anglePos) : anglePos;
+
         enable();
         setSetpoint(anglePos);
     }

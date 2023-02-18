@@ -35,6 +35,8 @@ import frc.team3128.subsystems.Vision;
 import frc.team3128.subsystems.Manipulator;
 import static frc.team3128.Constants.ArmConstants.*;
 
+import java.util.function.BooleanSupplier;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -59,7 +61,7 @@ public class RobotContainer {
 
     private CommandScheduler commandScheduler = CommandScheduler.getInstance();
   
-    private boolean DEBUG = true; 
+    public static BooleanSupplier DEBUG = ()-> false; 
 
     private Trigger hasTarget;
 
@@ -171,7 +173,7 @@ public class RobotContainer {
     }
 
     private void initDashboard() {
-        if (DEBUG) {
+        if (DEBUG.getAsBoolean()) {
             SmartDashboard.putData("CommandScheduler", CommandScheduler.getInstance());
             //SmartDashboard.putData("Swerve", swerve);
         }
@@ -182,7 +184,10 @@ public class RobotContainer {
         pivot.initShuffleboard();
         manipulator.initShuffleboard();
 
-        NarwhalDashboard.startServer();   
+        NarwhalDashboard.startServer();
+        NAR_Shuffleboard.addData("DEBUG", "DEBUG", ()-> DEBUG.getAsBoolean(), 0, 1);
+        var x = NAR_Shuffleboard.addData("DEBUG", "TOGGLE", false, 0, 0).withWidget("Toggle Button");
+        DEBUG = ()-> x.getEntry().getBoolean(false);
         
         Log.info("NarwhalRobot", "Setting up limelight chooser...");
       
