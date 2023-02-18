@@ -35,7 +35,7 @@ public class AutoPrograms {
         String[] autoStrings = new String[] {"top_1Cone", "top_1Cone+1Cube", "top_1Cone+1Cube+Climb",
                                             "mid_1Cone", "mid_1Cone+Climb",
                                             "bottom_1Cone", "bottom_1Cone+1Cube", "bottom_1Cone+1Cube+Climb",
-                                            };
+                                            }; // naming scheme kinda mid
         
         NarwhalDashboard.addAutos(autoStrings);
     }

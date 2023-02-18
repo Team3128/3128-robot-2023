@@ -63,7 +63,7 @@ public class Trajectories {
                                                 ));
         CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
                                                 ));
         
         CommandEventMap.put("IntakeCone", null);
@@ -93,7 +93,7 @@ public class Trajectories {
 
     public static PathPlannerTrajectory line(Pose2d start, Pose2d end) {
         return PathPlanner.generatePath(
-            new PathConstraints(maxSpeed, 4), 
+            new PathConstraints(maxSpeed, maxAcceleration), 
             new PathPoint(start.getTranslation(), start.getRotation()), 
             new PathPoint(end.getTranslation(), end.getRotation())
             );
