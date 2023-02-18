@@ -343,19 +343,21 @@ public class Constants {
 
     public static class ArmConstants {
         public enum ScoringPosition {
-            TOP_CONE(125, 48), // angles are off by like 10 (should be like 10 down)
-            TOP_CUBE(120, 42.5), 
-            MID_CONE(115, 30), 
-            MID_CUBE(90, 25), 
-            LOW_FLOOR(60, 11.5), 
-            NEUTRAL(0.0, 11.5);
+            TOP_CONE(125, 48, 0), // angles are off by like 10 (should be like 10 down)
+            TOP_CUBE(120, 42.5, 0), 
+            MID_CONE(115, 30, 1), 
+            MID_CUBE(90, 25, 1), 
+            LOW_FLOOR(60, 11.5, 2), 
+            NEUTRAL(0.0, 11.5, 3);
     
             public final double pivotAngle;
             public final double teleDist;
+            public final int height;
     
-            private ScoringPosition(double pivotAngle, double teleDist) {
+            private ScoringPosition(double pivotAngle, double teleDist, int height) {
                 this.pivotAngle = pivotAngle;
                 this.teleDist = teleDist;
+                this.height = height; // nardash height
             }
         }
 

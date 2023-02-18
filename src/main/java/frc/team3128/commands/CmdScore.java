@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ScoringPosition;
+import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Telescope;
@@ -18,14 +19,15 @@ public class CmdScore extends SequentialCommandGroup {
     private Telescope telescope;
     private Manipulator manipulator;
 
-    public CmdScore(ScoringPosition position, boolean[] overrides, Pose2d[]... positions) {
+    public CmdScore(ScoringPosition position, int xpos) {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
 
         addCommands(
+            new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
             new InstantCommand(() -> pivot.startPID(position.pivotAngle), pivot),
-            // new CmdMoveScore(overrides, positions),
+            // new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], VisionConstants.SCORES_GRID[xpos]),
             
             new WaitUntilCommand(()-> pivot.atSetpoint()),
             
