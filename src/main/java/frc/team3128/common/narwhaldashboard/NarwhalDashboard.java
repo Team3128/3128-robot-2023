@@ -113,7 +113,6 @@ public class NarwhalDashboard extends WebSocketServer {
     public static void setSelectedLimelight(NAR_Camera ll){
         selectedLimelight = ll.get_name();
     }
-    public static void 
 
     /**
      * Starts the NarwhalDashboard server. This opens it up to be able to be
@@ -145,7 +144,7 @@ public class NarwhalDashboard extends WebSocketServer {
         
     }
     public static void setGrid(int selGrid){
-            numGrid = selGrid;
+            gridNum = selGrid;
             gridSelected = true;
 
     }
