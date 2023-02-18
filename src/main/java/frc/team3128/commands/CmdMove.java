@@ -26,7 +26,7 @@ public class CmdMove extends CommandBase {
                 new double[] {LOADING_X_LEFT - robotLength/2.0, LOADING_X_RIGHT}
             },
             new double[] {   //Rectangular Constraint
-                chargingStationOuterX + robotLength/2.0,
+                chargingStationOuterX + robotLength/2.0 - 0.1,
                 chargingStationOuterX + robotLength * 1.5,
                 chargingStationLeftY + robotLength/2.0 + 0.1,
                 chargingStationRightY - robotLength/2.0 - 0.1
@@ -38,7 +38,7 @@ public class CmdMove extends CommandBase {
                 new double[] {chargingStationInnerX - robotLength/2.0,chargingStationOuterX + robotLength/2.0}
             },
             new double[] {   //Rectangular Constraint
-                0, //chargingStationInnerX - robotLength,
+                2.0, //chargingStationInnerX - robotLength,
                 chargingStationInnerX - robotLength/2.0,
                 chargingStationLeftY + robotLength/2.0 + 0.1,
                 chargingStationRightY - robotLength/2.0 - 0.1
@@ -94,7 +94,7 @@ public class CmdMove extends CommandBase {
     static {
         xController = new PIDController(translationKP, translationKI, translationKD);
         yController = new PIDController(translationKP, translationKI, translationKD);
-        xDeadController = new PIDController(1, translationKI, translationKD);
+        xDeadController = new PIDController(1, translationKI, 0.1);
         rController = new PIDController(rotationKP, rotationKI, rotationKD);
         rController.enableContinuousInput(-Math.PI, Math.PI);
 

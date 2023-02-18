@@ -34,7 +34,7 @@ public class CmdScore extends SequentialCommandGroup {
         addCommands(
             new InstantCommand(() -> pivot.startPID(position.pivotAngle), pivot),
             new CmdMoveScore(overrides, positions),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.25 : -0.25,0),0,true)).withTimeout(0.05),
+            //new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.25 : -0.25,0),0,true)).withTimeout(0.05),
             new InstantCommand(()-> swerve.stop()),
             
             new WaitUntilCommand(()-> pivot.atSetpoint()),
@@ -44,8 +44,7 @@ public class CmdScore extends SequentialCommandGroup {
             new InstantCommand(() -> manipulator.openClaw(), manipulator),
             new WaitCommand(0.25),
             //new InstantCommand(() -> pivot.startPID(position.pivotAngle + Math.copySign(10, position.pivotAngle))),
-            new CmdRetractArm(),
-            new InstantCommand(() -> manipulator.closeClaw(), manipulator)
+            new CmdRetractArm()
             // new WaitCommand(2),
             // new InstantCommand(() -> telescope.startPID(ScoringPosition.NEUTRAL))
         );
