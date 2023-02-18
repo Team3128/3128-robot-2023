@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdRetractArm;
 import frc.team3128.commands.CmdScore;
-import frc.team3128.commands.CmdShelfPickup;
+// import frc.team3128.commands.CmdShelfPickup;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveScore;
@@ -116,7 +116,7 @@ public class RobotContainer {
         rightStick.getButton(14).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
 
         leftStick.getButton(1).onTrue(new CmdRetractArm());
-        leftStick.getButton(2).onTrue(new CmdShelfPickup());
+        // leftStick.getButton(2).onTrue(new CmdShelfPickup());
         leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
 
         leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
