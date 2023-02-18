@@ -166,6 +166,31 @@ public class RobotContainer {
         //     leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP[i/3],VisionConstants.SCORES[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         // }
 
+        new SequentialCommandGroup(
+            new InstantCommand(()-> Vision.SELECTED_GRID = 2),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new InstantCommand(()-> Vision.SELECTED_GRID = 1),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new InstantCommand(()-> Vision.SELECTED_GRID = 0),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1])
+        );
+
     }
 
     public void init() {
