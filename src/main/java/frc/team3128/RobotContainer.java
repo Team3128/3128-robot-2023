@@ -35,6 +35,8 @@ import frc.team3128.subsystems.Vision;
 import frc.team3128.subsystems.Manipulator;
 import static frc.team3128.Constants.ArmConstants.*;
 
+import java.util.function.BooleanSupplier;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -59,7 +61,7 @@ public class RobotContainer {
 
     private CommandScheduler commandScheduler = CommandScheduler.getInstance();
   
-    private boolean DEBUG = true; 
+    public static BooleanSupplier DEBUG = ()-> false; 
 
     private Trigger hasTarget;
 
@@ -106,6 +108,7 @@ public class RobotContainer {
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
         rightStick.getButton(7).onTrue(new InstantCommand(()-> telescope.zeroEncoder()));
+        rightStick.getButton(8).onTrue(new CmdRetractArm());
 
 
         // manual controls
@@ -117,20 +120,26 @@ public class RobotContainer {
         
         rightStick.getButton(13).onTrue(new InstantCommand(() -> manipulator.openClaw()));
         rightStick.getButton(14).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        rightStick.getButton(15).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
+        rightStick.getButton(16).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
 
         leftStick.getButton(1).onTrue(new CmdRetractArm());
-        leftStick.getButton(2).onTrue(new CmdShelfPickup());
+        //leftStick.getButton(2).onTrue(new CmdShelfPickup());
         leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        leftStick.getButton(4).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
+        leftStick.getButton(5).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
+        leftStick.getButton(6).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[2]));
 
-        leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        leftStick.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        leftStick.getButton(6).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        leftStick.getButton(7).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        leftStick.getButton(8).onTrue(new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        leftStick.getButton(9).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        leftStick.getButton(10).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        leftStick.getButton(11).onTrue(new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        leftStick.getButton(12).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+
+        // leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        // leftStick.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        // leftStick.getButton(6).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        // leftStick.getButton(7).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        // leftStick.getButton(8).onTrue(new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        // leftStick.getButton(9).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        // leftStick.getButton(10).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        // leftStick.getButton(11).onTrue(new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        // leftStick.getButton(12).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
         // leftStick.getButton(1).onTrue(new InstantCommand(()-> telescope.startPID(20)));
         // leftStick.getButton(2).onTrue(new InstantCommand(()-> pivot.startPID(90)));
 
@@ -164,6 +173,31 @@ public class RobotContainer {
         //     leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP[i/3],VisionConstants.SCORES[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         // }
 
+        new SequentialCommandGroup(
+            new InstantCommand(()-> Vision.SELECTED_GRID = 2),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new InstantCommand(()-> Vision.SELECTED_GRID = 1),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new InstantCommand(()-> Vision.SELECTED_GRID = 0),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
+            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]),
+            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1])
+        );
+
     }
 
     public void init() {
@@ -171,7 +205,7 @@ public class RobotContainer {
     }
 
     private void initDashboard() {
-        if (DEBUG) {
+        if (DEBUG.getAsBoolean()) {
             SmartDashboard.putData("CommandScheduler", CommandScheduler.getInstance());
             //SmartDashboard.putData("Swerve", swerve);
         }
@@ -182,7 +216,10 @@ public class RobotContainer {
         pivot.initShuffleboard();
         manipulator.initShuffleboard();
 
-        NarwhalDashboard.startServer();   
+        NarwhalDashboard.startServer();
+        NAR_Shuffleboard.addData("DEBUG", "DEBUG", ()-> DEBUG.getAsBoolean(), 0, 1);
+        var x = NAR_Shuffleboard.addData("DEBUG", "TOGGLE", false, 0, 0).withWidget("Toggle Button");
+        DEBUG = ()-> x.getEntry().getBoolean(false);
         
         Log.info("NarwhalRobot", "Setting up limelight chooser...");
       

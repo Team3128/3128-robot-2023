@@ -80,12 +80,12 @@ public class Constants {
 
         public static final double TURN_TOLERANCE = 5;
 
-        public static final double DRIVE_TOLERANCE = 0.01;
+        public static final double DRIVE_TOLERANCE = 0.025;
 
         /* Translation PID Values */
         public static final double translationKP = 3;
         public static final double translationKI = 0;
-        public static final double translationKD = 0;
+        public static final double translationKD = 0.1;
 
         /* Translation PID Values */
         public static final double distanceKP = 3;
@@ -131,7 +131,7 @@ public class Constants {
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double maxSpeed = 4; //meters per second - 16.3 ft/sec
+        public static final double maxSpeed = 4.5; //meters per second - 16.3 ft/sec
         public static final double maxAcceleration = 2;
         public static final double maxAngularVelocity = 2.25; //3; //11.5; // citrus: 10
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
@@ -233,9 +233,9 @@ public class Constants {
         };
 
         public static final boolean[][] RAMP_OVERRIDE = new boolean[][] {
-            new boolean[] {false, true, true},
-            new boolean[] {false, true, false},
-            new boolean[] {true, true, false}
+            new boolean[] {true, true, true}, //false, true, true
+            new boolean[] {true, true, true}, //false, true, false
+            new boolean[] {true, true, true} //true, true, false
         };
 
         public static final ArrayList<Pose2d> RAMP_AVOID_SCORE = new ArrayList<Pose2d>();
@@ -247,8 +247,8 @@ public class Constants {
         };
 
         public static final Pose2d[] LOADING_ZONE = new Pose2d[] {
-            new Pose2d(15.5,7.5,Rotation2d.fromDegrees(0)),
-            new Pose2d(15.5,5.8, Rotation2d.fromDegrees(0)),
+            new Pose2d(15.4,7.3,Rotation2d.fromDegrees(0)),
+            new Pose2d(15.4,6, Rotation2d.fromDegrees(0)),
             new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90))
         };
 
@@ -299,8 +299,8 @@ public class Constants {
             TestTags.put(7, APRIL_TAG_POS.get(2));
             TestTags.put(6,APRIL_TAG_POS.get(1));
 
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7,4.65, Rotation2d.fromDegrees(180)));
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7, 0.7, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1,4.65, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1, 0.7, Rotation2d.fromDegrees(180)));
         } 
     }
 
@@ -343,13 +343,14 @@ public class Constants {
 
     public static class ArmConstants {
         public enum ScoringPosition {
-            TOP_CONE(115, 42), // angles are off by like 10 (should be like 10 down)
-            TOP_CUBE(107.5, 42), 
-            MID_CONE(105, 24), 
-            MID_CUBE(90, 24), 
+            TOP_CONE(125, 42), // angles are off by like 10 (should be like 10 down) // 115
+            TOP_CUBE(112.5, 42), //107.5
+            MID_CONE(110, 24), //105
+            MID_CUBE(95, 24), //90
             LOW_FLOOR(45, 11.5), 
             NEUTRAL(45, 11.5); //pivot should be 0
     
+            
             public final double pivotAngle;
             public final double teleDist;
     
@@ -360,7 +361,7 @@ public class Constants {
         }
 
         public enum IntakePosition {
-            HP_SHELF(105, 20), //105
+            HP_SHELF(110, 27), //105
             INT_PICK_UP(0.0, 16.0), 
             CONE_POLE(-40, 11.5);
     
