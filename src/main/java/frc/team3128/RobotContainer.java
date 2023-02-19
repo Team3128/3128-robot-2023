@@ -108,6 +108,7 @@ public class RobotContainer {
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
         rightStick.getButton(7).onTrue(new InstantCommand(()-> telescope.zeroEncoder()));
+        rightStick.getButton(8).onTrue(new CmdRetractArm());
 
 
         // manual controls
@@ -119,20 +120,26 @@ public class RobotContainer {
         
         rightStick.getButton(13).onTrue(new InstantCommand(() -> manipulator.openClaw()));
         rightStick.getButton(14).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        rightStick.getButton(15).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
+        rightStick.getButton(16).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
 
         leftStick.getButton(1).onTrue(new CmdRetractArm());
-        leftStick.getButton(2).onTrue(new CmdShelfPickup());
+        //leftStick.getButton(2).onTrue(new CmdShelfPickup());
         leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        leftStick.getButton(4).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
+        leftStick.getButton(5).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
+        leftStick.getButton(6).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[2]));
 
-        leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        leftStick.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        leftStick.getButton(6).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        leftStick.getButton(7).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        leftStick.getButton(8).onTrue(new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        leftStick.getButton(9).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        leftStick.getButton(10).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        leftStick.getButton(11).onTrue(new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        leftStick.getButton(12).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+
+        // leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        // leftStick.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        // leftStick.getButton(6).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        // leftStick.getButton(7).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        // leftStick.getButton(8).onTrue(new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        // leftStick.getButton(9).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        // leftStick.getButton(10).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        // leftStick.getButton(11).onTrue(new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        // leftStick.getButton(12).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
         // leftStick.getButton(1).onTrue(new InstantCommand(()-> telescope.startPID(20)));
         // leftStick.getButton(2).onTrue(new InstantCommand(()-> pivot.startPID(90)));
 

@@ -27,10 +27,11 @@ public class CmdMove extends CommandBase {
             },
             new double[] {   //Rectangular Constraint
                 chargingStationOuterX + robotLength/2.0 - 0.1,
-                chargingStationOuterX + robotLength * 1.5,
+                FIELD_X_LENGTH/2,
                 chargingStationLeftY + robotLength/2.0 + 0.1,
                 chargingStationRightY - robotLength/2.0 - 0.1
             },
+            5.6,
             true
         ),
         LOADING(
@@ -38,21 +39,24 @@ public class CmdMove extends CommandBase {
                 new double[] {chargingStationInnerX - robotLength/2.0,chargingStationOuterX + robotLength/2.0}
             },
             new double[] {   //Rectangular Constraint
-                2.0, //chargingStationInnerX - robotLength,
+                0, //chargingStationInnerX - robotLength,
                 chargingStationInnerX - robotLength/2.0,
                 chargingStationLeftY + robotLength/2.0 + 0.1,
                 chargingStationRightY - robotLength/2.0 - 0.1
             },
+            2.3,
             false
         ),
-        NONE(null,null, false);
+        NONE(null,null, null, false);
         public double[][] xConstraints;
         public double[] boxConstraints;
+        public Double deadLine;
         public boolean movingLeft; //Relative to Blue
 
-        private Type(double[][] xConstraints, double[] boxConstraints, boolean movingLeft) {
+        private Type(double[][] xConstraints, double[] boxConstraints, Double deadLine, boolean movingLeft) {
             this.xConstraints = xConstraints;
             this.boxConstraints = boxConstraints;
+            this.deadLine = deadLine;
             this.movingLeft = movingLeft;
         }
     }
@@ -94,14 +98,14 @@ public class CmdMove extends CommandBase {
     static {
         xController = new PIDController(translationKP, translationKI, translationKD);
         yController = new PIDController(translationKP, translationKI, translationKD);
-        xDeadController = new PIDController(1, translationKI, 0.1);
+        xDeadController = new PIDController(translationKP, translationKI, translationKD);
         rController = new PIDController(rotationKP, rotationKI, rotationKD);
         rController.enableContinuousInput(-Math.PI, Math.PI);
 
         xController.setTolerance(DRIVE_TOLERANCE);
         xDeadController.setTolerance(DRIVE_TOLERANCE);
         yController.setTolerance(DRIVE_TOLERANCE);
-        rController.setTolerance(Math.PI/180);
+        rController.setTolerance(Math.PI/90);
 
         NAR_Shuffleboard.addComplex("VisionPID","XCONTROLLER",xController,0,0);
         NAR_Shuffleboard.addComplex("VisionPID","YCONTROLLER",yController,1,0);
@@ -138,7 +142,7 @@ public class CmdMove extends CommandBase {
         xController.setSetpoint(poses[index].getX());
         yController.setSetpoint(poses[index].getY());
         rController.setSetpoint(poses[index].getRotation().getRadians());
-        xDeadController.setSetpoint(xDeadLine(type.boxConstraints));
+        xDeadController.setSetpoint(xDeadLine(type.deadLine));
     }
 
     @Override
@@ -204,11 +208,10 @@ public class CmdMove extends CommandBase {
         return (xPos >= left && xPos <= right);
     }
 
-    private double xDeadLine(double[] constraints) {
-        double average = (constraints[0] + constraints[1])/2;
+    private double xDeadLine(double deadline) {
         if (DriverStation.getAlliance() == Alliance.Red)
-            average = (FIELD_X_LENGTH - constraints[0] + FIELD_X_LENGTH - constraints[1])/2.0;
-        return average;
+            deadline = FIELD_X_LENGTH - deadline;
+        return deadline;
     }
 
     private boolean inYConstraints(double[] constraints, double yPos) {
