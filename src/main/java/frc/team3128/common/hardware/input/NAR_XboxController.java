@@ -46,6 +46,8 @@ public class NAR_XboxController extends XboxController {
             int n = i;
             povButtons[i] = new Trigger (() -> getPOV() == n * 45);
         }
+        buttons.put("RightTrigger", new Trigger(()-> getRightTriggerAxis() >= 0.8));
+        buttons.put("LeftTrigger", new Trigger(()-> getLeftTriggerAxis() >= 0.8));
     }
 
     public Trigger getButton(String buttonName) {

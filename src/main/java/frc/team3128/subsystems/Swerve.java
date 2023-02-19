@@ -30,6 +30,7 @@ import java.io.FileWriter;
 public class Swerve extends SubsystemBase {
     
     private volatile FileWriter txtFile;
+    public static double throttle = 0.8;
     private String poseLogger = "";
     private double prevTime = 0; 
     public SwerveDrivePoseEstimator odometry;
@@ -159,6 +160,11 @@ public class Swerve extends SubsystemBase {
         odometry.update(getGyroRotation2d(), getPositions());
         estimatedPose = odometry.getEstimatedPosition();
         logPose();
+    }
+
+    public void resetAll() {
+        resetOdometry(new Pose2d(0,0, new Rotation2d(0)));
+        resetEncoders();
     }
 
     public Rotation2d getRotation2d() {
