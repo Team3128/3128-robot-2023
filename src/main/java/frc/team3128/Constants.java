@@ -345,6 +345,14 @@ public class Constants {
                 this.pivotAngle = pivotAngle;
                 this.teleDist = teleDist;
             }
+
+            public double getPivotAngle(){
+                return pivotAngle;
+            }
+
+            public double getTelescopeDist(){
+                return teleDist;
+            }
         }
 
         public enum IntakePosition {
@@ -411,6 +419,8 @@ public class Constants {
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
+        public static final double CURRENT_THRESHOLD = 40;
+
         public static final double kP = 0.075;
         public static final double kI = 0;
         public static final double kD = 0;
@@ -429,9 +439,10 @@ public class Constants {
         public static final int INTAKE_ROLLERS_ID = 11;
 
         //Sensor IDs
-        public static final int CONE_SENSOR_ID = 0;
-        public static final int INTAKE_SENSOR_LEFT_ID = 1;
-        public static final int INTAKE_SENSOR_RIGHT_ID = 2;
+        public static final int INTAKE_SENSOR_ID = 1;
+        // public static final int CONE_SENSOR_ID = 0;
+        // public static final int INTAKE_SENSOR_LEFT_ID = 1;
+        // public static final int INTAKE_SENSOR_RIGHT_ID = 2;
         
     }
     public static class LedConstants{

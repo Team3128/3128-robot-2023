@@ -1,20 +1,9 @@
 package frc.team3128.subsystems;
 
-import static frc.team3128.Constants.IntakeConstants.CONE_SENSOR_ID;
-import static frc.team3128.Constants.IntakeConstants.ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES;
-import static frc.team3128.Constants.IntakeConstants.INTAKE_PIVOT_ID;
-import static frc.team3128.Constants.IntakeConstants.INTAKE_ROLLERS_ID;
-import static frc.team3128.Constants.IntakeConstants.INTAKE_SENSOR_LEFT_ID;
-import static frc.team3128.Constants.IntakeConstants.INTAKE_SENSOR_RIGHT_ID;
-import static frc.team3128.Constants.IntakeConstants.INTAKE_TOLERANCE;
-import static frc.team3128.Constants.IntakeConstants.ROLLER_POWER;
-import static frc.team3128.Constants.IntakeConstants.kD;
-import static frc.team3128.Constants.IntakeConstants.kI;
-import static frc.team3128.Constants.IntakeConstants.kP;
+import static frc.team3128.Constants.IntakeConstants.*;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder;
@@ -36,9 +25,10 @@ public class Intake extends PIDSubsystem {
     private NAR_TalonSRX m_intakeRollers;
 
     // Sensors
-    private DigitalInput m_coneSensor;
-    private DigitalInput m_intakeSensorLeft;
-    private DigitalInput m_intakeSensorRight;
+    private DigitalInput m_intakeSensor;
+    //private DigitalInput m_coneSensor;
+    //private DigitalInput m_intakeSensorLeft;
+    //private DigitalInput m_intakeSensorRight;
 
     private DoubleSupplier kF;
     private DoubleSupplier setpoint, power;
@@ -54,7 +44,7 @@ public class Intake extends PIDSubsystem {
         DEPLOYED(0),
         RETRACTED(90),
         SEMI_DEPLOYED(60),
-        DESPOSIT(180);
+        STOWED(180);
 
         private double angle;
 
@@ -96,9 +86,10 @@ public class Intake extends PIDSubsystem {
     }
 
     public void configSensors() {
-        m_coneSensor = new DigitalInput(CONE_SENSOR_ID);
-        m_intakeSensorLeft = new DigitalInput(INTAKE_SENSOR_LEFT_ID);
-        m_intakeSensorRight = new DigitalInput(INTAKE_SENSOR_RIGHT_ID);
+        m_intakeSensor = new DigitalInput(INTAKE_SENSOR_ID);
+        //m_coneSensor = new DigitalInput(CONE_SENSOR_ID);
+        //m_intakeSensorLeft = new DigitalInput(INTAKE_SENSOR_LEFT_ID);
+        //m_intakeSensorRight = new DigitalInput(INTAKE_SENSOR_RIGHT_ID);
     }
 
     public void configEncoders() {
@@ -132,8 +123,7 @@ public class Intake extends PIDSubsystem {
         NAR_Shuffleboard.addData("intake", "output current", m_intakeRollers.getStatorCurrent(), 4, 1);
         NAR_Shuffleboard.addData("intake", "input current", m_intakeRollers.getSupplyCurrent(), 4, 2);
         NAR_Shuffleboard.addData("intake", "output voltage", m_intakeRollers.getMotorOutputVoltage(), 5, 1);
-        //if (Math.abs(m_intakeRollers.getStatorCurrent()) >= 20) disableRollers();
-    }
+        }
 
     public double getCurrent() {
         return m_intakeRollers.getStatorCurrent();
@@ -169,6 +159,23 @@ public class Intake extends PIDSubsystem {
         enableRollers(power.getAsDouble());
     }
 
+    public boolean intakeCone() {
+        if (getCurrent() >= CURRENT_THRESHOLD) {
+            enableRollers(0.3);
+            objectPresent = true;
+        } else {
+            enableRollers(0.5);
+            objectPresent = false;
+        }
+
+        return objectPresent;
+    }
+
+    public boolean intakeCube() {
+        enableRollers(-0.5);
+        return hasObject();
+    }
+
     public void enableRollersReverse() {
         enableRollers(-power.getAsDouble());
     }
@@ -197,33 +204,21 @@ public class Intake extends PIDSubsystem {
      */
 
     public boolean hasObject() {
-        if (hasConeOnPeg() || hasConeInIntake() || hasCubeInIntake())
-            return true;
-        else
-            return false;
+        return (!m_intakeSensor.get());
     }
 
     // TODO: give this a better name
-    public boolean hasConeOnPeg() {
-        if (!m_coneSensor.get())
-            return true;
-        else
-            return false;
-    }
+    // public boolean hasConeOnPole() {
+    //     return !m_coneSensor.get();
+    //}
 
-    public boolean hasConeInIntake() {
-        if (!m_intakeSensorLeft.get() != !m_intakeSensorRight.get())
-            return true;
-        else
-            return false;
-    }
+    // public boolean hasConeInIntake() {
+    //     return !m_intakeSensorLeft.get() != !m_intakeSensorRight.get();
+    // }
 
-    public boolean hasCubeInIntake() {
-        if (!m_intakeSensorRight.get())
-            return true;
-        else
-            return false;
-    }
+    // public boolean hasCubeInIntake() {
+    //     return !m_intakeSensorRight.get();
+    //}
 
     public void initShuffleboard() {
         NAR_Shuffleboard.addData("intake", "Intake Angle", () -> getEncoderPosition(), 0, 0);
@@ -235,14 +230,6 @@ public class Intake extends PIDSubsystem {
         NAR_Shuffleboard.addData("intake", "IsEnabled", ()-> isEnabled(), 1, 0);
         NAR_Shuffleboard.addData("intake", "atSetpoint", ()-> getController().atSetpoint(), 1, 1);
         power = NAR_Shuffleboard.debug("intake", "power", 0.1, 1, 4);
-
-        // NAR_Shuffleboard.addData("intake", "Has Object", () -> hasObject(), 0, 1);
-        // NAR_Shuffleboard.addData("intake", "Has Cone on Peg", () -> hasConeOnPeg(),
-        // 1, 1);
-        // NAR_Shuffleboard.addData("intake", "Has Cone in Intake", () ->
-        // hasConeInIntake(), 2, 1);
-        // NAR_Shuffleboard.addData("intake", "Has Cube in Intake", () ->
-        // hasCubeInIntake(), 3, 1);
         kF = NAR_Shuffleboard.debug("intake", "kF", IntakeConstants.kF, 2, 2);
 
         NAR_Shuffleboard.addComplex("intake", "PID Controller", m_controller, 0, 2);

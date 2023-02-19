@@ -1,22 +1,34 @@
 package frc.team3128.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.subsystems.Intake;
+import frc.team3128.subsystems.Manipulator;
+import frc.team3128.subsystems.Pivot;
+import frc.team3128.subsystems.Telescope;
+import frc.team3128.subsystems.Intake.IntakeState;
 
 public class CmdIntakeCone extends SequentialCommandGroup {
-    private Intake intake = Intake.getInstance();
-
+    
     public CmdIntakeCone() {
-
+        var intake = Intake.getInstance();
+        var pivot = Pivot.getInstance();
+        var telescope = Telescope.getInstance();
+        var manipulator = Manipulator.getInstance();
         addCommands(
-            new InstantCommand(() -> intake.enableRollers(-0.6), intake),
-            new WaitUntilCommand(() -> Math.abs(intake.getCurrent()) >= 45),
-            new WaitCommand(0.75),
-            new InstantCommand(() -> intake.enableRollers(-0.3), intake)
+            new InstantCommand(()-> manipulator.closeClaw()),
+            new CmdMovePivot(90),
+            new CmdMoveIntake(IntakeState.DEPLOYED),
+            new WaitUntilCommand(()-> intake.intakeCone()),
+            new CmdMoveIntake(IntakeState.STOWED),
+            new InstantCommand(()-> manipulator.openClaw()),
+            new CmdMovePivot(0),
+            new InstantCommand(()-> intake.enableRollersForward()),
+            new CmdMoveTelescope(2) /* change later */,
+            new InstantCommand(()-> manipulator.closeClaw()),
+            new CmdMoveTelescope(0),
+            new InstantCommand(()-> intake.disableRollers())
         );
     }
 }
