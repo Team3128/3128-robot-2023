@@ -4,50 +4,48 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Telescope;
 
 public class CmdMoveArm extends CommandBase{
 
-    private static Pivot pivot = Pivot.getInstance();
-    private static Telescope telescope = Telescope.getInstance();
+    private Pivot pivot = Pivot.getInstance();
+    private Telescope telescope = Telescope.getInstance();
 
     private double angle;
     private double dist;
-
-    private double currAngle;
-    private double currDist;
     
     public CmdMoveArm(double angle, double dist){
         this.angle = angle;
         this.dist = dist;
 
-        addRequirements(
-            pivot,
-            telescope
-        );
+        addRequirements(pivot, telescope);
+    }
+
+    public CmdMoveArm(ArmPosition position){
+        this(position.pivotAngle, position.teleDist);
     }
 
     @Override
     public void initialize(){
-        currAngle = pivot.getAngle();
-        currDist = telescope.getDist();
+        if (dist >= telescope.getDist()) 
+            pivot.startPID(angle);
+        else 
+            telescope.startPID(dist);
     }
 
     @Override
     public void execute(){
-        if(dist >= currDist){
-            pivot.startPID(angle);
-            if(pivot.atSetpoint()) telescope.startPID(dist);
-        }
-        else{
+        if (pivot.atSetpoint() && telescope.getSetpoint() != dist)
             telescope.startPID(dist);
-            if(telescope.atSetpoint()) pivot.startPID(angle);
-        }
+        if (telescope.atSetpoint() && pivot.getSetpoint() != angle) 
+            pivot.startPID(angle);
     }
 
     @Override
     public void end(boolean interrupted){
+        telescope.disable();
         telescope.engageBrake();
     }
 

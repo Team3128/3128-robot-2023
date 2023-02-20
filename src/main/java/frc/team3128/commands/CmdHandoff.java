@@ -22,6 +22,7 @@ public class CmdHandoff extends SequentialCommandGroup{
         intake = Intake.getInstance();
 
         addCommands(
+            new CmdMoveArm(0, 11.5),
             new InstantCommand(()-> intake.enableRollersReverse()),
             new WaitCommand(0.25),
             new InstantCommand(()-> manipulator.closeClaw(), manipulator),

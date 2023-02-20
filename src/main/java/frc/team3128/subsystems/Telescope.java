@@ -86,11 +86,9 @@ public class Telescope extends PIDSubsystem {
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        if (getController().atSetpoint()) {
-            engageBrake();
-            return;
-        }
-        releaseBrake();
+        if (!getController().atSetpoint())
+            releaseBrake();
+
         double pivotAngle = Math.toRadians(Pivot.getInstance().getMeasurement());
         double ff = -kG.getAsDouble() * Math.cos(pivotAngle) + kF.getAsDouble();
         double voltageOutput = isReversed ? -(output + ff) : output + ff;
