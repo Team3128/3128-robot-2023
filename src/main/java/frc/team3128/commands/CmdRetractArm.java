@@ -23,6 +23,7 @@ public class CmdRetractArm extends SequentialCommandGroup{
     public CmdRetractArm () {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
+        manipulator = Manipulator.getInstance();
 
         addCommands(
             new InstantCommand(()-> manipulator.closeClaw()),

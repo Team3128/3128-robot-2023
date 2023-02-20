@@ -45,6 +45,7 @@ public class Pivot extends PIDSubsystem {
     private void configMotors() {
         m_rotateMotor = new NAR_CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless);
         m_rotateMotor.setSmartCurrentLimit(PIVOT_CURRENT_LIMIT);
+        m_rotateMotor.setInverted(true);
         m_rotateMotor.enableVoltageCompensation(12.0);
         m_rotateMotor.setIdleMode(IdleMode.kBrake);
     }
@@ -95,7 +96,7 @@ public class Pivot extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() { // returns degrees
-       return -(m_rotateMotor.getSelectedSensorPosition()) + MIN_ANGLE;
+       return (m_rotateMotor.getSelectedSensorPosition()) + MIN_ANGLE;
     }
 
     public void stopPivot() {

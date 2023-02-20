@@ -23,13 +23,16 @@ public class CmdShelfPickup extends SequentialCommandGroup{
         manipulator = Manipulator.getInstance();
 
         addCommands(
+            new InstantCommand(() -> manipulator.openClaw(), manipulator),
             new CmdMoveLoading(poses),
             new InstantCommand(() -> pivot.startPID(ArmConstants.IntakePosition.HP_SHELF.pivotAngle), pivot),
-            new WaitUntilCommand(()-> pivot.atSetpoint()),
-            new InstantCommand(() -> manipulator.openClaw(), manipulator),
-            new InstantCommand(() -> telescope.startPID(ArmConstants.IntakePosition.HP_SHELF.teleDist), telescope)
-            // new WaitCommand(0.25),
-            // new CmdRetractArm()
+            new WaitUntilCommand(() -> pivot.atSetpoint()),
+            new InstantCommand(() -> telescope.startPID(ArmConstants.IntakePosition.HP_SHELF.teleDist), telescope),
+            new WaitUntilCommand(() -> telescope.atSetpoint()),
+            new WaitCommand(.25),
+            new InstantCommand(() -> manipulator.closeClaw()),
+            new WaitCommand(0.25),
+            new CmdRetractArm()
         );
     }
 }
