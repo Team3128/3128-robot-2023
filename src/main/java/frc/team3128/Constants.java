@@ -343,8 +343,8 @@ public class Constants {
 
     public static class ArmConstants {
         public enum ScoringPosition {
-            TOP_CONE(125, 42), // angles are off by like 10 (should be like 10 down) // 115
-            TOP_CUBE(112.5, 42), //107.5
+            TOP_CONE(120, 40), // angles are off by like 10 (should be like 10 down) // 115
+            TOP_CUBE(112.5, 40), //107.5
             MID_CONE(110, 24), //105
             MID_CUBE(95, 24), //90
             LOW_FLOOR(45, 11.5), 
