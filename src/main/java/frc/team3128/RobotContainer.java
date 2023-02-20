@@ -14,31 +14,35 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.team3128.commands.CmdRetractArm;
+import frc.team3128.commands.CmdRetractIntake;
 import frc.team3128.commands.CmdScore;
 import frc.team3128.commands.CmdShelfPickup;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.commands.CmdMove;
+import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdMoveScore;
+import frc.team3128.commands.CmdExtendIntake;
 import frc.team3128.commands.CmdGyroBalance;
+import frc.team3128.commands.CmdHandoff;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
+import frc.team3128.subsystems.Intake;
+import frc.team3128.subsystems.Manipulator;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
-import frc.team3128.subsystems.Manipulator;
+import frc.team3128.subsystems.Intake.IntakeState;
 import static frc.team3128.Constants.ArmConstants.*;
 
 import java.util.function.BooleanSupplier;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
  * actually be handled in the {@link Robot} periodic methods (other than the
  * scheduler calls). Instead, the structure of the robot (including subsystems,
@@ -49,6 +53,7 @@ public class RobotContainer {
     private Swerve swerve;
     private Vision vision;
     private NAR_Camera cam;
+    private Intake intake;
     private Pivot pivot;
     private Telescope telescope;
     private Manipulator manipulator;
@@ -67,6 +72,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         swerve = Swerve.getInstance();
+        intake = Intake.getInstance();
         vision = Vision.getInstance();
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
@@ -98,23 +104,19 @@ public class RobotContainer {
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
-        // rightStick.getButton(2).onTrue(new InstantCommand(()-> manipulator.openClaw()));
-        // rightStick.getButton(3).onTrue(new InstantCommand(()-> manipulator.closeClaw()));
         rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
         //rightStick.getButton(2).onTrue(new RunCommand(()-> swerve.drive(new Translation2d(0.5,0),0, true)));
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
         
-
         // zeroing
-       // rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
+        // rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
         rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
 
         // shuffleboard things
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
         rightStick.getButton(7).onTrue(new InstantCommand(()-> telescope.zeroEncoder()));
-        rightStick.getButton(8).onTrue(new CmdRetractArm());
-
+        rightStick.getButton(8).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL));
 
         // manual controls
         rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
@@ -128,25 +130,20 @@ public class RobotContainer {
         rightStick.getButton(15).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
         rightStick.getButton(16).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
 
-        leftStick.getButton(1).onTrue(new CmdRetractArm());
-        //leftStick.getButton(2).onTrue(new CmdShelfPickup());
+        leftStick.getButton(1).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL));
+        leftStick.getButton(2).onTrue(new CmdShelfPickup());
         leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
         leftStick.getButton(4).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
         leftStick.getButton(5).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
         leftStick.getButton(6).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[2]));
 
-
-        // leftStick.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        // leftStick.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        // leftStick.getButton(6).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        // leftStick.getButton(7).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        // leftStick.getButton(8).onTrue(new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        // leftStick.getButton(9).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        // leftStick.getButton(10).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        // leftStick.getButton(11).onTrue(new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        // leftStick.getButton(12).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        // leftStick.getButton(1).onTrue(new InstantCommand(()-> telescope.startPID(20)));
-        // leftStick.getButton(2).onTrue(new InstantCommand(()-> pivot.startPID(90)));
+        //Intake Buttons
+        leftStick.getButton(7).onTrue(new CmdHandoff());
+        leftStick.getButton(8).onTrue(new CmdExtendIntake()).onFalse(new CmdExtendIntake());
+        leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
+        leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));
+        leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(30)));
+        leftStick.getButton(12).onTrue(new InstantCommand(()-> intake.resetEncoders()));
 
         // rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         // rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
@@ -156,15 +153,15 @@ public class RobotContainer {
         // }
         // grid system
         
-        buttonPad.getButton(4).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        buttonPad.getButton(5).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        buttonPad.getButton(6).onTrue(new CmdScore(ScoringPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        buttonPad.getButton(7).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        buttonPad.getButton(8).onTrue(new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        buttonPad.getButton(9).onTrue(new CmdScore(ScoringPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        buttonPad.getButton(10).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        buttonPad.getButton(11).onTrue(new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        buttonPad.getButton(12).onTrue(new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        buttonPad.getButton(4).onTrue(new CmdScore(ArmPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        buttonPad.getButton(5).onTrue(new CmdScore(ArmPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        buttonPad.getButton(6).onTrue(new CmdScore(ArmPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        buttonPad.getButton(7).onTrue(new CmdScore(ArmPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        buttonPad.getButton(8).onTrue(new CmdScore(ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        buttonPad.getButton(9).onTrue(new CmdScore(ArmPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        buttonPad.getButton(10).onTrue(new CmdScore(ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+        buttonPad.getButton(11).onTrue(new CmdScore(ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        buttonPad.getButton(12).onTrue(new CmdScore(ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
         buttonPad.getButton(1).onTrue(new InstantCommand(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 0 : 2;
         }));
@@ -177,32 +174,6 @@ public class RobotContainer {
         // for (int i = 0; i < VisionConstants.SCORES.length; i++) {
         //     leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.SCORE, true, VisionConstants.SCORE_SETUP[i/3],VisionConstants.SCORES[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         // }
-
-        new SequentialCommandGroup(
-            new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
-            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
-            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
-            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
-            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
-            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]),
-            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
-            new InstantCommand(()-> Vision.SELECTED_GRID = 1),
-            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
-            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
-            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
-            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
-            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]),
-            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
-            new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]),
-            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
-            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]),
-            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]),
-            new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]),
-            new CmdShelfPickup(VisionConstants.LOADING_ZONE[1])
-        );
-
     }
 
     public void init() {
@@ -217,6 +188,7 @@ public class RobotContainer {
 
         swerve.initShuffleboard();
         vision.initShuffleboard();
+        intake.initShuffleboard();
         telescope.initShuffleboard();
         pivot.initShuffleboard();
         manipulator.initShuffleboard();
