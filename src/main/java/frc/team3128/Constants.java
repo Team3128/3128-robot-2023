@@ -16,13 +16,23 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.team3128.common.hardware.camera.Camera;
+
 import frc.team3128.common.swerve.FalconConversions;
 import frc.team3128.common.swerve.SwerveModuleConstants;
+
+import frc.team3128.common.swerve.SwerveModuleConstants;
+import frc.team3128.common.utility.interpolation.InterpolatingDouble;
+import frc.team3128.common.utility.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.math.MathUtil;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+
+import edu.wpi.first.math.util.Units;
+
 
 public class Constants {
 
@@ -67,6 +77,7 @@ public class Constants {
         public static final double drivePeakCurrentDuration = 0.1;
         public static final boolean driveEnableCurrentLimit = true;
 
+
         public static final double TURN_TOLERANCE = 5;
 
         public static final double DRIVE_TOLERANCE = 0.025;
@@ -74,7 +85,7 @@ public class Constants {
         /* Translation PID Values */
         public static final double translationKP = 3;
         public static final double translationKI = 0;
-        public static final double translationKD = 0;
+        public static final double translationKD = 0.1;
 
         /* Translation PID Values */
         public static final double distanceKP = 3;
@@ -85,7 +96,7 @@ public class Constants {
         public static final double alignKP = 0.05;
         public static final double alignKI = 0;
         public static final double alignKD = 0;
-
+      
         /* Rotation PID Values */
         public static final double rotationKP = 3;
         public static final double rotationKI = 0;
@@ -98,6 +109,7 @@ public class Constants {
         public static final double turnKF = 0.1;
 
         /* Angle Motor PID Values */
+        // switched 364 pid values to SDS pid values
         public static final double angleKP = 0.3; // 0.6; // citrus: 0.3
         public static final double angleKI = 0.0;
         public static final double angleKD = 0.0; // 12.0; // citrus: 0
@@ -110,18 +122,16 @@ public class Constants {
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        // TODO: sysid this
-        public static final double driveKS = 0.60094;
-        public static final double driveKV = 1.1559; 
-        public static final double driveKA = 0.12348; 
-
+        public static final double driveKS = 0.19255;//0.60094; // 0.19225;
+        public static final double driveKV = 2.4366;//1.1559;  // 2.4366
+        public static final double driveKA = 0.34415; //0.12348; // 0.34415
         public static final double turnTolerance = 2;
 
         /* Swerve Profiling Values */
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double maxSpeed = 4; //meters per second - 16.3 ft/sec
+        public static final double maxSpeed = 4.5; //meters per second - 16.3 ft/sec
         public static final double maxAcceleration = 2;
         public static final double maxAngularVelocity = 2.25; //3; //11.5; // citrus: 10
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
@@ -139,11 +149,12 @@ public class Constants {
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
+        // TODO: Figure out angle offsets
         public static final class Mod0 {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
             public static final int canCoderID = 20;
-            public static final double angleOffset = -157.763671875; // deg
+            public static final double angleOffset = -157.763671875; // -156.357421875;//-46.5 + 90; //104.5;//19.599609375; // 19.51171875;//-51.85546875; // 37.35; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -153,7 +164,7 @@ public class Constants {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 4;
             public static final int canCoderID = 21;
-            public static final double angleOffset = 129.375; // deg
+            public static final double angleOffset = 129.375; //126.38671875000001; //23.466 + 90;//-132.25;//311.66015625 - 360; //132.5390625; //311.8359375; //10.45; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -163,7 +174,7 @@ public class Constants {
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 22;
-            public static final double angleOffset = -69.697265625; // deg
+            public static final double angleOffset = -69.697265625; //-72.0703125;//-70.751953125; //-70.75; //109.51171875; //38.75; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -173,12 +184,13 @@ public class Constants {
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 23;
-            public static final double angleOffset = -54.31640625; // deg
+            public static final double angleOffset = -54.31640625; //-52.91015625; //-52.9; //306.2109375; //307.6171875; // 58.88; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
     }
+
 
     public static class VisionConstants {
 
@@ -221,9 +233,9 @@ public class Constants {
         };
 
         public static final boolean[][] RAMP_OVERRIDE = new boolean[][] {
-            new boolean[] {false, true, true},
-            new boolean[] {false, true, false},
-            new boolean[] {true, true, false}
+            new boolean[] {true, true, true}, //false, true, true
+            new boolean[] {true, true, true}, //false, true, false
+            new boolean[] {true, true, true} //true, true, false
         };
 
         public static final ArrayList<Pose2d> RAMP_AVOID_SCORE = new ArrayList<Pose2d>();
@@ -235,8 +247,8 @@ public class Constants {
         };
 
         public static final Pose2d[] LOADING_ZONE = new Pose2d[] {
-            new Pose2d(15.5,7.5,Rotation2d.fromDegrees(0)),
-            new Pose2d(15.5,5.8, Rotation2d.fromDegrees(0)),
+            new Pose2d(15.4,7.3,Rotation2d.fromDegrees(0)),
+            new Pose2d(15.4,6, Rotation2d.fromDegrees(0)),
             new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90))
         };
 
@@ -287,8 +299,8 @@ public class Constants {
             TestTags.put(7, APRIL_TAG_POS.get(2));
             TestTags.put(6,APRIL_TAG_POS.get(1));
 
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7,4.65, Rotation2d.fromDegrees(180)));
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7, 0.7, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1,4.65, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1, 0.7, Rotation2d.fromDegrees(180)));
         } 
     }
 
@@ -343,6 +355,7 @@ public class Constants {
             CONE_POLE(-40, 11.5),
             AVOID_INTAKE(90, 11.5);
     
+            
             public final double pivotAngle;
             public final double teleDist;
     
@@ -359,6 +372,8 @@ public class Constants {
                 return teleDist;
             }
         }
+
+        public static final String TELESCOPE_GROUND_PICKUP = null;
     }
     
     public static class FieldConstants{
