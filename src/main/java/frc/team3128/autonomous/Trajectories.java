@@ -27,6 +27,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import static frc.team3128.Constants.SwerveConstants.*;
 
 import frc.team3128.Constants.ArmConstants.ScoringPosition;
+import frc.team3128.commands.CmdDriveUp;
+import frc.team3128.commands.CmdGyroBalance;
+import frc.team3128.commands.CmdInPlaceTurn;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdScore;
@@ -68,7 +71,12 @@ public class Trajectories {
         
         CommandEventMap.put("IntakeCone", null);
         CommandEventMap.put("IntakeCube", null);
-        CommandEventMap.put("Climb", null);
+
+        CommandEventMap.put("Climb", new SequentialCommandGroup(
+                                                new CmdInPlaceTurn(0),
+                                                new CmdDriveUp(),
+                                                new CmdGyroBalance()
+                                                ));
         
         for (String trajectoryName : trajectoryNames) {
             // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
