@@ -102,7 +102,7 @@ public class Intake extends PIDSubsystem {
         // m_intakePivot.setEncoderPosition(90);
     }
 
-    public double getEncoderPosition() {
+    public double getAngle() {
         return m_encoder.getPosition();
     }
 
@@ -140,7 +140,7 @@ public class Intake extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() {
-        return getEncoderPosition();
+        return getAngle();
     }
 
     public void stop() {
@@ -221,7 +221,7 @@ public class Intake extends PIDSubsystem {
     //}
 
     public void initShuffleboard() {
-        NAR_Shuffleboard.addData("intake", "Intake Angle", () -> getEncoderPosition(), 0, 0);
+        NAR_Shuffleboard.addData("intake", "Intake Angle", () -> getAngle(), 0, 0);
         NAR_Shuffleboard.addData("intake", "Pivot Velocity", () -> m_intakePivot.getSelectedSensorVelocity(), 2, 0);
         NAR_Shuffleboard.addData("intake", "Angle Setpoint", () -> getSetpoint(), 3, 0);
         NAR_Shuffleboard.addData("intake", "Roller Velocity", () -> m_intakeRollers.getSelectedSensorVelocity() / 4096,

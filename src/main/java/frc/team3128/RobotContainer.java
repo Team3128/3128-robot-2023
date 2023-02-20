@@ -15,13 +15,15 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdRetractArm;
+import frc.team3128.commands.CmdRetractIntake;
 import frc.team3128.commands.CmdScore;
 import frc.team3128.commands.CmdShelfPickup;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveScore;
+import frc.team3128.commands.CmdExtendIntake;
 import frc.team3128.commands.CmdGyroBalance;
-import frc.team3128.commands.CmdIntakeCone;
+import frc.team3128.commands.CmdHandoff;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_Joystick;
@@ -157,7 +159,8 @@ public class RobotContainer {
 
         //Intake Buttons
         buttonPad.getButton(7).onTrue(new InstantCommand(()-> intake.setIntake(0.3), intake)).onFalse(new InstantCommand(()-> intake.disableRollers()));
-        buttonPad.getButton(8).onTrue(new CmdIntakeCone()).onFalse(new InstantCommand(()->intake.disableRollers()));
+        buttonPad.getButton(8).onTrue(new CmdExtendIntake()).onFalse(new CmdRetractIntake());
+            //buttonPad.getButton().onTrue(new CmdHandoff());
         buttonPad.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
         buttonPad.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));
         buttonPad.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(30)));

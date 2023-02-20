@@ -66,6 +66,10 @@ public class Pivot extends PIDSubsystem {
         m_encoder.setPosition(0);
     }
 
+    public double getAngle(){
+        return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
+    }
+
     public void initShuffleboard() {
         NAR_Shuffleboard.addData("pivot","pivot angle", ()->getMeasurement(),0,0);
         NAR_Shuffleboard.addData("pivot", "pivot setpoint", ()->getSetpoint(), 0, 1);
@@ -92,7 +96,7 @@ public class Pivot extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() { // returns degrees
-       return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
+       return getAngle();
     }
 
     public void stopPivot() {
