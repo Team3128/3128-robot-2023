@@ -362,7 +362,7 @@ public class Constants {
 
         public enum IntakePosition {
             HP_SHELF(105, 27), //105
-            INT_PICK_UP(0.0, 16.0), 
+            GROUND_PICKUP(50, 20), 
             CONE_POLE(-40, 11.5);
     
             public final double pivotAngle;
@@ -373,6 +373,8 @@ public class Constants {
                 this.teleDist = teleDist;
             }
         }
+
+        public static final String TELESCOPE_GROUND_PICKUP = null;
     }
     
     public static class FieldConstants{
