@@ -26,22 +26,22 @@
     },
     {
       "anchorPoint": {
-        "x": 6.25,
-        "y": 0.925345881304008
+        "x": 6.8,
+        "y": 0.9381292686196482
       },
       "prevControl": {
-        "x": 5.25,
-        "y": 0.925345881304008
+        "x": 5.8,
+        "y": 0.9381292686196482
       },
       "nextControl": {
-        "x": 7.25,
-        "y": 0.925345881304008
+        "x": 5.8,
+        "y": 0.9381292686196482
       },
       "holonomicAngle": 0.0,
-      "isReversal": false,
+      "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": true,
+      "isStopPoint": false,
       "stopEvent": {
         "names": [
           "IntakeCube"
@@ -76,5 +76,12 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.8,
+      "names": [
+        "IntakeCube"
+      ]
+    }
+  ]
 }

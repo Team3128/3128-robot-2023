@@ -64,12 +64,33 @@ public class Trajectories {
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
                                                 new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
                                                 ));
+
         CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[3])
                                                 ));
+
+        CommandEventMap.put("Score[2,2]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
+                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[4])
+                                                ));
+
+        CommandEventMap.put("Score[8,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 3),
+                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[3])
+                                                ));
+
+        CommandEventMap.put("Score[8,2]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 3),
+                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[4])
+                                                ));
+
+        CommandEventMap.put("Score[9,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 3),
+                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[6])
+                                                ));
+
         
-        CommandEventMap.put("IntakeCone", null);
         CommandEventMap.put("IntakeCube", null);
 
         CommandEventMap.put("Climb", new SequentialCommandGroup(

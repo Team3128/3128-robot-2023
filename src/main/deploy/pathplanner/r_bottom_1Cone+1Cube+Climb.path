@@ -10,7 +10,7 @@
         "x": 13.5,
         "y": 0.5000000000000001
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -26,24 +26,26 @@
     },
     {
       "anchorPoint": {
-        "x": 9.613431732071797,
-        "y": 0.9239802055992996
+        "x": 9.7,
+        "y": 0.9381292686196482
       },
       "prevControl": {
-        "x": 10.830413177939452,
-        "y": 0.7057650531028793
+        "x": 10.7,
+        "y": 0.9381292686196481
       },
       "nextControl": {
-        "x": 10.830413177939452,
-        "y": 0.7057650531028793
+        "x": 10.7,
+        "y": 0.9381292686196481
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0.0,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "IntakeCube"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -55,12 +57,15 @@
         "y": 1.0
       },
       "prevControl": {
-        "x": 13.746059905314256,
-        "y": 0.9026406351423808
+        "x": 13.761649984409733,
+        "y": 1.0
       },
-      "nextControl": null,
-      "holonomicAngle": 180.0,
-      "isReversal": false,
+      "nextControl": {
+        "x": 13.761649984409733,
+        "y": 1.0
+      },
+      "holonomicAngle": 0.0,
+      "isReversal": true,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
@@ -72,14 +77,31 @@
         "waitBehavior": "none",
         "waitTime": 0
       }
+    },
+    {
+      "anchorPoint": {
+        "x": 11.0,
+        "y": 2.647904363517061
+      },
+      "prevControl": {
+        "x": 9.476058247255384,
+        "y": -0.10397241801428105
+      },
+      "nextControl": null,
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "Climb"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
     }
   ],
-  "markers": [
-    {
-      "position": 0.7995738636363636,
-      "names": [
-        "IntakeCube"
-      ]
-    }
-  ]
+  "markers": []
 }

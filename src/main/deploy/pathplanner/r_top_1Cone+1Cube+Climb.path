@@ -2,12 +2,12 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 2.0,
+        "x": 14.5,
         "y": 4.7
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.000000000000002,
+        "x": 13.499999999999998,
         "y": 4.7
       },
       "holonomicAngle": 0.0,
@@ -26,18 +26,18 @@
     },
     {
       "anchorPoint": {
-        "x": 6.7,
+        "x": 9.8,
         "y": 4.602852566816245
       },
       "prevControl": {
-        "x": 6.405962678734586,
+        "x": 10.094037321265414,
         "y": 4.602852566816245
       },
       "nextControl": {
-        "x": 6.405962678734586,
+        "x": 10.094037321265414,
         "y": 4.602852566816245
       },
-      "holonomicAngle": 0,
+      "holonomicAngle": 0.0,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
@@ -53,16 +53,19 @@
     },
     {
       "anchorPoint": {
-        "x": 2.009818045677758,
+        "x": 14.5,
         "y": 4.403953853046595
       },
       "prevControl": {
-        "x": 3.870178060944564,
-        "y": 4.978150664634662
+        "x": 12.582183495964216,
+        "y": 4.641066634563824
       },
-      "nextControl": null,
-      "holonomicAngle": 0,
-      "isReversal": false,
+      "nextControl": {
+        "x": 12.582183495964216,
+        "y": 4.641066634563824
+      },
+      "holonomicAngle": 0.0,
+      "isReversal": true,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
@@ -74,14 +77,29 @@
         "waitBehavior": "none",
         "waitTime": 0
       }
+    },
+    {
+      "anchorPoint": {
+        "x": 11.0,
+        "y": 2.737669730547794
+      },
+      "prevControl": {
+        "x": 9.4348288054215,
+        "y": 5.140516961589478
+      },
+      "nextControl": null,
+      "holonomicAngle": 0.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
     }
   ],
-  "markers": [
-    {
-      "position": 0.6,
-      "names": [
-        "IntakeCube"
-      ]
-    }
-  ]
+  "markers": []
 }

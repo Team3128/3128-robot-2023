@@ -3,21 +3,21 @@
     {
       "anchorPoint": {
         "x": 14.5,
-        "y": 0.5
+        "y": 4.7
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.5,
-        "y": 0.5000000000000001
+        "x": 13.499999999999998,
+        "y": 4.7
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score[1,3]"
+          "Score[9,3]"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -26,24 +26,26 @@
     },
     {
       "anchorPoint": {
-        "x": 9.613431732071797,
-        "y": 0.9239802055992996
+        "x": 9.8,
+        "y": 4.602852566816245
       },
       "prevControl": {
-        "x": 10.830413177939452,
-        "y": 0.7057650531028793
+        "x": 10.094037321265414,
+        "y": 4.602852566816245
       },
       "nextControl": {
-        "x": 10.830413177939452,
-        "y": 0.7057650531028793
+        "x": 10.094037321265414,
+        "y": 4.602852566816245
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0.0,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "IntakeCube"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -52,21 +54,21 @@
     {
       "anchorPoint": {
         "x": 14.5,
-        "y": 1.0
+        "y": 4.403953853046595
       },
       "prevControl": {
-        "x": 13.746059905314256,
-        "y": 0.9026406351423808
+        "x": 12.582183495964216,
+        "y": 4.641066634563824
       },
       "nextControl": null,
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score[2,3]"
+          "Score[8,3]"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -74,12 +76,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.7995738636363636,
-      "names": [
-        "IntakeCube"
-      ]
-    }
-  ]
+  "markers": []
 }
