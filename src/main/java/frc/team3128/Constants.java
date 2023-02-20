@@ -361,7 +361,7 @@ public class Constants {
         }
 
         public enum IntakePosition {
-            HP_SHELF(110, 27), //105
+            HP_SHELF(105, 27), //105
             INT_PICK_UP(0.0, 16.0), 
             CONE_POLE(-40, 11.5);
     
