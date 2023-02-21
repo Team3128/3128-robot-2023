@@ -26,17 +26,18 @@ public class CmdScore extends SequentialCommandGroup {
     private Telescope telescope;
     private Manipulator manipulator;
 
-    public CmdScore(ArmPosition position, boolean[] overrides, Pose2d[]... positions) {
+    public CmdScore(boolean isReversed, ArmPosition position, boolean[] overrides, Pose2d[]... positions) {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
         swerve = Swerve.getInstance();
+        if (isReversed)
 
         addCommands(
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
-            new CmdMoveScore(overrides, positions),
+            new CmdMoveScore(overrides, isReversed, positions),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-            new InstantCommand(() -> pivot.startPID(position.pivotAngle), pivot),
+            new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot),
             new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.25 : -0.25,0),0,true)).withTimeout(1),
             new InstantCommand(()-> swerve.stop()),
             

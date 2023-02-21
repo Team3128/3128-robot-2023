@@ -105,11 +105,9 @@ public class RobotContainer {
         
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
         rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
-        //rightStick.getButton(2).onTrue(new RunCommand(()-> swerve.drive(new Translation2d(0.5,0),0, true)));
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
         
         // zeroing
-        // rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
         rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
 
         // shuffleboard things
@@ -145,23 +143,14 @@ public class RobotContainer {
         leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(30)));
         leftStick.getButton(12).onTrue(new InstantCommand(()-> intake.resetEncoders()));
 
-        // rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
-        // rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
-        // rightStick.getButton(4).onTrue(new InstantCommand(()->swerve.zeroGyro(180)));
         // for (int i = 0; i < VisionConstants.LOADING_ZONE.length; i++) {
         //     leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.LOADING, true, VisionConstants.LOADING_ZONE[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));
         // }
         // grid system
         
-        buttonPad.getButton(4).onTrue(new CmdScore(ArmPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        buttonPad.getButton(5).onTrue(new CmdScore(ArmPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        buttonPad.getButton(6).onTrue(new CmdScore(ArmPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        buttonPad.getButton(7).onTrue(new CmdScore(ArmPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        buttonPad.getButton(8).onTrue(new CmdScore(ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        buttonPad.getButton(9).onTrue(new CmdScore(ArmPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
-        buttonPad.getButton(10).onTrue(new CmdScore(ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
-        buttonPad.getButton(11).onTrue(new CmdScore(ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
-        buttonPad.getButton(12).onTrue(new CmdScore(ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        buttonPad.getButton(5).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        buttonPad.getButton(8).onTrue(new CmdScore(false, ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
+        buttonPad.getButton(11).onTrue(new CmdScore(false, ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1]));
         buttonPad.getButton(1).onTrue(new InstantCommand(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 0 : 2;
         }));
@@ -177,7 +166,22 @@ public class RobotContainer {
     }
 
     public void init() {
-
+        if (DriverStation.getAlliance() == Alliance.Red) {
+            buttonPad.getButton(4).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+            buttonPad.getButton(6).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+            buttonPad.getButton(7).onTrue(new CmdScore(false, ArmPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+            buttonPad.getButton(9).onTrue(new CmdScore(false, ArmPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+            buttonPad.getButton(10).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+            buttonPad.getButton(12).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        }
+        else {
+            buttonPad.getButton(6).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+            buttonPad.getButton(4).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+            buttonPad.getButton(9).onTrue(new CmdScore(false, ArmPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+            buttonPad.getButton(7).onTrue(new CmdScore(false, ArmPosition.MID_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+            buttonPad.getButton(12).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0]));
+            buttonPad.getButton(10).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[2], VisionConstants.SCORES_GRID[2]));
+        }
     }
 
     private void initDashboard() {
