@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdRetractIntake;
 import frc.team3128.commands.CmdScore;
 import frc.team3128.commands.CmdShelfPickup;
+// import frc.team3128.commands.CmdShelfPickup;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
@@ -108,7 +109,7 @@ public class RobotContainer {
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
         
         // zeroing
-        rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
+        // rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
 
         // shuffleboard things
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));

@@ -312,9 +312,9 @@ public class Constants {
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 3.0;
-        public static final double MIN_ANGLE = 0;
-        public static final double MAX_ANGLE = 90;
         public static final int PIVOT_CURRENT_LIMIT = 40;
+        public static final int CANCODER_ID = 1;
+        public static final double ANGLE_OFFSET = 0.0;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
