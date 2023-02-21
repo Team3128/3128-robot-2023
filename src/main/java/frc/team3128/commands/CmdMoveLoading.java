@@ -34,7 +34,7 @@ public class CmdMoveLoading extends CmdMove {
 
     @Override
     public void execute() {
-        if (currentSelectedGrid == 0 && pastX(PASS_LINE) && !atLastPoint()) {
+        if (pastX(PASS_LINE) && !atLastPoint()) {
             nextPoint();
         }
         super.execute();

@@ -85,7 +85,7 @@ public class Constants {
         /* Translation PID Values */
         public static final double translationKP = 3;
         public static final double translationKI = 0;
-        public static final double translationKD = 0;
+        public static final double translationKD = 0.1;
 
         /* Translation PID Values */
         public static final double distanceKP = 3;
@@ -122,18 +122,18 @@ public class Constants {
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double driveKS = 0.60094;
-        public static final double driveKV = 1.1559; 
-        public static final double driveKA = 0.12348; 
+        public static final double driveKS = 0.19255;//0.60094; // 0.19225;
+        public static final double driveKV = 2.4366;//1.1559;  // 2.4366
+        public static final double driveKA = 0.34415; //0.12348; // 0.34415
         public static final double turnTolerance = 2;
 
         /* Swerve Profiling Values */
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double maxSpeed = 4; //meters per second - 16.3 ft/sec
+        public static final double maxSpeed = 4.5; //meters per second - 16.3 ft/sec
         public static final double maxAcceleration = 2;
-        public static final double maxAngularVelocity = 2; //3; //11.5; // citrus: 10
+        public static final double maxAngularVelocity = 2.25; //3; //11.5; // citrus: 10
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
 
         /* Motor Inverts */
@@ -233,9 +233,9 @@ public class Constants {
         };
 
         public static final boolean[][] RAMP_OVERRIDE = new boolean[][] {
-            new boolean[] {false, true, true},
-            new boolean[] {false, true, false},
-            new boolean[] {true, true, false}
+            new boolean[] {true, true, true}, //false, true, true
+            new boolean[] {true, true, true}, //false, true, false
+            new boolean[] {true, true, true} //true, true, false
         };
 
         public static final ArrayList<Pose2d> RAMP_AVOID_SCORE = new ArrayList<Pose2d>();
@@ -247,8 +247,8 @@ public class Constants {
         };
 
         public static final Pose2d[] LOADING_ZONE = new Pose2d[] {
-            new Pose2d(15.5,7.5,Rotation2d.fromDegrees(0)),
-            new Pose2d(15.5,5.8, Rotation2d.fromDegrees(0)),
+            new Pose2d(15.4,7.3,Rotation2d.fromDegrees(0)),
+            new Pose2d(15.4,6, Rotation2d.fromDegrees(0)),
             new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90))
         };
 
@@ -299,8 +299,8 @@ public class Constants {
             TestTags.put(7, APRIL_TAG_POS.get(2));
             TestTags.put(6,APRIL_TAG_POS.get(1));
 
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7,4.65, Rotation2d.fromDegrees(180)));
-            RAMP_AVOID_SCORE.add(new Pose2d(1.7, 0.7, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1,4.65, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1, 0.7, Rotation2d.fromDegrees(180)));
         } 
     }
 
@@ -344,36 +344,38 @@ public class Constants {
     }
 
     public static class ArmConstants {
-        public enum ScoringPosition {
-            TOP_CONE(125, 48), // angles are off by like 10 (should be like 10 down)
-            TOP_CUBE(120, 42.5), 
-            MID_CONE(115, 30), 
-            MID_CUBE(90, 25), 
-            LOW_FLOOR(60, 11.5), 
-            NEUTRAL(0.0, 11.5);
+        public enum ArmPosition {
+            TOP_CONE(115, 42), // angles are off by like 10 (should be like 10 down)
+            TOP_CUBE(107.5, 42), 
+            MID_CONE(105, 24), 
+            MID_CUBE(90, 24), 
+            LOW_FLOOR(45, 11.5), 
+            NEUTRAL(45, 11.5), //pivot should be 0
+
+            HP_SHELF(105, 20), //105
+            GROUND_PICKUP(0.0, 16.0), 
+            CONE_POLE(-40, 11.5),
+            AVOID_INTAKE(90, 11.5);
     
+            
             public final double pivotAngle;
             public final double teleDist;
     
-            private ScoringPosition(double pivotAngle, double teleDist) {
+            private ArmPosition(double pivotAngle, double teleDist) {
                 this.pivotAngle = pivotAngle;
                 this.teleDist = teleDist;
+            }
+
+            public double getPivotAngle(){
+                return pivotAngle;
+            }
+
+            public double getTelescopeDist(){
+                return teleDist;
             }
         }
 
-        public enum IntakePosition {
-            HP_SHELF(108, 20), 
-            INT_PICK_UP(0.0, 16.0), 
-            CONE_POLE(-40, 11.5);
-    
-            public final double pivotAngle;
-            public final double teleDist;
-    
-            private IntakePosition(double pivotAngle, double teleDist) {
-                this.pivotAngle = pivotAngle;
-                this.teleDist = teleDist;
-            }
-        }
+        public static final String TELESCOPE_GROUND_PICKUP = null;
     }
     
     public static class FieldConstants{
@@ -420,6 +422,37 @@ public class Constants {
           }
     }
 
+    public static class IntakeConstants {
+        public static final double ROLLER_POWER = 3.0/12.0;
+
+        public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
+
+        public static final double CURRENT_THRESHOLD = 40;
+
+        public static final double kP = 0.075;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        public static final double kF = 0.6;
+
+        public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
+
+        public static final double ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES = 360 * ROTATOR_GEAR_RATIO;
+
+        public static final double VELOCITY_SETPOINT = 0.5;
+        public static final double INTAKE_TOLERANCE = 0.5;
+
+        //Motor IDs
+        public static final int INTAKE_PIVOT_ID = 12;
+        public static final int INTAKE_ROLLERS_ID = 11;
+
+        //Sensor IDs
+        public static final int INTAKE_SENSOR_ID = 1;
+        // public static final int CONE_SENSOR_ID = 0;
+        // public static final int INTAKE_SENSOR_LEFT_ID = 1;
+        // public static final int INTAKE_SENSOR_RIGHT_ID = 2;
+        
+    }
     public static class LedConstants{
         public static class Yellow{
             public static final int HUE = 0;
@@ -441,14 +474,6 @@ public class Constants {
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
     }
 
-    public static class HopperConstants {
-        public static final int SERIALIZER_ID = 2;
-        public static final double SERIALIZER_POWER = 0;
-
-        public static final int SENSOR_LEFT_ID = 0;
-        public static final int SENSOR_RIGHT_ID = 1;
-    }
-
     public static class BalanceConstants{
         public static final double turnKP = 0.05;
         public static final double turnKI = 0;
@@ -460,3 +485,4 @@ public class Constants {
 
 
 }
+

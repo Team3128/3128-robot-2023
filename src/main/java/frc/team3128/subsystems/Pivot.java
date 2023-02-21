@@ -8,6 +8,7 @@ import static frc.team3128.Constants.PivotConstants.*;
 
 import java.util.function.DoubleSupplier;
 
+import frc.team3128.RobotContainer;
 import frc.team3128.Constants.PivotConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
@@ -50,6 +51,7 @@ public class Pivot extends PIDSubsystem {
     private void configMotors() {
         m_rotateMotor = new NAR_CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless);
         m_rotateMotor.setSmartCurrentLimit(PIVOT_CURRENT_LIMIT);
+        m_rotateMotor.setInverted(true);
         m_rotateMotor.enableVoltageCompensation(12.0);
         m_rotateMotor.setIdleMode(IdleMode.kBrake);
     }
@@ -84,6 +86,10 @@ public class Pivot extends PIDSubsystem {
         m_encoder.setPosition(0);
     }
 
+    public double getAngle(){
+        return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
+    }
+
     public void initShuffleboard() {
         NAR_Shuffleboard.addData("pivot","pivot angle", ()->getMeasurement(),0,0);
         NAR_Shuffleboard.addData("pivot","cancoder angle", ()->getCanCoder(),0,5);
@@ -95,8 +101,10 @@ public class Pivot extends PIDSubsystem {
         NAR_Shuffleboard.addData("pivot", "isEnabled", ()->isEnabled(), 4, 0);
     }
 
-    public void startPID(double anglePos) {        
-        // super.setSetpoint(setpoint.getAsDouble()); // use for shuffleboard tuning
+    public void startPID(double anglePos) {
+        anglePos = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : anglePos;
+        anglePos = Math.abs(anglePos) > 135 ? 135 * Math.signum(anglePos) : anglePos;
+
         enable();
         setSetpoint(anglePos);
     }

@@ -16,6 +16,7 @@ import static frc.team3128.Constants.FieldConstants.*;
 
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Vision;
 
 public class CmdMove extends CommandBase {
     
@@ -26,11 +27,12 @@ public class CmdMove extends CommandBase {
                 new double[] {LOADING_X_LEFT - robotLength/2.0, LOADING_X_RIGHT}
             },
             new double[] {   //Rectangular Constraint
-                chargingStationOuterX + robotLength/2.0,
-                chargingStationOuterX + robotLength * 1.5,
+                chargingStationOuterX + robotLength/2.0 - 0.1,
+                FIELD_X_LENGTH/2,
                 chargingStationLeftY + robotLength/2.0 + 0.1,
                 chargingStationRightY - robotLength/2.0 - 0.1
             },
+            5.6,
             true
         ),
         LOADING(
@@ -43,24 +45,29 @@ public class CmdMove extends CommandBase {
                 chargingStationLeftY + robotLength/2.0 + 0.1,
                 chargingStationRightY - robotLength/2.0 - 0.1
             },
+            2.3,
             false
         ),
-        NONE(null,null, false);
+        NONE(null,null, null, false);
         public double[][] xConstraints;
         public double[] boxConstraints;
+        public Double deadLine;
         public boolean movingLeft; //Relative to Blue
 
-        private Type(double[][] xConstraints, double[] boxConstraints, boolean movingLeft) {
+        private Type(double[][] xConstraints, double[] boxConstraints, Double deadLine, boolean movingLeft) {
             this.xConstraints = xConstraints;
             this.boxConstraints = boxConstraints;
+            this.deadLine = deadLine;
             this.movingLeft = movingLeft;
         }
     }
 
     private static PIDController xController, yController;
+    private static PIDController xDeadController;
     private static PIDController rController;
     private static DoubleSupplier xAxis, yAxis, rAxis, throttle;
     private boolean xSetpoint, ySetpoint, rSetpoint, atDestination;
+    private boolean inXDead;
     protected Pose2d[] poses;
     private int index;
     private Type type;
@@ -92,12 +99,14 @@ public class CmdMove extends CommandBase {
     static {
         xController = new PIDController(translationKP, translationKI, translationKD);
         yController = new PIDController(translationKP, translationKI, translationKD);
+        xDeadController = new PIDController(translationKP, translationKI, translationKD);
         rController = new PIDController(rotationKP, rotationKI, rotationKD);
         rController.enableContinuousInput(-Math.PI, Math.PI);
 
         xController.setTolerance(DRIVE_TOLERANCE);
+        xDeadController.setTolerance(DRIVE_TOLERANCE);
         yController.setTolerance(DRIVE_TOLERANCE);
-        rController.setTolerance(Math.PI/120);
+        rController.setTolerance(Math.PI/90);
 
         NAR_Shuffleboard.addComplex("VisionPID","XCONTROLLER",xController,0,0);
         NAR_Shuffleboard.addComplex("VisionPID","YCONTROLLER",yController,1,0);
@@ -125,6 +134,9 @@ public class CmdMove extends CommandBase {
         rSetpoint = false;
         atDestination = false;
 
+        inXDead = false;
+        //Vision.AUTO_ENABLED = false;
+
         xController.reset();
         yController.reset();
         rController.reset();
@@ -132,11 +144,12 @@ public class CmdMove extends CommandBase {
         xController.setSetpoint(poses[index].getX());
         yController.setSetpoint(poses[index].getY());
         rController.setSetpoint(poses[index].getRotation().getRadians());
+        xDeadController.setSetpoint(xDeadLine(type.deadLine));
     }
 
     @Override
     public void execute() {
-        Pose2d pose = swerve.getPose(); 
+        Pose2d pose = swerve.getPose();
         double xDistance = xController.calculate(pose.getX());
         double yDistance = yController.calculate(pose.getY()); 
         double rotation = rController.calculate(pose.getRotation().getRadians());
@@ -148,8 +161,23 @@ public class CmdMove extends CommandBase {
 
         if (xSetpoint || !canMoveX(pose)) xDistance = 0;
         if (ySetpoint || !canMoveY(pose)) yDistance = 0;
-        if (xDistance == 0 && !xSetpoint) yDistance = Math.copySign(maxSpeed, yDistance);
         if (rSetpoint) rotation = 0;
+
+        //if ((xDistance == 0) && !xSetpoint) yDistance = Math.copySign(maxSpeed, yDistance);
+        inXDead = !canMoveX(pose);  //Try adding logic so you can't move past the value until you clear the barrier
+        if (inXDead)
+            xDistance = xDeadController.calculate(pose.getX());
+        
+        if (Math.abs(yDistance) > maxSpeed)
+            xDistance = Math.min(Math.abs(xDistance), maxSpeed) * Math.signum(xDistance);
+        if (Math.abs(xDistance) > maxSpeed && Math.abs(yDistance) < maxSpeed)
+            xDistance = (Math.sqrt(Math.pow(maxSpeed,2) - Math.pow(yDistance,2))) * Math.signum(xDistance);
+
+        if (!Vision.AUTO_ENABLED) {
+            xDistance = 0;
+            yDistance = 0;
+            rotation = 0;
+        }
 
         if (joystickOverride) {
             int team = DriverStation.getAlliance() == Alliance.Red ? 1 : -1;
@@ -171,6 +199,7 @@ public class CmdMove extends CommandBase {
 
     private boolean canMoveX(Pose2d pose) {
         if (type == Type.NONE) return true;
+        if (type == Type.SCORE && pose.getY() >= 5.1) return false;
         double[] xConstraints = new double[] {type.boxConstraints[0], type.boxConstraints[1]};
         double[] yConstraints = new double[] {type.boxConstraints[2], type.boxConstraints[3]};
         return (!inXConstraints(xConstraints, pose.getX()) || !inYConstraints(yConstraints, pose.getY()));
@@ -191,6 +220,12 @@ public class CmdMove extends CommandBase {
         double left = DriverStation.getAlliance() == Alliance.Red ? FIELD_X_LENGTH - constraints[1] : constraints[0];
         double right = DriverStation.getAlliance() == Alliance.Red ? FIELD_X_LENGTH - constraints[0] : constraints[1];
         return (xPos >= left && xPos <= right);
+    }
+
+    private double xDeadLine(double deadline) {
+        if (DriverStation.getAlliance() == Alliance.Red)
+            deadline = FIELD_X_LENGTH - deadline;
+        return deadline;
     }
 
     private boolean inYConstraints(double[] constraints, double yPos) {
