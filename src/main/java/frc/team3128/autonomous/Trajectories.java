@@ -67,27 +67,69 @@ public class Trajectories {
 
         CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[3])
+                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[2,2]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[4])
+                                                new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[8,3]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 3),
-                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[3])
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
+                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[8,2]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 3),
-                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[4])
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
+                                                new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[9,3]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 3),
-                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[6])
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
+                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[2])
+                                                ));
+
+        CommandEventMap.put("Score[4,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 1),
+                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
+                                                ));
+        
+        //StartScore
+        
+        CommandEventMap.put("Score[1,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
+                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
+                                                ));
+
+        CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
+                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                ));
+
+        CommandEventMap.put("Score[2,2]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
+                                                new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                ));
+
+        CommandEventMap.put("Score[8,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
+                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                ));
+
+        CommandEventMap.put("Score[8,2]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
+                                                new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                ));
+
+        CommandEventMap.put("Score[9,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
+                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[2])
+                                                ));
+
+        CommandEventMap.put("Score[4,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 1),
+                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
                                                 ));
 
         
