@@ -2,12 +2,12 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 14.5,
+        "x": 14.645,
         "y": 0.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.5,
+        "x": 13.645,
         "y": 0.5000000000000001
       },
       "holonomicAngle": 0.0,
@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score[1,3]"
+          "StartScore[1,3]"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -53,22 +53,22 @@
     },
     {
       "anchorPoint": {
-        "x": 14.5,
-        "y": 1.0
+        "x": 14.4,
+        "y": 1.05
       },
       "prevControl": {
-        "x": 13.761649984409733,
-        "y": 1.0
+        "x": 13.661649984409733,
+        "y": 1.05
       },
       "nextControl": {
-        "x": 13.761649984409733,
-        "y": 1.0
+        "x": 13.661649984409733,
+        "y": 1.05
       },
       "holonomicAngle": 0.0,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [
           "Score[2,3]"
@@ -103,5 +103,12 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.7212357954545454,
+      "names": [
+        "IntakeCube"
+      ]
+    }
+  ]
 }

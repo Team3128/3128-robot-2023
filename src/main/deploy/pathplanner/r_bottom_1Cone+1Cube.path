@@ -2,12 +2,12 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 14.5,
+        "x": 14.645,
         "y": 0.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.5,
+        "x": 13.645,
         "y": 0.5000000000000001
       },
       "holonomicAngle": 180.0,
@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score[1,3]"
+          "StartScore[1,3]"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -76,7 +76,7 @@
   ],
   "markers": [
     {
-      "position": 0.7995738636363636,
+      "position": 0.7,
       "names": [
         "IntakeCube"
       ]
