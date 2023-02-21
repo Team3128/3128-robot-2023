@@ -26,7 +26,7 @@ public class Pivot extends PIDSubsystem {
 
     private static Pivot instance;
     private NAR_CANSparkMax m_rotateMotor;
-    private SparkMaxRelativeEncoder m_encoder;
+    // private SparkMaxRelativeEncoder m_encoder;
     private CANCoder m_cancoder;
 
     public Pivot() {
@@ -57,8 +57,8 @@ public class Pivot extends PIDSubsystem {
     }
 
     private void configEncoders() {
-        m_encoder = (SparkMaxRelativeEncoder) m_rotateMotor.getEncoder();
-        m_encoder.setPositionConversionFactor(ENC_CONV);
+        // m_encoder = (SparkMaxRelativeEncoder) m_rotateMotor.getEncoder();
+        // m_encoder.setPositionConversionFactor(ENC_CONV);
         m_cancoder = new CANCoder(CANCODER_ID, "rio");
         m_cancoder.configFactoryDefault();
         m_cancoder.configAllSettings(swerveCancoderConfig());
@@ -74,25 +74,12 @@ public class Pivot extends PIDSubsystem {
         startPID(0);
     }
 
-    public double getCanCoder(){
-        return m_cancoder.getAbsolutePosition() - ANGLE_OFFSET;
-    }
-
-    public void resetToAbsolute() {
-        m_encoder.setPosition(getCanCoder()); // might reset the thing with weird gear ratios
-    }
-
-    public void zeroEncoder() {
-        m_encoder.setPosition(0);
-    }
-
     public double getAngle(){
-        return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
+        return m_cancoder.getAbsolutePosition() - ANGLE_OFFSET;
     }
 
     public void initShuffleboard() {
         NAR_Shuffleboard.addData("pivot","pivot angle", ()->getMeasurement(),0,0);
-        NAR_Shuffleboard.addData("pivot","cancoder angle", ()->getCanCoder(),0,5);
         NAR_Shuffleboard.addData("pivot", "pivot setpoint", ()->getSetpoint(), 0, 1);
         kF = NAR_Shuffleboard.debug("pivot","kF", PivotConstants.kF, 0,2);
         setpoint = NAR_Shuffleboard.debug("pivot", "setpoint", 0, 1,2);
@@ -119,7 +106,7 @@ public class Pivot extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() { // returns degrees
-        return getCanCoder() + MIN_ANGLE;
+        return getAngle();
     //    return m_rotateMotor.getSelectedSensorPosition() + MIN_ANGLE;
     }
 
