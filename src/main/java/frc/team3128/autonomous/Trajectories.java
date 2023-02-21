@@ -23,17 +23,24 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import static frc.team3128.Constants.SwerveConstants.*;
 
-import frc.team3128.Constants.ArmConstants.ScoringPosition;
+import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdDriveUp;
+import frc.team3128.commands.CmdExtendIntake;
 import frc.team3128.commands.CmdGyroBalance;
+import frc.team3128.commands.CmdHandoff;
 import frc.team3128.commands.CmdInPlaceTurn;
 import frc.team3128.commands.CmdMove;
+import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdMoveScore;
+import frc.team3128.commands.CmdRetractIntake;
 import frc.team3128.commands.CmdScore;
 import frc.team3128.common.constantsint.ConstantsInt.VisionConstants;
+import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
 
@@ -49,6 +56,8 @@ public class Trajectories {
 
     private static HashMap<String, Command> CommandEventMap;
 
+    private static Intake intake = Intake.getInstance();
+
     public static void initTrajectories() {
         final String[] trajectoryNames = {"r_top_1Cone", "r_top_1Cone+1Cube", "r_top_1Cone+1Cube+Climb",
                                             "b_top_1Cone", "b_top_1Cone+1Cube", "b_top_1Cone+1Cube+Climb",
@@ -62,78 +71,88 @@ public class Trajectories {
 
         CommandEventMap.put("Score[1,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
+                                                new CmdScore(ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
                                                 ));
 
         CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[2,2]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[8,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[8,2]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[9,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[2])
+                                                new CmdScore(ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[2])
                                                 ));
 
         CommandEventMap.put("Score[4,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 1),
-                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
+                                                new CmdScore(ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
                                                 ));
         
         //StartScore
-        
-        CommandEventMap.put("Score[1,3]", new SequentialCommandGroup(
+
+        CommandEventMap.put("StartScore[1,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
+                                                new CmdMoveArm(ArmPosition.TOP_CONE)
                                                 ));
 
-        CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
+        CommandEventMap.put("StartScore[2,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdMoveArm(ArmPosition.TOP_CUBE)
+                                                
                                                 ));
 
-        CommandEventMap.put("Score[2,2]", new SequentialCommandGroup(
+        CommandEventMap.put("StartScore[2,2]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdMoveArm(ArmPosition.MID_CONE)
+                                                
                                                 ));
 
-        CommandEventMap.put("Score[8,3]", new SequentialCommandGroup(
+        CommandEventMap.put("StartScore[8,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(ScoringPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdMoveArm(ArmPosition.TOP_CUBE)
                                                 ));
 
-        CommandEventMap.put("Score[8,2]", new SequentialCommandGroup(
+        CommandEventMap.put("StartScore[8,2]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(ScoringPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdMoveArm(ArmPosition.MID_CUBE)
                                                 ));
 
-        CommandEventMap.put("Score[9,3]", new SequentialCommandGroup(
+        CommandEventMap.put("StartScore[9,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[2])
+                                                new CmdMoveArm(ArmPosition.TOP_CONE)
                                                 ));
 
-        CommandEventMap.put("Score[4,3]", new SequentialCommandGroup(
+        CommandEventMap.put("StartScore[4,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 1),
-                                                new CmdScore(ScoringPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
+                                                new CmdMoveArm(ArmPosition.TOP_CONE)
                                                 ));
 
         
-        CommandEventMap.put("IntakeCube", null);
+        CommandEventMap.put("IntakeCube", new SequentialCommandGroup(
+            new CmdExtendIntake(),
+            new WaitUntilCommand(()-> intake.checkObjectPresent()),
+            //new WaitCommand(3),
+            new CmdRetractIntake()
+            //new CmdHandoff()
+        )
+            
+        );
 
         CommandEventMap.put("Climb", new SequentialCommandGroup(
                                                 new CmdInPlaceTurn(0),

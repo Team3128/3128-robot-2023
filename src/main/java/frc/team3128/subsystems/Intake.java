@@ -159,7 +159,7 @@ public class Intake extends PIDSubsystem {
         enableRollers(power.getAsDouble());
     }
 
-    public boolean intakeCone() {
+    public boolean checkObjectPresent() {
         if (getCurrent() >= CURRENT_THRESHOLD) {
             enableRollers(0.3);
             objectPresent = true;
