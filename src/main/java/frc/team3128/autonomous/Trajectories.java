@@ -41,6 +41,7 @@ import frc.team3128.commands.CmdRetractIntake;
 import frc.team3128.commands.CmdScore;
 import frc.team3128.common.constantsint.ConstantsInt.VisionConstants;
 import frc.team3128.subsystems.Intake;
+import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
 
@@ -54,7 +55,7 @@ public class Trajectories {
 
     private static SwerveAutoBuilder builder;
 
-    private static HashMap<String, Command> CommandEventMap;
+    private static HashMap<String, Command> CommandEventMap = new HashMap<String, Command>();
 
     private static Intake intake = Intake.getInstance();
 
@@ -66,7 +67,7 @@ public class Trajectories {
                                             "b_mid_1Cone", "b_mid_1Cone+Climb",
 
                                             "r_bottom_1Cone", "r_bottom_1Cone+1Cube", "r_bottom_1Cone+1Cube+Climb",
-                                            "b_bottom_1Cone", "b_bottom_1Cone+1Cube", "b_bottom_1Cone+1Cube+Climb",
+                                            "b_bottom_1Cone", "b_bottom_1Cone+1Cube", "b_bottom_1Cone+1Cube+Climb", "TestAuto"
                                             };
 
         CommandEventMap.put("Score[1,3]", new SequentialCommandGroup(
@@ -107,8 +108,11 @@ public class Trajectories {
         //StartScore
 
         CommandEventMap.put("StartScore[1,3]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdMoveArm(ArmPosition.TOP_CONE)
+                                                new CmdMoveArm(ArmPosition.TOP_CONE),
+                                                new InstantCommand(() -> Manipulator.getInstance().openClaw()),
+                                                new WaitCommand(0.25),
+                                                new InstantCommand(() -> Manipulator.getInstance().closeClaw()),
+                                                new CmdMoveArm(ArmPosition.NEUTRAL)
                                                 ));
 
         CommandEventMap.put("StartScore[2,3]", new SequentialCommandGroup(
@@ -169,8 +173,8 @@ public class Trajectories {
             Swerve.getInstance()::getPose,
             Swerve.getInstance()::resetOdometry,
             swerveKinematics,
-            new PIDConstants(translationKP,translationKI,translationKD),
-            new PIDConstants(rotationKP,rotationKI,rotationKD),
+            new PIDConstants(1,0,0),
+            new PIDConstants(1,0,0),
             Swerve.getInstance()::setModuleStates,
             CommandEventMap,
             Swerve.getInstance()

@@ -34,25 +34,25 @@ public class AutoPrograms {
     private void initAutoSelector() {
         String[] autoStrings = new String[] {"top_1Cone", "top_1Cone+1Cube", "top_1Cone+1Cube+Climb",
                                             "mid_1Cone", "mid_1Cone+Climb",
-                                            "bottom_1Cone", "bottom_1Cone+1Cube", "bottom_1Cone+1Cube+Climb",
-                                            }; // naming scheme kinda mid
+                                            "bottom_1Cone", "bottom_1Cone+1Cube", "bottom_1Cone+1Cube+Climb", "TestAuto"
+                                            }; // naming scheme kinda mid, but its grown on me and now I love it so much
         
         NarwhalDashboard.addAutos(autoStrings);
     }
 
     public Command getAutonomousCommand() {
-       String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        //String selectedAutoName = "1Cone_bottom"; //uncomment and change this for testing without opening Narwhal Dashboard
+    //    String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
+        String selectedAutoName = "bottom_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
 
         if (selectedAutoName == null) {
             return null;
         }
 
         if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-            selectedAutoName = "b_" + selectedAutoName;
+             selectedAutoName = "b_" + selectedAutoName;
         }
-        else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-            selectedAutoName = "r_" + selectedAutoName;
+         else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+             selectedAutoName = "r_" + selectedAutoName;
         }
 
         return Trajectories.get(selectedAutoName);

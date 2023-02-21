@@ -97,8 +97,8 @@ public class Intake extends PIDSubsystem {
         m_encoder.setPositionConversionFactor(ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES);
     }
 
-    public void resetEncoders() {
-        m_intakePivot.setEncoderPosition(0);
+    public void resetEncoders(double position) {
+        m_intakePivot.setEncoderPosition(position);
         // m_intakePivot.setEncoderPosition(90);
     }
 
