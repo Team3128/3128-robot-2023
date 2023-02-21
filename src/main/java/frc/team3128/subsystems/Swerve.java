@@ -30,6 +30,7 @@ import java.io.FileWriter;
 public class Swerve extends SubsystemBase {
     
     private volatile FileWriter txtFile;
+    public static double throttle = 0.8;
     private String poseLogger = "";
     private double prevTime = 0; 
     public SwerveDrivePoseEstimator odometry;
@@ -161,6 +162,11 @@ public class Swerve extends SubsystemBase {
         logPose();
     }
 
+    public void resetAll() {
+        resetOdometry(new Pose2d(0,0, new Rotation2d(0)));
+        resetEncoders();
+    }
+
     public Rotation2d getRotation2d() {
         return estimatedPose.getRotation();
     }
@@ -191,6 +197,16 @@ public class Swerve extends SubsystemBase {
             prevTime = currTime;
             NAR_Shuffleboard.addData("Logger","Positions",poseLogger,0,0);
         }
+    }
+
+    public void xlock() {
+        setModuleStates(
+            new SwerveModuleState[] {
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45))}
+        );
     }
 
     public double getYaw() {

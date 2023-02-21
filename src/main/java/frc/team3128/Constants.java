@@ -342,37 +342,38 @@ public class Constants {
     }
 
     public static class ArmConstants {
-        public enum ScoringPosition {
-            TOP_CONE(125, 42), // angles are off by like 10 (should be like 10 down) // 115
-            TOP_CUBE(112.5, 42), //107.5
-            MID_CONE(110, 24), //105
-            MID_CUBE(95, 24), //90
+        public enum ArmPosition {
+            TOP_CONE(115, 42), // angles are off by like 10 (should be like 10 down)
+            TOP_CUBE(107.5, 42), 
+            MID_CONE(105, 24), 
+            MID_CUBE(90, 24), 
             LOW_FLOOR(45, 11.5), 
-            NEUTRAL(45, 11.5); //pivot should be 0
+            NEUTRAL(45, 11.5), //pivot should be 0
+
+            HP_SHELF(105, 20), //105
+            GROUND_PICKUP(0.0, 16.0), 
+            CONE_POLE(-40, 11.5),
+            AVOID_INTAKE(90, 11.5);
     
             
             public final double pivotAngle;
             public final double teleDist;
     
-            private ScoringPosition(double pivotAngle, double teleDist) {
+            private ArmPosition(double pivotAngle, double teleDist) {
                 this.pivotAngle = pivotAngle;
                 this.teleDist = teleDist;
+            }
+
+            public double getPivotAngle(){
+                return pivotAngle;
+            }
+
+            public double getTelescopeDist(){
+                return teleDist;
             }
         }
 
-        public enum IntakePosition {
-            HP_SHELF(110, 27), //105
-            INT_PICK_UP(0.0, 16.0), 
-            CONE_POLE(-40, 11.5);
-    
-            public final double pivotAngle;
-            public final double teleDist;
-    
-            private IntakePosition(double pivotAngle, double teleDist) {
-                this.pivotAngle = pivotAngle;
-                this.teleDist = teleDist;
-            }
-        }
+        public static final String TELESCOPE_GROUND_PICKUP = null;
     }
     
     public static class FieldConstants{
@@ -419,6 +420,37 @@ public class Constants {
           }
     }
 
+    public static class IntakeConstants {
+        public static final double ROLLER_POWER = 3.0/12.0;
+
+        public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
+
+        public static final double CURRENT_THRESHOLD = 40;
+
+        public static final double kP = 0.075;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        public static final double kF = 0.6;
+
+        public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
+
+        public static final double ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES = 360 * ROTATOR_GEAR_RATIO;
+
+        public static final double VELOCITY_SETPOINT = 0.5;
+        public static final double INTAKE_TOLERANCE = 0.5;
+
+        //Motor IDs
+        public static final int INTAKE_PIVOT_ID = 12;
+        public static final int INTAKE_ROLLERS_ID = 11;
+
+        //Sensor IDs
+        public static final int INTAKE_SENSOR_ID = 1;
+        // public static final int CONE_SENSOR_ID = 0;
+        // public static final int INTAKE_SENSOR_LEFT_ID = 1;
+        // public static final int INTAKE_SENSOR_RIGHT_ID = 2;
+        
+    }
     public static class LedConstants{
         public static class Yellow{
             public static final int HUE = 0;
@@ -440,14 +472,6 @@ public class Constants {
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
     }
 
-    public static class HopperConstants {
-        public static final int SERIALIZER_ID = 2;
-        public static final double SERIALIZER_POWER = 0;
-
-        public static final int SENSOR_LEFT_ID = 0;
-        public static final int SENSOR_RIGHT_ID = 1;
-    }
-
     public static class BalanceConstants{
         public static final double turnKP = 0.05;
         public static final double turnKI = 0;
@@ -459,3 +483,4 @@ public class Constants {
 
 
 }
+

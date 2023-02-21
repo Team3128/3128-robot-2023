@@ -74,6 +74,10 @@ public class Telescope extends PIDSubsystem {
         m_encoder.setPositionConversionFactor(ENC_CONV); 
     }
 
+    public double getDist() {
+        return -m_encoder.getPosition() + MIN_DIST;
+    }
+
     public void startPID(double teleDist) {
         teleDist = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : teleDist;
 
@@ -90,17 +94,9 @@ public class Telescope extends PIDSubsystem {
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        // if (getController().atSetpoint()) {
-        //     plateauCount++;
-        // }
-        // else {
-        //     plateauCount = 0;
-        // }
-        // if (plateauCount >= 5) {
-        //     engageBrake();
-        //     return;
-        // }
-        releaseBrake();
+        if (!getController().atSetpoint())
+            releaseBrake();
+
         double pivotAngle = Math.toRadians(Pivot.getInstance().getMeasurement());
         double ff = -kG.getAsDouble() * Math.cos(pivotAngle) + kF.getAsDouble();
         double voltageOutput = isReversed ? -(output + ff) : output + ff;
@@ -111,7 +107,7 @@ public class Telescope extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() {
-       return -m_encoder.getPosition() + MIN_DIST;
+       return getDist();
     }
 
     /*If extends actually extends set isReversed to false,

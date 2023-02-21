@@ -16,6 +16,7 @@ import static frc.team3128.Constants.FieldConstants.*;
 
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Vision;
 
 public class CmdMove extends CommandBase {
     
@@ -134,6 +135,7 @@ public class CmdMove extends CommandBase {
         atDestination = false;
 
         inXDead = false;
+        //Vision.AUTO_ENABLED = false;
 
         xController.reset();
         yController.reset();
@@ -147,7 +149,7 @@ public class CmdMove extends CommandBase {
 
     @Override
     public void execute() {
-        Pose2d pose = swerve.getPose(); 
+        Pose2d pose = swerve.getPose();
         double xDistance = xController.calculate(pose.getX());
         double yDistance = yController.calculate(pose.getY()); 
         double rotation = rController.calculate(pose.getRotation().getRadians());
@@ -161,10 +163,21 @@ public class CmdMove extends CommandBase {
         if (ySetpoint || !canMoveY(pose)) yDistance = 0;
         if (rSetpoint) rotation = 0;
 
-        if ((xDistance == 0) && !xSetpoint) yDistance = Math.copySign(maxSpeed, yDistance);
-        inXDead = !canMoveX(pose);
+        //if ((xDistance == 0) && !xSetpoint) yDistance = Math.copySign(maxSpeed, yDistance);
+        inXDead = !canMoveX(pose);  //Try adding logic so you can't move past the value until you clear the barrier
         if (inXDead)
             xDistance = xDeadController.calculate(pose.getX());
+        
+        if (Math.abs(yDistance) > maxSpeed)
+            xDistance = Math.min(Math.abs(xDistance), maxSpeed) * Math.signum(xDistance);
+        if (Math.abs(xDistance) > maxSpeed && Math.abs(yDistance) < maxSpeed)
+            xDistance = (Math.sqrt(Math.pow(maxSpeed,2) - Math.pow(yDistance,2))) * Math.signum(xDistance);
+
+        if (!Vision.AUTO_ENABLED) {
+            xDistance = 0;
+            yDistance = 0;
+            rotation = 0;
+        }
 
         if (joystickOverride) {
             int team = DriverStation.getAlliance() == Alliance.Red ? 1 : -1;
@@ -186,6 +199,7 @@ public class CmdMove extends CommandBase {
 
     private boolean canMoveX(Pose2d pose) {
         if (type == Type.NONE) return true;
+        if (type == Type.SCORE && pose.getY() >= 5.1) return false;
         double[] xConstraints = new double[] {type.boxConstraints[0], type.boxConstraints[1]};
         double[] yConstraints = new double[] {type.boxConstraints[2], type.boxConstraints[3]};
         return (!inXConstraints(xConstraints, pose.getX()) || !inYConstraints(yConstraints, pose.getY()));
