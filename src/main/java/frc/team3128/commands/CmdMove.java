@@ -135,7 +135,7 @@ public class CmdMove extends CommandBase {
         atDestination = false;
 
         inXDead = false;
-        Vision.AUTO_ENABLED = false;
+        //Vision.AUTO_ENABLED = false;
 
         xController.reset();
         yController.reset();

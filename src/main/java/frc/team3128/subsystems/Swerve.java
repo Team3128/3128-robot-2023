@@ -199,6 +199,16 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    public void xlock() {
+        setModuleStates(
+            new SwerveModuleState[] {
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45))}
+        );
+    }
+
     public double getYaw() {
         return MathUtil.inputModulus(gyro.getYaw(),-180,180);
     }
