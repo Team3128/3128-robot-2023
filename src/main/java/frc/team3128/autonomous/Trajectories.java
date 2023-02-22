@@ -77,22 +77,22 @@ public class Trajectories {
 
         CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(true, ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[2,2]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(true, ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[8,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(true, ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[8,2]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(true, ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         //StartScore

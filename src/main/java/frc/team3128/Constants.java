@@ -247,9 +247,9 @@ public class Constants {
         };
 
         public static final Pose2d[] LOADING_ZONE = new Pose2d[] {
-            new Pose2d(15.4,7.3,Rotation2d.fromDegrees(0)),
-            new Pose2d(15.4,6, Rotation2d.fromDegrees(0)),
-            new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90))
+            new Pose2d(15.4,6,Rotation2d.fromDegrees(0)),
+            new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90)),
+            new Pose2d(15.4,7.3, Rotation2d.fromDegrees(0))
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
@@ -312,9 +312,9 @@ public class Constants {
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 3.0;
-        public static final double MIN_ANGLE = 0;
-        public static final double MAX_ANGLE = 90;
         public static final int PIVOT_CURRENT_LIMIT = 40;
+        public static final int CANCODER_ID = 1;
+        public static final double ANGLE_OFFSET = 0.0;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
