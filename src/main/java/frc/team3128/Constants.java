@@ -247,9 +247,9 @@ public class Constants {
         };
 
         public static final Pose2d[] LOADING_ZONE = new Pose2d[] {
-            new Pose2d(15.4,7.3,Rotation2d.fromDegrees(0)),
-            new Pose2d(15.4,6, Rotation2d.fromDegrees(0)),
-            new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90))
+            new Pose2d(15.4,6,Rotation2d.fromDegrees(0)),
+            new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90)),
+            new Pose2d(15.4,7.3, Rotation2d.fromDegrees(0))
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
