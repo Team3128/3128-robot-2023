@@ -33,7 +33,7 @@ public class CmdScore extends SequentialCommandGroup {
         swerve = Swerve.getInstance();
 
         addCommands(
-            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
+            new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             new CmdMoveScore(overrides, isReversed, positions),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot),

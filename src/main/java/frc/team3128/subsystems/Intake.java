@@ -44,7 +44,7 @@ public class Intake extends PIDSubsystem {
         DEPLOYED(0),
         RETRACTED(90),
         SEMI_DEPLOYED(60),
-        STOWED(180);
+        STOWED(185);
 
         private double angle;
 
@@ -97,8 +97,8 @@ public class Intake extends PIDSubsystem {
         m_encoder.setPositionConversionFactor(ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES);
     }
 
-    public void resetEncoders() {
-        m_intakePivot.setEncoderPosition(0);
+    public void resetEncoders(double position) {
+        m_intakePivot.setEncoderPosition(position);
         // m_intakePivot.setEncoderPosition(90);
     }
 
@@ -111,8 +111,8 @@ public class Intake extends PIDSubsystem {
     }
 
     public void startPID(double setpoint) {
-        //setSetpoint(setpoint);
-        setSetpoint(this.setpoint.getAsDouble());
+        setSetpoint(setpoint);
+        // setSetpoint(this.setpoint.getAsDouble());
         enable();
     }
 
@@ -156,10 +156,10 @@ public class Intake extends PIDSubsystem {
 
     // Roller Control
     public void enableRollersForward() {
-        enableRollers(power.getAsDouble());
+        enableRollers(ROLLER_POWER);
     }
 
-    public boolean intakeCone() {
+    public boolean checkObjectPresent() {
         if (getCurrent() >= CURRENT_THRESHOLD) {
             enableRollers(0.3);
             objectPresent = true;
@@ -177,7 +177,7 @@ public class Intake extends PIDSubsystem {
     }
 
     public void enableRollersReverse() {
-        enableRollers(-power.getAsDouble());
+        enableRollers(-ROLLER_POWER);
     }
 
     public void enableRollers(double wheelsPower) {

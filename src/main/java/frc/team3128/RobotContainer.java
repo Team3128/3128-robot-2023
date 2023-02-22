@@ -138,11 +138,11 @@ public class RobotContainer {
 
         //Intake Buttons
         leftStick.getButton(7).onTrue(new CmdHandoff());
-        leftStick.getButton(8).onTrue(new CmdExtendIntake()).onFalse(new CmdExtendIntake());
+        leftStick.getButton(8).onTrue(new CmdExtendIntake()).onFalse(new CmdRetractIntake());
         leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
         leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));
         leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(30)));
-        leftStick.getButton(12).onTrue(new InstantCommand(()-> intake.resetEncoders()));
+        leftStick.getButton(12).onTrue(new InstantCommand(()-> intake.resetEncoders(0)));
 
         // for (int i = 0; i < VisionConstants.LOADING_ZONE.length; i++) {
         //     leftStick.getButton(i + 1).onTrue(new CmdMove(CmdMove.Type.LOADING, true, VisionConstants.LOADING_ZONE[i])).onFalse(new InstantCommand(()->swerve.stop(),swerve));

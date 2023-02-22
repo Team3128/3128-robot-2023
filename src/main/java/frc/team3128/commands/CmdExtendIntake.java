@@ -24,8 +24,9 @@ public class CmdExtendIntake extends SequentialCommandGroup{
             new InstantCommand(()-> manipulator.closeClaw(), manipulator),
             new CmdMoveArm(90,11.5),
             new CmdMoveIntake(Intake.IntakeState.DEPLOYED),
-            new InstantCommand(()-> intake.enableRollersForward(), intake)
+            new InstantCommand(()-> intake.enableRollersForward())
         );
     }
     
 }
+
