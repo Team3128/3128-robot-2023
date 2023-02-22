@@ -77,7 +77,7 @@ public class Trajectories {
 
         CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
                                                 ));
 
         CommandEventMap.put("Score[2,2]", new SequentialCommandGroup(
@@ -108,7 +108,7 @@ public class Trajectories {
         //StartScore
 
         CommandEventMap.put("StartScore[1,3]", new SequentialCommandGroup(
-                                                new CmdMoveArm(ArmPosition.TOP_CONE),
+                                                new CmdMoveArm(ArmPosition.TOP_CONE_BACK),
                                                 new InstantCommand(() -> Manipulator.getInstance().openClaw()),
                                                 new WaitCommand(0.25),
                                                 new InstantCommand(() -> Manipulator.getInstance().closeClaw()),
@@ -152,14 +152,13 @@ public class Trajectories {
             new CmdExtendIntake(),
             new WaitUntilCommand(()-> intake.checkObjectPresent()),
             //new WaitCommand(3),
-            new CmdRetractIntake()
-            //new CmdHandoff()
-        )
+            new CmdRetractIntake(),
+            new CmdHandoff())
             
         );
 
         CommandEventMap.put("Climb", new SequentialCommandGroup(
-                                                new CmdInPlaceTurn(0),
+                                                // new CmdInPlaceTurn(0),
                                                 new CmdDriveUp(),
                                                 new CmdGyroBalance()
                                                 ));

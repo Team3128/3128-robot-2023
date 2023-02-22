@@ -42,7 +42,7 @@ public class AutoPrograms {
 
     public Command getAutonomousCommand() {
     //    String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "bottom_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
+        String selectedAutoName = "mid_1Cone"; //uncomment and change this for testing without opening Narwhal Dashboard
 
         if (selectedAutoName == null) {
             return null;

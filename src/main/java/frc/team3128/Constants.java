@@ -344,6 +344,7 @@ public class Constants {
     public static class ArmConstants {
         public enum ArmPosition {
             TOP_CONE(115, 42), // angles are off by like 10 (should be like 10 down)
+            TOP_CONE_BACK(-115, 42),
             TOP_CUBE(107.5, 42), 
             MID_CONE(105, 24), 
             MID_CUBE(90, 24), 
@@ -429,7 +430,7 @@ public class Constants {
 
         public static final double kP = 0.075;
         public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kD = 0.001; // 0.001
 
         public static final double kF = 0.6;
 
@@ -438,7 +439,7 @@ public class Constants {
         public static final double ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES = 360 * ROTATOR_GEAR_RATIO;
 
         public static final double VELOCITY_SETPOINT = 0.5;
-        public static final double INTAKE_TOLERANCE = 0.5;
+        public static final double INTAKE_TOLERANCE = 7.5;
 
         //Motor IDs
         public static final int INTAKE_PIVOT_ID = 12;
@@ -476,7 +477,7 @@ public class Constants {
         public static final double turnKP = 0.05;
         public static final double turnKI = 0;
         public static final double turnKD = .005;
-        public static final int TURN_TOLERANCE = 1;
+        public static final double TURN_TOLERANCE = 1.5;
         public static final double CHARGE_STATION_X = 5;
         public static final double CHARGE_STATION_Y = 5;
     }
