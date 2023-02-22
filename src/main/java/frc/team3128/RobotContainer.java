@@ -109,7 +109,7 @@ public class RobotContainer {
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
         
         // zeroing
-        // rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
+        rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.zeroEncoder()));
 
         // shuffleboard things
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));

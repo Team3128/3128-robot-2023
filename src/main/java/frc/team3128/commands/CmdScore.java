@@ -31,7 +31,6 @@ public class CmdScore extends SequentialCommandGroup {
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
         swerve = Swerve.getInstance();
-        if (isReversed)
 
         addCommands(
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
