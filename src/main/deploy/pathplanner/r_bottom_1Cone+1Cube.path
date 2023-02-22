@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "StartScore[1,3]"
+          "ScoreConeHigh"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -30,45 +30,20 @@
         "y": 0.9239802055992996
       },
       "prevControl": {
-        "x": 10.830413177939452,
-        "y": 0.7057650531028793
-      },
-      "nextControl": {
-        "x": 10.830413177939452,
-        "y": 0.7057650531028793
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": true,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 12.5,
-        "y": 0.7
-      },
-      "prevControl": {
-        "x": 11.674729859876388,
-        "y": 0.7267631427623964
+        "x": 10.849822322607475,
+        "y": 0.9239802055992995
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": 4.5,
+      "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
           "Score[2,3]"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }

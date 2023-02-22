@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.607857726201564,
-        "y": 2.9577867030734066
+        "x": 2.923192605879788,
+        "y": 2.2
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "StartScore[1,3]"
+          "ScoreConeHigh"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -27,11 +27,11 @@
     {
       "anchorPoint": {
         "x": 6.0,
-        "y": 2.662923245985381
+        "y": 2.2
       },
       "prevControl": {
         "x": 5.0,
-        "y": 2.662923245985381
+        "y": 2.2
       },
       "nextControl": null,
       "holonomicAngle": 0,

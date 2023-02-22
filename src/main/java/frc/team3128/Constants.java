@@ -345,11 +345,20 @@ public class Constants {
         public enum ArmPosition {
             TOP_CONE(115, 42), // angles are off by like 10 (should be like 10 down)
             TOP_CONE_BACK(-115, 42),
+
             TOP_CUBE(107.5, 42), 
+            TOP_CUBE_BACK(-107.5, 42), 
+
             MID_CONE(105, 24), 
+            MID_CONE_BACK(-105, 24),
+
             MID_CUBE(90, 24), 
+            MID_CUBE_BACK(-90, 24), 
+
             LOW_FLOOR(45, 11.5), 
-            NEUTRAL(45, 11.5), //pivot should be 0
+            LOW_FLOOR_BACK(-45, 11.5),
+
+            NEUTRAL(0, 11.5), //pivot should be 0
 
             HP_SHELF(105, 20), //105
             GROUND_PICKUP(0.0, 16.0), 

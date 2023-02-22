@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "StartScore[4,3]"
+          "ScoreConeHigh"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -27,11 +27,11 @@
     {
       "anchorPoint": {
         "x": 10.5,
-        "y": 2.662923245985381
+        "y": 2.2
       },
       "prevControl": {
         "x": 11.5,
-        "y": 2.662923245985381
+        "y": 2.2
       },
       "nextControl": null,
       "holonomicAngle": 180.0,

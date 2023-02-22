@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "StartScore[9,3]"
+          "ScoreConeHigh"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -33,44 +33,17 @@
         "x": 10.094037321265414,
         "y": 4.602852566816245
       },
-      "nextControl": {
-        "x": 10.094037321265414,
-        "y": 4.602852566816245
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": true,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [
-          "IntakeCube"
-        ],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 12.5,
-        "y": 4.6
-      },
-      "prevControl": {
-        "x": 10.582183495964216,
-        "y": 4.837112781517229
-      },
       "nextControl": null,
       "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": 4.5,
+      "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
           "Score[8,3]"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }

@@ -14,6 +14,8 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -39,6 +41,7 @@ import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdRetractIntake;
 import frc.team3128.commands.CmdScore;
+import frc.team3128.commands.CmdMove.Type;
 import frc.team3128.common.constantsint.ConstantsInt.VisionConstants;
 import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Manipulator;
@@ -57,6 +60,8 @@ public class Trajectories {
 
     private static HashMap<String, Command> CommandEventMap = new HashMap<String, Command>();
 
+    private static Manipulator manipulator = Manipulator.getInstance();
+
     private static Intake intake = Intake.getInstance();
 
     public static void initTrajectories() {
@@ -67,13 +72,8 @@ public class Trajectories {
                                             "b_mid_1Cone", "b_mid_1Cone+Climb",
 
                                             "r_bottom_1Cone", "r_bottom_1Cone+1Cube", "r_bottom_1Cone+1Cube+Climb",
-                                            "b_bottom_1Cone", "b_bottom_1Cone+1Cube", "b_bottom_1Cone+1Cube+Climb", "TestAuto"
+                                            "b_bottom_1Cone", "b_bottom_1Cone+1Cube", "b_bottom_1Cone+1Cube+Climb"
                                             };
-
-        CommandEventMap.put("Score[1,3]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
-                                                ));
 
         CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
@@ -95,58 +95,15 @@ public class Trajectories {
                                                 new CmdScore(ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[1])
                                                 ));
 
-        CommandEventMap.put("Score[9,3]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[2])
-                                                ));
-
-        CommandEventMap.put("Score[4,3]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 1),
-                                                new CmdScore(ArmPosition.TOP_CONE, VisionConstants.RAMP_OVERRIDE[0], VisionConstants.SCORES_GRID[0])
-                                                ));
-        
         //StartScore
 
-        CommandEventMap.put("StartScore[1,3]", new SequentialCommandGroup(
+        CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
                                                 new CmdMoveArm(ArmPosition.TOP_CONE_BACK),
-                                                new InstantCommand(() -> Manipulator.getInstance().openClaw()),
+                                                new InstantCommand(() -> manipulator.openClaw()),
                                                 new WaitCommand(0.25),
-                                                new InstantCommand(() -> Manipulator.getInstance().closeClaw()),
+                                                new InstantCommand(() -> manipulator.closeClaw()),
                                                 new CmdMoveArm(ArmPosition.NEUTRAL)
                                                 ));
-
-        CommandEventMap.put("StartScore[2,3]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdMoveArm(ArmPosition.TOP_CUBE)
-                                                
-                                                ));
-
-        CommandEventMap.put("StartScore[2,2]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdMoveArm(ArmPosition.MID_CONE)
-                                                
-                                                ));
-
-        CommandEventMap.put("StartScore[8,3]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdMoveArm(ArmPosition.TOP_CUBE)
-                                                ));
-
-        CommandEventMap.put("StartScore[8,2]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdMoveArm(ArmPosition.MID_CUBE)
-                                                ));
-
-        CommandEventMap.put("StartScore[9,3]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdMoveArm(ArmPosition.TOP_CONE)
-                                                ));
-
-        CommandEventMap.put("StartScore[4,3]", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Vision.SELECTED_GRID = 1),
-                                                new CmdMoveArm(ArmPosition.TOP_CONE)
-                                                ));
-
         
         CommandEventMap.put("IntakeCube", new SequentialCommandGroup(
             new CmdExtendIntake(),
@@ -162,6 +119,10 @@ public class Trajectories {
                                                 new CmdDriveUp(),
                                                 new CmdGyroBalance()
                                                 ));
+        
+        CommandEventMap.put("ClimbPoseBlue", new CmdMove(Type.SCORE, false, new Pose2d(5.8,2.7,Rotation2d.fromDegrees(0))));
+        
+        CommandEventMap.put("ClimbPoseRed", new CmdMove(Type.SCORE, false, new Pose2d(10.7,2.7,Rotation2d.fromDegrees(0))));
         
         for (String trajectoryName : trajectoryNames) {
             // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
