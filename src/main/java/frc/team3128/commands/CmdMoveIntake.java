@@ -22,16 +22,12 @@ public class CmdMoveIntake extends WaitCommand{
 
     @Override
     public void initialize(){
+        super.initialize();
         intake.startPID(desiredAngle);
     }
 
     @Override
-    public void end(boolean interrupted){
-        // intake.stop();
-    }
-
-    @Override
     public boolean isFinished(){
-        return intake.atSetpoint();
+        return super.isFinished() || intake.atSetpoint();
     }
 }
