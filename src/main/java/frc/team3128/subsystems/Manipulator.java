@@ -6,11 +6,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.common.hardware.motorcontroller.NAR_VictorSPX;
 import frc.team3128.common.utility.NAR_Shuffleboard;
-
 import static frc.team3128.Constants.ManipulatorConstants.*;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 public class Manipulator extends SubsystemBase {
     
     private DoubleSolenoid m_solenoid;
@@ -27,7 +24,7 @@ public class Manipulator extends SubsystemBase {
 
     public static Manipulator getInstance() {
         if (instance == null){
-            instance = new Manipulator() ;  
+            instance = new Manipulator();  
         }
         
         return instance;
@@ -42,8 +39,6 @@ public class Manipulator extends SubsystemBase {
         m_roller = new NAR_VictorSPX(ROLLER_MOTOR_ID);
         m_roller.setInverted(false);
         m_roller.setNeutralMode(NeutralMode.Coast);
-        // m_roller.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 10, 0.5));
-        // m_roller.clearStickyFaults(10);
     }
 
     public void openClaw(){
@@ -67,11 +62,15 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void enableRollersForward(){
-        m_roller.set(0.5);
+        m_roller.set(ROLLER_POWER);
     }
 
     public void enableRollersReverse(){
-        m_roller.set(-0.5);
+        m_roller.set(-ROLLER_POWER);
+    }
+
+    public void enableRollerObject() {
+        m_roller.set(0.3);
     }
 
     public void stopRoller(){
@@ -84,21 +83,26 @@ public class Manipulator extends SubsystemBase {
     }
 
     public boolean hasObjectPresent(){
-        boolean objectPresent = getCurrent() > CURRENT_THRESHOLD;
-        setRollerPower(objectPresent ? 0.3 : 0.5);
-        return objectPresent;
+        return getCurrent() > CURRENT_THRESHOLD;
+    }
+
+    public void intakeWide() {
+        openClaw();
+        enableRollersForward();
+    }
+
+    public void neutralPos() {
+        closeClaw();
+        stopRoller();
     }
 
     public void intakeCones(){
         closeClaw();
         enableRollersForward();
-        //hasObjectPresent();
     }
 
     public void intakeCubes(){
-        openClaw();
-        enableRollersForward();
-        //hasObjectPresent();
+        intakeWide();
     }
 
     public void outtake(){

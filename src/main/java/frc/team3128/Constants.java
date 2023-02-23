@@ -364,8 +364,7 @@ public class Constants {
                 this.teleDist = teleDist;
             }
         }
-        
-        public static final String TELESCOPE_GROUND_PICKUP = null;
+    
     }
     
     public static class FieldConstants{
@@ -427,7 +426,7 @@ public class Constants {
 
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
-        public static final double ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES = 360; //* ROTATOR_GEAR_RATIO;
+        public static final double ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES = 360 * ROTATOR_GEAR_RATIO;
         public static final double ENCODER_ZERO_OFFSET = 0;
 
         public static final double VELOCITY_SETPOINT = 0.5;
@@ -466,6 +465,7 @@ public class Constants {
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
 
         public static final int ROLLER_MOTOR_ID = 13;
+        public static final double ROLLER_POWER = 0.5;
 
         public static final double CURRENT_THRESHOLD = 30;
     }

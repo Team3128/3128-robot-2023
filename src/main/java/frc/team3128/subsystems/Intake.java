@@ -93,10 +93,10 @@ public class Intake extends PIDSubsystem {
     }
 
     public void startPID(double setpoint) {
-        setSetpoint(setpoint);
         setpoint = RobotContainer.DEBUG.getAsBoolean() ? this.setpoint.getAsDouble() : setpoint;
         setpoint = setpoint > 190 ? 190 : setpoint;
         setpoint = setpoint < 0 ? 0 : setpoint;
+        setSetpoint(setpoint);
         enable();
     }
 

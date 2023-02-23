@@ -24,7 +24,6 @@ import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdExtendIntake;
 import frc.team3128.commands.CmdGyroBalance;
-import frc.team3128.commands.CmdHandoff;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_Joystick;
@@ -121,14 +120,14 @@ public class RobotContainer {
         rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
         rightStick.getButton(10).onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
         
-        // rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        // rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.enableRollersForward())).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
-        rightStick.getButton(12).onTrue(new InstantCommand(() -> manipulator.enableRollersReverse())).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
+        rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        // rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.enableRollersForward())).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
+        // rightStick.getButton(12).onTrue(new InstantCommand(() -> manipulator.enableRollersReverse())).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
         rightStick.getButton(13).onTrue(new InstantCommand(()-> manipulator.intakeCones()));
-        rightStick.getButton(14).onTrue(new InstantCommand(()-> manipulator.outtake()));
-        rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.openClaw()));
-        rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        rightStick.getButton(14).onTrue(new InstantCommand(()-> manipulator.intakeCubes()));
+        rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.neutralPos()));
+        rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake()));
         // rightStick.getButton(15).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
         // rightStick.getButton(16).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
 
@@ -140,7 +139,7 @@ public class RobotContainer {
         leftStick.getButton(6).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[2]));
 
         //Intake Buttons
-        leftStick.getButton(7).onTrue(new CmdHandoff());
+        // leftStick.getButton(7).onTrue(new CmdHandoff());
         leftStick.getButton(8).onTrue(new CmdExtendIntake()).onFalse(new CmdRetractIntake());
         leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
         leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));

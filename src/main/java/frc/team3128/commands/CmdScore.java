@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -17,7 +18,10 @@ import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
+import edu.wpi.first.wpilibj2.command.ProxyScheduleCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 
 public class CmdScore extends SequentialCommandGroup {
     
@@ -34,23 +38,31 @@ public class CmdScore extends SequentialCommandGroup {
 
         addCommands(
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
-            new CmdMoveScore(overrides, isReversed, positions),
-            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-            new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.25 : -0.25,0),0,true)).withTimeout(1),
-            new InstantCommand(()-> swerve.stop()),
+            Commands.parallel(
+                new CmdMoveScore(overrides, isReversed, positions),
+                Commands.sequence(
+                    new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
+                    new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot)
+                )
+            ),
+            Commands.parallel(
+                Commands.sequence(
+                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.25 : -0.25,0),0,true)).withTimeout(1),
+                    new InstantCommand(()-> swerve.stop())
+                ),
+                Commands.sequence(
+                    new WaitUntilCommand(()-> pivot.atSetpoint()),
+                    new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
+                    new WaitUntilCommand(()-> telescope.atSetpoint())
+                )
+            ),
             
-            new WaitUntilCommand(()-> pivot.atSetpoint()),
-            
-            new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
-            new WaitUntilCommand(()-> telescope.atSetpoint()),
-            new InstantCommand(() -> manipulator.openClaw(), manipulator),
-            new WaitCommand(0.25),
+            new InstantCommand(() -> manipulator.outtake(), manipulator),
+            new WaitCommand(0.125),
             // new InstantCommand(() -> pivot.startPID(position.pivotAngle + Math.copySign(10, position.pivotAngle))),
-            new CmdMoveArm(ArmPosition.NEUTRAL),
-            new InstantCommand(() -> manipulator.closeClaw(), manipulator)
-            // new WaitCommand(2)
-            // new InstantCommand(() -> telescope.startPID(ScoringPosition.NEUTRAL.))
+            new InstantCommand(() -> manipulator.neutralPos(), manipulator),
+            new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL))
+            // new CmdMoveArm(ArmPosition.NEUTRAL) // proxyschedulecmd this so you can start driving once it's going back in
         );
     }
 }

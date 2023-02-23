@@ -1,8 +1,5 @@
 package frc.team3128.autonomous;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,15 +12,10 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -34,11 +26,8 @@ import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdExtendIntake;
 import frc.team3128.commands.CmdGyroBalance;
-import frc.team3128.commands.CmdHandoff;
-import frc.team3128.commands.CmdInPlaceTurn;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
-import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdRetractIntake;
 import frc.team3128.commands.CmdScore;
 import frc.team3128.commands.CmdMove.Type;
@@ -99,19 +88,17 @@ public class Trajectories {
 
         CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
                                                 new CmdMoveArm(ArmPosition.TOP_CONE_BACK),
-                                                new InstantCommand(() -> manipulator.openClaw()),
-                                                new WaitCommand(0.25),
-                                                new InstantCommand(() -> manipulator.closeClaw()),
-                                                new CmdMoveArm(ArmPosition.NEUTRAL)
+                                                new InstantCommand(() -> manipulator.outtake()),
+                                                new WaitCommand(0.125),
+                                                new InstantCommand(() -> manipulator.neutralPos()),
+                                                new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL))
                                                 ));
         
         CommandEventMap.put("IntakeCube", new SequentialCommandGroup(
             new CmdExtendIntake(),
             new WaitUntilCommand(()-> intake.hasObjectPresent()),
             //new WaitCommand(3),
-            new CmdRetractIntake(),
-            new CmdHandoff())
-            
+            new CmdRetractIntake())
         );
 
         CommandEventMap.put("Climb", new SequentialCommandGroup(
