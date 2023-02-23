@@ -2,7 +2,9 @@ package frc.team3128.commands;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.team3128.Constants.FieldConstants;
@@ -17,11 +19,13 @@ public class CmdMoveScore extends CmdMove {
     private ArrayList<Pose2d> avoidRamp;
     private Pose2d[][] positions;
     private int currSelectedGrid;
+    private boolean isReversed;
 
-    public CmdMoveScore(boolean[] overrides, Pose2d[]... positions) {
+    public CmdMoveScore(boolean[] overrides, boolean isReversed, Pose2d[]... positions) {
         super(CmdMove.Type.SCORE, true, positions[0]);
         this.positions = positions;
         this.overrides = overrides;
+        this.isReversed = isReversed;
         avoidRamp = new ArrayList<Pose2d>();
     }
 
@@ -44,8 +48,11 @@ public class CmdMoveScore extends CmdMove {
             newPoses[i] = positions[i - extraPoint][currSelectedGrid];
         }
         poses = newPoses;
-        for (int i = 0; i < newPoses.length; i++) {
-            System.out.println(newPoses[i]);
+        if (isReversed) {
+            for (int i = 0; i < newPoses.length; i++) {
+                var newRotation = new Rotation2d(MathUtil.inputModulus(poses[i].getRotation().getRadians() + Math.PI, -Math.PI, Math.PI));
+                poses[i] = new Pose2d(poses[i].getTranslation(), newRotation);
+            }
         }
         PASS_LINE = FieldConstants.chargingStationOuterX - SwerveConstants.robotLength/2 - 0.02;
         PASS_LINE = DriverStation.getAlliance() == Alliance.Red ? FieldConstants.FIELD_X_LENGTH - PASS_LINE : PASS_LINE;

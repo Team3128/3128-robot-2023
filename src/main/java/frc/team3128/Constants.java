@@ -247,9 +247,9 @@ public class Constants {
         };
 
         public static final Pose2d[] LOADING_ZONE = new Pose2d[] {
-            new Pose2d(15.4,7.3,Rotation2d.fromDegrees(0)),
-            new Pose2d(15.4,6, Rotation2d.fromDegrees(0)),
-            new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90))
+            new Pose2d(15.4,6,Rotation2d.fromDegrees(0)),
+            new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90)),
+            new Pose2d(15.4,7.3, Rotation2d.fromDegrees(0))
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
@@ -312,9 +312,9 @@ public class Constants {
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 3.0;
-        public static final double MIN_ANGLE = 0;
-        public static final double MAX_ANGLE = 90;
         public static final int PIVOT_CURRENT_LIMIT = 40;
+        public static final int CANCODER_ID = 1;
+        public static final double ANGLE_OFFSET = 0.0;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -344,11 +344,21 @@ public class Constants {
     public static class ArmConstants {
         public enum ArmPosition {
             TOP_CONE(115, 42), // angles are off by like 10 (should be like 10 down)
+            TOP_CONE_BACK(-115, 42),
+
             TOP_CUBE(107.5, 42), 
+            TOP_CUBE_BACK(-107.5, 42), 
+
             MID_CONE(105, 24), 
+            MID_CONE_BACK(-105, 24),
+
             MID_CUBE(90, 24), 
+            MID_CUBE_BACK(-90, 24), 
+
             LOW_FLOOR(45, 11.5), 
-            NEUTRAL(45, 11.5), //pivot should be 0
+            LOW_FLOOR_BACK(-45, 11.5),
+
+            NEUTRAL(0, 11.5), //pivot should be 0
 
             HP_SHELF(105, 20), //105
             GROUND_PICKUP(0.0, 16.0), 
@@ -421,7 +431,7 @@ public class Constants {
 
         public static final double kP = 0.075;
         public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kD = 0.001; // 0.001
 
         public static final double kF = 0.6;
 
@@ -431,7 +441,7 @@ public class Constants {
         public static final double ENCODER_ZERO_OFFSET = 0;
 
         public static final double VELOCITY_SETPOINT = 0.5;
-        public static final double INTAKE_TOLERANCE = 0.5;
+        public static final double INTAKE_TOLERANCE = 7.5;
 
         //Motor IDs
         public static final int INTAKE_PIVOT_ID = 12;
@@ -474,7 +484,7 @@ public class Constants {
         public static final double turnKP = 0.05;
         public static final double turnKI = 0;
         public static final double turnKD = .005;
-        public static final int TURN_TOLERANCE = 1;
+        public static final double TURN_TOLERANCE = 1.5;
         public static final double CHARGE_STATION_X = 5;
         public static final double CHARGE_STATION_Y = 5;
     }
