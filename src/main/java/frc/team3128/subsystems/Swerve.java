@@ -53,7 +53,7 @@ public class Swerve extends SubsystemBase {
     public Swerve() {
         gyro = new WPI_Pigeon2(pigeonID, "drivetrain");
         gyro.configFactoryDefault();
-        zeroGyro();
+        //zeroGyro();
         fieldRelative = true;
         estimatedPose = new Pose2d();
 
@@ -124,6 +124,7 @@ public class Swerve extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) { // TODO: Call this!!!!
         zeroGyro(pose.getRotation().getDegrees());
+        System.out.println(pose.toString());
         odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
     }
 
