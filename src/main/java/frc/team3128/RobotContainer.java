@@ -143,8 +143,6 @@ public class RobotContainer {
         leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
         leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));
         leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(30)));
-        leftStick.getButton(12).onTrue(new InstantCommand(()-> intake.resetEncoders()));
-
         // rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))));
         // rightStick.getButton(2).onTrue(new InstantCommand(swerve::toggle));
         // rightStick.getButton(4).onTrue(new InstantCommand(()->swerve.zeroGyro(180)));

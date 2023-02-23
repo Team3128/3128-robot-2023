@@ -6,7 +6,8 @@ import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -34,7 +35,7 @@ public class Intake extends PIDSubsystem {
     private DoubleSupplier setpoint, power;
 
     // Encoder
-    private SparkMaxRelativeEncoder m_encoder;
+    private SparkMaxAbsoluteEncoder m_encoder;
 
     public boolean objectPresent;
 
@@ -93,13 +94,10 @@ public class Intake extends PIDSubsystem {
     }
 
     public void configEncoders() {
-        m_encoder = (SparkMaxRelativeEncoder) m_intakePivot.getEncoder();
+        m_encoder = m_intakePivot.getAbsoluteEncoder(Type.kDutyCycle);
         m_encoder.setPositionConversionFactor(ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES);
-    }
-
-    public void resetEncoders() {
-        m_intakePivot.setEncoderPosition(0);
-        // m_intakePivot.setEncoderPosition(90);
+        m_encoder.setInverted(false);
+        m_encoder.setZeroOffset(ENCODER_ZERO_OFFSET);
     }
 
     public double getAngle() {
@@ -224,8 +222,8 @@ public class Intake extends PIDSubsystem {
         NAR_Shuffleboard.addData("intake", "Intake Angle", () -> getAngle(), 0, 0);
         NAR_Shuffleboard.addData("intake", "Pivot Velocity", () -> m_intakePivot.getSelectedSensorVelocity(), 2, 0);
         NAR_Shuffleboard.addData("intake", "Angle Setpoint", () -> getSetpoint(), 3, 0);
-        NAR_Shuffleboard.addData("intake", "Roller Velocity", () -> m_intakeRollers.getSelectedSensorVelocity() / 4096,
-                4, 0);
+        NAR_Shuffleboard.addData("intake", "Roller Velocity", () -> m_intakeRollers.getSelectedSensorVelocity() / 4096, 4, 0);
+
         setpoint = NAR_Shuffleboard.debug("intake", "setpoint", 0, 1,2);
         NAR_Shuffleboard.addData("intake", "IsEnabled", ()-> isEnabled(), 1, 0);
         NAR_Shuffleboard.addData("intake", "atSetpoint", ()-> getController().atSetpoint(), 1, 1);
