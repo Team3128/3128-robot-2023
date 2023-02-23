@@ -5,8 +5,6 @@ import static frc.team3128.common.hardware.motorcontroller.MotorControllerConsta
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
@@ -17,21 +15,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.team3128.common.hardware.camera.Camera;
 
-import frc.team3128.common.swerve.FalconConversions;
 import frc.team3128.common.swerve.SwerveModuleConstants;
-
-import frc.team3128.common.swerve.SwerveModuleConstants;
-import frc.team3128.common.utility.interpolation.InterpolatingDouble;
-import frc.team3128.common.utility.interpolation.InterpolatingTreeMap;
-import edu.wpi.first.math.MathUtil;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-
-import edu.wpi.first.math.util.Units;
 
 
 public class Constants {
@@ -373,17 +363,8 @@ public class Constants {
                 this.pivotAngle = pivotAngle;
                 this.teleDist = teleDist;
             }
-
-            public double getPivotAngle(){
-                return pivotAngle;
-            }
-
-            public double getTelescopeDist(){
-                return teleDist;
-            }
         }
-
-        public static final String TELESCOPE_GROUND_PICKUP = null;
+    
     }
     
     public static class FieldConstants{
@@ -427,7 +408,7 @@ public class Constants {
                 FIELD_X_LENGTH - pose.getX(),
                 pose.getY(),
                 Rotation2d.fromDegrees(angle));
-          }
+        }
     }
 
     public static class IntakeConstants {
@@ -446,6 +427,7 @@ public class Constants {
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES = 360 * ROTATOR_GEAR_RATIO;
+        public static final double ENCODER_ZERO_OFFSET = 0;
 
         public static final double VELOCITY_SETPOINT = 0.5;
         public static final double INTAKE_TOLERANCE = 7.5;
@@ -461,6 +443,7 @@ public class Constants {
         // public static final int INTAKE_SENSOR_RIGHT_ID = 2;
         
     }
+
     public static class LedConstants{
         public static class Yellow{
             public static final int HUE = 0;
@@ -480,6 +463,11 @@ public class Constants {
     public static class ManipulatorConstants{
         public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
+
+        public static final int ROLLER_MOTOR_ID = 13;
+        public static final double ROLLER_POWER = 0.5;
+
+        public static final double CURRENT_THRESHOLD = 30;
     }
 
     public static class BalanceConstants{
@@ -493,4 +481,5 @@ public class Constants {
 
 
 }
+
 
