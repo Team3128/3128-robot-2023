@@ -477,6 +477,10 @@ public class Constants {
     public static class ManipulatorConstants{
         public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
+
+        public static final int ROLLER_MOTOR_ID = 0;
+
+        public static final double CURRENT_THRESHOLD = 40;
     }
 
     public static class BalanceConstants{

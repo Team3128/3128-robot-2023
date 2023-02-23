@@ -24,6 +24,8 @@ import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdExtendIntake;
 import frc.team3128.commands.CmdGyroBalance;
 import frc.team3128.commands.CmdHandoff;
+import frc.team3128.commands.CmdManipulatorIntake;
+import frc.team3128.commands.CmdManipulatorOutake;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_Joystick;
@@ -125,8 +127,8 @@ public class RobotContainer {
         rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         
-        rightStick.getButton(13).onTrue(new InstantCommand(() -> manipulator.openClaw()));
-        rightStick.getButton(14).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        rightStick.getButton(13).onTrue(new CmdManipulatorIntake());
+        rightStick.getButton(14).onTrue(new CmdManipulatorOutake());
         rightStick.getButton(15).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
         rightStick.getButton(16).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
 
