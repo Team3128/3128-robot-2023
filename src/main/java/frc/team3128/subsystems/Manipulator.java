@@ -4,14 +4,12 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team3128.common.hardware.motorcontroller.NAR_TalonSRX;
 import frc.team3128.common.hardware.motorcontroller.NAR_VictorSPX;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
 import static frc.team3128.Constants.ManipulatorConstants.*;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 public class Manipulator extends SubsystemBase {
     
@@ -68,8 +66,12 @@ public class Manipulator extends SubsystemBase {
         m_roller.set(power);
     }
 
-    public void enableRollers(boolean isForwards){
-        m_roller.set(isForwards ? 0.5 : -0.5);
+    public void enableRollersForward(){
+        m_roller.set(0.5);
+    }
+
+    public void enableRollersReverse(){
+        m_roller.set(-0.5);
     }
 
     public void stopRoller(){
@@ -78,31 +80,13 @@ public class Manipulator extends SubsystemBase {
 
     public double getCurrent(){
         return 0;
-        // return m_roller.getStatorCurrent();
+        // return m_roller.getStatorCurrent();   sadage
     }
 
     public boolean hasObjectPresent(){
-        if(getCurrent() > CURRENT_THRESHOLD){
-            objectPresent = true;
-        }
-        else {
-            objectPresent = false;
-        }
-
+        boolean objectPresent = getCurrent() > CURRENT_THRESHOLD;
+        setRollerPower(objectPresent ? 0.3 : 0.5);
         return objectPresent;
-    }
-
-    public boolean compensateVoltage(){
-        double precentOutput;
-
-        if(hasObjectPresent()){
-            precentOutput = 0.3;
-        }
-        else {
-            precentOutput = 0.5;
-        }
-        setRollerPower(Math.copySign(precentOutput, m_roller.getMotorOutputPercent()));
-        return hasObjectPresent();
     }
 
     public void initShuffleboard() {

@@ -12,22 +12,16 @@ public class CmdMoveIntake extends WaitCommand{
     public CmdMoveIntake(double angle) {
         super(0.35);
         desiredAngle = angle;
+        addRequirements(intake);
     }
 
     public CmdMoveIntake(Intake.IntakeState state) {
-        super(0.35);
-        desiredAngle = state.getAngleSetpoint();
-        addRequirements(intake);
+        this(state.angle);
     }
 
     @Override
     public void initialize(){
         intake.startPID(desiredAngle);
-    }
-
-    @Override
-    public void end(boolean interrupted){
-        // intake.stop();
     }
 
     @Override

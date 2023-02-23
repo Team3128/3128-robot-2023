@@ -6,14 +6,13 @@ import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxRelativeEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import frc.team3128.RobotContainer;
 import frc.team3128.Constants.IntakeConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.hardware.motorcontroller.NAR_TalonSRX;
@@ -25,17 +24,11 @@ public class Intake extends PIDSubsystem {
     private NAR_CANSparkMax m_intakePivot;
     private NAR_TalonSRX m_intakeRollers;
 
-    // Sensors
-    private DigitalInput m_intakeSensor;
-    //private DigitalInput m_coneSensor;
-    //private DigitalInput m_intakeSensorLeft;
-    //private DigitalInput m_intakeSensorRight;
-
     private DoubleSupplier kF;
     private DoubleSupplier setpoint, power;
 
     // Encoder
-    private SparkMaxAbsoluteEncoder m_encoder;
+    private SparkMaxRelativeEncoder m_encoder;
 
     public boolean objectPresent;
 
@@ -47,14 +40,10 @@ public class Intake extends PIDSubsystem {
         SEMI_DEPLOYED(60),
         STOWED(185);
 
-        private double angle;
+        public double angle;
 
         private IntakeState(final double angle) {
             this.angle = angle;
-        }
-
-        public double getAngleSetpoint() {
-            return angle;
         }
     }
 
@@ -62,7 +51,6 @@ public class Intake extends PIDSubsystem {
         super(new PIDController(kP, kI, kD));
 
         configMotors();
-        // configSensors();
         configEncoders();
         getController().setTolerance(INTAKE_TOLERANCE);
     }
@@ -86,23 +74,14 @@ public class Intake extends PIDSubsystem {
         
     }
 
-    public void configSensors() {
-        m_intakeSensor = new DigitalInput(INTAKE_SENSOR_ID);
-        //m_coneSensor = new DigitalInput(CONE_SENSOR_ID);
-        //m_intakeSensorLeft = new DigitalInput(INTAKE_SENSOR_LEFT_ID);
-        //m_intakeSensorRight = new DigitalInput(INTAKE_SENSOR_RIGHT_ID);
-    }
-
     public void configEncoders() {
-        m_encoder = m_intakePivot.getAbsoluteEncoder(Type.kDutyCycle);
+        m_encoder = (SparkMaxRelativeEncoder) m_intakePivot.getEncoder();
         m_encoder.setPositionConversionFactor(ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES);
         m_encoder.setInverted(false);
-        m_encoder.setZeroOffset(ENCODER_ZERO_OFFSET);
     }
 
     public void resetEncoders(double position) {
         m_intakePivot.setEncoderPosition(position);
-        // m_intakePivot.setEncoderPosition(90);
     }
 
     public double getAngle() {
@@ -110,12 +89,14 @@ public class Intake extends PIDSubsystem {
     }
 
     public void startPID(IntakeState desiredState) {
-        startPID(desiredState.getAngleSetpoint());
+        startPID(desiredState.angle);
     }
 
     public void startPID(double setpoint) {
         setSetpoint(setpoint);
-        // setSetpoint(this.setpoint.getAsDouble());
+        setpoint = RobotContainer.DEBUG.getAsBoolean() ? this.setpoint.getAsDouble() : setpoint;
+        setpoint = setpoint > 190 ? 190 : setpoint;
+        setpoint = setpoint < 0 ? 0 : setpoint;
         enable();
     }
 
@@ -126,7 +107,7 @@ public class Intake extends PIDSubsystem {
         NAR_Shuffleboard.addData("intake", "output current", m_intakeRollers.getStatorCurrent(), 4, 1);
         NAR_Shuffleboard.addData("intake", "input current", m_intakeRollers.getSupplyCurrent(), 4, 2);
         NAR_Shuffleboard.addData("intake", "output voltage", m_intakeRollers.getMotorOutputVoltage(), 5, 1);
-        }
+    }
 
     public double getCurrent() {
         return m_intakeRollers.getStatorCurrent();
@@ -162,21 +143,10 @@ public class Intake extends PIDSubsystem {
         enableRollers(ROLLER_POWER);
     }
 
-    public boolean checkObjectPresent() {
-        if (getCurrent() >= CURRENT_THRESHOLD) {
-            enableRollers(0.3);
-            objectPresent = true;
-        } else {
-            enableRollers(0.5);
-            objectPresent = false;
-        }
-
+    public boolean hasObjectPresent(){
+        boolean objectPresent = getCurrent() > CURRENT_THRESHOLD;
+        enableRollers(objectPresent ? 0.3 : 0.5);
         return objectPresent;
-    }
-
-    public boolean intakeCube() {
-        enableRollers(-0.5);
-        return hasObject();
     }
 
     public void enableRollersReverse() {
@@ -194,34 +164,6 @@ public class Intake extends PIDSubsystem {
     public boolean atSetpoint() {
         return getController().atSetpoint();
     }
-
-    // Sensor Methods
-    /*
-     * Idea is that if something is in the intake, then the left sensor will always
-     * be true as something will be covering it,
-     * but depending on if there is a cube or cone in the intake, the right sensor
-     * will either be true or false.
-     * 
-     * Pretty sure that the .get() function returns whether the beam is broken or
-     * not
-     */
-
-    public boolean hasObject() {
-        return (!m_intakeSensor.get());
-    }
-
-    // TODO: give this a better name
-    // public boolean hasConeOnPole() {
-    //     return !m_coneSensor.get();
-    //}
-
-    // public boolean hasConeInIntake() {
-    //     return !m_intakeSensorLeft.get() != !m_intakeSensorRight.get();
-    // }
-
-    // public boolean hasCubeInIntake() {
-    //     return !m_intakeSensorRight.get();
-    //}
 
     public void initShuffleboard() {
         NAR_Shuffleboard.addData("intake", "Intake Angle", () -> getAngle(), 0, 0);

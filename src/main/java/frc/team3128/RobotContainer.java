@@ -125,8 +125,8 @@ public class RobotContainer {
         
         // rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         // rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.enableRollers(true))).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
-        rightStick.getButton(12).onTrue(new InstantCommand(() -> manipulator.enableRollers(false))).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
+        rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.enableRollersForward())).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
+        rightStick.getButton(12).onTrue(new InstantCommand(() -> manipulator.enableRollersReverse())).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
         rightStick.getButton(13).onTrue(new CmdManipulatorIntake());
         rightStick.getButton(14).onTrue(new CmdManipulatorOutake());
         rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.openClaw()));

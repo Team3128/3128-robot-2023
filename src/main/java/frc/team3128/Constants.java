@@ -477,7 +477,7 @@ public class Constants {
 
         public static final int ROLLER_MOTOR_ID = 13;
 
-        public static final double CURRENT_THRESHOLD = 40;
+        public static final double CURRENT_THRESHOLD = 30;
     }
 
     public static class BalanceConstants{

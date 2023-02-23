@@ -1,13 +1,12 @@
-package frc.team3128.commands;
+package frc.team3128.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.team3128.subsystems.Manipulator;
 
-public class CmdManipulatorIntake extends CommandBase{
-    
+public class CmdManipulateCubes extends CommandBase{
+
     private Manipulator manipulator;
 
-    public CmdManipulatorIntake(){
+    public CmdManipulateCubes() {
         manipulator = Manipulator.getInstance();
         addRequirements(manipulator);
     }
@@ -17,8 +16,15 @@ public class CmdManipulatorIntake extends CommandBase{
         manipulator.openClaw();
         manipulator.enableRollersForward();
     }
-    
+
+    @Override
+    public void end(boolean interrupted) {
+        manipulator.stopRoller();
+    }
+
+    // @Override
     // public boolean isFinished(){
     //     return manipulator.hasObjectPresent();
     // }
+    
 }

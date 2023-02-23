@@ -107,7 +107,7 @@ public class Trajectories {
         
         CommandEventMap.put("IntakeCube", new SequentialCommandGroup(
             new CmdExtendIntake(),
-            new WaitUntilCommand(()-> intake.checkObjectPresent()),
+            new WaitUntilCommand(()-> intake.hasObjectPresent()),
             //new WaitCommand(3),
             new CmdRetractIntake(),
             new CmdHandoff())
