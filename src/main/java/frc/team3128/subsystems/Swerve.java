@@ -13,6 +13,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
+import edu.wpi.first.util.datalog.IntegerArrayLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -41,6 +44,36 @@ public class Swerve extends SubsystemBase {
     public boolean fieldRelative;
 
     private Field2d field;
+
+    //Data Logging
+
+    /**
+     * This is a data log representing the setpoints of the swerve modules that will be appended to periodically.
+     * Each entry of the data log will have the following format:
+     * [rotation of module 1, velocity of module 1, rotation of module 2, velocity of module 2, ...]
+     */
+    DoubleArrayLogEntry swerveModuleSetpoints = new DoubleArrayLogEntry(DataLogManager.getLog(), "/Swerve/ModuleSetpoints");
+
+    /**
+     * Same as the {@link Swerve#swerveModuleSetpoints setpoints} data log, but for the measured values.
+     */
+    DoubleArrayLogEntry swerveModuleMeasured = new DoubleArrayLogEntry(DataLogManager.getLog(), "/Swerve/ModuleMeasured");
+
+    /**
+     * This data log stores the odometry pose estimates for the robot throughout the match .
+     * The format of each entry is as follows:
+     * [x position, y position, rotation]
+     */
+    DoubleArrayLogEntry odometryPoseEstimates = new DoubleArrayLogEntry(DataLogManager.getLog(), "/Swerve/OdometryPoseEstimates");
+
+    /**
+     * This data log stores the most recent vision estimate for the robot's pose. On AdvantageScope, this could be 
+     * displayed as a "ghost" robot following the main estimated pose of the robot.
+     * 
+     * The format of each entry is as follows:
+     * [x position, y position, rotation]
+     */
+    DoubleArrayLogEntry visionPoseEstimates = new DoubleArrayLogEntry(DataLogManager.getLog(), "/Swerve/VisionPoseEstimates");
 
     public static synchronized Swerve getInstance() {
         if (instance == null) {
@@ -158,7 +191,27 @@ public class Swerve extends SubsystemBase {
     public void periodic() {
         odometry.update(getGyroRotation2d(), getPositions());
         estimatedPose = odometry.getEstimatedPosition();
+
         logPose();
+
+        //Data Logging for Swerve Module States
+        double[] setpoints = new double[modules.length * 2];
+        for(SwerveModule module : modules){
+            setpoints[module.moduleNumber * 2] = module.getDesiredState().angle.getDegrees();
+            setpoints[module.moduleNumber * 2 + 1] = module.getDesiredState().speedMetersPerSecond;
+        }
+        swerveModuleSetpoints.append(setpoints);
+
+        double[] measured = new double[modules.length * 2];
+        for(SwerveModule module : modules){
+            measured[module.moduleNumber * 2] = module.getState().angle.getDegrees();
+            measured[module.moduleNumber * 2 + 1] = module.getState().speedMetersPerSecond;
+        }
+        swerveModuleMeasured.append(measured);
+
+        //Data Logging for Odometry
+        odometryPoseEstimates.append(new double[]{estimatedPose.getX(), estimatedPose.getY(), estimatedPose.getRotation().getDegrees()});
+
     }
 
     public Rotation2d getRotation2d() {

@@ -4,6 +4,8 @@
 
 package frc.team3128;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,6 +26,10 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit(){
         LiveWindow.disableAllTelemetry();
+
+        //Data Log
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
     }
 
     @Override

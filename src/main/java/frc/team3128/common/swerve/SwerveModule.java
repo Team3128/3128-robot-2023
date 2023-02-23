@@ -28,6 +28,8 @@ public class SwerveModule {
     // private final PIDController anglePIDController = new PIDController(angleKP, angleKI, angleKD);
     private double lastAngle;
 
+    private SwerveModuleState currentSetpoint;
+
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(driveKS, driveKV, driveKA);
 
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
@@ -49,8 +51,14 @@ public class SwerveModule {
         lastAngle = getState().angle.getDegrees();
     }
 
+    public SwerveModuleState getDesiredState() {
+        return currentSetpoint;
+    }
+
     public void setDesiredState(SwerveModuleState desiredState){
         desiredState = CTREModuleState.optimize(desiredState, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
+
+        this.currentSetpoint = desiredState;
 
         double velocity = MPSToFalcon(desiredState.speedMetersPerSecond, wheelCircumference, driveGearRatio);
         driveMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond) / 12);
