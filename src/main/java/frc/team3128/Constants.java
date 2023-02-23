@@ -365,19 +365,6 @@ public class Constants {
             }
         }
         
-        public enum IntakePosition {
-            HP_SHELF(105, 20), //105
-            GROUND_PICKUP(50, 20), 
-            CONE_POLE(-40, 11.5);
-    
-            public final double pivotAngle;
-            public final double teleDist;
-    
-            private IntakePosition(double pivotAngle, double teleDist) {
-                this.pivotAngle = pivotAngle;
-                this.teleDist = teleDist;
-            }
-        }
         public static final String TELESCOPE_GROUND_PICKUP = null;
     }
     
@@ -478,7 +465,7 @@ public class Constants {
         public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
 
-        public static final int ROLLER_MOTOR_ID = 0;
+        public static final int ROLLER_MOTOR_ID = 13;
 
         public static final double CURRENT_THRESHOLD = 40;
     }

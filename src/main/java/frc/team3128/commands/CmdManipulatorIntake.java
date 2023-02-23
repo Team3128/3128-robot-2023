@@ -17,12 +17,6 @@ public class CmdManipulatorIntake extends CommandBase{
         manipulator.openClaw();
         manipulator.enableRollers(true);
     }
-
-    @Override
-    public void execute() {
-        manipulator.compensateVoltage();
-    }
-
     
     public boolean isFinished(){
         return manipulator.compensateVoltage();

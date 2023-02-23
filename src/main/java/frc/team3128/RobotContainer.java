@@ -124,13 +124,16 @@ public class RobotContainer {
         rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
         rightStick.getButton(10).onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
         
-        rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        
+        // rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        // rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.enableRollers(true))).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
+        rightStick.getButton(12).onTrue(new InstantCommand(() -> manipulator.enableRollers(false))).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
         rightStick.getButton(13).onTrue(new CmdManipulatorIntake());
         rightStick.getButton(14).onTrue(new CmdManipulatorOutake());
-        rightStick.getButton(15).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
-        rightStick.getButton(16).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
+        rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.openClaw()));
+        rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
+        // rightStick.getButton(15).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
+        // rightStick.getButton(16).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
 
         leftStick.getButton(1).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL));
         leftStick.getButton(2).onTrue(new CmdShelfPickup());
