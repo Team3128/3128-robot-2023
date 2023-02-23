@@ -89,6 +89,28 @@ public class Manipulator extends SubsystemBase {
         return objectPresent;
     }
 
+    public void intakeCones(){
+        closeClaw();
+        enableRollersForward();
+        //hasObjectPresent();
+    }
+
+    public void intakeCubes(){
+        openClaw();
+        enableRollersForward();
+        //hasObjectPresent();
+    }
+
+    public void outtake(){
+        openClaw();
+        enableRollersReverse();
+    }
+
+    //forbidden method
+    public void shootCubes(){
+        setRollerPower(-1);
+    }
+
     public void initShuffleboard() {
         NAR_Shuffleboard.addData("Manipulator","Value", () -> getClawState().toString(),0,0);
     }
