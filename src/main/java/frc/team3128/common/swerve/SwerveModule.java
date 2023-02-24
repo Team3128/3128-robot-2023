@@ -26,7 +26,7 @@ public class SwerveModule {
     private final CANCoder angleEncoder;
     // private final PIDController drivePIDController = new PIDController(driveKP, driveKI, driveKD);
     // private final PIDController anglePIDController = new PIDController(angleKP, angleKI, angleKD);
-    private Rotation2d lastAngle;
+    private double lastAngle;
 
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(driveKS, driveKV, driveKA);
 
@@ -46,69 +46,25 @@ public class SwerveModule {
         driveMotor = new TalonFX(moduleConstants.driveMotorID, "drivetrain");
         configDriveMotor();
 
-        lastAngle = getState().angle;
+        lastAngle = getState().angle.getDegrees();
     }
 
     public void setDesiredState(SwerveModuleState desiredState){
-        desiredState = CTREModuleState.optimize(desiredState, getState().angle); 
-        setAngle(desiredState);
-        setSpeed(desiredState);
-    }
+        desiredState = CTREModuleState.optimize(desiredState, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
 
-    public void setSpeed(SwerveModuleState desiredState) {
         double velocity = MPSToFalcon(desiredState.speedMetersPerSecond, wheelCircumference, driveGearRatio);
         driveMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond) / 12);
-    }
 
-    private void setAngle(SwerveModuleState desiredState){
-        Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (maxSpeed * 0.025)) ? lastAngle : desiredState.angle; //Prevent rotating module if speed is less then 1%. Prevents Jittering.
-        Rotation2d oldAngle = getAngle();
-        angle = optimizeTurn(oldAngle, angle);  
-        angleMotor.set(ControlMode.Position, degreesToFalcon(angle.getDegrees(), angleGearRatio));
+        double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (maxSpeed * 0.025)) ? lastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
+        angleMotor.set(ControlMode.Position, degreesToFalcon(angle, angleGearRatio)); 
         lastAngle = angle;
-    }
 
-    public double makePositiveDegrees(double angle) {
-        double degrees = angle;
-        degrees = degrees % 360;
-        if (degrees < 0.0){
-            degrees = degrees + 360;
-        }
-        return degrees;
-    }
-
-    public double makePositiveDegrees(Rotation2d angle){
-        return makePositiveDegrees(angle.getDegrees());
-    }
-
-    public Rotation2d optimizeTurn(Rotation2d oldAngle, Rotation2d newAngle){
-        double steerAngle = makePositiveDegrees(newAngle);
-        steerAngle %= (360);
-        if (steerAngle < 0.0) {
-            steerAngle += 360;
-        }
-
-        double difference = steerAngle - oldAngle.getDegrees();
-        // Change the target angle so the difference is in the range [-360, 360) instead of [0, 360)
-        if (difference >= 360) {
-            steerAngle -= 360;
-        } else if (difference < -360) {
-            steerAngle += 360;
-        }
-        difference = steerAngle - oldAngle.getDegrees(); // Recalculate difference
-
-        // If the difference is greater than 90 deg or less than -90 deg the drive can be inverted so the total
-        // movement of the module is less than 90 deg
-        if (difference >90 || difference < -90) {
-            // Only need to add 180 deg here because the target angle will be put back into the range [0, 2pi)
-            steerAngle += 180;
-        }
-
-        return Rotation2d.fromDegrees(makePositiveDegrees(steerAngle));
+        SmartDashboard.putNumber("angle curr position" + moduleNumber, falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio));
+        SmartDashboard.putNumber("angle set position" + moduleNumber, desiredState.angle.getDegrees());
     }
 
     public void resetToAbsolute(){
-        double absolutePosition = degreesToFalcon(makePositiveDegrees(getCanCoder().getDegrees()), angleGearRatio);
+        double absolutePosition = degreesToFalcon(getCanCoder().getDegrees(), angleGearRatio);
         angleMotor.setSelectedSensorPosition(absolutePosition);
     }
 
@@ -137,19 +93,15 @@ public class SwerveModule {
         return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition() - angleOffset);
     }
 
-    public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio));
-    }
-
     public SwerveModuleState getState(){
         double velocity = falconToMPS(driveMotor.getSelectedSensorVelocity(), wheelCircumference, driveGearRatio);
-        Rotation2d angle = getAngle();
+        Rotation2d angle = Rotation2d.fromDegrees(falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio));
         return new SwerveModuleState(velocity, angle);
     }
 
     public SwerveModulePosition getPosition() {
         double position = falconToMeters(driveMotor.getSelectedSensorPosition(), wheelCircumference, driveGearRatio);
-        Rotation2d angle = getAngle();
+        Rotation2d angle = Rotation2d.fromDegrees(falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio));
         return new SwerveModulePosition(position, angle);
     }
 
