@@ -31,9 +31,10 @@ public class CmdShelfPickup extends SequentialCommandGroup{
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             // new CmdMoveLoading(poses),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-            new InstantCommand(() -> manipulator.intakeCones(), manipulator),
-            new CmdMoveArm(ArmPosition.HP_SHELF),
-            new CmdManipGrab(cone),
+            Commands.parallel(
+                new CmdMoveArm(ArmPosition.HP_SHELF),
+                new CmdManipGrab(cone)
+            ),
             new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL)),
             new WaitUntilCommand(()-> telescope.atSetpoint())
         );

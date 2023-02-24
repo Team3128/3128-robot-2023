@@ -104,6 +104,7 @@ public class Swerve extends SubsystemBase {
         NAR_Shuffleboard.addComplex("Drivetrain","Gyro",gyro,3,1,2,2);//.withWidget("Gyro");
         NAR_Shuffleboard.addData("Drivetrain","Yaw",this::getYaw,4,1);
         NAR_Shuffleboard.addData("Drivetrain","Pitch",this::getPitch,5,1);
+        NAR_Shuffleboard.addData("Drivetrain", "Roll", this::getRoll, 0, 2);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
         NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
     }
@@ -124,7 +125,7 @@ public class Swerve extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) { // TODO: Call this!!!!
         zeroGyro(pose.getRotation().getDegrees());
-        System.out.println(pose.toString());
+        //System.out.println(pose.toString());
         odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
     }
 

@@ -333,24 +333,24 @@ public class Constants {
 
     public static class ArmConstants {
         public enum ArmPosition {
-            TOP_CONE(115, 42), // angles are off by like 10 (should be like 10 down)
-            TOP_CONE_BACK(-115, 42),
+            TOP_CONE(120, 42), // angles are off by like 10 (should be like 10 down)
+            TOP_CONE_BACK(-120, 42),
 
-            TOP_CUBE(107.5, 42), 
-            TOP_CUBE_BACK(-107.5, 42), 
+            TOP_CUBE(112.5, 42), 
+            TOP_CUBE_BACK(-112.5, 42), 
 
-            MID_CONE(105, 24), 
-            MID_CONE_BACK(-105, 24),
+            MID_CONE(110, 24), 
+            MID_CONE_BACK(-110, 24),
 
-            MID_CUBE(90, 24), 
-            MID_CUBE_BACK(-90, 24), 
+            MID_CUBE(95, 24), 
+            MID_CUBE_BACK(-95, 24), 
 
-            LOW_FLOOR(45, 11.5), 
-            LOW_FLOOR_BACK(-45, 11.5),
+            LOW_FLOOR(50, 11.5), 
+            LOW_FLOOR_BACK(-50, 11.5),
 
             NEUTRAL(0, 11.5), //pivot should be 0
 
-            HP_SHELF(105, 20), //105
+            HP_SHELF(-108, 20), //105
             GROUND_PICKUP(0.0, 16.0), 
             CONE_POLE(-40, 11.5),
             AVOID_INTAKE(90, 11.5);

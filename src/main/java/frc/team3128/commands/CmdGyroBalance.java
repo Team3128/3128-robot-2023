@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
 
 import static frc.team3128.Constants.BalanceConstants.*;
@@ -20,7 +21,7 @@ public class CmdGyroBalance extends PIDCommand {
     public CmdGyroBalance() {
         super(
             new PIDController(turnKP,turnKI,turnKD),
-            () -> Swerve.getInstance().getPitch()+Swerve.getInstance().getRoll(),
+            () -> Swerve.getInstance().getRoll(),
             0,
             output -> Swerve.getInstance().drive(new Translation2d(output,0), 0,true),
             Swerve.getInstance()
@@ -29,6 +30,7 @@ public class CmdGyroBalance extends PIDCommand {
         // m_controller.setTolerance(TURN_TOLERANCE);
         swerve = Swerve.getInstance();
         plateauCount = 0;
+        NAR_Shuffleboard.addComplex("TESTSTSTATA","CONTROLLER", m_controller, 1, 1);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class CmdGyroBalance extends PIDCommand {
     public void execute() {
         super.execute();
         SmartDashboard.putBoolean("atsetpoint", m_controller.atSetpoint());
-        if (Math.abs(Swerve.getInstance().getPitch()+Swerve.getInstance().getRoll()) <= TURN_TOLERANCE) {
+        if (Math.abs(Swerve.getInstance().getRoll()) <= TURN_TOLERANCE) {
             plateauCount += 1;
         } else {
             plateauCount = 0;
