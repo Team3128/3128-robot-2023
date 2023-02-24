@@ -465,9 +465,9 @@ public class Constants {
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
 
         public static final int ROLLER_MOTOR_ID = 13;
-        public static final double ROLLER_POWER = 0.5;
+        public static final double ROLLER_POWER = 0.75;
 
-        public static final double CURRENT_THRESHOLD = 30;
+        public static final double CURRENT_THRESHOLD = 35;
     }
 
     public static class BalanceConstants{

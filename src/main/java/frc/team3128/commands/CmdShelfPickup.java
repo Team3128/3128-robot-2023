@@ -22,27 +22,20 @@ public class CmdShelfPickup extends SequentialCommandGroup{
     private Manipulator manipulator;
 
 
-    public CmdShelfPickup (Pose2d... poses) {
+    public CmdShelfPickup (boolean cone, Pose2d... poses) {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
 
         addCommands(
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
-            new CmdMoveLoading(poses),
+            // new CmdMoveLoading(poses),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(() -> manipulator.intakeCones(), manipulator),
             new CmdMoveArm(ArmPosition.HP_SHELF),
-            // Commands.parallel(
-            //     Commands.sequence(
-            //         new WaitUntilCommand(() -> manipulator.hasObjectPresent()),
-            //         new InstantCommand(()-> manipulator.enableRollerObject())
-            //     ),
-            //     new CmdMoveArm(ArmPosition.NEUTRAL)
-            // ),
-            // new InstantCommand(() -> manipulator.closeClaw()),
-            // new WaitCommand(0.25),
-            new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL))
+            new CmdManipGrab(cone),
+            new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL)),
+            new WaitUntilCommand(()-> telescope.atSetpoint())
         );
     }
 }

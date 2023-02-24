@@ -39,17 +39,17 @@ public class CmdScore extends SequentialCommandGroup {
         addCommands(
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             Commands.parallel(
-                new CmdMoveScore(overrides, isReversed, positions),
+                //new CmdMoveScore(overrides, isReversed, positions),
                 Commands.sequence(
                     new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
                     new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot)
                 )
             ),
             Commands.parallel(
-                Commands.sequence(
-                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.25 : -0.25,0),0,true)).withTimeout(1),
-                    new InstantCommand(()-> swerve.stop())
-                ),
+                // Commands.sequence(
+                //     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.25 : -0.25,0),0,true)).withTimeout(1),
+                //     new InstantCommand(()-> swerve.stop())
+                // ),
                 Commands.sequence(
                     new WaitUntilCommand(()-> pivot.atSetpoint()),
                     new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
@@ -61,7 +61,10 @@ public class CmdScore extends SequentialCommandGroup {
             new WaitCommand(0.125),
             // new InstantCommand(() -> pivot.startPID(position.pivotAngle + Math.copySign(10, position.pivotAngle))),
             new InstantCommand(() -> manipulator.neutralPos(), manipulator),
-            new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL))
+            // new InstantCommand(() -> telescope.startPID(ArmPosition.NEUTRAL.teleDist), telescope),
+            // new WaitUntilCommand(() -> tlescope)
+            new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL)),
+            new WaitUntilCommand(()-> telescope.atSetpoint())
             // new CmdMoveArm(ArmPosition.NEUTRAL) // proxyschedulecmd this so you can start driving once it's going back in
         );
     }

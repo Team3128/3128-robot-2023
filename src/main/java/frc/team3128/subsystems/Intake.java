@@ -69,7 +69,7 @@ public class Intake extends PIDSubsystem {
 
         m_intakePivot.setIdleMode(IdleMode.kBrake);
 
-        m_intakePivot.setInverted(true);
+        // m_intakePivot.setInverted(true);
         m_intakeRollers.setInverted(false);
         
     }
@@ -77,7 +77,7 @@ public class Intake extends PIDSubsystem {
     public void configEncoders() {
         m_encoder = (SparkMaxRelativeEncoder) m_intakePivot.getEncoder();
         m_encoder.setPositionConversionFactor(ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES);
-        m_encoder.setInverted(false);
+        // m_encoder.setInverted(false);
     }
 
     public void resetEncoders(double position) {

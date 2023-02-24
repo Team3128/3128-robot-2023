@@ -18,7 +18,7 @@ public class CmdGroundPickup extends SequentialCommandGroup{
         addCommands(
             new InstantCommand(()-> manipulator.intakeWide()),
             new CmdMoveArm(ArmPosition.GROUND_PICKUP),
-            new InstantCommand(()->manipulator.enableRollerObject()),
+            new InstantCommand(()->manipulator.setRollerPower(0.1)),
             new CmdMoveArm(ArmPosition.NEUTRAL)
         );
     }

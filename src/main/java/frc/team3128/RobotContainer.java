@@ -24,6 +24,7 @@ import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdExtendIntake;
 import frc.team3128.commands.CmdGyroBalance;
+import frc.team3128.commands.CmdManipGrab;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_Joystick;
@@ -71,6 +72,10 @@ public class RobotContainer {
     private Trigger hasTarget;
 
     public RobotContainer() {
+        NAR_Shuffleboard.addData("DEBUG", "DEBUG", ()-> DEBUG.getAsBoolean(), 0, 1);
+        var x = NAR_Shuffleboard.addData("DEBUG", "TOGGLE", false, 0, 0).withWidget("Toggle Button");
+        DEBUG = ()-> x.getEntry().getBoolean(false);
+
         swerve = Swerve.getInstance();
         intake = Intake.getInstance();
         vision = Vision.getInstance();
@@ -124,19 +129,19 @@ public class RobotContainer {
         rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         // rightStick.getButton(11).onTrue(new InstantCommand(() -> manipulator.enableRollersForward())).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
         // rightStick.getButton(12).onTrue(new InstantCommand(() -> manipulator.enableRollersReverse())).onFalse(new InstantCommand(()-> manipulator.stopRoller()));
-        rightStick.getButton(13).onTrue(new InstantCommand(()-> manipulator.intakeCones()));
-        rightStick.getButton(14).onTrue(new InstantCommand(()-> manipulator.intakeCubes()));
+        rightStick.getButton(13).onTrue(new CmdManipGrab(true));
+        rightStick.getButton(14).onTrue(new CmdManipGrab(false));
         rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.neutralPos()));
         rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake()));
         // rightStick.getButton(15).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
         // rightStick.getButton(16).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
 
         leftStick.getButton(1).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL));
-        leftStick.getButton(2).onTrue(new CmdShelfPickup());
+        leftStick.getButton(2).onTrue(new CmdShelfPickup(true));
         leftStick.getButton(3).onTrue(new InstantCommand(() -> manipulator.closeClaw()));
-        leftStick.getButton(4).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[0]));
-        leftStick.getButton(5).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[1]));
-        leftStick.getButton(6).onTrue(new CmdShelfPickup(VisionConstants.LOADING_ZONE[2]));
+        leftStick.getButton(4).onTrue(new CmdShelfPickup(true, VisionConstants.LOADING_ZONE[0]));
+        leftStick.getButton(5).onTrue(new CmdShelfPickup(true, VisionConstants.LOADING_ZONE[1]));
+        leftStick.getButton(6).onTrue(new CmdShelfPickup(true, VisionConstants.LOADING_ZONE[2]));
 
         //Intake Buttons
         // leftStick.getButton(7).onTrue(new CmdHandoff());
@@ -201,9 +206,6 @@ public class RobotContainer {
         manipulator.initShuffleboard();
 
         NarwhalDashboard.startServer();
-        NAR_Shuffleboard.addData("DEBUG", "DEBUG", ()-> DEBUG.getAsBoolean(), 0, 1);
-        var x = NAR_Shuffleboard.addData("DEBUG", "TOGGLE", false, 0, 0).withWidget("Toggle Button");
-        DEBUG = ()-> x.getEntry().getBoolean(false);
         
         Log.info("NarwhalRobot", "Setting up limelight chooser...");
       

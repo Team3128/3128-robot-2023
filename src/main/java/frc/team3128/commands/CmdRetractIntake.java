@@ -22,7 +22,7 @@ public class CmdRetractIntake extends SequentialCommandGroup{
             new CmdMoveArm(0, 11.5),
             new InstantCommand(()-> intake.enableRollersReverse()),
             new WaitCommand(0.1),
-            new InstantCommand(()-> manipulator.enableRollerObject()),
+            new InstantCommand(()-> manipulator.setRollerPower(0.1)),
             new InstantCommand(()-> intake.disableRollers())
         );
     }

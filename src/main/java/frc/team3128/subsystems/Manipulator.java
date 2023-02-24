@@ -4,14 +4,14 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team3128.common.hardware.motorcontroller.NAR_VictorSPX;
+import frc.team3128.common.hardware.motorcontroller.NAR_TalonSRX;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import static frc.team3128.Constants.ManipulatorConstants.*;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 public class Manipulator extends SubsystemBase {
     
     private DoubleSolenoid m_solenoid;
-    private NAR_VictorSPX m_roller;
+    private NAR_TalonSRX m_roller;
 
     private static Manipulator instance;
 
@@ -36,9 +36,9 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void configMotor(){
-        m_roller = new NAR_VictorSPX(ROLLER_MOTOR_ID);
+        m_roller = new NAR_TalonSRX(ROLLER_MOTOR_ID);
         m_roller.setInverted(false);
-        m_roller.setNeutralMode(NeutralMode.Coast);
+        m_roller.setNeutralMode(NeutralMode.Brake);
     }
 
     public void openClaw(){
@@ -69,21 +69,16 @@ public class Manipulator extends SubsystemBase {
         m_roller.set(-ROLLER_POWER);
     }
 
-    public void enableRollerObject() {
-        m_roller.set(0.3);
-    }
-
     public void stopRoller(){
         m_roller.set(0);
     }
 
     public double getCurrent(){
-        return 0;
-        // return m_roller.getStatorCurrent();   sadage
+        return m_roller.getStatorCurrent();
     }
 
     public boolean hasObjectPresent(){
-        return getCurrent() > CURRENT_THRESHOLD;
+        return getCurrent() > CURRENT_THRESHOLD; // cone 23
     }
 
     public void intakeWide() {
@@ -92,7 +87,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void neutralPos() {
-        closeClaw();
+        // closeClaw();
         stopRoller();
     }
 
@@ -117,5 +112,6 @@ public class Manipulator extends SubsystemBase {
 
     public void initShuffleboard() {
         NAR_Shuffleboard.addData("Manipulator","Value", () -> getClawState().toString(),0,0);
+        NAR_Shuffleboard.addData("Manipulator", "Manip current", () -> getCurrent(), 0, 1);
     }
 }
