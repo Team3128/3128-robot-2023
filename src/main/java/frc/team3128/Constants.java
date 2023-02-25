@@ -304,7 +304,7 @@ public class Constants {
         public static final double kF = 0.7;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
-        public static final double PIVOT_TOLERANCE = 3.0;
+        public static final double PIVOT_TOLERANCE = 1.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         public static final int CANCODER_ID = 24;
         public static final double ANGLE_OFFSET = -29.7;
@@ -337,16 +337,16 @@ public class Constants {
     public static class ArmConstants {
 
         public enum ArmPosition {
-            TOP_CONE(115, 41, 0), // angles are off by like 10 (should be like 10 down)
-            TOP_CUBE(105, 36, 0), 
-            MID_CONE(105, 22, 1), 
-            MID_CUBE(88, 16, 1), 
-            LOW_FLOOR(45, 11.5, 2), 
+            TOP_CONE(107, 41, 0), // angles are off by like 10 (should be like 10 down)
+            TOP_CUBE(98, 35, 0), 
+            MID_CONE(98, 22.5, 1), 
+            MID_CUBE(87, 15, 1), 
+            LOW_FLOOR(45, 13, 2), 
 
             NEUTRAL(0, 11.5, 3), //pivot should be 0
 
             HP_SHELF(108, 20, 3), //105
-            GROUND_PICKUP(0.0, 16.0, 3), 
+            GROUND_PICKUP(35.0, 24.5, 3), 
             CONE_POLE(-40, 11.5, 3),
             AVOID_INTAKE(90, 11.5, 3);
     
