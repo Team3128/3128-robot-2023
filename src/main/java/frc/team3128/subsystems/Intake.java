@@ -80,15 +80,14 @@ public class Intake extends PIDSubsystem {
 
     public void configEncoders() {
         m_encoder = new DutyCycleEncoder(ENCODER_DIO_ID);
+        m_encoder.setDistancePerRotation(ENCODER_CONVERSION_FACTOR_TO_DEGREES);
+        m_encoder.setPositionOffset(ENCODER_ZERO_OFFSET);
         // m_encoder.setInverted(false);
     }
 
-    public void resetEncoders() {
-        m_encoder.reset();
-    }
-
     public double getAngle() {
-        return m_encoder.get() * ENCODER_CONVERSION_FACTOR_TO_DEGREES;
+        return m_encoder.get();
+        //return m_encoder.get() - ENCODER_ZERO_OFFSET;
     }
 
     public void startPID(IntakeState desiredState) {

@@ -136,8 +136,7 @@ public class RobotContainer {
         leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
         leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));
         leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(30)));
-        leftStick.getButton(12).onTrue(new InstantCommand(()-> intake.resetEncoders(0)));
-        
+                
         buttonPad.getButton(5).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 1));
         buttonPad.getButton(8).onTrue(new CmdScore(false, ArmPosition.MID_CUBE, 1));
         buttonPad.getButton(11).onTrue(new CmdScore(false, ArmPosition.TOP_CUBE, 1));
