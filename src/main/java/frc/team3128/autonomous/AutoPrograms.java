@@ -1,18 +1,10 @@
 package frc.team3128.autonomous;
 
-import java.util.HashMap;
-
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.team3128.Constants.SwerveConstants;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
-import frc.team3128.common.utility.Log;
 import frc.team3128.subsystems.Swerve;
 
 /**

@@ -7,8 +7,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.team3128.RobotContainer;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
@@ -18,10 +20,6 @@ import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
-import edu.wpi.first.wpilibj2.command.ProxyScheduleCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 
 public class CmdScore extends SequentialCommandGroup {
@@ -61,12 +59,12 @@ public class CmdScore extends SequentialCommandGroup {
             new InstantCommand(() -> manipulator.outtake(), manipulator),
             new WaitCommand(0.125),
             // new InstantCommand(() -> pivot.startPID(position.pivotAngle + Math.copySign(10, position.pivotAngle))),
-            new InstantCommand(() -> manipulator.neutralPos(), manipulator),
+            new InstantCommand(() -> manipulator.stopRoller(), manipulator),
             // new InstantCommand(() -> telescope.startPID(ArmPosition.NEUTRAL.teleDist), telescope),
             // new WaitUntilCommand(() -> tlescope)
             new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL)),
-            new WaitUntilCommand(()-> telescope.atSetpoint())
-            // new CmdMoveArm(ArmPosition.NEUTRAL) // proxyschedulecmd this so you can start driving once it's going back in
+            new WaitUntilCommand(()-> telescope.atSetpoint()),
+            new ScheduleCommand(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()).withTimeout(0.5))
         );
     }
 }

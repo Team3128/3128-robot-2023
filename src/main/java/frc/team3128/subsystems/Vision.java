@@ -1,9 +1,6 @@
 package frc.team3128.subsystems;
 
-import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.Collection;
@@ -11,7 +8,6 @@ import java.util.HashMap;
 
 import static frc.team3128.Constants.VisionConstants.*;
 import frc.team3128.Constants.FieldConstants;
-import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.utility.NAR_Shuffleboard;

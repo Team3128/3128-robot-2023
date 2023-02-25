@@ -1,12 +1,7 @@
 package frc.team3128.subsystems;
 
-import java.util.List;
-
-import javax.print.DocFlavor.STRING;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.Constants.LedConstants;
 import frc.team3128.Constants.LedConstants.*;

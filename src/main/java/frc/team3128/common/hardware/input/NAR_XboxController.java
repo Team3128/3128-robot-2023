@@ -82,6 +82,14 @@ public class NAR_XboxController extends XboxController {
         return getPOVButton(2);
     }
 
+    public void startVibrate() {
+        setRumble(RumbleType.kBothRumble, 0.8);
+    }
+
+    public void stopVibrate() {
+        setRumble(RumbleType.kBothRumble, 0);
+    }
+
      @Override
     public double getRightX() {
         return Math.abs(super.getRightX()) > rightXDeadband ? super.getRightX():0;

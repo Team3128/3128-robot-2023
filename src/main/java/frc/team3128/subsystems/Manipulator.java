@@ -78,17 +78,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public boolean hasObjectPresent(){
-        return getCurrent() > CURRENT_THRESHOLD; // cone 23
-    }
-
-    public void intakeWide() {
-        openClaw();
-        enableRollersForward();
-    }
-
-    public void neutralPos() {
-        // closeClaw();
-        stopRoller();
+        return getCurrent() > CURRENT_THRESHOLD;
     }
 
     public void intakeCones(){
@@ -97,7 +87,8 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void intakeCubes(){
-        intakeWide();
+        openClaw();
+        enableRollersForward();
     }
 
     public void outtake(){

@@ -31,7 +31,6 @@ import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdRetractIntake;
 import frc.team3128.commands.CmdScore;
 import frc.team3128.commands.CmdMove.Type;
-import frc.team3128.common.constantsint.ConstantsInt.VisionConstants;
 import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Swerve;
@@ -90,7 +89,7 @@ public class Trajectories {
                                                 new CmdMoveArm(ArmPosition.TOP_CONE, true),
                                                 new InstantCommand(() -> manipulator.outtake()),
                                                 new WaitCommand(0.125),
-                                                new InstantCommand(() -> manipulator.neutralPos()),
+                                                new InstantCommand(() -> manipulator.stopRoller()),
                                                 new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL))
                                                 ));
         

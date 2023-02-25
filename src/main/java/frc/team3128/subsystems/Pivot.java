@@ -11,10 +11,8 @@ import java.util.function.DoubleSupplier;
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.PivotConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
-import frc.team3128.common.hardware.motorcontroller.NAR_TalonSRX;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -29,7 +27,6 @@ public class Pivot extends PIDSubsystem {
     private static Pivot instance;
     private NAR_CANSparkMax m_rotateMotor;
     private SparkMaxRelativeEncoder m_encoder;
-    private NAR_TalonSRX m_mag;
     private CANCoder m_cancoder;
 
     public Pivot() {
@@ -57,18 +54,14 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.setInverted(true);
         m_rotateMotor.enableVoltageCompensation(12.0);
         m_rotateMotor.setIdleMode(IdleMode.kBrake);
-        // m_mag = new NAR_TalonSRX(14);
-        // m_mag.configFactoryDefault();
-        // m_mag.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     }
 
     private void configEncoders() {
-        m_encoder = (SparkMaxRelativeEncoder) m_rotateMotor.getEncoder();
-        m_encoder.setPositionConversionFactor(ENC_CONV);
+        // m_encoder = (SparkMaxRelativeEncoder) m_rotateMotor.getEncoder();
+        // m_encoder.setPositionConversionFactor(ENC_CONV);
         m_cancoder = new CANCoder(CANCODER_ID, "rio");
         m_cancoder.configFactoryDefault();
         m_cancoder.configAllSettings(swerveCancoderConfig());
-        // resetToAbsolute();
     }
 
     public void setPower(double power) {
@@ -78,14 +71,6 @@ public class Pivot extends PIDSubsystem {
 
     public void resetToDefault() {
         startPID(0);
-    }
-
-    public void resetToAbsolute() {
-        m_encoder.setPosition(getAngle());
-    }
-
-    public void zeroEncoder() {
-        m_encoder.setPosition(0);
     }
 
     public double getAngle(){
@@ -101,7 +86,6 @@ public class Pivot extends PIDSubsystem {
         NAR_Shuffleboard.addComplex("pivot", "Pivot-PID",m_controller, 2, 0);
         NAR_Shuffleboard.addData("pivot", "atSetpoint", ()->getController().atSetpoint(), 3, 0);
         NAR_Shuffleboard.addData("pivot", "isEnabled", ()->isEnabled(), 4, 0);
-        // NAR_Shuffleboard.addData("pivot", "Absolute", ()->m_mag.getSelectedSensorPosition(), 1, 0);
     }
 
     public void startPID(double anglePos) {

@@ -11,11 +11,9 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.math.MathUtil;
 import static frc.team3128.Constants.TelescopeConstants.*;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import frc.team3128.RobotContainer;
-import frc.team3128.Constants.PivotConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
