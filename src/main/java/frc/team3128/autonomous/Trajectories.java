@@ -66,28 +66,28 @@ public class Trajectories {
 
         CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(true, ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(true, ArmPosition.TOP_CUBE, 1)
                                                 ));
 
         CommandEventMap.put("Score[2,2]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(true, ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(true, ArmPosition.MID_CUBE, 1)
                                                 ));
 
         CommandEventMap.put("Score[8,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(true, ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(true, ArmPosition.TOP_CUBE, 1)
                                                 ));
 
         CommandEventMap.put("Score[8,2]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(true, ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
+                                                new CmdScore(true, ArmPosition.MID_CUBE, 1)
                                                 ));
 
         //StartScore
 
         CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
-                                                new CmdMoveArm(ArmPosition.TOP_CONE_BACK),
+                                                new CmdMoveArm(ArmPosition.TOP_CONE, true),
                                                 new InstantCommand(() -> manipulator.outtake()),
                                                 new WaitCommand(0.125),
                                                 new InstantCommand(() -> manipulator.neutralPos()),

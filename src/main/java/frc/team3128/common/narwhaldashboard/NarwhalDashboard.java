@@ -26,6 +26,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class NarwhalDashboard extends WebSocketServer {
+    public static int cellSelectedPosX, cellSelectedPosY, gridNum;
+    public static Boolean buttonClicked = false;
+    public static Boolean gridSelected = false;
     private static final int PORT = 5805;
     private final static int UPDATE_WAVELENGTH = 100;
 
@@ -129,6 +132,23 @@ public class NarwhalDashboard extends WebSocketServer {
         }
     }
 
+    public static void setGridInformation(int selGrid, int posx, int posy) {
+        setGrid(selGrid);
+        setGridCell(posx, posy);
+    }
+
+    public static void setGridCell(int posx, int posy){
+            cellSelectedPosX = posx;
+            cellSelectedPosY = posy;
+            buttonClicked = true;
+        
+    }
+    public static void setGrid(int selGrid){
+            gridNum = selGrid;
+            gridSelected = true;
+
+    }
+
     // Called once on connection with web server
     @SuppressWarnings("unchecked")
     @Override
@@ -157,10 +177,18 @@ public class NarwhalDashboard extends WebSocketServer {
                 if(selectedLimelight != null) {
                     obj.put("selected_pipeline", limelights.get(selectedLimelight).getPipelineIndex());
                 }
+                if(buttonClicked){
+                    JSONObject selCellInfo = new JSONObject();
+                    selCellInfo.put("x", cellSelectedPosX);
+                    selCellInfo.put ("y", cellSelectedPosY);
+                    obj.put("selectedGridCell", selCellInfo);
+                    buttonClicked = false; 
+                    gridSelected = false;
+                }
 
                 JSONObject constantsObj = new JSONObject();
                 for(String category : ConstantsInt.categories.keySet()) {
-                    JSONArray catArr = new JSONArray();
+                    JSONArray catArr = new JSONArray(); 
                     List<Field> fields = ConstantsInt.getConstantInfo(category);
                     for(Field field : fields) {
                         try {
@@ -314,4 +342,5 @@ public class NarwhalDashboard extends WebSocketServer {
     public void onStart() {
 
     }
+
 }

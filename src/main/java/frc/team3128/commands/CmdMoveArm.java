@@ -27,6 +27,10 @@ public class CmdMoveArm extends CommandBase{
         this(position.pivotAngle, position.teleDist);
     }
 
+    public CmdMoveArm(ArmPosition position, boolean reversed){
+        this(reversed ? -position.pivotAngle : position.pivotAngle, position.teleDist);
+    }
+
     @Override
     public void initialize(){
         if (dist >= telescope.getDist()) 

@@ -332,36 +332,30 @@ public class Constants {
     }
 
     public static class ArmConstants {
+
         public enum ArmPosition {
-            TOP_CONE(115, 41), // angles are off by like 10 (should be like 10 down)
-            TOP_CONE_BACK(-120, 42),
+            TOP_CONE(115, 41, 0), // angles are off by like 10 (should be like 10 down)
+            TOP_CUBE(105, 36, 0), 
+            MID_CONE(105, 22, 1), 
+            MID_CUBE(88, 16, 1), 
+            LOW_FLOOR(45, 11.5, 2), 
 
-            TOP_CUBE(105, 36), 
-            TOP_CUBE_BACK(-112.5, 42), 
+            NEUTRAL(0, 11.5, 3), //pivot should be 0
 
-            MID_CONE(105, 22), 
-            MID_CONE_BACK(-110, 24),
-
-            MID_CUBE(88, 16), 
-            MID_CUBE_BACK(-95, 24), 
-
-            LOW_FLOOR(45, 11.5), 
-            LOW_FLOOR_BACK(-50, 11.5),
-
-            NEUTRAL(0, 11.5), //pivot should be 0
-
-            HP_SHELF(108, 20), //105
-            GROUND_PICKUP(0.0, 16.0), 
-            CONE_POLE(-40, 11.5),
-            AVOID_INTAKE(90, 11.5);
+            HP_SHELF(108, 20, 3), //105
+            GROUND_PICKUP(0.0, 16.0, 3), 
+            CONE_POLE(-40, 11.5, 3),
+            AVOID_INTAKE(90, 11.5, 3);
     
             
             public final double pivotAngle;
             public final double teleDist;
+            public final int height;
     
-            private ArmPosition(double pivotAngle, double teleDist) {
+            private ArmPosition(double pivotAngle, double teleDist, int height) {
                 this.pivotAngle = pivotAngle;
                 this.teleDist = teleDist;
+                this.height = height;
             }
         }
     

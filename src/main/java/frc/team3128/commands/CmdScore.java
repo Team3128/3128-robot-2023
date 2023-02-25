@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.Constants.VisionConstants;
+import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
@@ -30,16 +31,17 @@ public class CmdScore extends SequentialCommandGroup {
     private Telescope telescope;
     private Manipulator manipulator;
 
-    public CmdScore(boolean isReversed, ArmPosition position, boolean[] overrides, Pose2d[]... positions) {
+    public CmdScore(boolean isReversed, ArmPosition position, int xpos) {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
         swerve = Swerve.getInstance();
 
         addCommands(
+            new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             Commands.parallel(
-                //new CmdMoveScore(overrides, isReversed, positions),
+                //new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]),
                 Commands.sequence(
                     new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
                     new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot)
@@ -55,8 +57,7 @@ public class CmdScore extends SequentialCommandGroup {
                     new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
                     new WaitUntilCommand(()-> telescope.atSetpoint())
                 )
-            ),
-            
+            ),            
             new InstantCommand(() -> manipulator.outtake(), manipulator),
             new WaitCommand(0.125),
             // new InstantCommand(() -> pivot.startPID(position.pivotAngle + Math.copySign(10, position.pivotAngle))),
