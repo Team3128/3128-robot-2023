@@ -16,18 +16,18 @@ public class CmdShelfPickup extends SequentialCommandGroup{
     
     private Telescope telescope;
 
-    public CmdShelfPickup (boolean cone) {
+    public CmdShelfPickup (boolean cone, boolean isReversed) {
         telescope = Telescope.getInstance();
 
         addCommands(
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
-            new CmdMoveLoading(VisionConstants.LOADING_ZONE),
+            new CmdMoveLoading(isReversed, VisionConstants.LOADING_ZONE),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             Commands.parallel(
-                new CmdMoveArm(ArmPosition.HP_SHELF),
+                new CmdMoveArm(ArmPosition.HP_SHELF, isReversed),
                 new CmdManipGrab(cone)
             ),
-            new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL)),
+            new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, isReversed)),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
             new ScheduleCommand(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()).withTimeout(0.5))
         );

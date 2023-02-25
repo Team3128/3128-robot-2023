@@ -13,19 +13,15 @@ public class CmdMoveArm extends CommandBase{
     private double angle;
     private double dist;
     
-    public CmdMoveArm(double angle, double dist){
-        this.angle = angle;
+    public CmdMoveArm(double angle, double dist, boolean reversed){
+        this.angle = reversed ? -angle : angle;
         this.dist = dist;
 
         addRequirements(pivot, telescope);
     }
 
-    public CmdMoveArm(ArmPosition position){
-        this(position.pivotAngle, position.teleDist);
-    }
-
     public CmdMoveArm(ArmPosition position, boolean reversed){
-        this(reversed ? -position.pivotAngle : position.pivotAngle, position.teleDist);
+        this(position.pivotAngle, position.teleDist, reversed);
     }
 
     @Override

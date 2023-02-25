@@ -81,7 +81,7 @@ public class Intake extends PIDSubsystem {
     public void configEncoders() {
         m_encoder = new DutyCycleEncoder(ENCODER_DIO_ID);
         m_encoder.setDistancePerRotation(ENCODER_CONVERSION_FACTOR_TO_DEGREES);
-        m_encoder.setPositionOffset(ENCODER_ZERO_OFFSET);
+        m_encoder.setPositionOffset(ANGLE_OFFSET);
         // m_encoder.setInverted(false);
     }
 
@@ -146,9 +146,7 @@ public class Intake extends PIDSubsystem {
     }
 
     public boolean hasObjectPresent(){
-        boolean objectPresent = getCurrent() > CURRENT_THRESHOLD;
-        enableRollers(objectPresent ? 0.3 : 0.5);
-        return objectPresent;
+        return getCurrent() > CURRENT_THRESHOLD;
     }
 
     public void enableRollersReverse() {

@@ -2,6 +2,7 @@ package frc.team3128.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Manipulator;
 
@@ -16,7 +17,7 @@ public class CmdExtendIntake extends SequentialCommandGroup{
 
         addCommands(
             new InstantCommand(()-> manipulator.closeClaw(), manipulator),
-            new CmdMoveArm(90,11.5),
+            new CmdMoveArm(ArmPosition.AVOID_INTAKE,false),
             new CmdMoveIntake(Intake.IntakeState.DEPLOYED),
             new InstantCommand(()-> intake.enableRollersForward())
         );

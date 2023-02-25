@@ -90,7 +90,7 @@ public class Trajectories {
                                                 new InstantCommand(() -> manipulator.outtake()),
                                                 new WaitCommand(0.125),
                                                 new InstantCommand(() -> manipulator.stopRoller()),
-                                                new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL))
+                                                new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, false))
                                                 ));
         
         CommandEventMap.put("IntakeCube", new SequentialCommandGroup(

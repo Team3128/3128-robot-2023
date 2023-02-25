@@ -18,7 +18,7 @@ public class Manipulator extends SubsystemBase {
     public boolean objectPresent;
 
     public Manipulator(){
-        configPneumatics();
+        //configPneumatics();
         configMotor();
     }
 
@@ -42,20 +42,20 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void openClaw(){
-        m_solenoid.set(Value.kForward);
+        //m_solenoid.set(Value.kForward);
     }
 
     public void closeClaw(){
-        m_solenoid.set(Value.kReverse);
+        //m_solenoid.set(Value.kReverse);
     }
     
     public void toggleClaw() {
         m_solenoid.toggle();
     }
 
-    public Value getClawState() {
-        return m_solenoid.get();
-    }
+    // public Value getClawState() {
+    //     return m_solenoid.get();
+    // }
 
     public void setRollerPower(double power){
         m_roller.set(power);
@@ -102,7 +102,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void initShuffleboard() {
-        NAR_Shuffleboard.addData("Manipulator","Value", () -> getClawState().toString(),0,0);
+        //NAR_Shuffleboard.addData("Manipulator","Value", () -> getClawState().toString(),0,0);
         NAR_Shuffleboard.addData("Manipulator", "Manip current", () -> getCurrent(), 0, 1);
     }
 }

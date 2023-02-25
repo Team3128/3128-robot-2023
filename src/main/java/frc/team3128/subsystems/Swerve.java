@@ -107,6 +107,7 @@ public class Swerve extends SubsystemBase {
         NAR_Shuffleboard.addData("Drivetrain", "Roll", this::getRoll, 0, 2);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
         NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
+        NAR_Shuffleboard.addData("Drivetrain", "Roll Rate", this::getRollRate, 7, 1);
     }
 
     public Pose2d getPose() {

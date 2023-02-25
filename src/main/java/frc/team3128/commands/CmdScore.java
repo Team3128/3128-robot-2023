@@ -36,12 +36,12 @@ public class CmdScore extends SequentialCommandGroup {
         swerve = Swerve.getInstance();
 
         addCommands(
-            new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
-            new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
+            // new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
+            // new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             Commands.parallel(
                 //new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]),
                 Commands.sequence(
-                    new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
+                    // new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
                     new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot)
                 )
             ),
@@ -62,7 +62,7 @@ public class CmdScore extends SequentialCommandGroup {
             new InstantCommand(() -> manipulator.stopRoller(), manipulator),
             // new InstantCommand(() -> telescope.startPID(ArmPosition.NEUTRAL.teleDist), telescope),
             // new WaitUntilCommand(() -> tlescope)
-            new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL)),
+            new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, isReversed)),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
             new ScheduleCommand(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()).withTimeout(0.5))
         );
