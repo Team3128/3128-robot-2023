@@ -30,6 +30,7 @@ import java.io.FileWriter;
 public class Swerve extends SubsystemBase {
     
     private volatile FileWriter txtFile;
+    public static double throttle = 0.8;
     private String poseLogger = "";
     private double prevTime = 0; 
     public SwerveDrivePoseEstimator odometry;
@@ -52,7 +53,7 @@ public class Swerve extends SubsystemBase {
     public Swerve() {
         gyro = new WPI_Pigeon2(pigeonID, "drivetrain");
         gyro.configFactoryDefault();
-        zeroGyro();
+        //zeroGyro();
         fieldRelative = true;
         estimatedPose = new Pose2d();
 
@@ -70,17 +71,6 @@ public class Swerve extends SubsystemBase {
         };
         resetEncoders();
 
-        odometry = new SwerveDrivePoseEstimator(
-            swerveKinematics, 
-            new Rotation2d(), 
-            getPositions(), 
-            estimatedPose, 
-            SVR_STATE_STD, 
-            SVR_VISION_MEASUREMENT_STD);
-
-
-        resetEncoders();
-
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
                                                 estimatedPose, SVR_STATE_STD, SVR_VISION_MEASUREMENT_STD);
 
@@ -93,7 +83,7 @@ public class Swerve extends SubsystemBase {
 
         SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                translation.getX(), translation.getY(), rotation, getRotation2d())
+                translation.getX(), translation.getY(), rotation, getGyroRotation2d())
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
         setModuleStates(moduleStates);
     }
@@ -114,6 +104,7 @@ public class Swerve extends SubsystemBase {
         NAR_Shuffleboard.addComplex("Drivetrain","Gyro",gyro,3,1,2,2);//.withWidget("Gyro");
         NAR_Shuffleboard.addData("Drivetrain","Yaw",this::getYaw,4,1);
         NAR_Shuffleboard.addData("Drivetrain","Pitch",this::getPitch,5,1);
+        NAR_Shuffleboard.addData("Drivetrain", "Roll", this::getRoll, 0, 2);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
         NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
     }
@@ -128,12 +119,13 @@ public class Swerve extends SubsystemBase {
 
     public void resetEncoders() {
         for (SwerveModule module : modules) {
-            module.resetEncoders();
+            module.resetToAbsolute();
         }
     }
 
     public void resetOdometry(Pose2d pose) { // TODO: Call this!!!!
         zeroGyro(pose.getRotation().getDegrees());
+        //System.out.println(pose.toString());
         odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
     }
 
@@ -172,6 +164,11 @@ public class Swerve extends SubsystemBase {
         logPose();
     }
 
+    public void resetAll() {
+        resetOdometry(new Pose2d(0,0, new Rotation2d(0)));
+        resetEncoders();
+    }
+
     public Rotation2d getRotation2d() {
         return estimatedPose.getRotation();
     }
@@ -202,6 +199,16 @@ public class Swerve extends SubsystemBase {
             prevTime = currTime;
             NAR_Shuffleboard.addData("Logger","Positions",poseLogger,0,0);
         }
+    }
+
+    public void xlock() {
+        setModuleStates(
+            new SwerveModuleState[] {
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45))}
+        );
     }
 
     public double getYaw() {

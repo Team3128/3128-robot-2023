@@ -10,8 +10,11 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.math.MathUtil;
 import static frc.team3128.Constants.TelescopeConstants.*;
+
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import frc.team3128.RobotContainer;
 import frc.team3128.Constants.PivotConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
@@ -27,6 +30,7 @@ public class Telescope extends PIDSubsystem {
     private DoubleSupplier kG, kF, setpoint;
     
     private static Telescope instance;
+    private int plateauCount = 0;
 
     private NAR_CANSparkMax m_teleMotor;
     private SparkMaxRelativeEncoder m_encoder;
@@ -70,9 +74,17 @@ public class Telescope extends PIDSubsystem {
         m_encoder.setPositionConversionFactor(ENC_CONV); 
     }
 
+    public double getDist() {
+        return -m_encoder.getPosition() + MIN_DIST;
+    }
+
     public void startPID(double teleDist) {
-        // super.setSetpoint(setpoint.getAsDouble() > 50 ? 50 : setpoint.getAsDouble()); // use for shuffleboard tuning
-        // super.setSetpoint(setpoint.getAsDouble() < 11.5 ? 11.5 : setpoint.getAsDouble());
+        teleDist = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : teleDist;
+
+        teleDist = teleDist > 50 ? 50 : teleDist;
+        teleDist = teleDist < 11.5 ? 11.5 : teleDist;
+
+
         releaseBrake();
         enable();
 
@@ -82,11 +94,9 @@ public class Telescope extends PIDSubsystem {
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        if (getController().atSetpoint()) {
-            engageBrake();
-            return;
-        }
-        releaseBrake();
+        if (!getController().atSetpoint())
+            releaseBrake();
+
         double pivotAngle = Math.toRadians(Pivot.getInstance().getMeasurement());
         double ff = -kG.getAsDouble() * Math.cos(pivotAngle) + kF.getAsDouble();
         double voltageOutput = isReversed ? -(output + ff) : output + ff;
@@ -97,7 +107,7 @@ public class Telescope extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() {
-       return -m_encoder.getPosition() + MIN_DIST;
+       return getDist();
     }
 
     /*If extends actually extends set isReversed to false,
@@ -105,7 +115,7 @@ public class Telescope extends PIDSubsystem {
     public void extend() {
         disable();
         releaseBrake();
-        m_teleMotor.set(0.3);
+        m_teleMotor.set(0.25);
     }
 
     /*If retracts actually retracts set isReversed to false,
@@ -113,7 +123,7 @@ public class Telescope extends PIDSubsystem {
     public void retract() {
         disable();
         releaseBrake();
-        m_teleMotor.set(-0.3);
+        m_teleMotor.set(-0.25);
     }
 
     public void releaseBrake(){

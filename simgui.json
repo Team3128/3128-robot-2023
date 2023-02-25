@@ -12,6 +12,8 @@
       "/Shuffleboard/VisionPID/RCONTROLLER": "PIDController",
       "/Shuffleboard/VisionPID/XCONTROLLER": "PIDController",
       "/Shuffleboard/VisionPID/YCONTROLLER": "PIDController",
+      "/Shuffleboard/pivot/Pivot-PID": "PIDController",
+      "/Shuffleboard/telescope/tele-PID": "PIDController",
       "/SmartDashboard/CommandScheduler": "Scheduler",
       "/SmartDashboard/Field": "Field2d"
     }
