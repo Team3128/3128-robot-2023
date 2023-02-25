@@ -423,8 +423,10 @@ public class Constants {
 
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
-        public static final double ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES = 360 * ROTATOR_GEAR_RATIO;
+        public static final double ENCODER_CONVERSION_FACTOR_TO_DEGREES = 360;
         public static final double ENCODER_ZERO_OFFSET = 0;
+
+        public static final int ENCODER_DIO_ID = 9;
 
         public static final double VELOCITY_SETPOINT = 0.5;
         public static final double INTAKE_TOLERANCE = 7.5;
