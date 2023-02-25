@@ -26,7 +26,9 @@ import static frc.team3128.Constants.VisionConstants.*;
 import java.io.FileWriter;
 
 public class Swerve extends SubsystemBase {
-    
+
+    private double[] _roll_dps; //instance this so we don't alloc when getRollRate is called
+
     private volatile FileWriter txtFile;
     public static double throttle = 0.8;
     private String poseLogger = "";
@@ -226,6 +228,12 @@ public class Swerve extends SubsystemBase {
     }
     public double getRoll() {
         return gyro.getRoll();
+    }
+
+    public double getRollRate() {
+        gyro.getRawGyro(_roll_dps);
+        //Expected to return cw+
+        return -_roll_dps[1];
     }
 
     public void zeroGyro() {
