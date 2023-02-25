@@ -1,8 +1,5 @@
 package frc.team3128.autonomous;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,14 +11,31 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+
 import static frc.team3128.Constants.SwerveConstants.*;
+
+import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.commands.CmdDriveUp;
+import frc.team3128.commands.CmdExtendIntake;
+import frc.team3128.commands.CmdGyroBalance;
+import frc.team3128.commands.CmdMove;
+import frc.team3128.commands.CmdMoveArm;
+import frc.team3128.commands.CmdRetractIntake;
+import frc.team3128.commands.CmdScore;
+import frc.team3128.commands.CmdMove.Type;
+import frc.team3128.common.constantsint.ConstantsInt.VisionConstants;
+import frc.team3128.subsystems.Intake;
+import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Vision;
 
 /**
  * Store trajectories for autonomous. Edit points here. 
@@ -33,8 +47,70 @@ public class Trajectories {
 
     private static SwerveAutoBuilder builder;
 
+    private static HashMap<String, Command> CommandEventMap = new HashMap<String, Command>();
+
+    private static Manipulator manipulator = Manipulator.getInstance();
+
+    private static Intake intake = Intake.getInstance();
+
     public static void initTrajectories() {
-        final String[] trajectoryNames = {"TestAuto1", "TestAuto2"};
+        final String[] trajectoryNames = {"r_top_1Cone", "r_top_1Cone+1Cube", "r_top_1Cone+1Cube+Climb",
+                                            "b_top_1Cone", "b_top_1Cone+1Cube", "b_top_1Cone+1Cube+Climb",
+
+                                            "r_mid_1Cone", "r_mid_1Cone+Climb",
+                                            "b_mid_1Cone", "b_mid_1Cone+Climb",
+
+                                            "r_bottom_1Cone", "r_bottom_1Cone+1Cube", "r_bottom_1Cone+1Cube+Climb",
+                                            "b_bottom_1Cone", "b_bottom_1Cone+1Cube", "b_bottom_1Cone+1Cube+Climb"
+                                            };
+
+        CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
+                                                new CmdScore(true, ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
+                                                ));
+
+        CommandEventMap.put("Score[2,2]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 0),
+                                                new CmdScore(true, ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
+                                                ));
+
+        CommandEventMap.put("Score[8,3]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
+                                                new CmdScore(true, ArmPosition.TOP_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
+                                                ));
+
+        CommandEventMap.put("Score[8,2]", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Vision.SELECTED_GRID = 2),
+                                                new CmdScore(true, ArmPosition.MID_CUBE, VisionConstants.RAMP_OVERRIDE[1], VisionConstants.SCORES_GRID[1])
+                                                ));
+
+        //StartScore
+
+        CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
+                                                new CmdMoveArm(ArmPosition.TOP_CONE_BACK),
+                                                new InstantCommand(() -> manipulator.outtake()),
+                                                new WaitCommand(0.125),
+                                                new InstantCommand(() -> manipulator.neutralPos()),
+                                                new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL))
+                                                ));
+        
+        CommandEventMap.put("IntakeCube", new SequentialCommandGroup(
+            new CmdExtendIntake(),
+            new WaitUntilCommand(()-> intake.hasObjectPresent()),
+            //new WaitCommand(3),
+            new CmdRetractIntake())
+        );
+
+        CommandEventMap.put("Climb", new SequentialCommandGroup(
+                                                // new CmdInPlaceTurn(0),
+                                                new CmdDriveUp(),
+                                                new CmdGyroBalance()
+                                                ));
+        
+        CommandEventMap.put("ClimbPoseBlue", new CmdMove(Type.SCORE, false, new Pose2d(5.8,2.7,Rotation2d.fromDegrees(0))));
+        
+        CommandEventMap.put("ClimbPoseRed", new CmdMove(Type.SCORE, false, new Pose2d(10.7,2.7,Rotation2d.fromDegrees(0))));
+        
         for (String trajectoryName : trajectoryNames) {
             // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
             trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(maxSpeed, maxAcceleration)));
@@ -44,10 +120,10 @@ public class Trajectories {
             Swerve.getInstance()::getPose,
             Swerve.getInstance()::resetOdometry,
             swerveKinematics,
-            new PIDConstants(translationKP,translationKI,translationKD),
-            new PIDConstants(rotationKP,rotationKI,rotationKD),
+            new PIDConstants(1,0,0),
+            new PIDConstants(1,0,0),
             Swerve.getInstance()::setModuleStates,
-            new HashMap<String,Command>(),
+            CommandEventMap,
             Swerve.getInstance()
         );
     }
@@ -58,7 +134,7 @@ public class Trajectories {
 
     public static PathPlannerTrajectory line(Pose2d start, Pose2d end) {
         return PathPlanner.generatePath(
-            new PathConstraints(maxSpeed, 4), 
+            new PathConstraints(maxSpeed, maxAcceleration), 
             new PathPoint(start.getTranslation(), start.getRotation()), 
             new PathPoint(end.getTranslation(), end.getRotation())
             );
