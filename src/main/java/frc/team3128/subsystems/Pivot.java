@@ -35,7 +35,7 @@ public class Pivot extends PIDSubsystem {
     public Pivot() {
         super(new PIDController(kP, kI, kD));
 
-        getController().enableContinuousInput(-180, 180);
+        //getController().enableContinuousInput(-180, 180);
 
         configMotors();
         configEncoders();
@@ -57,17 +57,17 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.setInverted(true);
         m_rotateMotor.enableVoltageCompensation(12.0);
         m_rotateMotor.setIdleMode(IdleMode.kBrake);
-        m_mag = new NAR_TalonSRX(14);
-        m_mag.configFactoryDefault();
-        m_mag.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+        // m_mag = new NAR_TalonSRX(14);
+        // m_mag.configFactoryDefault();
+        // m_mag.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     }
 
     private void configEncoders() {
         m_encoder = (SparkMaxRelativeEncoder) m_rotateMotor.getEncoder();
         m_encoder.setPositionConversionFactor(ENC_CONV);
-        // m_cancoder = new CANCoder(CANCODER_ID, "rio");
-        // m_cancoder.configFactoryDefault();
-        // m_cancoder.configAllSettings(swerveCancoderConfig());
+        m_cancoder = new CANCoder(CANCODER_ID, "rio");
+        m_cancoder.configFactoryDefault();
+        m_cancoder.configAllSettings(swerveCancoderConfig());
         // resetToAbsolute();
     }
 
@@ -80,24 +80,28 @@ public class Pivot extends PIDSubsystem {
         startPID(0);
     }
 
+    public void resetToAbsolute() {
+        m_encoder.setPosition(getAngle());
+    }
+
     public void zeroEncoder() {
         m_encoder.setPosition(0);
     }
 
     public double getAngle(){
-        return m_cancoder.getAbsolutePosition() - ANGLE_OFFSET;
+        return -m_cancoder.getAbsolutePosition() - ANGLE_OFFSET;
     }
 
     public void initShuffleboard() {
         NAR_Shuffleboard.addData("pivot","pivot angle", ()->getMeasurement(),0,0);
-        // NAR_Shuffleboard.addData("pivot","cancoder angle", ()->getAngle(),0,3);
+        NAR_Shuffleboard.addData("pivot","cancoder angle", ()->getAngle(),0,3);
         NAR_Shuffleboard.addData("pivot", "pivot setpoint", ()->getSetpoint(), 0, 1);
         kF = NAR_Shuffleboard.debug("pivot","kF", PivotConstants.kF, 0,2);
         setpoint = NAR_Shuffleboard.debug("pivot", "setpoint", 0, 1,2);
         NAR_Shuffleboard.addComplex("pivot", "Pivot-PID",m_controller, 2, 0);
         NAR_Shuffleboard.addData("pivot", "atSetpoint", ()->getController().atSetpoint(), 3, 0);
         NAR_Shuffleboard.addData("pivot", "isEnabled", ()->isEnabled(), 4, 0);
-        NAR_Shuffleboard.addData("pivot", "Absolute", ()->m_mag.getSelectedSensorPosition(), 1, 0);
+        // NAR_Shuffleboard.addData("pivot", "Absolute", ()->m_mag.getSelectedSensorPosition(), 1, 0);
     }
 
     public void startPID(double anglePos) {
@@ -118,8 +122,8 @@ public class Pivot extends PIDSubsystem {
 
     @Override
     protected double getMeasurement() { // returns degrees
-        // return getAngle();
-        return m_rotateMotor.getSelectedSensorPosition();
+        return getAngle();
+        // return m_rotateMotor.getSelectedSensorPosition();
     }
 
     public void stopPivot() {

@@ -295,16 +295,16 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 5E-1;
+        public static final double kP = 0.2;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 1;
+        public static final double kF = 0.7;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
-        public static final int CANCODER_ID = 1;
-        public static final double ANGLE_OFFSET = 0.0;
+        public static final int CANCODER_ID = 24;
+        public static final double ANGLE_OFFSET = -29.7;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -333,24 +333,24 @@ public class Constants {
 
     public static class ArmConstants {
         public enum ArmPosition {
-            TOP_CONE(120, 42), // angles are off by like 10 (should be like 10 down)
+            TOP_CONE(115, 41), // angles are off by like 10 (should be like 10 down)
             TOP_CONE_BACK(-120, 42),
 
-            TOP_CUBE(112.5, 42), 
+            TOP_CUBE(105, 36), 
             TOP_CUBE_BACK(-112.5, 42), 
 
-            MID_CONE(110, 24), 
+            MID_CONE(105, 22), 
             MID_CONE_BACK(-110, 24),
 
-            MID_CUBE(95, 24), 
+            MID_CUBE(88, 16), 
             MID_CUBE_BACK(-95, 24), 
 
-            LOW_FLOOR(50, 11.5), 
+            LOW_FLOOR(45, 11.5), 
             LOW_FLOOR_BACK(-50, 11.5),
 
             NEUTRAL(0, 11.5), //pivot should be 0
 
-            HP_SHELF(-108, 20), //105
+            HP_SHELF(108, 20), //105
             GROUND_PICKUP(0.0, 16.0), 
             CONE_POLE(-40, 11.5),
             AVOID_INTAKE(90, 11.5);
