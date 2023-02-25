@@ -6,11 +6,15 @@ import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxRelativeEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.IntakeConstants;
@@ -28,7 +32,7 @@ public class Intake extends PIDSubsystem {
     private DoubleSupplier setpoint, power;
 
     // Encoder
-    private SparkMaxRelativeEncoder m_encoder;
+    private DutyCycleEncoder m_encoder;;
 
     public boolean objectPresent;
 
@@ -75,17 +79,16 @@ public class Intake extends PIDSubsystem {
     }
 
     public void configEncoders() {
-        m_encoder = (SparkMaxRelativeEncoder) m_intakePivot.getEncoder();
-        m_encoder.setPositionConversionFactor(ENCODER_CONVERSION_FACTOR_TICKS_TO_DEGREES);
+        m_encoder = new DutyCycleEncoder(ENCODER_DIO_ID);
         // m_encoder.setInverted(false);
     }
 
-    public void resetEncoders(double position) {
-        m_intakePivot.setEncoderPosition(position);
+    public void resetEncoders() {
+        m_encoder.reset();
     }
 
     public double getAngle() {
-        return m_encoder.getPosition();
+        return m_encoder.get() * ENCODER_CONVERSION_FACTOR_TO_DEGREES;
     }
 
     public void startPID(IntakeState desiredState) {
