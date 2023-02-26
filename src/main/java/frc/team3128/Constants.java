@@ -304,7 +304,7 @@ public class Constants {
         public static final double kF = 0.7;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
-        public static final double PIVOT_TOLERANCE = 1.0;
+        public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         public static final int CANCODER_ID = 24;
         public static final double ANGLE_OFFSET = -29.7;
@@ -330,8 +330,8 @@ public class Constants {
         public static final boolean isReversed = true;
 
         public static final double ARM_LENGTH = 56.75; // inches
-        public static final int SOLENOID_FORWARD_CHANNEL_ID = 2; 
-        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 5; 
+        public static final int SOLENOID_FORWARD_CHANNEL_ID = 5; 
+        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 2; 
     }
 
     public static class ArmConstants {

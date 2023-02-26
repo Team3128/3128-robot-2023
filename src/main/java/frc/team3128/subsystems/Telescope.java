@@ -28,7 +28,6 @@ public class Telescope extends PIDSubsystem {
     private DoubleSupplier kG, kF, setpoint;
     
     private static Telescope instance;
-    private int plateauCount = 0;
 
     private NAR_CANSparkMax m_teleMotor;
     private SparkMaxRelativeEncoder m_encoder;
@@ -39,7 +38,7 @@ public class Telescope extends PIDSubsystem {
 
         configMotors();
         configEncoders();
-        //configPneumatics();
+        configPneumatics();
         getController().setTolerance(TELE_TOLERANCE);
 
         setSetpoint(getMeasurement());
@@ -63,7 +62,7 @@ public class Telescope extends PIDSubsystem {
     }
 
     public void configPneumatics(){
-        //m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID, SOLENOID_BACKWARD_CHANNEL_ID);
+        m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID, SOLENOID_BACKWARD_CHANNEL_ID);
         engageBrake();
     }
 
@@ -87,7 +86,6 @@ public class Telescope extends PIDSubsystem {
         enable();
 
         setSetpoint(teleDist);
-        //checkConstraints();
     }
 
     @Override
@@ -125,11 +123,11 @@ public class Telescope extends PIDSubsystem {
     }
 
     public void releaseBrake(){
-        //m_solenoid.set(Value.kReverse);
+        m_solenoid.set(Value.kReverse);
     }
 
     public void engageBrake(){
-        //m_solenoid.set(Value.kForward);
+        m_solenoid.set(Value.kForward);
     }
 
     /**
