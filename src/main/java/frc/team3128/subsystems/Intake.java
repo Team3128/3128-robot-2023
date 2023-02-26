@@ -6,15 +6,10 @@ import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.SparkMaxRelativeEncoder;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.IntakeConstants;
@@ -80,8 +75,6 @@ public class Intake extends PIDSubsystem {
 
     public void configEncoders() {
         m_encoder = new DutyCycleEncoder(ENCODER_DIO_ID);
-        //m_encoder.setDistancePerRotation(ENCODER_CONVERSION_FACTOR_TO_DEGREES);
-        // m_encoder.setInverted(false);
     }
 
     public double getAngle() {

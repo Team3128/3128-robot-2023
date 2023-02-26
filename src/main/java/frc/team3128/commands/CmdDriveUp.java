@@ -23,7 +23,17 @@ public class CmdDriveUp extends CommandBase{
 
     @Override
     public void initialize() {
-        power = 1;
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+            chargeStation = 12.6;
+        } else {
+            chargeStation = 3.85;
+        }
+        if (pose.getX() > chargeStation) {
+            power = -1;
+        } 
+        else {
+            power = 1;
+        }
     }
 
     @Override
@@ -37,6 +47,6 @@ public class CmdDriveUp extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(swerve.getRoll()) >= 13);
+        return (Math.abs(swerve.getRoll()) >= 5);
     }
 }

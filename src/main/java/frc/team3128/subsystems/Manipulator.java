@@ -81,19 +81,15 @@ public class Manipulator extends SubsystemBase {
         return getCurrent() > CURRENT_THRESHOLD;
     }
 
-    public void intakeCones(){
-        closeClaw();
-        enableRollersForward();
-    }
+    public void intake(boolean cone) {
+        if (cone) closeClaw();
+        else openClaw();
+        enableRollersForward(); 
+    }    
 
-    public void intakeCubes(){
+    public void outtake(boolean cone){
         openClaw();
-        enableRollersForward();
-    }
-
-    public void outtake(){
-        openClaw();
-        enableRollersReverse();
+        if (!cone) enableRollersForward();
     }
 
     //forbidden method
