@@ -37,7 +37,7 @@ public class Intake extends PIDSubsystem {
         DEPLOYED(0),
         RETRACTED(90),
         SEMI_DEPLOYED(60),
-        STOWED(170);
+        STOWED(177);
 
         public double angle;
 
@@ -87,8 +87,8 @@ public class Intake extends PIDSubsystem {
 
     public void startPID(double setpoint) {
         setpoint = RobotContainer.DEBUG.getAsBoolean() ? this.setpoint.getAsDouble() : setpoint;
-        setpoint = setpoint > 170 ? 170 : setpoint;
-        setpoint = setpoint < 0 ? 0 : setpoint;
+        // setpoint = setpoint > 170 ? 170 : setpoint;
+        // setpoint = setpoint < 0 ? 0 : setpoint;
         setSetpoint(setpoint);
         enable();
     }
