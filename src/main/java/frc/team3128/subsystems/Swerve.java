@@ -27,8 +27,6 @@ import java.io.FileWriter;
 
 public class Swerve extends SubsystemBase {
 
-    private double[] _roll_dps; //instance this so we don't alloc when getRollRate is called
-
     private volatile FileWriter txtFile;
     public static double throttle = 0.8;
     private String poseLogger = "";
@@ -42,6 +40,10 @@ public class Swerve extends SubsystemBase {
     public boolean fieldRelative;
 
     private Field2d field;
+
+    private double prevRoll;
+    private double prevYaw;
+    private double prevPitch;
 
     public static synchronized Swerve getInstance() {
         if (instance == null) {
@@ -69,6 +71,8 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(2, Mod2.constants),
             new SwerveModule(3, Mod3.constants)
         };
+
+        Timer.delay(1.0);
         resetEncoders();
 
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
@@ -78,8 +82,9 @@ public class Swerve extends SubsystemBase {
         field = new Field2d();
         SmartDashboard.putData("Field", field);
 
-        _roll_dps = new double[3];
-
+        prevRoll = getRoll();
+        prevPitch = getPitch();
+        prevYaw = getYaw();
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
@@ -110,7 +115,9 @@ public class Swerve extends SubsystemBase {
         NAR_Shuffleboard.addData("Drivetrain", "Roll", this::getRoll, 0, 2);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
         NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
-        NAR_Shuffleboard.addData("Drivetrain", "Roll Rate", this::getRollRate, 7, 1);
+        NAR_Shuffleboard.addData("Drivetrain","YawRate",this::getYawRate,4,2);
+        NAR_Shuffleboard.addData("Drivetrain","PitchRate",this::getPitchRate,5,2);
+        NAR_Shuffleboard.addData("Drivetrain", "RollRate", this::getRollRate, 6, 2);
     }
 
     public Pose2d getPose() {
@@ -166,6 +173,9 @@ public class Swerve extends SubsystemBase {
         odometry.update(getGyroRotation2d(), getPositions());
         estimatedPose = odometry.getEstimatedPosition();
         logPose();
+        prevPitch = getPitch();
+        prevYaw = getYaw();
+        prevRoll = getRoll();
     }
 
     public void resetAll() {
@@ -231,10 +241,16 @@ public class Swerve extends SubsystemBase {
         return gyro.getRoll();
     }
 
+    public double getYawRate() {
+        return (getYaw() - prevYaw) / 0.02;
+    }
+
+    public double getPitchRate() {
+        return (getPitch() - prevPitch) / 0.02;
+    }
+
     public double getRollRate() {
-        gyro.getRawGyro(_roll_dps);
-        //Expected to return cw+
-        return -_roll_dps[0];
+        return (getRoll() - prevRoll) / 0.02;
     }
 
     public void zeroGyro() {

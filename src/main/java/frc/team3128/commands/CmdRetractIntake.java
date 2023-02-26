@@ -19,7 +19,7 @@ public class CmdRetractIntake extends SequentialCommandGroup{
         addCommands(
             new InstantCommand(()-> intake.disableRollers()),
             new CmdMoveIntake(Intake.IntakeState.STOWED),
-            new InstantCommand(()-> manipulator.intakeCubes(), manipulator),
+            new InstantCommand(()-> manipulator.intake(false), manipulator),
             new CmdMoveArm(ArmPosition.NEUTRAL, false),
             new InstantCommand(()-> intake.enableRollersReverse()),
             new WaitCommand(0.1),

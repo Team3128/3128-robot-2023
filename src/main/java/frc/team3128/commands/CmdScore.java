@@ -56,7 +56,7 @@ public class CmdScore extends SequentialCommandGroup {
                     new WaitUntilCommand(()-> telescope.atSetpoint())
                 )
             ),            
-            new InstantCommand(() -> manipulator.outtake(), manipulator),
+            new InstantCommand(() -> manipulator.outtake(position.cone), manipulator),
             new WaitCommand(0.125),
             // new InstantCommand(() -> pivot.startPID(position.pivotAngle + Math.copySign(10, position.pivotAngle))),
             new InstantCommand(() -> manipulator.stopRoller(), manipulator),

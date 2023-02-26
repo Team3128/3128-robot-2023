@@ -131,7 +131,7 @@ public class RobotContainer {
         rightStick.getButton(13).onTrue(new CmdManipGrab(true));
         rightStick.getButton(14).onTrue(new CmdManipGrab(false));
         rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.stopRoller(), manipulator));
-        rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator));
+        rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake(true), manipulator));
 
         leftStick.getButton(1).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         leftStick.getButton(2).onTrue(new CmdPickupOptimized(true));

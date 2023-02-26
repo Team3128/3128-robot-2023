@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import static frc.team3128.Constants.SwerveConstants.*;
 
 import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdExtendIntake;
 import frc.team3128.commands.CmdGyroBalance;
@@ -87,7 +88,7 @@ public class Trajectories {
 
         CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
                                                 new CmdMoveArm(ArmPosition.TOP_CONE, true),
-                                                new InstantCommand(() -> manipulator.outtake()),
+                                                new InstantCommand(() -> manipulator.outtake(true)),
                                                 new WaitCommand(0.125),
                                                 new InstantCommand(() -> manipulator.stopRoller()),
                                                 new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, false))
@@ -103,7 +104,7 @@ public class Trajectories {
         CommandEventMap.put("Climb", new SequentialCommandGroup(
                                                 // new CmdInPlaceTurn(0),
                                                 new CmdDriveUp(),
-                                                new CmdGyroBalance()
+                                                new CmdBangBangBalance()
                                                 ));
         
         CommandEventMap.put("ClimbPoseBlue", new CmdMove(Type.SCORE, false, new Pose2d(5.8,2.7,Rotation2d.fromDegrees(0))));
