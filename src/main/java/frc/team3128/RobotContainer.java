@@ -32,6 +32,7 @@ import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
 import frc.team3128.subsystems.Intake;
+import frc.team3128.subsystems.Led;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Pivot;
@@ -57,6 +58,7 @@ public class RobotContainer {
     private Pivot pivot;
     private Telescope telescope;
     private Manipulator manipulator;
+    private Led led;
 
     private NAR_Joystick leftStick;
     private NAR_Joystick rightStick;
@@ -81,6 +83,7 @@ public class RobotContainer {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
+        led = Led.getInstance();
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
         // pivot.enable();
@@ -166,6 +169,7 @@ public class RobotContainer {
             buttonPad.getButton(9).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 2));
             buttonPad.getButton(10).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 0));
             buttonPad.getButton(12).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 2));
+            
         }
         else {
             buttonPad.getButton(6).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 0));

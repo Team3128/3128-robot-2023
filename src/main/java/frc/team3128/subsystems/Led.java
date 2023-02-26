@@ -1,7 +1,10 @@
 package frc.team3128.subsystems;
 
+import java.sql.Driver;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.Constants.LedConstants;
 import frc.team3128.Constants.LedConstants.*;
@@ -31,6 +34,7 @@ public class Led extends SubsystemBase{
 
         led.setData(ledBuffer);
         led.start();
+        
     }
     
     //general color methods : use variables
@@ -53,6 +57,15 @@ public class Led extends SubsystemBase{
     }
 
     //custom color methods : use constants
+    public void setAllianceColor() {
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+            setHSV(Blue.HUE, Blue.SATURATION, Blue.VALUE);
+        }
+        else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+            setHSV(Red.HUE, Red.SATURATION, Red.VALUE);
+        }
+    }
+
     public void setColorYelllow() {
         setHSV(Yellow.HUE, Yellow.SATURATION, Yellow.VALUE);
     }
@@ -60,5 +73,10 @@ public class Led extends SubsystemBase{
     public void setColorPurple() {
         setHSV(Purple.HUE, Purple.SATURATION, Purple.VALUE);
     }
+
+    public void setAutoColor() {
+        setHSV(Green.HUE, Green.SATURATION, Green.VALUE);
+    }
+    
 
 }

@@ -446,19 +446,45 @@ public class Constants {
     }
 
     public static class LedConstants{
+        public static class Green{
+            public static final int HUE = 0;
+            public static final int SATURATION = 0;
+            public static final int VALUE = 0;
+        }
+
+        public static class Blue{
+            public static final int HUE = 0;
+            public static final int SATURATION = 0;
+            public static final int VALUE = 0;
+        }
+
+        public static class Red{
+            public static final int HUE = 0;
+            public static final int SATURATION = 0;
+            public static final int VALUE = 0;
+        }
+
         public static class Yellow{
             public static final int HUE = 0;
             public static final int SATURATION = 0;
             public static final int VALUE = 0;
         }
+
         public static class Purple{
             public static final int HUE = 1;
             public static final int SATURATION = 1;
             public static final int VALUE = 1;
         }
 
-        public static final int PORT = 0;
-        public static final int LENGTH = 60;
+        public static class Off{
+            public static final int HUE = 0;
+            public static final int SATURATION = 0;
+            public static final int VALUE = 0;
+        }
+
+
+        public static final int PORT = 9; 
+        public static final int LENGTH = 288;
     }
 
     public static class ManipulatorConstants{
