@@ -186,10 +186,10 @@ public class Constants {
 
         public static final Camera FRONT = new Camera("Frog", true, 0, 0, 0, 
                                                         new Transform2d(new Translation2d(Units.inchesToMeters(-6), 
-                                                        Units.inchesToMeters(-12.75)), Rotation2d.fromDegrees(0)));
+                                                        Units.inchesToMeters(-11.75)), Rotation2d.fromDegrees(0)));
         public static final Camera BACK = new Camera("Blog", true, 0, 0, 0, 
                                                         new Transform2d(new Translation2d(Units.inchesToMeters(6), 
-                                                        Units.inchesToMeters(-12.75)), Rotation2d.fromDegrees(180)));
+                                                        Units.inchesToMeters(11.75)), Rotation2d.fromDegrees(180)));
 
         public static final double SCREEN_WIDTH = 320;
         public static final double SCREEN_HEIGHT = 240;
