@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team3128.common.utility.NAR_Shuffleboard;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -56,8 +58,15 @@ public class SwerveModule {
         angleMotor.set(ControlMode.Position, degreesToFalcon(angle, angleGearRatio)); 
         lastAngle = angle;
 
+       // NAR_Shuffleboard.addData("Modules", "Angle curr position " + moduleNumber,falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio), 0,
+
         SmartDashboard.putNumber("angle curr position" + moduleNumber, falconToDegrees(angleMotor.getSelectedSensorPosition(), angleGearRatio));
         SmartDashboard.putNumber("angle set position" + moduleNumber, desiredState.angle.getDegrees());
+    }
+
+    public void xLock(double angle) {
+        driveMotor.set(ControlMode.Velocity, 0);
+        angleMotor.set(ControlMode.Position, degreesToFalcon(angle, angleGearRatio)); 
     }
 
     public void resetToAbsolute(){

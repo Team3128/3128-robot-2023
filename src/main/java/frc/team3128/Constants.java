@@ -409,22 +409,22 @@ public class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double ROLLER_POWER = 3.0/12.0;
+        public static final double ROLLER_POWER = 6.0/12.0;
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
         public static final double CURRENT_THRESHOLD = 40;
 
-        public static final double kP = 0.075;
+        public static final double kP = 0.065;
         public static final double kI = 0;
-        public static final double kD = 0.001; // 0.001
+        public static final double kD = 0; // 0.001
 
-        public static final double kF = 0.6;
+        public static final double kF = 0.3;
 
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TO_DEGREES = 360;
-        public static final double ANGLE_OFFSET = 0; //Mika: 37, Mason: -37, Teja: 38
+        public static final double ANGLE_OFFSET = -237; //Mika: 37, Mason: -37, Teja: 38
 
         public static final int ENCODER_DIO_ID = 9;
 

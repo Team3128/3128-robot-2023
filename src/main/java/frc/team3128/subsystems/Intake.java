@@ -42,7 +42,7 @@ public class Intake extends PIDSubsystem {
         DEPLOYED(0),
         RETRACTED(90),
         SEMI_DEPLOYED(60),
-        STOWED(185);
+        STOWED(170);
 
         public double angle;
 
@@ -73,21 +73,19 @@ public class Intake extends PIDSubsystem {
 
         m_intakePivot.setIdleMode(IdleMode.kBrake);
 
-        // m_intakePivot.setInverted(true);
+        m_intakePivot.setInverted(true);
         m_intakeRollers.setInverted(false);
         
     }
 
     public void configEncoders() {
         m_encoder = new DutyCycleEncoder(ENCODER_DIO_ID);
-        m_encoder.setDistancePerRotation(ENCODER_CONVERSION_FACTOR_TO_DEGREES);
-        m_encoder.setPositionOffset(ANGLE_OFFSET);
+        //m_encoder.setDistancePerRotation(ENCODER_CONVERSION_FACTOR_TO_DEGREES);
         // m_encoder.setInverted(false);
     }
 
     public double getAngle() {
-        return m_encoder.get();
-        //return m_encoder.get() - ENCODER_ZERO_OFFSET;
+        return -m_encoder.get() * ENCODER_CONVERSION_FACTOR_TO_DEGREES - ANGLE_OFFSET;
     }
 
     public void startPID(IntakeState desiredState) {
@@ -96,7 +94,7 @@ public class Intake extends PIDSubsystem {
 
     public void startPID(double setpoint) {
         setpoint = RobotContainer.DEBUG.getAsBoolean() ? this.setpoint.getAsDouble() : setpoint;
-        setpoint = setpoint > 190 ? 190 : setpoint;
+        setpoint = setpoint > 170 ? 170 : setpoint;
         setpoint = setpoint < 0 ? 0 : setpoint;
         setSetpoint(setpoint);
         enable();

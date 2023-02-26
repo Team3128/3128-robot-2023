@@ -77,6 +77,9 @@ public class Swerve extends SubsystemBase {
 
         field = new Field2d();
         SmartDashboard.putData("Field", field);
+
+        _roll_dps = new double[3];
+
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
@@ -203,13 +206,10 @@ public class Swerve extends SubsystemBase {
     }
 
     public void xlock() {
-        setModuleStates(
-            new SwerveModuleState[] {
-                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(-45))}
-        );
+        modules[0].xLock(45);
+        modules[1].xLock(-45);
+        modules[2].xLock(-45);
+        modules[3].xLock(45);
     }
 
     public double getYaw() {
@@ -234,7 +234,7 @@ public class Swerve extends SubsystemBase {
     public double getRollRate() {
         gyro.getRawGyro(_roll_dps);
         //Expected to return cw+
-        return -_roll_dps[1];
+        return -_roll_dps[0];
     }
 
     public void zeroGyro() {
