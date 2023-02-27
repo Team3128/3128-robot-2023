@@ -262,7 +262,7 @@ public class CmdMove extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return atDestination;
+        return atDestination || Vision.MANUAL;
     }
 
     @Override

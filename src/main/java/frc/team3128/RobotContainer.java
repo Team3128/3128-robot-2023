@@ -20,6 +20,7 @@ import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdPickupOptimized;
+import static frc.team3128.Constants.FieldConstants.*;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdExtendIntake;
@@ -71,7 +72,7 @@ public class RobotContainer {
   
     public static BooleanSupplier DEBUG = ()-> false; 
 
-    private Trigger hasTarget;
+    private Trigger inProtected;
 
     public RobotContainer() {
         NAR_Shuffleboard.addData("DEBUG", "DEBUG", ()-> DEBUG.getAsBoolean(), 0, 1);
@@ -139,6 +140,7 @@ public class RobotContainer {
         rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.openClaw(), manipulator));
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
+        buttonPad.getButton(14).onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
         buttonPad.getButton(16).onTrue(new CmdShelfPickup(true, false));
         buttonPad.getButton(15).onTrue(new CmdShelfPickup(false, false));
 
@@ -151,9 +153,9 @@ public class RobotContainer {
         // leftStick.getButton(12).onTrue(new InstantCommand(()->intake.setIntake(0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
         // leftStick.getButton(13).onTrue(new InstantCommand(()->intake.setIntake(-0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
         
-        buttonPad.getButton(5).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 1));
-        buttonPad.getButton(8).onTrue(new CmdScore(false, ArmPosition.MID_CUBE, 1));
-        buttonPad.getButton(11).onTrue(new CmdScore(false, ArmPosition.TOP_CUBE, 1));
+        buttonPad.getButton(5).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 1));
+        buttonPad.getButton(8).onTrue(new CmdScoreOptimized(ArmPosition.MID_CUBE, 1));
+        buttonPad.getButton(11).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CUBE, 1));
         buttonPad.getButton(1).onTrue(new InstantCommand(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 0 : 2;
         }));
@@ -162,25 +164,37 @@ public class RobotContainer {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 2 : 0;
         }));
 
+        inProtected = new Trigger(
+            () -> {
+                Pose2d pose = Swerve.getInstance().getPose();
+                if (DriverStation.getAlliance() == Alliance.Red) {
+                    return (pose.getY() < midY && pose.getX() < outerX) || 
+                        (pose.getY() < leftY && pose.getX() < midX);
+                }
+                return (pose.getY() < midY && pose.getX() > FIELD_X_LENGTH - outerX) || 
+                    (pose.getY() < leftY && pose.getX() > FIELD_X_LENGTH - midX);
+            }
+        );
+        inProtected.onTrue(new InstantCommand(()-> controller.startVibrate())).onFalse(new InstantCommand(()-> controller.stopVibrate()));
     }
 
     public void init() {
         if (DriverStation.getAlliance() == Alliance.Red) {
-            buttonPad.getButton(4).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 0));
-            buttonPad.getButton(6).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 2));
-            buttonPad.getButton(7).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 0));
-            buttonPad.getButton(9).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 2));
-            buttonPad.getButton(10).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 0));
-            buttonPad.getButton(12).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 2));
+            buttonPad.getButton(4).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 0));
+            buttonPad.getButton(6).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 2));
+            buttonPad.getButton(7).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 0));
+            buttonPad.getButton(9).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 2));
+            buttonPad.getButton(10).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 0));
+            buttonPad.getButton(12).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 2));
             
         }
         else {
-            buttonPad.getButton(6).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 0));
-            buttonPad.getButton(4).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 2));
-            buttonPad.getButton(9).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 0));
-            buttonPad.getButton(7).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 2));
-            buttonPad.getButton(12).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 0));
-            buttonPad.getButton(10).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 2));
+            buttonPad.getButton(6).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 0));
+            buttonPad.getButton(4).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 2));
+            buttonPad.getButton(9).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 0));
+            buttonPad.getButton(7).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 2));
+            buttonPad.getButton(12).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 0));
+            buttonPad.getButton(10).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 2));
         }
     }
 

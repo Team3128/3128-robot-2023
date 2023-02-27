@@ -17,9 +17,10 @@ public class CmdScoreOptimized extends SequentialCommandGroup {
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(() -> {
-                
                 double rotation = MathUtil.inputModulus(Swerve.getInstance().getGyroRotation2d().getDegrees(), -180, 180);
                 boolean isReversed = Math.abs(rotation) < 90;
+                if (Vision.FIXED_DIRECTION != null)
+                    isReversed = Vision.FIXED_DIRECTION;
                 new CmdScore(isReversed, position, xPos).schedule();
             })
         );

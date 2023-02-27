@@ -15,7 +15,8 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 public class Vision extends SubsystemBase{
     public static int SELECTED_GRID = 0;
     public static boolean AUTO_ENABLED = false;
-    public static boolean CONE = false;
+    public static Boolean FIXED_DIRECTION = null;
+    public static boolean MANUAL = false;
 
     private double prevTime = 0;
     private static Vision instance;
