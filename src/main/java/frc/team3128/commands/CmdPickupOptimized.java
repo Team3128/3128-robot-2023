@@ -17,11 +17,9 @@ public class CmdPickupOptimized extends SequentialCommandGroup {
             new InstantCommand(() -> {
                 double rotation = MathUtil.inputModulus(Swerve.getInstance().getGyroRotation2d().getDegrees(), -180, 180);
                 boolean isReversed = Math.abs(rotation) < 90;
+                if (cone) Vision.FIXED_DIRECTION = isReversed;
+                else Vision.FIXED_DIRECTION = null;
                 new CmdShelfPickup(cone, isReversed).schedule();
-                if (cone)
-                    Vision.FIXED_DIRECTION = isReversed;
-                else
-                    Vision.FIXED_DIRECTION = null;
             })
         );
     }

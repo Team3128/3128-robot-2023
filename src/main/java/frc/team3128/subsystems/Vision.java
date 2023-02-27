@@ -17,6 +17,7 @@ public class Vision extends SubsystemBase{
     public static boolean AUTO_ENABLED = false;
     public static Boolean FIXED_DIRECTION = null;
     public static boolean MANUAL = false;
+    public static boolean GROUND_DIRECTION = false; 
 
     private double prevTime = 0;
     private static Vision instance;

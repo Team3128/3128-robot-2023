@@ -53,16 +53,14 @@ public class CmdScore extends SequentialCommandGroup {
             Commands.parallel(
                 Commands.sequence(
                     new WaitUntilCommand(()-> Vision.MANUAL).raceWith(
-                        new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.25 : -0.25,0),0,true))
+                        new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0),0,true), swerve)
                         .withTimeout(1)),
                     new InstantCommand(()-> swerve.stop(), swerve)
                 ).asProxy(),
                 Commands.sequence(
                     new WaitUntilCommand(()-> pivot.atSetpoint()),
                     new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
-                    new WaitUntilCommand(()-> telescope.atSetpoint())
-                    // new InstantCommand(() -> pivot.startPID(positi
-                    
+                    new WaitUntilCommand(()-> telescope.atSetpoint())                    
                 )
             ),            
             new InstantCommand(() -> manipulator.outtake(position.cone), manipulator),

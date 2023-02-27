@@ -6,6 +6,7 @@ import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Telescope;
+import frc.team3128.subsystems.Vision;
 
 public class CmdMoveArm extends CommandBase{
 
@@ -24,7 +25,15 @@ public class CmdMoveArm extends CommandBase{
     }
 
     public CmdMoveArm(ArmPosition position, boolean reversed){
-        this(position.pivotAngle, position.teleDist, reversed);
+        this.angle = position.pivotAngle;
+        // below is for signaling which side to score out of
+        // if (position == ArmPosition.NEUTRAL && Vision.FIXED_DIRECTION != null) 
+        //     this.angle = Vision.FIXED_DIRECTION ? -15 : 15;
+        if (position == ArmPosition.NEUTRAL && !manipulator.hasObjectPresent()) 
+            this.angle = Vision.GROUND_DIRECTION ? 15 : -15;
+        this.angle = reversed ? -this.angle : this.angle;
+        this.dist = position.teleDist;
+        addRequirements(pivot, telescope);
     }
 
     @Override
