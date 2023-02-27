@@ -337,7 +337,7 @@ public class Constants {
     public static class ArmConstants {
 
         public enum ArmPosition {
-            TOP_CONE(107, 41, 0, true), // angles are off by like 10 (should be like 10 down)
+            TOP_CONE(107, 42, 0, true), // angles are off by like 10 (should be like 10 down)
             TOP_CUBE(98, 35, 0, false), 
             MID_CONE(98, 22.5, 1, true), 
             MID_CUBE(87, 15, 1, false), 
