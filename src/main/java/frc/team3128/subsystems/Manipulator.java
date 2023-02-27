@@ -89,7 +89,7 @@ public class Manipulator extends SubsystemBase {
 
     public void outtake(boolean cone){
         openClaw();
-        if (!cone) enableRollersForward();
+        if (!cone) enableRollersReverse();
     }
 
     //forbidden method

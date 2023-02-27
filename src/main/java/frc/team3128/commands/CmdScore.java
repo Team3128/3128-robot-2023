@@ -20,6 +20,7 @@ import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 
 public class CmdScore extends SequentialCommandGroup {
@@ -39,32 +40,33 @@ public class CmdScore extends SequentialCommandGroup {
             // new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
             // new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             Commands.parallel(
-                //new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]),
+                new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]),
                 Commands.sequence(
                     // new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
                     new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot)
                 )
             ),
             Commands.parallel(
-                // Commands.sequence(
-                //     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.25 : -0.25,0),0,true)).withTimeout(1),
-                //     new InstantCommand(()-> swerve.stop())
-                // ),
+                Commands.sequence(
+                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.25 : -0.25,0),0,true)).withTimeout(1),
+                    new InstantCommand(()-> swerve.stop())
+                ),
                 Commands.sequence(
                     new WaitUntilCommand(()-> pivot.atSetpoint()),
                     new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
                     new WaitUntilCommand(()-> telescope.atSetpoint())
+                    // new InstantCommand(() -> pivot.startPID(positi
+                    
                 )
             ),            
             new InstantCommand(() -> manipulator.outtake(position.cone), manipulator),
             new WaitCommand(0.125),
-            // new InstantCommand(() -> pivot.startPID(position.pivotAngle + Math.copySign(10, position.pivotAngle))),
             new InstantCommand(() -> manipulator.stopRoller(), manipulator),
-            // new InstantCommand(() -> telescope.startPID(ArmPosition.NEUTRAL.teleDist), telescope),
-            // new WaitUntilCommand(() -> tlescope)
+            // new InstantCommand(() -> pivot.startPID(position.pivotAngle)),
+            // new WaitUntilCommand(() ->pivot.atSetpoint()),
             new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, isReversed)),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
-            new ScheduleCommand(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()).withTimeout(0.5))
+            new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate())))
         );
     }
 }

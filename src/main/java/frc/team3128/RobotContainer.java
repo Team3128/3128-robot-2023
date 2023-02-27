@@ -23,6 +23,7 @@ import frc.team3128.commands.CmdPickupOptimized;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdExtendIntake;
+import frc.team3128.commands.CmdGroundPickup;
 import frc.team3128.commands.CmdGyroBalance;
 import frc.team3128.commands.CmdManipGrab;
 import frc.team3128.common.hardware.camera.NAR_Camera;
@@ -53,7 +54,7 @@ public class RobotContainer {
     private Swerve swerve;
     private Vision vision;
     private NAR_Camera cam;
-    private Intake intake;
+    // private Intake intake;
     private Pivot pivot;
     private Telescope telescope;
     private Manipulator manipulator;
@@ -76,7 +77,7 @@ public class RobotContainer {
         DEBUG = ()-> x.getEntry().getBoolean(false);
 
         swerve = Swerve.getInstance();
-        intake = Intake.getInstance();
+        // intake = Intake.getInstance();
         vision = Vision.getInstance();
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
@@ -106,7 +107,8 @@ public class RobotContainer {
         controller.getButton("RightTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = 1)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("LeftTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = .25)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
-        
+        controller.getButton("RightBumper").onTrue(new CmdGroundPickup(true));
+        controller.getButton("LeftBumper").onTrue(new CmdGroundPickup(false));
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
         rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
@@ -118,8 +120,8 @@ public class RobotContainer {
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
         rightStick.getButton(7).onTrue(new SequentialCommandGroup(new CmdDriveUp(), new CmdBangBangBalance()));
-        //rightStick.getButton(8).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
-        rightStick.getButton(8).onTrue(new CmdGyroBalance());
+        rightStick.getButton(8).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
+        // rightStick.getButton(8).onTrue(new CmdGyroBalance());
     
         // manual controls
         rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
@@ -133,17 +135,17 @@ public class RobotContainer {
         rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.stopRoller(), manipulator));
         rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.openClaw(), manipulator));
 
-        leftStick.getButton(1).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
-        leftStick.getButton(2).onTrue(new CmdPickupOptimized(true));
-        leftStick.getButton(3).onTrue(new CmdPickupOptimized(false));
+        buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
+        buttonPad.getButton(16).onTrue(new CmdPickupOptimized(true));
+        buttonPad.getButton(15).onTrue(new CmdPickupOptimized(false));
 
         //Intake Buttons
-        leftStick.getButton(8).onTrue(new CmdExtendIntake()).onFalse(new CmdRetractIntake());
-        leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
-        leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));
-        leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(30)));
-        leftStick.getButton(12).onTrue(new InstantCommand(()->intake.setIntake(0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
-        leftStick.getButton(13).onTrue(new InstantCommand(()->intake.setIntake(-0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
+        // leftStick.getButton(8).onTrue(new CmdExtendIntake()).onFalse(new CmdRetractIntake());
+        // leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
+        // leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));
+        // leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(30)));
+        // leftStick.getButton(12).onTrue(new InstantCommand(()->intake.setIntake(0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
+        // leftStick.getButton(13).onTrue(new InstantCommand(()->intake.setIntake(-0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
         
         buttonPad.getButton(5).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 1));
         buttonPad.getButton(8).onTrue(new CmdScoreOptimized(ArmPosition.MID_CUBE, 1));
@@ -185,7 +187,7 @@ public class RobotContainer {
 
         swerve.initShuffleboard();
         vision.initShuffleboard();
-        intake.initShuffleboard();
+        // intake.initShuffleboard();
         telescope.initShuffleboard();
         pivot.initShuffleboard();
         manipulator.initShuffleboard();

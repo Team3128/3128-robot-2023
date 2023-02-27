@@ -26,6 +26,7 @@ import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdExtendIntake;
+import frc.team3128.commands.CmdGroundPickup;
 import frc.team3128.commands.CmdGyroBalance;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
@@ -51,7 +52,7 @@ public class Trajectories {
 
     private static Manipulator manipulator = Manipulator.getInstance();
 
-    private static Intake intake = Intake.getInstance();
+    // private static Intake intake = Intake.getInstance();
 
     public static void initTrajectories() {
         final String[] trajectoryNames = {"r_top_1Cone", "r_top_1Cone+1Cube", "r_top_1Cone+1Cube+Climb",
@@ -94,12 +95,7 @@ public class Trajectories {
                                                 new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, false))
                                                 ));
         
-        CommandEventMap.put("IntakeCube", new SequentialCommandGroup(
-            new CmdExtendIntake(),
-            new WaitUntilCommand(()-> intake.hasObjectPresent()),
-            //new WaitCommand(3),
-            new CmdRetractIntake())
-        );
+        CommandEventMap.put("IntakeCube", new CmdGroundPickup(false));
 
         CommandEventMap.put("Climb", new SequentialCommandGroup(
                                                 // new CmdInPlaceTurn(0),

@@ -16,7 +16,7 @@ public class CmdPickupOptimized extends SequentialCommandGroup {
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(() -> {
                 double rotation = MathUtil.inputModulus(Swerve.getInstance().getGyroRotation2d().getDegrees(), -180, 180);
-                boolean isReversed = Math.abs(rotation) > 90;
+                boolean isReversed = Math.abs(rotation) < 90;
                 new CmdShelfPickup(cone, isReversed).schedule();
             })
         );

@@ -123,7 +123,7 @@ public class Constants {
         // For safety, use less than theoretical and real values
         public static final double maxSpeed = 4.5; //meters per second - 16.3 ft/sec
         public static final double maxAcceleration = 2;
-        public static final double maxAngularVelocity = 2.25; //3; //11.5; // citrus: 10
+        public static final double maxAngularVelocity = 3; //3; //11.5; // citrus: 10
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
 
         /* Motor Inverts */
@@ -185,7 +185,7 @@ public class Constants {
     public static class VisionConstants {
 
         public static final Camera FRONT = new Camera("Frog", true, 0, 0, 0, 
-                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-6), 
+                                                        new Transform2d(new Translation2d(Units.inchesToMeters(6), 
                                                         Units.inchesToMeters(-11.75)), Rotation2d.fromDegrees(0)));
         public static final Camera BACK = new Camera("Blog", true, 0, 0, 0, 
                                                         new Transform2d(new Translation2d(Units.inchesToMeters(6), 
@@ -346,7 +346,7 @@ public class Constants {
             NEUTRAL(0, 11.5, null, null), //pivot should be 0
 
             HP_SHELF(108, 20, null, null), //105
-            GROUND_PICKUP(35.0, 24.5, null, null), 
+            GROUND_PICKUP(37.0, 24, null, null), 
             CONE_POLE(-40, 11.5, null, null),
             AVOID_INTAKE(90, 11.5, null, null);
     
