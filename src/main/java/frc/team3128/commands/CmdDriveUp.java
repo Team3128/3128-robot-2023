@@ -23,17 +23,18 @@ public class CmdDriveUp extends CommandBase{
 
     @Override
     public void initialize() {
-        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-            chargeStation = 12.6;
-        } else {
-            chargeStation = 3.85;
-        }
-        if (pose.getX() > chargeStation) {
-            power = -1;
-        } 
-        else {
-            power = 1;
-        }
+        // if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+        //     chargeStation = 12.6;
+        // } else {
+        //     chargeStation = 3.85;
+        // }
+        // if (pose.getX() > chargeStation) {
+        //     power = -1;
+        // } 
+        // else {
+        //     power = 1;
+        // }
+        power = -1;
     }
 
     @Override

@@ -139,8 +139,8 @@ public class RobotContainer {
         rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.openClaw(), manipulator));
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
-        buttonPad.getButton(16).onTrue(new CmdPickupOptimized(true));
-        buttonPad.getButton(15).onTrue(new CmdPickupOptimized(false));
+        buttonPad.getButton(16).onTrue(new CmdShelfPickup(true, false));
+        buttonPad.getButton(15).onTrue(new CmdShelfPickup(false, false));
 
         //Intake Buttons
         // leftStick.getButton(8).onTrue(new CmdExtendIntake()).onFalse(new CmdRetractIntake());
@@ -150,9 +150,9 @@ public class RobotContainer {
         // leftStick.getButton(12).onTrue(new InstantCommand(()->intake.setIntake(0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
         // leftStick.getButton(13).onTrue(new InstantCommand(()->intake.setIntake(-0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
         
-        buttonPad.getButton(5).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 1));
-        buttonPad.getButton(8).onTrue(new CmdScoreOptimized(ArmPosition.MID_CUBE, 1));
-        buttonPad.getButton(11).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CUBE, 1));
+        buttonPad.getButton(5).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 1));
+        buttonPad.getButton(8).onTrue(new CmdScore(false, ArmPosition.MID_CUBE, 1));
+        buttonPad.getButton(11).onTrue(new CmdScore(false, ArmPosition.TOP_CUBE, 1));
         buttonPad.getButton(1).onTrue(new InstantCommand(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 0 : 2;
         }));
@@ -165,21 +165,21 @@ public class RobotContainer {
 
     public void init() {
         if (DriverStation.getAlliance() == Alliance.Red) {
-            buttonPad.getButton(4).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 0));
-            buttonPad.getButton(6).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 2));
-            buttonPad.getButton(7).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 0));
-            buttonPad.getButton(9).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 2));
-            buttonPad.getButton(10).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 0));
-            buttonPad.getButton(12).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 2));
+            buttonPad.getButton(4).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 0));
+            buttonPad.getButton(6).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 2));
+            buttonPad.getButton(7).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 0));
+            buttonPad.getButton(9).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 2));
+            buttonPad.getButton(10).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 0));
+            buttonPad.getButton(12).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 2));
             
         }
         else {
-            buttonPad.getButton(6).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 0));
-            buttonPad.getButton(4).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 2));
-            buttonPad.getButton(9).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 0));
-            buttonPad.getButton(7).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 2));
-            buttonPad.getButton(12).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 0));
-            buttonPad.getButton(10).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 2));
+            buttonPad.getButton(6).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 0));
+            buttonPad.getButton(4).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 2));
+            buttonPad.getButton(9).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 0));
+            buttonPad.getButton(7).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 2));
+            buttonPad.getButton(12).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 0));
+            buttonPad.getButton(10).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 2));
         }
     }
 

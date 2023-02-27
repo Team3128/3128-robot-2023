@@ -34,7 +34,7 @@ public class CmdMoveArm extends CommandBase{
         else 
             telescope.startPID(dist);
 
-        if (!manipulator.hasObjectPresent()) manipulator.stopRoller();
+        // if (!manipulator.hasObjectPresent()) manipulator.stopRoller();
     }
 
     @Override

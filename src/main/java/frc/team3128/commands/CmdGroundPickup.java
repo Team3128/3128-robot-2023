@@ -8,7 +8,7 @@ public class CmdGroundPickup extends SequentialCommandGroup{
 
     public CmdGroundPickup(boolean cone) {
         addCommands(
-            new CmdMoveArm(ArmPosition.GROUND_PICKUP, false),
+            new CmdMoveArm(cone ? ArmPosition.GROUND_PICKUP_CONE : ArmPosition.GROUND_PICKUP_CUBE, false),
             new CmdManipGrab(cone),
             new CmdMoveArm(ArmPosition.NEUTRAL, false)
         );

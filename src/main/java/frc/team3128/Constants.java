@@ -123,7 +123,7 @@ public class Constants {
         // For safety, use less than theoretical and real values
         public static final double maxSpeed = 4.5; //meters per second - 16.3 ft/sec
         public static final double maxAcceleration = 2;
-        public static final double maxAngularVelocity = 3; //3; //11.5; // citrus: 10
+        public static final double maxAngularVelocity = 5; //3; //11.5; // citrus: 10
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
 
         /* Motor Inverts */
@@ -185,10 +185,10 @@ public class Constants {
     public static class VisionConstants {
 
         public static final Camera FRONT = new Camera("Frog", true, 0, 0, 0, 
-                                                        new Transform2d(new Translation2d(Units.inchesToMeters(6), 
+                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-6), 
                                                         Units.inchesToMeters(-11.75)), Rotation2d.fromDegrees(0)));
         public static final Camera BACK = new Camera("Blog", true, 0, 0, 0, 
-                                                        new Transform2d(new Translation2d(Units.inchesToMeters(6), 
+                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-6), 
                                                         Units.inchesToMeters(11.75)), Rotation2d.fromDegrees(180)));
 
         public static final double SCREEN_WIDTH = 320;
@@ -307,7 +307,7 @@ public class Constants {
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         public static final int CANCODER_ID = 24;
-        public static final double ANGLE_OFFSET = -29.7;
+        public static final double ANGLE_OFFSET = -29.7 +7.55;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -345,8 +345,9 @@ public class Constants {
 
             NEUTRAL(0, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF(108, 20, null, null), //105
-            GROUND_PICKUP(37.0, 24, null, null), 
+            HP_SHELF(102, 15, null, null), //105
+            GROUND_PICKUP_CONE(-38, 24.5, null, null), 
+            GROUND_PICKUP_CUBE(-37.5, 23, null, null), 
             CONE_POLE(-40, 11.5, null, null),
             AVOID_INTAKE(90, 11.5, null, null);
     
