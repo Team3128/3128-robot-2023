@@ -14,6 +14,7 @@ import frc.team3128.RobotContainer;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.subsystems.Led;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
@@ -29,14 +30,17 @@ public class CmdScore extends SequentialCommandGroup {
     private Swerve swerve;
     private Telescope telescope;
     private Manipulator manipulator;
+    private Led led;
 
     public CmdScore(boolean isReversed, ArmPosition position, int xpos) {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
         swerve = Swerve.getInstance();
+        led = Led.getInstance();
 
         addCommands(
+            new InstantCommand(() -> led.setAutoColor(), led),
             // new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
             // new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             Commands.parallel(
@@ -66,7 +70,8 @@ public class CmdScore extends SequentialCommandGroup {
             // new WaitUntilCommand(() ->pivot.atSetpoint()),
             new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, isReversed)),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
-            new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate())))
+            new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
+            new InstantCommand(() -> led.setAllianceColor(), led)
         );
     }
 }
