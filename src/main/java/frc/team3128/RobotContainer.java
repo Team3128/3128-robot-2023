@@ -143,6 +143,7 @@ public class RobotContainer {
         buttonPad.getButton(15).onTrue(new CmdPickupOptimized(false));
 
         //Intake Buttons
+        
         // leftStick.getButton(8).onTrue(new CmdExtendIntake()).onFalse(new CmdRetractIntake());
         // leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
         // leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));
@@ -153,6 +154,7 @@ public class RobotContainer {
         buttonPad.getButton(5).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 1));
         buttonPad.getButton(8).onTrue(new CmdScoreOptimized(ArmPosition.MID_CUBE, 1));
         buttonPad.getButton(11).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CUBE, 1));
+        
         buttonPad.getButton(1).onTrue(new InstantCommand(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 0 : 2;
         }));
