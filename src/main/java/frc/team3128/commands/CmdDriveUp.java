@@ -3,6 +3,7 @@ package frc.team3128.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team3128.subsystems.Swerve;
 
@@ -23,18 +24,8 @@ public class CmdDriveUp extends CommandBase{
 
     @Override
     public void initialize() {
-        // if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-        //     chargeStation = 12.6;
-        // } else {
-        //     chargeStation = 3.85;
-        // }
-        // if (pose.getX() > chargeStation) {
-        //     power = -1;
-        // } 
-        // else {
-        //     power = 1;
-        // }
-        power = -1;
+        chargeStation = DriverStation.getAlliance() == Alliance.Red ? 12.6 : 3.85;
+        power = pose.getX() > chargeStation ? -1 : 1;
     }
 
     @Override

@@ -33,12 +33,21 @@ public class Constants {
         public static final double FALCON_NUpS_TO_RPM = 60 / FALCON_ENCODER_RESOLUTION; // sensor units per second to rpm
     }
 
+    public static class AutoConstants {
+        public static final Pose2d PICKUP_1 = new Pose2d(6.5, 0.92, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_2 = new Pose2d(6.5, 2.15, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_3 = new Pose2d(6.5, 3.38, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_4 = new Pose2d(6.5, 4.6, Rotation2d.fromDegrees(180));
+
+        public static final Pose2d ClimbSetup = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(180));
+    }
+
     public static class SwerveConstants {
         public static final int pigeonID = 30; 
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
-        public static final double bumperLength = Units.inchesToMeters(4);
+        public static final double bumperLength = Units.inchesToMeters(5);
         public static final double trackWidth = Units.inchesToMeters(26); 
         public static final double wheelBase = Units.inchesToMeters(26); 
         public static final double robotLength = bumperLength + trackWidth;
@@ -494,6 +503,7 @@ public class Constants {
 
         public static final int ROLLER_MOTOR_ID = 13;
         public static final double ROLLER_POWER = 0.75;
+        public static final double STALL_POWER = 0.3;
 
         public static final double CURRENT_THRESHOLD = 35;
     }

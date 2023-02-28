@@ -10,7 +10,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdRetractIntake;
 import frc.team3128.commands.CmdScore;
@@ -21,6 +24,8 @@ import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdPickupOptimized;
 import static frc.team3128.Constants.FieldConstants.*;
+
+import static frc.team3128.Constants.SwerveConstants.*;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdExtendIntake;
@@ -108,10 +113,11 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         controller.getButton("A").onTrue(new InstantCommand(()-> Vision.AUTO_ENABLED = !Vision.AUTO_ENABLED));
-        controller.getButton("Y").onTrue(new InstantCommand(()-> Vision.GROUND_DIRECTION = !Vision.GROUND_DIRECTION));
+        controller.getButton("Y").onTrue(new InstantCommand(()-> Vision.GROUND_DIRECTION = !Vision.GROUND_DIRECTION).andThen(new CmdMoveArm(ArmPosition.NEUTRAL, false)));
         controller.getButton("RightTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = 1)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("LeftTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = .25)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
+        //controller.getButton("X").onTrue(new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))));
         controller.getButton("RightBumper").onTrue(new CmdGroundPickup(true));
         controller.getButton("LeftBumper").onTrue(new CmdGroundPickup(false));
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
@@ -169,11 +175,11 @@ public class RobotContainer {
             () -> {
                 Pose2d pose = Swerve.getInstance().getPose();
                 if (DriverStation.getAlliance() == Alliance.Red) {
-                    return (pose.getY() < midY && pose.getX() < outerX) || 
-                        (pose.getY() < leftY && pose.getX() < midX);
+                    return (pose.getY() < midY + robotLength/2 && pose.getX() < outerX + robotLength/2) || 
+                        (pose.getY() < leftY + robotLength/2 && pose.getX() < midX + robotLength/2);
                 }
-                return (pose.getY() < midY && pose.getX() > FIELD_X_LENGTH - outerX) || 
-                    (pose.getY() < leftY && pose.getX() > FIELD_X_LENGTH - midX);
+                return (pose.getY() < midY + robotLength/2 && pose.getX() > FIELD_X_LENGTH - outerX - robotLength/2) || 
+                    (pose.getY() < leftY + robotLength/2 && pose.getX() > FIELD_X_LENGTH - midX - robotLength/2);
             }
         );
         inProtected.onTrue(new InstantCommand(()-> controller.startVibrate())).onFalse(new InstantCommand(()-> controller.stopVibrate()));

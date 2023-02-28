@@ -14,7 +14,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import static frc.team3128.Constants.SwerveConstants.*;
 
+import frc.team3128.Constants.AutoConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
@@ -30,8 +33,10 @@ import frc.team3128.commands.CmdGroundPickup;
 import frc.team3128.commands.CmdGyroBalance;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
+import frc.team3128.commands.CmdMoveLoading;
 import frc.team3128.commands.CmdRetractIntake;
 import frc.team3128.commands.CmdScore;
+import frc.team3128.commands.CmdScoreOptimized;
 import frc.team3128.commands.CmdMove.Type;
 import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Manipulator;
@@ -138,6 +143,39 @@ public class Trajectories {
 
     public static CommandBase lineCmd(Pose2d start, Pose2d end) {
         return builder.fullAuto(line(start, end));
+    }
+
+    public static CommandBase loadingPoint(Pose2d pose, boolean cone) {
+        return Commands.parallel(
+            new CmdMove(Type.LOADING, false, pose),
+            new CmdGroundPickup(cone)
+            );
+    }
+
+    public static CommandBase loadingPointSpecial(Pose2d pose, boolean cone) {
+        return Commands.parallel(
+            new CmdMoveLoading(true, new Pose2d[] {
+                pose,
+                pose,
+                pose
+            }),
+            new CmdGroundPickup(cone)
+            );
+    }
+
+    public static CommandBase scoringPoint(int grid, int node, ArmPosition position) {
+        return Commands.sequence(
+            new InstantCommand(()-> Vision.SELECTED_GRID = grid),
+            new CmdScoreOptimized(position, node)
+        );
+    }
+
+    public static CommandBase climbPoint() {
+        return Commands.sequence(
+            new CmdMove(Type.NONE, false, AutoConstants.ClimbSetup),
+            new CmdDriveUp(),
+            new CmdBangBangBalance()
+        );
     }
     
 }

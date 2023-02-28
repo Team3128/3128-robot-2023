@@ -34,7 +34,7 @@ public class CmdShelfPickup extends SequentialCommandGroup{
         addCommands(
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             Commands.parallel(
-                new ProxyCommand(new CmdMoveLoading(isReversed, VisionConstants.LOADING_ZONE)),
+                new CmdMoveLoading(isReversed, VisionConstants.LOADING_ZONE).asProxy(),
                 Commands.sequence(
                     new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
                     new InstantCommand(() -> pivot.startPID(isReversed ? -ArmPosition.HP_SHELF.pivotAngle : ArmPosition.HP_SHELF.pivotAngle), pivot)
@@ -46,7 +46,8 @@ public class CmdShelfPickup extends SequentialCommandGroup{
             new CmdManipGrab(cone),
             new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, isReversed)),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
-            new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate())))
+            new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
+            new InstantCommand(() -> new InstantCommand(()-> Vision.AUTO_ENABLED = false))
         );
     }
 }

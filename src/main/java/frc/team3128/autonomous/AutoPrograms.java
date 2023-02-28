@@ -3,9 +3,17 @@ package frc.team3128.autonomous;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.team3128.Constants.AutoConstants;
+import frc.team3128.Constants.VisionConstants;
+import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.commands.CmdScoreOptimized;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Vision;
 
 /**
  * Class to store information about autonomous routines.
@@ -15,6 +23,19 @@ import frc.team3128.subsystems.Swerve;
 public class AutoPrograms {
 
     public static Swerve swerve;
+    private static Command simpleAutoBot =
+        Commands.sequence(
+            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
+            Trajectories.scoringPoint(0, 1, ArmPosition.TOP_CUBE),
+            Trajectories.climbPoint()
+        );
+    
+    private static Command simpleAutoClimb =
+        Commands.sequence(
+            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.climbPoint()
+        );
 
     public AutoPrograms() {
         swerve = Swerve.getInstance();
@@ -35,19 +56,24 @@ public class AutoPrograms {
     public Command getAutonomousCommand() {
     //    String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
         String selectedAutoName = "mid_1Cone"; //uncomment and change this for testing without opening Narwhal Dashboard
+        Vision vision = Vision.getInstance();
 
-        if (selectedAutoName == null) {
-            return null;
-        }
+        // if (selectedAutoName == null) {
+        //     return null;
+        // }
 
-        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-             selectedAutoName = "b_" + selectedAutoName;
-        }
-         else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-             selectedAutoName = "r_" + selectedAutoName;
-        }
-
-        return Trajectories.get(selectedAutoName);
+        // if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+        //      selectedAutoName = "b_" + selectedAutoName;
+        // }
+        //  else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+        //      selectedAutoName = "r_" + selectedAutoName;
+        // }
+        Pose2d resetPose = vision.getCamera(VisionConstants.FRONT).getPos();
+        //if (vision.getCamera(VisionConstants.BACK).hasValidTarget()) resetPose = vision.getCamera(VisionConstants.BACK).getPos();
+        Swerve.getInstance().resetOdometry(new Pose2d(resetPose.getTranslation(), Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)));
+        
+        return simpleAutoBot;
+        //return Trajectories.get(selectedAutoName);
     }
     
     // /** 

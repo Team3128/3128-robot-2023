@@ -84,6 +84,10 @@ public class Vision extends SubsystemBase{
         return cameras.get(name);
     }
 
+    public NAR_Camera getCamera(Camera camera) {
+        return getCamera(camera.hostname);
+    }
+
     public Camera camSpecs(String name) {
         return cameras.get(name).camera;
     }

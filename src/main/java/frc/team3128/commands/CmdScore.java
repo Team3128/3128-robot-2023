@@ -54,7 +54,7 @@ public class CmdScore extends SequentialCommandGroup {
                 Commands.sequence(
                     new WaitUntilCommand(()-> Vision.MANUAL).raceWith(
                         new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0),0,true), swerve)
-                        .withTimeout(1)),
+                        .withTimeout(0.75)),
                     new InstantCommand(()-> swerve.stop(), swerve)
                 ).asProxy(),
                 Commands.sequence(
@@ -71,7 +71,8 @@ public class CmdScore extends SequentialCommandGroup {
             new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, isReversed)),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
             new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
-            new InstantCommand(() -> led.setAllianceColor(), led)
+            new InstantCommand(() -> led.setAllianceColor(), led),
+            new InstantCommand(() -> Vision.AUTO_ENABLED = false)
         );
     }
 }
