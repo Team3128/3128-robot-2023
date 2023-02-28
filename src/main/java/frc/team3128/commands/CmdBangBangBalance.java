@@ -37,7 +37,7 @@ public class CmdBangBangBalance extends CommandBase{
     @Override
     public void execute() {
         swerve.drive(new Translation2d(-power*Math.signum(swerve.getRoll()),0), 0,true);
-        if ((Math.signum(swerve.getRollRate()) != Math.signum(prevRollRate)) && Math.abs(swerve.getRollRate()) > 0.5) 
+        if ((Math.signum(swerve.getRollRate()) != Math.signum(prevRollRate)) && Math.abs(swerve.getRollRate()) > 0.5 && Math.abs(swerve.getRoll()) > 9) 
             plateauCount += 1;
         else {
             plateauCount = 0;
