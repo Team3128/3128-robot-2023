@@ -148,8 +148,8 @@ public class RobotContainer {
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         buttonPad.getButton(14).onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
-        buttonPad.getButton(16).onTrue(new CmdShelfPickup(true, false));
-        buttonPad.getButton(15).onTrue(new CmdShelfPickup(false, false));
+        buttonPad.getButton(16).onTrue(new CmdPickupOptimized(true));
+        buttonPad.getButton(15).onTrue(new CmdPickupOptimized(false));
 
         //Intake Buttons
         

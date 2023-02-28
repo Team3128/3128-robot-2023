@@ -32,13 +32,13 @@ public class CmdShelfPickup extends SequentialCommandGroup{
         pivot = Pivot.getInstance();
 
         addCommands(
-            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
+            // new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             Commands.parallel(
                 new CmdMoveLoading(isReversed, VisionConstants.LOADING_ZONE).asProxy(),
-                Commands.sequence(
-                    new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-                    new InstantCommand(() -> pivot.startPID(isReversed ? -ArmPosition.HP_SHELF.pivotAngle : ArmPosition.HP_SHELF.pivotAngle), pivot)
-                )
+                // Commands.sequence(
+                //     new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
+                new InstantCommand(() -> pivot.startPID(isReversed ? -ArmPosition.HP_SHELF.pivotAngle : ArmPosition.HP_SHELF.pivotAngle), pivot)
+                // )
             ),
             new WaitUntilCommand(()-> pivot.atSetpoint()),
             new InstantCommand(() -> telescope.startPID(ArmPosition.HP_SHELF.teleDist), telescope),
