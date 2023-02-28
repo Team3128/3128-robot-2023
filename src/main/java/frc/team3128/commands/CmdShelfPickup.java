@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.subsystems.Led;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
@@ -26,12 +27,21 @@ public class CmdShelfPickup extends SequentialCommandGroup{
     
     private Telescope telescope;
     private Pivot pivot;
+    private Led led;
 
     public CmdShelfPickup (boolean cone, boolean isReversed) {
         telescope = Telescope.getInstance();
         pivot = Pivot.getInstance();
+        led = Led.getInstance();
 
         addCommands(
+            new InstantCommand(() -> {
+                if (cone) {
+                    led.setColorYellow();
+                } else {
+                    led.setColorPurple();
+                }
+            }, led),
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             Commands.parallel(
                 new ProxyCommand(new CmdMoveLoading(isReversed, VisionConstants.LOADING_ZONE)),
@@ -47,6 +57,7 @@ public class CmdShelfPickup extends SequentialCommandGroup{
             new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, isReversed)),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
             new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate())))
+
         );
     }
 }

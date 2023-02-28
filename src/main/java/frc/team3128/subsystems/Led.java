@@ -66,7 +66,7 @@ public class Led extends SubsystemBase{
         }
     }
 
-    public void setColorYelllow() {
+    public void setColorYellow() {
         setHSV(Yellow.HUE, Yellow.SATURATION, Yellow.VALUE);
     }
 

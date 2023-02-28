@@ -73,6 +73,7 @@ public class RobotContainer {
     public static BooleanSupplier DEBUG = ()-> false; 
 
     private Trigger inProtected;
+    private Trigger isAuto;
 
     public RobotContainer() {
         NAR_Shuffleboard.addData("DEBUG", "DEBUG", ()-> DEBUG.getAsBoolean(), 0, 1);
@@ -86,6 +87,8 @@ public class RobotContainer {
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
         led = Led.getInstance();
+
+        isAuto = new Trigger(() -> Vision.AUTO_ENABLED);
 
         //TODO: Enable all PIDSubsystems so that useOutput runs here
         // pivot.enable();
@@ -164,6 +167,8 @@ public class RobotContainer {
         buttonPad.getButton(3).onTrue(new InstantCommand(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 2 : 0;
         }));
+
+        isAuto.onTrue(new InstantCommand(() -> led.setAutoColor())).onFalse(new InstantCommand(()-> led.setAllianceColor()));
 
         inProtected = new Trigger(
             () -> {
