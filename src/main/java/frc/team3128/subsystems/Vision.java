@@ -122,6 +122,15 @@ public class Vision extends SubsystemBase{
         NAR_Shuffleboard.addData("Vision2", "Processed Target",()->cam2.getProcessedTarget().toString(),0,2,4,1);
         NAR_Shuffleboard.addData("Vision2","EstimatedPose", ()-> cam2.getPos().toString(),0,3,4,1);
         NAR_Shuffleboard.addData("Test", "TESTING", ()->cam2.getTest().toString(),0,2,3,1);
+
+        NAR_Shuffleboard.addData("Togglables", "AUTO_ENABLED", ()-> AUTO_ENABLED, 0, 0);
+        NAR_Shuffleboard.addData("Togglables", "Fixed_Direction", ()-> {
+            if (FIXED_DIRECTION == null)
+                return "null";
+            return FIXED_DIRECTION.toString();
+        }, 0, 1);//Might not work as the value is null at certain points
+        NAR_Shuffleboard.addData("Togglables", "MANUAL", ()-> MANUAL, 1, 0);
+        NAR_Shuffleboard.addData("Togglables", "GROUND_DIRECTION", ()-> GROUND_DIRECTION, 1, 1);
     }
 
     public void logCameraAll() {
