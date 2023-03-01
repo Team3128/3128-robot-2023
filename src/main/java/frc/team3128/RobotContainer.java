@@ -135,7 +135,7 @@ public class RobotContainer {
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
         rightStick.getButton(7).onTrue(new SequentialCommandGroup(new CmdDriveUp(), new WaitCommand(1), new CmdBangBangBalance()));
-        rightStick.getButton(7).onTrue(Commands.deadline(new CmdBangBangBalance(), new CmdBalance()));
+        rightStick.getButton(7).onTrue(Commands.deadline(Commands.sequence(new WaitCommand(0.5), new CmdBangBangBalance()), new CmdBalance()));
         rightStick.getButton(8).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         // rightStick.getButton(8).onTrue(new CmdGyroBalance());
     
