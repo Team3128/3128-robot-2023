@@ -33,12 +33,22 @@ public class Constants {
         public static final double FALCON_NUpS_TO_RPM = 60 / FALCON_ENCODER_RESOLUTION; // sensor units per second to rpm
     }
 
+    public static class AutoConstants {
+        public static final Pose2d PICKUP_1 = new Pose2d(6.5, 0.92, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_2 = new Pose2d(6.5, 2.15, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_3 = new Pose2d(6.5, 3.38, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_4 = new Pose2d(6.5, 4.6, Rotation2d.fromDegrees(180));
+
+        public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(180));
+        public static final Pose2d ClimbSetupOutside = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
+    }
+
     public static class SwerveConstants {
         public static final int pigeonID = 30; 
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
-        public static final double bumperLength = Units.inchesToMeters(4);
+        public static final double bumperLength = Units.inchesToMeters(5);
         public static final double trackWidth = Units.inchesToMeters(26); 
         public static final double wheelBase = Units.inchesToMeters(26); 
         public static final double robotLength = bumperLength + trackWidth;
@@ -127,7 +137,7 @@ public class Constants {
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
 
         /* Motor Inverts */
-        public static final boolean driveMotorInvert = true;
+        public static final boolean driveMotorInvert = false;
         public static final boolean angleMotorInvert = true;
 
         /* Angle Encoder Invert */
@@ -144,7 +154,7 @@ public class Constants {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
             public static final int canCoderID = 20;
-            public static final double angleOffset = -157.763671875; // -156.357421875;//-46.5 + 90; //104.5;//19.599609375; // 19.51171875;//-51.85546875; // 37.35; // degrees
+            public static final double angleOffset = -162.25;//-157.763671875+180; // -156.357421875;//-46.5 + 90; //104.5;//19.599609375; // 19.51171875;//-51.85546875; // 37.35; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -154,7 +164,7 @@ public class Constants {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 4;
             public static final int canCoderID = 21;
-            public static final double angleOffset = 129.375; //126.38671875000001; //23.466 + 90;//-132.25;//311.66015625 - 360; //132.5390625; //311.8359375; //10.45; // degrees
+            public static final double angleOffset = -50.36;//129.375; //126.38671875000001; //23.466 + 90;//-132.25;//311.66015625 - 360; //132.5390625; //311.8359375; //10.45; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -164,7 +174,7 @@ public class Constants {
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 22;
-            public static final double angleOffset = -69.697265625; //-72.0703125;//-70.751953125; //-70.75; //109.51171875; //38.75; // degrees
+            public static final double angleOffset = -65.74;//-69.697265625+180; //-72.0703125;//-70.751953125; //-70.75; //109.51171875; //38.75; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -174,7 +184,7 @@ public class Constants {
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 23;
-            public static final double angleOffset = -54.31640625; //-52.91015625; //-52.9; //306.2109375; //307.6171875; // 58.88; // degrees
+            public static final double angleOffset = 124.27;//-54.31640625; //-52.91015625; //-52.9; //306.2109375; //307.6171875; // 58.88; // degrees
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -185,11 +195,11 @@ public class Constants {
     public static class VisionConstants {
 
         public static final Camera FRONT = new Camera("Frog", true, 0, 0, 0, 
-                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-6), 
-                                                        Units.inchesToMeters(-11.75)), Rotation2d.fromDegrees(0)));
+                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-5.75), 
+                                                        Units.inchesToMeters(-11.5)), Rotation2d.fromDegrees(0)));
         public static final Camera BACK = new Camera("Blog", true, 0, 0, 0, 
-                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-6), 
-                                                        Units.inchesToMeters(11.75)), Rotation2d.fromDegrees(180)));
+                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-5.75), 
+                                                        Units.inchesToMeters(11.5)), Rotation2d.fromDegrees(180)));
 
         public static final double SCREEN_WIDTH = 320;
         public static final double SCREEN_HEIGHT = 240;
@@ -240,9 +250,9 @@ public class Constants {
         };
 
         public static final Pose2d[] LOADING_ZONE = new Pose2d[] {
-            new Pose2d(15.4,6,Rotation2d.fromDegrees(0)),
+            new Pose2d(15.2,6,Rotation2d.fromDegrees(0)),
             new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90)),
-            new Pose2d(15.4,7.3, Rotation2d.fromDegrees(0))
+            new Pose2d(15.2,7.3, Rotation2d.fromDegrees(0))
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
@@ -307,7 +317,7 @@ public class Constants {
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         public static final int CANCODER_ID = 24;
-        public static final double ANGLE_OFFSET = -29.7 +7.55;
+        public static final double ANGLE_OFFSET = -29.7 +7.55 + 85+4.91;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -345,7 +355,7 @@ public class Constants {
 
             NEUTRAL(0, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF(102, 15, null, null), //105
+            HP_SHELF(100, 15, null, null), //105
             GROUND_PICKUP_CONE(38, 24.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 23, null, null), 
             CONE_POLE(-40, 11.5, null, null),
@@ -494,6 +504,7 @@ public class Constants {
 
         public static final int ROLLER_MOTOR_ID = 13;
         public static final double ROLLER_POWER = 0.75;
+        public static final double STALL_POWER = 0.3;
 
         public static final double CURRENT_THRESHOLD = 35;
     }

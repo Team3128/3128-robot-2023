@@ -81,6 +81,10 @@ public class Manipulator extends SubsystemBase {
         return getCurrent() > CURRENT_THRESHOLD;
     }
 
+    public boolean hasObject() {
+        return m_roller.get() == STALL_POWER; 
+    }
+
     public void intake(boolean cone) {
         if (cone) closeClaw();
         else openClaw();

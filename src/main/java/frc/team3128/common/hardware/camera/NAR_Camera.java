@@ -268,7 +268,7 @@ public class NAR_Camera extends PhotonCamera {
         return getPos(bestTarget);
     }
 
-    public Pose2d getPos(PhotonTrackedTarget target) {
+    private Pose2d getPos(PhotonTrackedTarget target) {
         return sPipeline.equals(Pipeline.APRILTAG) ? getPosApril(target) : getPosVision(target);
     }
 

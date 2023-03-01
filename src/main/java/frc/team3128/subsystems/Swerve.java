@@ -72,7 +72,7 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, Mod3.constants)
         };
 
-        Timer.delay(1.0);
+        Timer.delay(1.5);
         resetEncoders();
 
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
@@ -176,6 +176,9 @@ public class Swerve extends SubsystemBase {
         prevPitch = getPitch();
         prevYaw = getYaw();
         prevRoll = getRoll();
+        for (SwerveModule module : modules) {
+            SmartDashboard.putNumber("module " + module.moduleNumber, module.getCanCoder().getDegrees());
+        }
     }
 
     public void resetAll() {

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.RobotContainer;
+import frc.team3128.Constants.AutoConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
@@ -37,22 +38,23 @@ public class CmdScore extends SequentialCommandGroup {
         manipulator = Manipulator.getInstance();
         swerve = Swerve.getInstance();
         addCommands(
-            new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
-            new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
+            // new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
+            // new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
+            new InstantCommand(() -> {if (DriverStation.isAutonomous()) Vision.AUTO_ENABLED = true;}),
             Commands.parallel(
-                new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]).asProxy(),
-                Commands.sequence(
-                    new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-                    new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot)
-                )
+                new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]),
+                // Commands.sequence(
+                //     new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
+                new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot)
             ),
             Commands.parallel(
                 Commands.sequence(
                     new WaitUntilCommand(()-> Vision.MANUAL).raceWith(
-                        new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0),0,true), swerve)
-                        .withTimeout(1)),
+                        new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 
+                                                DriverStation.isAutonomous() ? 0 : -RobotContainer.controller.getRightX() * 1.5,true), swerve)
+                        .withTimeout(0.75)),
                     new InstantCommand(()-> swerve.stop(), swerve)
-                ).asProxy(),
+                ),
                 Commands.sequence(
                     new WaitUntilCommand(()-> pivot.atSetpoint()),
                     new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
@@ -66,7 +68,8 @@ public class CmdScore extends SequentialCommandGroup {
             // new WaitUntilCommand(() ->pivot.atSetpoint()),
             new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, isReversed)),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
-            new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate())))
+            new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
+            new InstantCommand(() -> Vision.AUTO_ENABLED = DriverStation.isAutonomous())
         );
     }
 }

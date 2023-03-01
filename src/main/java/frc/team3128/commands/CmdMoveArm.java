@@ -29,9 +29,10 @@ public class CmdMoveArm extends CommandBase{
         // below is for signaling which side to score out of
         // if (position == ArmPosition.NEUTRAL && Vision.FIXED_DIRECTION != null) 
         //     this.angle = Vision.FIXED_DIRECTION ? -15 : 15;
-        if (position == ArmPosition.NEUTRAL && !manipulator.hasObjectPresent()) 
+        if (position == ArmPosition.NEUTRAL && !manipulator.hasObject()) 
             this.angle = Vision.GROUND_DIRECTION ? 15 : -15;
-        this.angle = reversed ? -this.angle : this.angle;
+        else
+            this.angle = reversed ? -this.angle : this.angle;
         this.dist = position.teleDist;
         addRequirements(pivot, telescope);
     }
@@ -56,8 +57,8 @@ public class CmdMoveArm extends CommandBase{
 
     @Override
     public void end(boolean interrupted){
-        // telescope.disable();
-        // telescope.engageBrake();
+        telescope.disable();
+        telescope.engageBrake();
     }
 
     @Override

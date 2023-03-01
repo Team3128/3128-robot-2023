@@ -23,7 +23,7 @@ public class CmdMove extends CommandBase {
     public enum Type {
         SCORE(
             new double[][] {
-                new double[] {chargingStationInnerX - robotLength/2.0, chargingStationOuterX + robotLength/2.0},
+                new double[] {chargingStationInnerX - robotLength/2.0 - 0.01, chargingStationOuterX + robotLength/2.0 + 0.01},
                 new double[] {LOADING_X_LEFT - robotLength/2.0, LOADING_X_RIGHT}
             },
             new double[] {   //Rectangular Constraint
@@ -268,6 +268,10 @@ public class CmdMove extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         swerve.stop();
+        xController.reset();
+        yController.reset();
+        rController.reset();
+        xDeadController.reset();
     }
 
 }

@@ -16,6 +16,13 @@
       "/Shuffleboard/telescope/tele-PID": "PIDController",
       "/SmartDashboard/CommandScheduler": "Scheduler",
       "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/Shuffleboard/Field/field": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   }
 }
