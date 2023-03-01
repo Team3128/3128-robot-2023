@@ -1,5 +1,7 @@
 package frc.team3128.autonomous;
 
+import java.util.HashMap;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -7,9 +9,11 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.Constants.AutoConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdScoreOptimized;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.subsystems.Swerve;
@@ -21,21 +25,8 @@ import frc.team3128.subsystems.Vision;
  */
 
 public class AutoPrograms {
-
+    private HashMap<String, Command> auto;
     public static Swerve swerve;
-    private static Command simpleAutoBot =
-        Commands.sequence(
-            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
-            Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
-            Trajectories.scoringPoint(0, 1, ArmPosition.TOP_CUBE),
-            Trajectories.climbPoint()
-        );
-    
-    private static Command simpleAutoClimb =
-        Commands.sequence(
-            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
-            Trajectories.climbPoint()
-        );
 
     public AutoPrograms() {
         swerve = Swerve.getInstance();
@@ -45,17 +36,41 @@ public class AutoPrograms {
     }
 
     private void initAutoSelector() {
-        String[] autoStrings = new String[] {"top_1Cone", "top_1Cone+1Cube", "top_1Cone+1Cube+Climb",
-                                            "mid_1Cone", "mid_1Cone+Climb",
-                                            "bottom_1Cone", "bottom_1Cone+1Cube", "bottom_1Cone+1Cube+Climb", "TestAuto"
-                                            }; // naming scheme kinda mid, but its grown on me and now I love it so much
+        // String[] autoStrings = new String[] {"top_1Cone", "top_1Cone+1Cube", "top_1Cone+1Cube+Climb",
+        //                                     "mid_1Cone", "mid_1Cone+Climb",
+        //                                     "bottom_1Cone", "bottom_1Cone+1Cube", "bottom_1Cone+1Cube+Climb", "TestAuto"
+        //                                     }; // naming scheme kinda mid, but its grown on me and now I love it so much
         
-        NarwhalDashboard.addAutos(autoStrings);
+        auto = new HashMap<String, Command>();
+        auto.put("simpleAutoBot", Commands.sequence(
+            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
+            Trajectories.scoringPoint(0, 1, ArmPosition.TOP_CUBE),
+            Trajectories.climbPoint()
+        ));
+        auto.put("simpleAutoOne", Commands.sequence(
+            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.climbPoint()
+        ));
+        auto.put("simpleAutoClimb", Commands.sequence(
+            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            new CmdMove(CmdMove.Type.NONE, false, AutoConstants.PICKUP_1)
+        ));
+        var array = auto.keySet();
+
+        var arrayCopy = new String[array.size()];
+        int index = 0;
+        for (String x : array) {
+            arrayCopy[index] = x;
+            index++;
+        }
+
+        NarwhalDashboard.addAutos(arrayCopy);
     }
 
     public Command getAutonomousCommand() {
     //    String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "mid_1Cone"; //uncomment and change this for testing without opening Narwhal Dashboard
+        String selectedAutoName = "simpleAutoBot"; //uncomment and change this for testing without opening Narwhal Dashboard
         Vision vision = Vision.getInstance();
 
         // if (selectedAutoName == null) {
@@ -72,7 +87,10 @@ public class AutoPrograms {
         //if (vision.getCamera(VisionConstants.BACK).hasValidTarget()) resetPose = vision.getCamera(VisionConstants.BACK).getPos();
         Swerve.getInstance().resetOdometry(new Pose2d(resetPose.getTranslation(), Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)));
         
-        return simpleAutoBot;
+        return Commands.sequence(
+            new WaitUntilCommand(()-> vision.getCamera(VisionConstants.FRONT).hasValidTarget()),
+            auto.get(selectedAutoName)
+            );
         //return Trajectories.get(selectedAutoName);
     }
     
