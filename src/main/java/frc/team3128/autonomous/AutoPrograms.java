@@ -21,7 +21,7 @@ import frc.team3128.subsystems.Vision;
 
 /**
  * Class to store information about autonomous routines.
- * @author Daniel Wang, Mason Lam
+ * @author Daniel Wang, Mason Lam, Leo Lesmes
  */
 
 public class AutoPrograms {
@@ -110,12 +110,14 @@ public class AutoPrograms {
         //      selectedAutoName = "r_" + selectedAutoName;
         // }
         Pose2d resetPose = vision.getCamera(VisionConstants.FRONT).getPos();
+        Swerve.getInstance().zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 0 : 180);
         //if (vision.getCamera(VisionConstants.BACK).hasValidTarget()) resetPose = vision.getCamera(VisionConstants.BACK).getPos();
         Swerve.getInstance().resetOdometry(new Pose2d(resetPose.getTranslation(), Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)));
         
         return Commands.sequence(
-            new WaitUntilCommand(()-> vision.getCamera(VisionConstants.FRONT).hasValidTarget()),
-            auto.get(selectedAutoName)
+            // new WaitUntilCommand(()-> vision.getCamera(VisionConstants.FRONT).hasValidTarget()),
+            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.loadingPoint(AutoConstants.PICKUP_1, false)
             );
         //return Trajectories.get(selectedAutoName);
     }

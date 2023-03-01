@@ -24,6 +24,7 @@ public class CmdDriveUp extends CommandBase{
 
     @Override
     public void initialize() {
+        pose = swerve.getPose();
         chargeStation = DriverStation.getAlliance() == Alliance.Red ? 12.6 : 3.85;
         power = pose.getX() > chargeStation ? -1 : 1;
     }
@@ -34,11 +35,11 @@ public class CmdDriveUp extends CommandBase{
     }
     @Override
     public void end(boolean interrupted) {
-        swerve.stop();
+        // swerve.stop();
     }
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(swerve.getRoll()) >= 5);
+        return (Math.abs(swerve.getRoll()) >= 10);
     }
 }

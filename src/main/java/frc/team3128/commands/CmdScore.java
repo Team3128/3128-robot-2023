@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.RobotContainer;
+import frc.team3128.Constants.AutoConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
@@ -48,7 +49,6 @@ public class CmdScore extends SequentialCommandGroup {
                 // Commands.sequence(
                 //     new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
                 new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot)
-                // )
             ),
             Commands.parallel(
                 Commands.sequence(
@@ -72,7 +72,7 @@ public class CmdScore extends SequentialCommandGroup {
             new WaitUntilCommand(()-> telescope.atSetpoint()),
             new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
             new InstantCommand(() -> led.setAllianceColor(), led),
-            new InstantCommand(() -> Vision.AUTO_ENABLED = false)
+            new InstantCommand(() -> Vision.AUTO_ENABLED = DriverStation.isAutonomous())
         );
     }
 }

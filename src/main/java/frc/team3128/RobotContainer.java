@@ -102,7 +102,7 @@ public class RobotContainer {
         buttonPad = new NAR_ButtonBoard(3);
         CmdMove.setController(controller::getLeftX, controller::getLeftY, controller::getRightX, ()-> Swerve.throttle);
 
-        //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, true));
+        commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, true));
         commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true));
         initDashboard();
         configureButtonBindings();
@@ -130,7 +130,7 @@ public class RobotContainer {
         // shuffleboard things
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
-        rightStick.getButton(7).onTrue(new SequentialCommandGroup(new CmdDriveUp(), new CmdBangBangBalance()));
+        rightStick.getButton(7).onTrue(new SequentialCommandGroup(new CmdDriveUp(), new WaitCommand(1), new CmdBangBangBalance()));
         rightStick.getButton(8).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         // rightStick.getButton(8).onTrue(new CmdGyroBalance());
     

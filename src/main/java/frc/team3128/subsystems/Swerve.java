@@ -72,7 +72,7 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, Mod3.constants)
         };
 
-        Timer.delay(1.0);
+        Timer.delay(1.5);
         resetEncoders();
 
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 

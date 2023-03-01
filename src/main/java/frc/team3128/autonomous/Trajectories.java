@@ -149,9 +149,10 @@ public class Trajectories {
     }
 
     public static CommandBase loadingPoint(Pose2d pose, boolean cone) {
-        return Commands.parallel(
-            new CmdMove(Type.LOADING, false, pose),
-            new CmdGroundPickup(cone)
+        return Commands.sequence(
+            new InstantCommand(()->Vision.AUTO_ENABLED = true),
+            new CmdMove(Type.LOADING, false, pose)
+            //new CmdGroundPickup(cone)
             );
     }
 
@@ -161,8 +162,8 @@ public class Trajectories {
                 pose,
                 pose,
                 pose
-            }),
-            new CmdGroundPickup(cone)
+            })
+            //new CmdGroundPickup(cone)
             );
     }
 
@@ -176,7 +177,8 @@ public class Trajectories {
     public static CommandBase scoringPoint(int grid, int node, ArmPosition position) {
         return Commands.sequence(
             new InstantCommand(()-> Vision.SELECTED_GRID = grid),
-            new CmdScoreOptimized(position, node)
+            new CmdScoreOptimized(position, node),
+            new InstantCommand(() -> System.out.println("hishdiafhidshfks"))
         );
     }
 

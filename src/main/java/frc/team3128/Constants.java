@@ -137,7 +137,7 @@ public class Constants {
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
 
         /* Motor Inverts */
-        public static final boolean driveMotorInvert = true;
+        public static final boolean driveMotorInvert = false;
         public static final boolean angleMotorInvert = true;
 
         /* Angle Encoder Invert */
@@ -195,11 +195,11 @@ public class Constants {
     public static class VisionConstants {
 
         public static final Camera FRONT = new Camera("Frog", true, 0, 0, 0, 
-                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-6), 
-                                                        Units.inchesToMeters(-11.75)), Rotation2d.fromDegrees(0)));
+                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-5.75), 
+                                                        Units.inchesToMeters(-11.5)), Rotation2d.fromDegrees(0)));
         public static final Camera BACK = new Camera("Blog", true, 0, 0, 0, 
-                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-6), 
-                                                        Units.inchesToMeters(11.75)), Rotation2d.fromDegrees(180)));
+                                                        new Transform2d(new Translation2d(Units.inchesToMeters(-5.75), 
+                                                        Units.inchesToMeters(11.5)), Rotation2d.fromDegrees(180)));
 
         public static final double SCREEN_WIDTH = 320;
         public static final double SCREEN_HEIGHT = 240;
@@ -250,9 +250,9 @@ public class Constants {
         };
 
         public static final Pose2d[] LOADING_ZONE = new Pose2d[] {
-            new Pose2d(15.4,6,Rotation2d.fromDegrees(0)),
+            new Pose2d(15.2,6,Rotation2d.fromDegrees(0)),
             new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90)),
-            new Pose2d(15.4,7.3, Rotation2d.fromDegrees(0))
+            new Pose2d(15.2,7.3, Rotation2d.fromDegrees(0))
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
@@ -317,7 +317,7 @@ public class Constants {
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         public static final int CANCODER_ID = 24;
-        public static final double ANGLE_OFFSET = -29.7 +7.55 + 85;
+        public static final double ANGLE_OFFSET = -29.7 +7.55 + 85+4.91;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -355,7 +355,7 @@ public class Constants {
 
             NEUTRAL(0, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF(102, 15, null, null), //105
+            HP_SHELF(100, 15, null, null), //105
             GROUND_PICKUP_CONE(38, 24.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 23, null, null), 
             CONE_POLE(-40, 11.5, null, null),
