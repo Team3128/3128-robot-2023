@@ -268,6 +268,10 @@ public class CmdMove extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         swerve.stop();
+        xController.reset();
+        yController.reset();
+        rController.reset();
+        xDeadController.reset();
     }
 
 }
