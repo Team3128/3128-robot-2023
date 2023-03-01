@@ -27,21 +27,12 @@ public class CmdShelfPickup extends SequentialCommandGroup{
     
     private Telescope telescope;
     private Pivot pivot;
-    private Led led;
 
     public CmdShelfPickup (boolean cone, boolean isReversed) {
         telescope = Telescope.getInstance();
         pivot = Pivot.getInstance();
-        led = Led.getInstance();
 
         addCommands(
-            new InstantCommand(() -> {
-                if (cone) {
-                    led.setColorYellow();
-                } else {
-                    led.setColorPurple();
-                }
-            }, led),
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             Commands.parallel(
                 new ProxyCommand(new CmdMoveLoading(isReversed, VisionConstants.LOADING_ZONE)),

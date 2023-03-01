@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.team3128.subsystems.Led;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
 
@@ -13,6 +14,10 @@ public class CmdPickupOptimized extends SequentialCommandGroup {
     public CmdPickupOptimized(boolean cone) {
         super(
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
+            new InstantCommand(() -> {
+                if (cone) Led.getInstance().setColorYellow();
+                else Led.getInstance().setColorPurple();
+            }),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(() -> {
                 double rotation = MathUtil.inputModulus(Swerve.getInstance().getGyroRotation2d().getDegrees(), -180, 180);
