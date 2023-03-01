@@ -81,6 +81,7 @@ public class CmdMove extends CommandBase {
         this.type = type;
 
         this.joystickOverride = joystickOverride;
+        atDestination = false;
 
         swerve = Swerve.getInstance();
         index = 0;
@@ -268,10 +269,6 @@ public class CmdMove extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         swerve.stop();
-        xController.reset();
-        yController.reset();
-        rController.reset();
-        xDeadController.reset();
     }
 
 }

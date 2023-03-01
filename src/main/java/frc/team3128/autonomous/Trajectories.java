@@ -31,7 +31,7 @@ import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdExtendIntake;
 import frc.team3128.commands.CmdGroundPickup;
-import frc.team3128.commands.CmdGyroBalance;
+import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdMoveLoading;
@@ -174,11 +174,10 @@ public class Trajectories {
     //     );
     // }
 
-    public static CommandBase scoringPoint(int grid, int node, ArmPosition position) {
+    public static CommandBase scoringPoint(int grid, int node, boolean reversed, ArmPosition position) {
         return Commands.sequence(
             new InstantCommand(()-> Vision.SELECTED_GRID = grid),
-            new CmdScoreOptimized(position, node),
-            new InstantCommand(() -> System.out.println("hishdiafhidshfks"))
+            new CmdScore(reversed, position, node)
         );
     }
 

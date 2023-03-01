@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
@@ -30,7 +31,7 @@ import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdExtendIntake;
 import frc.team3128.commands.CmdGroundPickup;
-import frc.team3128.commands.CmdGyroBalance;
+import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdManipGrab;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_ButtonBoard;
@@ -134,6 +135,7 @@ public class RobotContainer {
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
         rightStick.getButton(7).onTrue(new SequentialCommandGroup(new CmdDriveUp(), new WaitCommand(1), new CmdBangBangBalance()));
+        rightStick.getButton(7).onTrue(Commands.deadline(new CmdBangBangBalance(), new CmdBalance()));
         rightStick.getButton(8).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         // rightStick.getButton(8).onTrue(new CmdGyroBalance());
     

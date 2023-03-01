@@ -48,27 +48,27 @@ public class AutoPrograms {
         */
 
         auto.put("bottom_1Cone", Commands.sequence(
-            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
             Trajectories.loadingPoint(AutoConstants.PICKUP_1, false)
         ));
 
         auto.put("bottom_1Cone+1Cube", Commands.sequence(
-            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
             Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
-            Trajectories.scoringPoint(0, 1, ArmPosition.TOP_CUBE),
+            Trajectories.scoringPoint(0, 1, false, ArmPosition.TOP_CUBE),
             Trajectories.climbPoint(false)
         ));
 
         auto.put("bottom_1Cone+Climb", Commands.sequence(
-            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
             Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
             Trajectories.climbPoint(false)
         ));
 
         auto.put("bottom_1Cone+1Cube+Climb", Commands.sequence(
-            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
             Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
-            Trajectories.scoringPoint(0, 1, ArmPosition.TOP_CUBE),
+            Trajectories.scoringPoint(0, 1, false, ArmPosition.TOP_CUBE),
             Trajectories.climbPoint(true)
         ));
 
@@ -77,7 +77,7 @@ public class AutoPrograms {
         */
 
         auto.put("mid_1Cone+Climb", Commands.sequence(
-            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
             Trajectories.climbPoint(true)
         ));
 

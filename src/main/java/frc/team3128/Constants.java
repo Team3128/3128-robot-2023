@@ -41,6 +41,8 @@ public class Constants {
 
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(180));
         public static final Pose2d ClimbSetupOutside = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
+
+        public static final double BALANCE_FF = 0;
     }
 
     public static class SwerveConstants {
