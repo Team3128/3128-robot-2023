@@ -115,11 +115,10 @@ public class AutoPrograms {
         Swerve.getInstance().resetOdometry(new Pose2d(resetPose.getTranslation(), Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)));
         
         return Commands.sequence(
-            // new WaitUntilCommand(()-> vision.getCamera(VisionConstants.FRONT).hasValidTarget()),
-            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
-            Trajectories.loadingPoint(AutoConstants.PICKUP_1, false)
-            );
-        //return Trajectories.get(selectedAutoName);
+            new WaitUntilCommand(()-> vision.getCamera(VisionConstants.FRONT).hasValidTarget()),
+            auto.get(selectedAutoName)
+        );
+        // return Trajectories.get(selectedAutoName);
     }
     
     // /** 
