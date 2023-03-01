@@ -24,7 +24,7 @@ public class CmdBangBangBalance extends CommandBase{
     private static DoubleSupplier thresh, time;
 
     static {
-        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 14, 0, 1);
+        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 6, 0, 1);
         time = NAR_Shuffleboard.debug("Aflack", "Timer", 0.5, 2, 0);
     }
 
@@ -52,7 +52,7 @@ public class CmdBangBangBalance extends CommandBase{
     @Override
     public void execute() {
         swerve.drive(new Translation2d(power,0), 0,true);
-        if (Math.abs(swerve.getRoll()) > thresh.getAsDouble()) 
+        if (Math.abs(swerve.getRoll()) < thresh.getAsDouble()) 
             plateauCount += 1;
         else {
             plateauCount = 0;

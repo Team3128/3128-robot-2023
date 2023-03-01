@@ -35,7 +35,7 @@ public class CmdDriveUp extends CommandBase{
     }
     @Override
     public void end(boolean interrupted) {
-        // swerve.stop();
+        swerve.drive(new Translation2d(0.75,0), 0,true);
     }
 
     @Override
