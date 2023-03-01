@@ -458,33 +458,33 @@ public class Constants {
 
     public static class LedConstants{
         public static class Green{
-            public static final int HUE = 0;
-            public static final int SATURATION = 0;
-            public static final int VALUE = 0;
+            public static final int HUE = 60;
+            public static final int SATURATION = 255;
+            public static final int VALUE = 255;
         }
 
         public static class Blue{
-            public static final int HUE = 0;
-            public static final int SATURATION = 0;
-            public static final int VALUE = 0;
+            public static final int HUE = 120;
+            public static final int SATURATION = 255;
+            public static final int VALUE = 255;
         }
 
         public static class Red{
             public static final int HUE = 0;
-            public static final int SATURATION = 0;
-            public static final int VALUE = 0;
+            public static final int SATURATION = 255;
+            public static final int VALUE = 255;
         }
 
         public static class Yellow{
-            public static final int HUE = 0;
-            public static final int SATURATION = 0;
-            public static final int VALUE = 0;
+            public static final int HUE = 30;
+            public static final int SATURATION = 255;
+            public static final int VALUE = 255;
         }
 
         public static class Purple{
-            public static final int HUE = 1;
-            public static final int SATURATION = 1;
-            public static final int VALUE = 1;
+            public static final int HUE = 130;
+            public static final int SATURATION = 255;
+            public static final int VALUE = 50;
         }
 
         public static class Off{

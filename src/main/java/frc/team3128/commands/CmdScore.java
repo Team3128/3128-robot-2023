@@ -31,17 +31,13 @@ public class CmdScore extends SequentialCommandGroup {
     private Swerve swerve;
     private Telescope telescope;
     private Manipulator manipulator;
-    private Led led;
 
     public CmdScore(boolean isReversed, ArmPosition position, int xpos) {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
         swerve = Swerve.getInstance();
-        led = Led.getInstance();
-
         addCommands(
-            new InstantCommand(() -> led.setAutoColor(), led),
             // new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
             // new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             new InstantCommand(() -> {if (DriverStation.isAutonomous()) Vision.AUTO_ENABLED = true;}),
@@ -73,7 +69,6 @@ public class CmdScore extends SequentialCommandGroup {
             new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, isReversed)),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
             new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
-            new InstantCommand(() -> led.setAllianceColor(), led),
             new InstantCommand(() -> Vision.AUTO_ENABLED = DriverStation.isAutonomous())
         );
     }
