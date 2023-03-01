@@ -176,6 +176,9 @@ public class Swerve extends SubsystemBase {
         prevPitch = getPitch();
         prevYaw = getYaw();
         prevRoll = getRoll();
+        for (SwerveModule module : modules) {
+            SmartDashboard.putNumber("module " + module.moduleNumber, module.getCanCoder().getDegrees());
+        }
     }
 
     public void resetAll() {
