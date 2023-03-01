@@ -42,20 +42,46 @@ public class AutoPrograms {
         //                                     }; // naming scheme kinda mid, but its grown on me and now I love it so much
         
         auto = new HashMap<String, Command>();
-        auto.put("simpleAutoBot", Commands.sequence(
+        
+        /**
+            * Bottom Position Autos
+        */
+
+        auto.put("bottom_1Cone", Commands.sequence(
+            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.loadingPoint(AutoConstants.PICKUP_1, false)
+        ));
+
+        auto.put("bottom_1Cone+1Cube", Commands.sequence(
             Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
             Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
             Trajectories.scoringPoint(0, 1, ArmPosition.TOP_CUBE),
-            Trajectories.climbPoint()
+            Trajectories.climbPoint(false)
         ));
-        auto.put("simpleAutoOne", Commands.sequence(
+
+        auto.put("bottom_1Cone+Climb", Commands.sequence(
             Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
-            Trajectories.climbPoint()
+            Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
+            Trajectories.climbPoint(false)
         ));
-        auto.put("simpleAutoClimb", Commands.sequence(
+
+        auto.put("bottom_1Cone+1Cube+Climb", Commands.sequence(
             Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
-            new CmdMove(CmdMove.Type.NONE, false, AutoConstants.PICKUP_1)
+            Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
+            Trajectories.scoringPoint(0, 1, ArmPosition.TOP_CUBE),
+            Trajectories.climbPoint(true)
         ));
+
+        /**
+            * Middle Position Autos
+        */
+
+        auto.put("mid_1Cone+Climb", Commands.sequence(
+            Trajectories.scoringPoint(0, 0, ArmPosition.TOP_CONE),
+            Trajectories.climbPoint(true)
+        ));
+
+        
         var array = auto.keySet();
 
         var arrayCopy = new String[array.size()];
@@ -70,7 +96,7 @@ public class AutoPrograms {
 
     public Command getAutonomousCommand() {
     //    String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "simpleAutoBot"; //uncomment and change this for testing without opening Narwhal Dashboard
+        String selectedAutoName = "bottom_1Cone"; //uncomment and change this for testing without opening Narwhal Dashboard
         Vision vision = Vision.getInstance();
 
         // if (selectedAutoName == null) {

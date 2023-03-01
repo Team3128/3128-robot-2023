@@ -39,7 +39,8 @@ public class Constants {
         public static final Pose2d PICKUP_3 = new Pose2d(6.5, 3.38, Rotation2d.fromDegrees(180));
         public static final Pose2d PICKUP_4 = new Pose2d(6.5, 4.6, Rotation2d.fromDegrees(180));
 
-        public static final Pose2d ClimbSetup = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(180));
+        public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(180));
+        public static final Pose2d ClimbSetupOutside = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
     }
 
     public static class SwerveConstants {

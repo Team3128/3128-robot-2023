@@ -1,5 +1,6 @@
 package frc.team3128.autonomous;
 
+import java.text.ParsePosition;
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,6 +57,8 @@ public class Trajectories {
     private static HashMap<String, Command> CommandEventMap = new HashMap<String, Command>();
 
     private static Manipulator manipulator = Manipulator.getInstance();
+
+    private static Swerve swerve = Swerve.getInstance();
 
     // private static Intake intake = Intake.getInstance();
 
@@ -163,6 +166,13 @@ public class Trajectories {
             );
     }
 
+    // public static CommandBase preloadScoringPoint(int grid, int node, boolean reversed) {
+    //     return Commands.sequence(
+    //         new InstantCommand(() -> swerve.resetOdometry(),
+    //         new CmdMoveArm(position, reversed)
+    //     );
+    // }
+
     public static CommandBase scoringPoint(int grid, int node, ArmPosition position) {
         return Commands.sequence(
             new InstantCommand(()-> Vision.SELECTED_GRID = grid),
@@ -170,9 +180,9 @@ public class Trajectories {
         );
     }
 
-    public static CommandBase climbPoint() {
+    public static CommandBase climbPoint(boolean inside) {
         return Commands.sequence(
-            new CmdMove(Type.NONE, false, AutoConstants.ClimbSetup),
+            new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : AutoConstants.ClimbSetupOutside),
             new CmdDriveUp(),
             new CmdBangBangBalance()
         );
