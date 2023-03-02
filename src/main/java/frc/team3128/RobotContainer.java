@@ -8,18 +8,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.team3128.commands.CmdRetractIntake;
-import frc.team3128.commands.CmdScore;
 import frc.team3128.commands.CmdScoreOptimized;
-import frc.team3128.commands.CmdShelfPickup;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
@@ -27,11 +19,8 @@ import frc.team3128.commands.CmdPickupOptimized;
 import static frc.team3128.Constants.FieldConstants.*;
 
 import static frc.team3128.Constants.SwerveConstants.*;
-import frc.team3128.commands.CmdBangBangBalance;
-import frc.team3128.commands.CmdDriveUp;
-import frc.team3128.commands.CmdExtendIntake;
 import frc.team3128.commands.CmdGroundPickup;
-import frc.team3128.commands.CmdBalance;
+import frc.team3128.Constants.ManipulatorConstants;
 import frc.team3128.commands.CmdManipGrab;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_ButtonBoard;
@@ -39,7 +28,6 @@ import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
-import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Led;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.common.utility.NAR_Shuffleboard;
@@ -71,6 +59,7 @@ public class RobotContainer {
     private NAR_Joystick leftStick;
     private NAR_Joystick rightStick;
     private NAR_ButtonBoard buttonPad;
+    private NAR_XboxController operatorController;
 
     public static NAR_XboxController controller;
 
@@ -104,6 +93,8 @@ public class RobotContainer {
         rightStick = new NAR_Joystick(1);
         controller = new NAR_XboxController(2);
         buttonPad = new NAR_ButtonBoard(3);
+        operatorController = new NAR_XboxController(4);
+
         CmdMove.setController(controller::getLeftX, controller::getLeftY, controller::getRightX, ()-> Swerve.throttle);
 
         // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, true));
@@ -117,34 +108,36 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         controller.getButton("A").onTrue(new InstantCommand(()-> Vision.AUTO_ENABLED = !Vision.AUTO_ENABLED));
-        controller.getButton("Y").onTrue(new InstantCommand(()-> Vision.GROUND_DIRECTION = !Vision.GROUND_DIRECTION).andThen(new CmdMoveArm(ArmPosition.NEUTRAL, false)));
+        controller.getButton("Y").onTrue(new InstantCommand(()-> {Vision.GROUND_DIRECTION = !Vision.GROUND_DIRECTION; 
+                                                                            Manipulator.objectPresent = false;})
+                                                                            .andThen(new CmdMoveArm(ArmPosition.NEUTRAL, false)));
         controller.getButton("RightTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = 1)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("LeftTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = .25)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         //controller.getButton("X").onTrue(new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))));
-        controller.getButton("RightBumper").onTrue(new CmdGroundPickup(true)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false));
-        controller.getButton("LeftBumper").onTrue(new CmdGroundPickup(false)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false));
+        controller.getButton("RightBumper").onTrue(new CmdGroundPickup(true)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false).
+                                                                andThen(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))));
+        controller.getButton("LeftBumper").onTrue(new CmdGroundPickup(false)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false).
+                                                                andThen(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))));
+        
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
         rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
-        
-        // zeroing
         rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
-
-        // shuffleboard things
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
-        rightStick.getButton(8).onTrue(new SequentialCommandGroup(new CmdDriveUp(), new WaitCommand(1), new CmdBangBangBalance()));
-        rightStick.getButton(7).onTrue(Commands.deadline(Commands.sequence(new WaitCommand(1), new CmdBangBangBalance()), new CmdBalance()));
+        // rightStick.getButton(7).onTrue(Commands.deadline(Commands.sequence(new WaitCommand(1), new CmdBangBangBalance()), new CmdBalance()));
+        // rightStick.getButton(8).onTrue(new SequentialCommandGroup(new CmdDriveUp(), new WaitCommand(1), new CmdBangBangBalance()));
+        
         //rightStick.getButton(8).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         // rightStick.getButton(8).onTrue(new CmdGyroBalance());
     
         // manual controls
-        rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
-        rightStick.getButton(10).onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
+        rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
+        rightStick.getButton(10).onTrue(new InstantCommand(()->telescope.retract(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
         
-        rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
+        rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
 
         rightStick.getButton(13).onTrue(new CmdManipGrab(true));
         rightStick.getButton(14).onTrue(new CmdManipGrab(false));
@@ -152,7 +145,10 @@ public class RobotContainer {
         rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
-        buttonPad.getButton(14).onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
+        buttonPad.getButton(14).onTrue(new InstantCommand(()->{pivot.setPower(0); telescope.stopTele(); 
+                                                                telescope.engageBrake(); manipulator.stopRoller(); 
+                                                                swerve.stop();}, pivot, telescope, swerve, manipulator));
+        // cancel button
         buttonPad.getButton(16).onTrue(new CmdPickupOptimized(true));
         buttonPad.getButton(15).onTrue(new CmdPickupOptimized(false));
 
@@ -178,6 +174,19 @@ public class RobotContainer {
         buttonPad.getButton(3).onTrue(new InstantCommand(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 2 : 0;
         }));
+
+        operatorController.getRightPOVButton().onTrue(new InstantCommand(()->pivot.setPower(0.3), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
+        operatorController.getLeftPOVButton().onTrue(new InstantCommand(()->pivot.setPower(-0.3), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
+        operatorController.getUpPOVButton().onTrue(new InstantCommand(()->telescope.retract(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
+        operatorController.getDownPOVButton().onTrue(new InstantCommand(()->telescope.extend(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
+
+        operatorController.getButton("Start").onTrue(new InstantCommand(()->telescope.zeroEncoder()));
+        operatorController.getButton("X").onTrue(new InstantCommand(()->manipulator.stopRoller(), manipulator));
+        operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false));
+        operatorController.getButton("LeftTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
+        operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true));
+        operatorController.getButton("RightTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(true), manipulator));
+        operatorController.getButton("Back").onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
 
         isAuto.onTrue(new InstantCommand(() -> led.setAutoColor())).onFalse(new InstantCommand(()-> led.setAllianceColor()));
 

@@ -15,7 +15,7 @@ public class Manipulator extends SubsystemBase {
 
     private static Manipulator instance;
 
-    public boolean objectPresent;
+    public static boolean objectPresent = false;
 
     public Manipulator(){
         configPneumatics();
@@ -81,11 +81,6 @@ public class Manipulator extends SubsystemBase {
         return getCurrent() > CURRENT_THRESHOLD;
     }
 
-    public boolean hasObject() {
-        return m_roller.getMotorOutputPercent() == STALL_POWER; 
-
-    }
-
     public void intake(boolean cone) {
         if (cone) closeClaw();
         else openClaw();
@@ -105,7 +100,7 @@ public class Manipulator extends SubsystemBase {
     public void initShuffleboard() {
         NAR_Shuffleboard.addData("Manipulator","Value", () -> getClawState().toString(),0,0);
         NAR_Shuffleboard.addData("Manipulator", "Manip current", () -> getCurrent(), 0, 1);
-        NAR_Shuffleboard.addData("Manipulator", "Has object", () -> hasObject(), 0, 2);
+        // NAR_Shuffleboard.addData("Manipulator", "Has object", () -> hasObject(), 0, 2);
         NAR_Shuffleboard.addData("Manipulator", "get", () -> m_roller.getMotorOutputPercent(), 0, 3);
     }
 }
