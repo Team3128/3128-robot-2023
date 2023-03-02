@@ -62,10 +62,10 @@ public class CmdScore extends SequentialCommandGroup {
             // new InstantCommand(() -> pivot.startPID(position.pivotAngle)),
             // new WaitUntilCommand(() ->pivot.atSetpoint()),
             new InstantCommand(() -> Manipulator.objectPresent = false),
-            new InstantCommand(() -> telescope.setSetpoint(ArmPosition.NEUTRAL.teleDist)),
+            new InstantCommand(() -> telescope.setSetpoint(ArmPosition.NEUTRAL.teleDist), telescope),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
-            new InstantCommand(()-> {telescope.disable(); telescope.engageBrake();}),
-            new InstantCommand(()-> pivot.setSetpoint(ArmPosition.NEUTRAL.pivotAngle)),
+            new InstantCommand(()-> {telescope.disable(); telescope.engageBrake();}, telescope),
+            new InstantCommand(()-> pivot.setSetpoint(Vision.GROUND_DIRECTION ? 15 : -15), pivot),
             //new CmdMoveArm(ArmPosition.NEUTRAL, isReversed),
             new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
             new InstantCommand(() -> Vision.AUTO_ENABLED = DriverStation.isAutonomous())

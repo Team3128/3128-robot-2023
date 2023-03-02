@@ -175,12 +175,8 @@ public class RobotContainer {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 2 : 0;
         }));
 
-        operatorController.getRightPOVButton().onTrue(new InstantCommand(()->pivot.setPower(0.3), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
-        operatorController.getLeftPOVButton().onTrue(new InstantCommand(()->pivot.setPower(-0.3), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
-        operatorController.getUpPOVButton().onTrue(new InstantCommand(()->telescope.retract(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
-        operatorController.getDownPOVButton().onTrue(new InstantCommand(()->telescope.extend(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
-
         operatorController.getButton("Start").onTrue(new InstantCommand(()-> initOperator()));
+        operatorController.getButton("Back").onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
 
         isAuto.onTrue(new InstantCommand(() -> led.setAutoColor())).onFalse(new InstantCommand(()-> led.setAllianceColor()));
 
@@ -219,13 +215,16 @@ public class RobotContainer {
     }
 
     private void initOperator() {
-        operatorController.getButton("Y").onTrue(new InstantCommand(()-> new InstantCommand(()-> telescope.zeroEncoder())));
-        operatorController.getButton("X").onTrue(new InstantCommand(()->manipulator.stopRoller(), manipulator));
+        operatorController.getButton("Y").onTrue(new InstantCommand(()-> telescope.zeroEncoder(), telescope));
+        operatorController.getButton("X").onTrue(new InstantCommand(()-> manipulator.stopRoller(), manipulator));
         operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false));
         operatorController.getButton("LeftTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
         operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true));
         operatorController.getButton("RightTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(true), manipulator));
-        operatorController.getButton("Back").onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
+        operatorController.getRightPOVButton().onTrue(new InstantCommand(()->pivot.setPower(0.3), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
+        operatorController.getLeftPOVButton().onTrue(new InstantCommand(()->pivot.setPower(-0.3), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
+        operatorController.getUpPOVButton().onTrue(new InstantCommand(()->telescope.retract(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
+        operatorController.getDownPOVButton().onTrue(new InstantCommand(()->telescope.extend(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
     }
 
     private void initDashboard() {
