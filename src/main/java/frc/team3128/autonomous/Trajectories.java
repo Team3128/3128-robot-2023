@@ -20,11 +20,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import static frc.team3128.Constants.SwerveConstants.*;
 
+import frc.team3128.RobotContainer;
 import frc.team3128.Constants.AutoConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdBangBangBalance;
@@ -151,9 +153,10 @@ public class Trajectories {
     public static CommandBase loadingPoint(Pose2d pose, boolean cone) {
         return Commands.sequence(
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
-            new CmdMove(Type.LOADING, false, pose)
-            //new CmdGroundPickup(cone)
-            );
+            Commands.parallel(
+                new CmdMove(Type.LOADING, false, pose),
+                new CmdGroundPickup(cone)
+            ));
     }
 
     public static CommandBase loadingPointSpecial(Pose2d pose, boolean cone) {

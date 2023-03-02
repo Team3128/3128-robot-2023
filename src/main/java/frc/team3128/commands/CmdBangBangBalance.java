@@ -1,13 +1,21 @@
 package frc.team3128.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
 
 public class CmdBangBangBalance extends CommandBase{
     private int plateauCount = 0;
     private Swerve swerve;
     private double maxRoll; 
+    private static DoubleSupplier thresh;
+
+    static {
+        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 25, 0, 1);
+    }
 
     //Essentially WaitUntilCommand
     public CmdBangBangBalance() {
@@ -41,6 +49,6 @@ public class CmdBangBangBalance extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        return plateauCount >= 10;
+        return plateauCount >= thresh.getAsDouble();
     }
 }

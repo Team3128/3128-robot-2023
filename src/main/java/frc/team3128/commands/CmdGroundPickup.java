@@ -6,12 +6,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.subsystems.Vision;
 
-public class CmdGroundPickup extends InstantCommand {
+public class CmdGroundPickup extends SequentialCommandGroup {
 
     // Vision.GROUND_DIRECTION = false will pick up from battery side which will score cone on front side
     // Vision.GROUND_DIRECTION = true will pick up from front and score cone on battery side
     public CmdGroundPickup(boolean cone) {
-        super(()-> Commands.sequence(
+        super(
             new CmdMoveArm(cone ? ArmPosition.GROUND_PICKUP_CONE : ArmPosition.GROUND_PICKUP_CUBE, !Vision.GROUND_DIRECTION),
             new CmdManipGrab(cone),
             new InstantCommand(
@@ -20,7 +20,6 @@ public class CmdGroundPickup extends InstantCommand {
                     else Vision.FIXED_DIRECTION = null;
                 }
             ),
-            new CmdMoveArm(ArmPosition.NEUTRAL, false)).schedule()
-        );
+            new CmdMoveArm(ArmPosition.NEUTRAL, false));
     }
 }

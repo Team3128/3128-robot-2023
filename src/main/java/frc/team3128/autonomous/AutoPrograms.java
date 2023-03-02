@@ -8,12 +8,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.Constants.AutoConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdMove;
+import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdScoreOptimized;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.subsystems.Swerve;
@@ -115,8 +117,16 @@ public class AutoPrograms {
         Swerve.getInstance().resetOdometry(new Pose2d(resetPose.getTranslation(), Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)));
         
         return Commands.sequence(
+            // new InstantCommand(()-> Vision.SELECTED_GRID = 0),
+            // new InstantCommand(()-> Vision.AUTO_ENABLED = true),
+            // new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[0], false, VisionConstants.SCORES_GRID[0]),
+            // new CmdMove(CmdMove.Type.LOADING, false, AutoConstants.PICKUP_1)
             new WaitUntilCommand(()-> vision.getCamera(VisionConstants.FRONT).hasValidTarget()),
-            auto.get(selectedAutoName)
+            Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
+            Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
+            Trajectories.scoringPoint(0, 1, false, ArmPosition.TOP_CUBE)
+            // Trajectories.loadingPoint(AutoConstants.PICKUP_2, false)
+            // // auto.get(selectedAutoName)
         );
         // return Trajectories.get(selectedAutoName);
     }

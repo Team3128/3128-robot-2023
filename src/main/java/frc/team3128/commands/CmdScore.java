@@ -15,6 +15,7 @@ import frc.team3128.Constants.AutoConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.commands.CmdMove.Type;
 import frc.team3128.subsystems.Led;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
@@ -66,7 +67,7 @@ public class CmdScore extends SequentialCommandGroup {
             new InstantCommand(() -> manipulator.stopRoller(), manipulator),
             // new InstantCommand(() -> pivot.startPID(position.pivotAngle)),
             // new WaitUntilCommand(() ->pivot.atSetpoint()),
-            new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, isReversed)),
+            new CmdMoveArm(ArmPosition.NEUTRAL, isReversed),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
             new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
             new InstantCommand(() -> Vision.AUTO_ENABLED = DriverStation.isAutonomous())

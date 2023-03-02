@@ -122,8 +122,8 @@ public class RobotContainer {
         controller.getButton("LeftTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = .25)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         //controller.getButton("X").onTrue(new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))));
-        controller.getButton("RightBumper").onTrue(new CmdGroundPickup(true));
-        controller.getButton("LeftBumper").onTrue(new CmdGroundPickup(false));
+        controller.getButton("RightBumper").onTrue(new CmdGroundPickup(true)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false));
+        controller.getButton("LeftBumper").onTrue(new CmdGroundPickup(false)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
         rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
@@ -134,9 +134,9 @@ public class RobotContainer {
         // shuffleboard things
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
-        rightStick.getButton(7).onTrue(new SequentialCommandGroup(new CmdDriveUp(), new WaitCommand(1), new CmdBangBangBalance()));
-        rightStick.getButton(7).onTrue(Commands.deadline(Commands.sequence(new WaitCommand(0.5), new CmdBangBangBalance()), new CmdBalance()));
-        rightStick.getButton(8).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
+        rightStick.getButton(8).onTrue(new SequentialCommandGroup(new CmdDriveUp(), new WaitCommand(1), new CmdBangBangBalance()));
+        rightStick.getButton(7).onTrue(Commands.deadline(Commands.sequence(new WaitCommand(1), new CmdBangBangBalance()), new CmdBalance()));
+        //rightStick.getButton(8).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         // rightStick.getButton(8).onTrue(new CmdGyroBalance());
     
         // manual controls
@@ -149,12 +149,15 @@ public class RobotContainer {
         rightStick.getButton(13).onTrue(new CmdManipGrab(true));
         rightStick.getButton(14).onTrue(new CmdManipGrab(false));
         rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.stopRoller(), manipulator));
-        rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.openClaw(), manipulator));
+        rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         buttonPad.getButton(14).onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
         buttonPad.getButton(16).onTrue(new CmdPickupOptimized(true));
         buttonPad.getButton(15).onTrue(new CmdPickupOptimized(false));
+
+        rightStick.getUpPOVButton().onTrue(new InstantCommand(()-> led.setAllianceColor()));
+        rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> led.setAutoColor()));
 
         //Intake Buttons
         

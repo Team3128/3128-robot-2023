@@ -77,6 +77,14 @@ public class Led extends SubsystemBase{
     public void setAutoColor() {
         setHSV(Green.HUE, Green.SATURATION, Green.VALUE);
     }
+
+    public void setPickupColor(boolean cone) {
+        if (cone) {
+            setColorYellow();
+        } else {
+            setColorPurple();
+        }
+    }
     
 
 }
