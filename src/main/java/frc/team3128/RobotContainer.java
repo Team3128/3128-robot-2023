@@ -180,13 +180,7 @@ public class RobotContainer {
         operatorController.getUpPOVButton().onTrue(new InstantCommand(()->telescope.retract(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
         operatorController.getDownPOVButton().onTrue(new InstantCommand(()->telescope.extend(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
 
-        operatorController.getButton("Start").onTrue(new InstantCommand(()->telescope.zeroEncoder()));
-        operatorController.getButton("X").onTrue(new InstantCommand(()->manipulator.stopRoller(), manipulator));
-        operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false));
-        operatorController.getButton("LeftTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
-        operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true));
-        operatorController.getButton("RightTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(true), manipulator));
-        operatorController.getButton("Back").onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
+        operatorController.getButton("Start").onTrue(new InstantCommand(()-> initOperator()));
 
         isAuto.onTrue(new InstantCommand(() -> led.setAutoColor())).onFalse(new InstantCommand(()-> led.setAllianceColor()));
 
@@ -222,6 +216,16 @@ public class RobotContainer {
             buttonPad.getButton(12).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 0));
             buttonPad.getButton(10).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 2));
         }
+    }
+
+    private void initOperator() {
+        operatorController.getButton("Y").onTrue(new InstantCommand(()-> new InstantCommand(()-> telescope.zeroEncoder())));
+        operatorController.getButton("X").onTrue(new InstantCommand(()->manipulator.stopRoller(), manipulator));
+        operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false));
+        operatorController.getButton("LeftTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
+        operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true));
+        operatorController.getButton("RightTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(true), manipulator));
+        operatorController.getButton("Back").onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
     }
 
     private void initDashboard() {

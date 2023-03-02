@@ -54,8 +54,10 @@ public class CmdShelfPickup extends SequentialCommandGroup{
                 ),
                 new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)
             ),
-            new CmdMoveArm(ArmPosition.NEUTRAL, isReversed),
+            new InstantCommand(() -> telescope.setSetpoint(ArmPosition.NEUTRAL.teleDist)),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
+            new InstantCommand(()-> {telescope.disable(); telescope.engageBrake();}),
+            new InstantCommand(()-> pivot.setSetpoint(ArmPosition.NEUTRAL.pivotAngle)),
             new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
             new InstantCommand(() -> new InstantCommand(()-> Vision.AUTO_ENABLED = false))
         );
