@@ -139,8 +139,8 @@ public class RobotContainer {
         rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
         rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
 
-        rightStick.getButton(13).onTrue(new CmdManipGrab(true));
-        rightStick.getButton(14).onTrue(new CmdManipGrab(false));
+        rightStick.getButton(13).onTrue(new CmdManipGrab(true)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
+        rightStick.getButton(14).onTrue(new CmdManipGrab(false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
         rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.stopRoller(), manipulator));
         rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
 
@@ -149,8 +149,8 @@ public class RobotContainer {
                                                                 telescope.engageBrake(); manipulator.stopRoller(); 
                                                                 swerve.stop();}, pivot, telescope, swerve, manipulator));
         // cancel button
-        buttonPad.getButton(16).onTrue(new CmdPickupOptimized(true));
-        buttonPad.getButton(15).onTrue(new CmdPickupOptimized(false));
+        buttonPad.getButton(16).onTrue(new CmdPickupOptimized(true)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
+        buttonPad.getButton(15).onTrue(new CmdPickupOptimized(false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
 
         rightStick.getUpPOVButton().onTrue(new InstantCommand(()-> led.setAllianceColor()));
         rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> led.setAutoColor()));
@@ -217,9 +217,9 @@ public class RobotContainer {
     private void initOperator() {
         operatorController.getButton("Y").onTrue(new InstantCommand(()-> telescope.zeroEncoder(), telescope));
         operatorController.getButton("X").onTrue(new InstantCommand(()-> manipulator.stopRoller(), manipulator));
-        operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false));
+        operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
         operatorController.getButton("LeftTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
-        operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true));
+        operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
         operatorController.getButton("RightTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(true), manipulator));
         operatorController.getRightPOVButton().onTrue(new InstantCommand(()->pivot.setPower(0.3), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
         operatorController.getLeftPOVButton().onTrue(new InstantCommand(()->pivot.setPower(-0.3), pivot)).onFalse(new InstantCommand(()->pivot.setPower(0.0), pivot));
