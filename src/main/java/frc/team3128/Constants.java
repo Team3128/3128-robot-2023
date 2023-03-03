@@ -39,7 +39,7 @@ public class Constants {
         public static final Pose2d PICKUP_3 = new Pose2d(6.2, 3.38, Rotation2d.fromDegrees(180));
         public static final Pose2d PICKUP_4 = new Pose2d(6.2, 4.6, Rotation2d.fromDegrees(180));
 
-        public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(180));
+        public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));
         public static final Pose2d ClimbSetupOutside = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
 
         public static final double BALANCE_FF = 0;
@@ -252,9 +252,9 @@ public class Constants {
         };
 
         public static final Pose2d[] LOADING_ZONE = new Pose2d[] {
-            new Pose2d(15.2,6,Rotation2d.fromDegrees(0)),
+            new Pose2d(15.1,6,Rotation2d.fromDegrees(0)),
             new Pose2d(Units.inchesToMeters(636.96-76.925),Units.inchesToMeters(265.74+54.5-26), Rotation2d.fromDegrees(90)),
-            new Pose2d(15.2,7.3, Rotation2d.fromDegrees(0))
+            new Pose2d(15.1,7.3, Rotation2d.fromDegrees(0))
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
@@ -319,7 +319,7 @@ public class Constants {
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         public static final int CANCODER_ID = 24;
-        public static final double ANGLE_OFFSET = -29.7 +7.55 + 85+4.91;
+        public static final double ANGLE_OFFSET = -29.7 +7.55 + 85+4.91+0.88-3.7;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -337,6 +337,7 @@ public class Constants {
         public static final double ENC_CONV = (1/5.0) * 2 * Math.PI * 0.4; //55.0 /35.0
         public static final double MIN_DIST = 11.5;
         public static final double MAX_DIST = 48;
+        public static final double TELE_OFFSET = 0;
         public static final double TELE_TOLERANCE = 1;
         public static final int TELE_CURRENT_LIMIT = 40;
         public static final boolean isReversed = true;
@@ -349,7 +350,7 @@ public class Constants {
     public static class ArmConstants {
 
         public enum ArmPosition {
-            TOP_CONE(107, 42, 0, true), // angles are off by like 10 (should be like 10 down)
+            TOP_CONE(107, 43, 0, true), // angles are off by like 10 (should be like 10 down)
             TOP_CUBE(98, 35, 0, false), 
             MID_CONE(98, 22.5, 1, true), 
             MID_CUBE(87, 15, 1, false), 
@@ -357,7 +358,7 @@ public class Constants {
 
             NEUTRAL(0, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF(100, 15, null, null), //105
+            HP_SHELF(100, 18, null, null), //105
             GROUND_PICKUP_CONE(38, 24.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 23, null, null), 
             CONE_POLE(-40, 11.5, null, null),
@@ -501,14 +502,14 @@ public class Constants {
     }
 
     public static class ManipulatorConstants{
-        public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
-        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
+        public static final int SOLENOID_FORWARD_CHANNEL_ID = 3;
+        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 4;
 
         public static final int ROLLER_MOTOR_ID = 13;
-        public static final double ROLLER_POWER = 0.6;
-        public static final double STALL_POWER = 0.2;
+        public static final double ROLLER_POWER = 0.7;
+        public static final double STALL_POWER = 0.25;
 
-        public static final double CURRENT_THRESHOLD = 30;
+        public static final double CURRENT_THRESHOLD = 35;
     }
 
     public static class BalanceConstants{

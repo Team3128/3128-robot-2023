@@ -26,7 +26,7 @@ public class CmdDriveUp extends CommandBase{
     public void initialize() {
         pose = swerve.getPose();
         chargeStation = DriverStation.getAlliance() == Alliance.Red ? 12.6 : 3.85;
-        power = pose.getX() > chargeStation ? -1 : 1;
+        power = pose.getX() > chargeStation ? -3: 3;
     }
 
     @Override

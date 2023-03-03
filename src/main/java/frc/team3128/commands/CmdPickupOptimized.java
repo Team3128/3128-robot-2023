@@ -15,10 +15,7 @@ public class CmdPickupOptimized extends SequentialCommandGroup {
     public CmdPickupOptimized(boolean cone) {
         super(
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
-            new InstantCommand(() -> {
-                if (cone) Led.getInstance().setColorYellow();
-                else Led.getInstance().setColorPurple();
-            }),
+            new InstantCommand(() -> Led.getInstance().setPickupColor(cone)),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(() -> {
                 double rotation = MathUtil.inputModulus(Swerve.getInstance().getGyroRotation2d().getDegrees(), -180, 180);

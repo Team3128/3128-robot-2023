@@ -157,16 +157,16 @@ public class Trajectories {
     public static CommandBase loadingPoint(Pose2d pose, boolean cone) {
         return Commands.sequence(
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
-            new CmdMove(Type.LOADING, false, pose),
             Commands.race(
                 Commands.sequence(
-                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 0,true), swerve)
+                    new CmdMove(Type.LOADING, false, pose),
+                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.35 : 0.35,0), 0,true), swerve)
                         .withTimeout(4),
                     new InstantCommand(()-> swerve.stop(), swerve),
-                    new InstantCommand(()-> manipulator.stopRoller())
+                    new InstantCommand(()-> manipulator.stopRoller()))
                 ),
                 new CmdGroundPickup(cone)
-            ));
+            );
     }
 
     public static CommandBase loadingPointSpecial(Pose2d pose, boolean cone) {
@@ -178,7 +178,7 @@ public class Trajectories {
             }),
             Commands.race(
                 Commands.sequence(
-                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 0,true), swerve)
+                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.35 : 0.35,0), 0,true), swerve)
                         .withTimeout(4),
                     new InstantCommand(()-> swerve.stop(), swerve),
                     new InstantCommand(()-> manipulator.stopRoller())
@@ -203,6 +203,8 @@ public class Trajectories {
 
     public static CommandBase climbPoint(boolean inside) {
         return Commands.sequence(
+            new InstantCommand(()-> Vision.GROUND_DIRECTION = false),
+            new CmdMoveArm(ArmPosition.NEUTRAL, false),
             new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : AutoConstants.ClimbSetupOutside),
             new CmdDriveUp(),
             new CmdBangBangBalance()

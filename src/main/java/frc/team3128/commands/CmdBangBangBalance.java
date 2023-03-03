@@ -14,7 +14,7 @@ public class CmdBangBangBalance extends CommandBase{
     private static DoubleSupplier thresh;
 
     static {
-        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 25, 0, 1);
+        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 33, 0, 1);
     }
 
     //Essentially WaitUntilCommand
@@ -34,7 +34,7 @@ public class CmdBangBangBalance extends CommandBase{
     public void execute() {
         if (Math.abs(swerve.getRoll()) > maxRoll) {
             plateauCount = 0;
-            maxRoll = swerve.getRoll();
+            maxRoll = Math.abs(swerve.getRoll());
         }
         else {
             plateauCount++;
@@ -45,10 +45,12 @@ public class CmdBangBangBalance extends CommandBase{
     public void end(boolean interrupted) {
         // Timer.delay(time.getAsDouble());
         new RunCommand(()-> swerve.xlock(), swerve).schedule();
+        new CmdMoveArm(90, 11.5, false).schedule();
     }
+    // balances better w battery back
 
     @Override
     public boolean isFinished() {
-        return plateauCount >= thresh.getAsDouble();
+        return plateauCount >= thresh.getAsDouble() || Math.abs(swerve.getRoll()) < 3;
     }
 }

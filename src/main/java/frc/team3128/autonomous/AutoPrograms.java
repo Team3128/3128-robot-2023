@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.Constants.AutoConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.commands.CmdInPlaceTurn;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdScoreOptimized;
@@ -57,8 +58,13 @@ public class AutoPrograms {
         auto.put("bottom_1Cone+1Cube", Commands.sequence(
             Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
             Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
-            Trajectories.scoringPoint(0, 1, false, ArmPosition.TOP_CUBE),
-            Trajectories.climbPoint(false)
+            Trajectories.scoringPoint(0, 1, false, ArmPosition.TOP_CUBE)
+        ));
+
+        auto.put("top_1Cone+1Cube", Commands.sequence(
+            Trajectories.scoringPoint(2, 0, false, ArmPosition.TOP_CONE),
+            Trajectories.loadingPoint(AutoConstants.PICKUP_4, false),
+            Trajectories.scoringPoint(2, 1, false, ArmPosition.TOP_CUBE)
         ));
 
         auto.put("bottom_1Cone+Climb", Commands.sequence(
@@ -73,14 +79,13 @@ public class AutoPrograms {
             Trajectories.scoringPoint(0, 1, false, ArmPosition.TOP_CUBE),
             Trajectories.climbPoint(true)
         ));
-
         /**
             * Middle Position Autos
         */
 
         auto.put("mid_1Cone+Climb", Commands.sequence(
-            Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
-            Trajectories.climbPoint(true)
+            Trajectories.scoringPoint(1, 0, false, ArmPosition.TOP_CONE),
+            Trajectories.climbPoint(false)
         ));
 
         
@@ -97,8 +102,8 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-    //    String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "bottom_1Cone"; //uncomment and change this for testing without opening Narwhal Dashboard
+       String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
+        // String selectedAutoName = "bottom_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
         Vision vision = Vision.getInstance();
 
         // if (selectedAutoName == null) {

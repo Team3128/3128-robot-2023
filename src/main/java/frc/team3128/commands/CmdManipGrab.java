@@ -14,7 +14,7 @@ public class CmdManipGrab extends SequentialCommandGroup {
         var manipulator = Manipulator.getInstance();
         addCommands(
             new InstantCommand(()-> manipulator.intake(cone), manipulator),
-            new WaitCommand(0.04),
+            new WaitCommand(0.1),
             new WaitUntilCommand(()-> manipulator.hasObjectPresent()),
             new WaitCommand(cone ? 0.5 : 0),
             new InstantCommand(()-> manipulator.setRollerPower(STALL_POWER), manipulator),

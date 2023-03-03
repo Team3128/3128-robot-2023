@@ -106,6 +106,7 @@ public class Vision extends SubsystemBase{
     public void initShuffleboard() {
         NAR_Camera cam = cameras.get(FRONT.hostname);
         NAR_Camera cam2 = cameras.get(BACK.hostname);
+        NAR_Shuffleboard.addData("VisionComp", "HasTarget", ()->cam.hasValidTarget() || cam2.hasValidTarget(), 0, 0);
 
         NAR_Shuffleboard.addData("Vision","HasTarget", ()->cam.hasValidTarget(), 0, 0);
         NAR_Shuffleboard.addData("Vision","Distance",()->cam.getDistance(),1,0);
