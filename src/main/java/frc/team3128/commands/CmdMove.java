@@ -118,16 +118,14 @@ public class CmdMove extends CommandBase {
     public void initialize() {
 
         index = 0;
-        if (type != Type.NONE) {
-            boolean keepSkipping = true;
-            for (int i = 0; i < poses.length; i++) {
-                poses[i] = allianceFlip(poses[i]);
-                if (pastX(poses[i].getX()) && !atLastPoint() && keepSkipping) {
-                    index += 1;
-                    continue;
-                }
-                keepSkipping = false;
+        boolean keepSkipping = true;
+        for (int i = 0; i < poses.length; i++) {
+            poses[i] = allianceFlip(poses[i]);
+            if (pastX(poses[i].getX()) && !atLastPoint() && keepSkipping && type != Type.NONE) {
+                index += 1;
+                continue;
             }
+            keepSkipping = false;
         }
 
         xSetpoint = false;
