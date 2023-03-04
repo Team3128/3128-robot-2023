@@ -84,7 +84,7 @@ public class AutoPrograms {
         */
 
         auto.put("mid_1Cone+Climb", Commands.sequence(
-            Trajectories.scoringPoint(1, 0, false, ArmPosition.TOP_CONE),
+            Trajectories.scoringPoint(1, 0, true, ArmPosition.TOP_CONE),
             Trajectories.climbPoint(false)
         ));
 
@@ -116,13 +116,13 @@ public class AutoPrograms {
         //  else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
         //      selectedAutoName = "r_" + selectedAutoName;
         // }
-        Pose2d resetPose = vision.getCamera(VisionConstants.FRONT).getPos();
-        Swerve.getInstance().zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 0 : 180);
+        Pose2d resetPose = vision.getCamera(VisionConstants.BACK).getPos();
+        Swerve.getInstance().zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 180 : 0);
         //if (vision.getCamera(VisionConstants.BACK).hasValidTarget()) resetPose = vision.getCamera(VisionConstants.BACK).getPos();
-        Swerve.getInstance().resetOdometry(new Pose2d(resetPose.getTranslation(), Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)));
+        Swerve.getInstance().resetOdometry(new Pose2d(resetPose.getTranslation(), Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Red ? 180 : 0)));
         
         return Commands.sequence(
-            new WaitUntilCommand(()-> vision.getCamera(VisionConstants.FRONT).hasValidTarget()),
+            new WaitUntilCommand(()-> vision.getCamera(VisionConstants.BACK).hasValidTarget()),
             auto.get(selectedAutoName)
         );
         // return Trajectories.get(selectedAutoName);

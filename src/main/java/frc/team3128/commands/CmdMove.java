@@ -143,7 +143,8 @@ public class CmdMove extends CommandBase {
         xController.setSetpoint(poses[index].getX());
         yController.setSetpoint(poses[index].getY());
         rController.setSetpoint(poses[index].getRotation().getRadians());
-        xDeadController.setSetpoint(xDeadLine(type.deadLine));
+        if (type != Type.NONE)
+            xDeadController.setSetpoint(xDeadLine(type.deadLine));
     }
 
     @Override

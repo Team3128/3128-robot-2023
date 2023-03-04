@@ -319,7 +319,7 @@ public class Constants {
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         public static final int CANCODER_ID = 24;
-        public static final double ANGLE_OFFSET = -29.7 +7.55 + 85+4.91+0.88-3.7;
+        public static final double ANGLE_OFFSET = -29.7 +7.55 + 85+4.91+0.88-3.7-9.8;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
