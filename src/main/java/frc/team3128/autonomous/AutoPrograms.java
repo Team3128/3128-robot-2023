@@ -51,30 +51,30 @@ public class AutoPrograms {
         */
 
         auto.put("bottom_1Cone", Commands.sequence(
-            Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
+            Trajectories.startScoringPoint(0, 0, false, ArmPosition.TOP_CONE),
             Trajectories.loadingPoint(AutoConstants.PICKUP_1, false)
         ));
 
         auto.put("bottom_1Cone+1Cube", Commands.sequence(
-            Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
+            Trajectories.startScoringPoint(0, 0, false, ArmPosition.TOP_CONE),
             Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
             Trajectories.scoringPoint(0, 1, false, ArmPosition.TOP_CUBE)
         ));
 
         auto.put("top_1Cone+1Cube", Commands.sequence(
-            Trajectories.scoringPoint(2, 0, false, ArmPosition.TOP_CONE),
+            Trajectories.startScoringPoint(2, 0, false, ArmPosition.TOP_CONE),
             Trajectories.loadingPoint(AutoConstants.PICKUP_4, false),
             Trajectories.scoringPoint(2, 1, false, ArmPosition.TOP_CUBE)
         ));
 
         auto.put("bottom_1Cone+Climb", Commands.sequence(
-            Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
+            Trajectories.startScoringPoint(0, 0, false, ArmPosition.TOP_CONE),
             Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
             Trajectories.climbPoint(false)
         ));
 
         auto.put("bottom_1Cone+1Cube+Climb", Commands.sequence(
-            Trajectories.scoringPoint(0, 0, false, ArmPosition.TOP_CONE),
+            Trajectories.startScoringPoint(0, 0, false, ArmPosition.TOP_CONE),
             Trajectories.loadingPoint(AutoConstants.PICKUP_1, false),
             Trajectories.scoringPoint(0, 1, false, ArmPosition.TOP_CUBE),
             Trajectories.climbPoint(true)
@@ -84,7 +84,7 @@ public class AutoPrograms {
         */
 
         auto.put("mid_1Cone+Climb", Commands.sequence(
-            Trajectories.scoringPoint(1, 0, true, ArmPosition.TOP_CONE),
+            Trajectories.startScoringPoint(1, 0, true, ArmPosition.TOP_CONE),
             Trajectories.climbPoint(false)
         ));
 
@@ -102,9 +102,8 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-    //    String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "bottom_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
-        Vision vision = Vision.getInstance();
+        String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
+        //String selectedAutoName = "bottom_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
 
         // if (selectedAutoName == null) {
         //     return null;
@@ -116,15 +115,8 @@ public class AutoPrograms {
         //  else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
         //      selectedAutoName = "r_" + selectedAutoName;
         // }
-        Pose2d resetPose = vision.getCamera(VisionConstants.FRONT).getPos();
-        Swerve.getInstance().zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 0 : 180);
         //if (vision.getCamera(VisionConstants.BACK).hasValidTarget()) resetPose = vision.getCamera(VisionConstants.BACK).getPos();
-        Swerve.getInstance().resetOdometry(new Pose2d(resetPose.getTranslation(), Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)));
-        
-        return Commands.sequence(
-            new WaitUntilCommand(()-> vision.getCamera(VisionConstants.FRONT).hasValidTarget()),
-            auto.get(selectedAutoName)
-        );
+        return auto.get(selectedAutoName);
         // return Trajectories.get(selectedAutoName);
     }
     

@@ -42,6 +42,18 @@ public class Constants {
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));
         public static final Pose2d ClimbSetupOutside = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
 
+        public static final Pose2d[] STARTING_POINTS = new Pose2d[] {
+            new Pose2d(1.85 ,0.5, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.85 ,1.05, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.85 ,1.65, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.85 ,2.15, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.85 ,2.75, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.85 ,3.3, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.85 ,3.85, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.85 ,4.45, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.85 ,5, Rotation2d.fromDegrees(180))
+        };
+
         public static final double BALANCE_FF = 0;
     }
 
@@ -319,7 +331,7 @@ public class Constants {
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         public static final int CANCODER_ID = 24;
-        public static final double ANGLE_OFFSET = -29.7 +7.55 + 85+4.91+0.88-3.7-9.8;
+        public static final double ANGLE_OFFSET = 114.25-3.42-2.5+0.65;//-29.7 +7.55 + 85+4.91+0.88-3.7-9.8+60;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -350,17 +362,17 @@ public class Constants {
     public static class ArmConstants {
 
         public enum ArmPosition {
-            TOP_CONE(112, 44, 0, true), // angles are off by like 10 (should be like 10 down)
-            TOP_CUBE(98, 35, 0, false), 
-            MID_CONE(98, 22.5, 1, true), 
-            MID_CUBE(87, 15, 1, false), 
+            TOP_CONE(109, 42, 0, true), // 112,44 
+            TOP_CUBE(95, 37, 0, false), //98,35
+            MID_CONE(90, 24, 1, true), //98,22.5
+            MID_CUBE(85, 20, 1, false), //87,15
             LOW_FLOOR(45, 13, 2, false), 
 
             NEUTRAL(0, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF(100, 18, null, null), //105
+            HP_SHELF(93, 20, null, null), //105
             GROUND_PICKUP_CONE(38, 24.5, null, null), 
-            GROUND_PICKUP_CUBE(37.5, 23, null, null), 
+            GROUND_PICKUP_CUBE(37, 26, null, null), 
             CONE_POLE(-40, 11.5, null, null),
             AVOID_INTAKE(90, 11.5, null, null);
     

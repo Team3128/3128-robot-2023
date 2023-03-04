@@ -100,6 +100,10 @@ public class Telescope extends PIDSubsystem {
         m_teleMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
     }
 
+    public void changeSetpoint(boolean direction) {
+        startPID(getSetpoint() + (direction ? 2.0/50 : -2.0/50));
+    }
+
 
     @Override
     protected double getMeasurement() {

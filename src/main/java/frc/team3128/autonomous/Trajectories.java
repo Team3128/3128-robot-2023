@@ -32,6 +32,8 @@ import static frc.team3128.Constants.SwerveConstants.*;
 
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.AutoConstants;
+import frc.team3128.Constants.FieldConstants;
+import frc.team3128.Constants.ManipulatorConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
@@ -43,6 +45,7 @@ import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdMoveLoading;
 import frc.team3128.commands.CmdRetractIntake;
 import frc.team3128.commands.CmdScore;
+import frc.team3128.commands.CmdScoreOld;
 import frc.team3128.commands.CmdScoreOptimized;
 import frc.team3128.commands.CmdMove.Type;
 import frc.team3128.subsystems.Intake;
@@ -158,15 +161,16 @@ public class Trajectories {
         return Commands.sequence(
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
             Commands.race(
+                new CmdGroundPickup(cone),
                 Commands.sequence(
                     new CmdMove(Type.LOADING, false, pose),
                     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.35 : 0.35,0), 0,true), swerve)
-                        .withTimeout(3),
-                    new InstantCommand(()-> swerve.stop(), swerve),
-                    new InstantCommand(()-> manipulator.stopRoller()))
-                ),
-                new CmdGroundPickup(cone)
-            );
+                        .withTimeout(2)
+                )
+            ),
+            new InstantCommand(()-> swerve.stop(), swerve),
+            new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))
+        );
     }
 
     public static CommandBase loadingPointSpecial(Pose2d pose, boolean cone) {
@@ -197,7 +201,18 @@ public class Trajectories {
     public static CommandBase scoringPoint(int grid, int node, boolean reversed, ArmPosition position) {
         return Commands.sequence(
             new InstantCommand(()-> Vision.SELECTED_GRID = grid),
-            new CmdScore(reversed, position, node)
+            new CmdScoreOld(reversed, position, node)
+        );
+    }
+
+    public static CommandBase startScoringPoint(int grid, int node, boolean reversed, ArmPosition position) {
+        return Commands.sequence(
+            new CmdMoveArm(position, reversed),
+            new InstantCommand(()-> manipulator.outtake(position.cone), manipulator),
+            new WaitCommand(0.125),
+            new InstantCommand(()-> manipulator.stopRoller(), manipulator),
+            new CmdMoveArm(ArmPosition.NEUTRAL, false),
+            new InstantCommand(() -> swerve.resetOdometry(FieldConstants.allianceFlip(AutoConstants.STARTING_POINTS[grid * 3 + node])))
         );
     }
 

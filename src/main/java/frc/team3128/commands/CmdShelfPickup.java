@@ -37,7 +37,7 @@ public class CmdShelfPickup extends SequentialCommandGroup{
 
         addCommands(
             new InstantCommand(() -> led.setPickupColor(cone)),
-            // new InstantCommand(()-> Vision.AUTO_ENABLED = false),
+            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             Commands.parallel(
                 new CmdMoveLoading(isReversed, VisionConstants.LOADING_ZONE),
                 // Commands.sequence(

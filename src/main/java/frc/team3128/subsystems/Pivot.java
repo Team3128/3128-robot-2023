@@ -3,6 +3,7 @@ package frc.team3128.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.team3128.Constants.PivotConstants.*;
 
@@ -35,6 +36,7 @@ public class Pivot extends PIDSubsystem {
         //getController().enableContinuousInput(-180, 180);
 
         configMotors();
+        Timer.delay(1.5);
         configEncoders();
         getController().setTolerance(PIVOT_TOLERANCE);
 
@@ -71,6 +73,10 @@ public class Pivot extends PIDSubsystem {
 
     public void resetToDefault() {
         startPID(0);
+    }
+
+    public void changeSetpoint(boolean direction) {
+        startPID(getSetpoint() + (direction ? 10.0 / 50.0 : -10.0/50.0));
     }
 
     public double getAngle(){

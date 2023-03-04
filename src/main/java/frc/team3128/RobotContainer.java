@@ -15,10 +15,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdScoreOptimized;
+import frc.team3128.commands.CmdShelfPickup;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdPickupOptimized;
+import frc.team3128.commands.CmdScore;
+
 import static frc.team3128.Constants.FieldConstants.*;
 
 import static frc.team3128.Constants.SwerveConstants.*;
@@ -105,7 +108,7 @@ public class RobotContainer {
         CmdMove.setController(controller::getLeftX, controller::getLeftY, controller::getRightX, ()-> Swerve.throttle);
 
         // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, true));
-        commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true));
+        // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true));
         initDashboard();
         configureButtonBindings();
         
@@ -157,8 +160,8 @@ public class RobotContainer {
                                                                 telescope.engageBrake(); manipulator.stopRoller(); 
                                                                 swerve.stop();}, pivot, telescope, swerve, manipulator));
         // cancel button
-        buttonPad.getButton(16).onTrue(new CmdPickupOptimized(true));
-        buttonPad.getButton(15).onTrue(new CmdPickupOptimized(false));
+        buttonPad.getButton(16).onTrue(new CmdShelfPickup(true, false));
+        buttonPad.getButton(15).onTrue(new CmdShelfPickup(false, false));
 
         rightStick.getUpPOVButton().onTrue(new InstantCommand(()-> led.setAllianceColor()));
         rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> led.setAutoColor()));
@@ -172,9 +175,9 @@ public class RobotContainer {
         // leftStick.getButton(12).onTrue(new InstantCommand(()->intake.setIntake(0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
         // leftStick.getButton(13).onTrue(new InstantCommand(()->intake.setIntake(-0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
         
-        buttonPad.getButton(5).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 1));
-        buttonPad.getButton(8).onTrue(new CmdScoreOptimized(ArmPosition.MID_CUBE, 1));
-        buttonPad.getButton(11).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CUBE, 1));
+        buttonPad.getButton(5).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 1));
+        buttonPad.getButton(8).onTrue(new CmdScore(false, ArmPosition.MID_CUBE, 1));
+        buttonPad.getButton(11).onTrue(new CmdScore(false, ArmPosition.TOP_CUBE, 1));
         buttonPad.getButton(1).onTrue(new InstantCommand(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 0 : 2;
         }));
@@ -186,14 +189,21 @@ public class RobotContainer {
         operatorController.getButton("Back").onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
         operatorController.getButton("Y").onTrue(new InstantCommand(()-> telescope.zeroEncoder()));
         operatorController.getButton("X").onTrue(new InstantCommand(()-> manipulator.stopRoller()));
+        operatorController.getButton("A").onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
         operatorController.getButton("LeftTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
         operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
         operatorController.getButton("RightTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(true), manipulator));
+        // on false pidlock to getmeasurement
         operatorController.getRightPOVButton().onTrue(new InstantCommand(()->pivot.setPower(0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         operatorController.getLeftPOVButton().onTrue(new InstantCommand(()->pivot.setPower(-0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         operatorController.getUpPOVButton().onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele()));
         operatorController.getDownPOVButton().onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele()));
+
+        operatorController.getButton("RightPosY").whileTrue(new InstantCommand(()-> telescope.changeSetpoint(true), telescope));
+        operatorController.getButton("RightNegY").whileTrue(new InstantCommand(()-> telescope.changeSetpoint(false), telescope));
+        operatorController.getButton("LeftPosY").whileTrue(new InstantCommand(()-> pivot.changeSetpoint(true), pivot));
+        operatorController.getButton("LeftPosY").whileTrue(new InstantCommand(()-> pivot.changeSetpoint(false), pivot));
 
         isAuto.onTrue(new InstantCommand(() -> led.setAutoColor())).onFalse(new InstantCommand(()-> led.setAllianceColor()));
 
@@ -213,21 +223,21 @@ public class RobotContainer {
 
     public void init() {
         if (DriverStation.getAlliance() == Alliance.Red) {
-            buttonPad.getButton(4).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 0));
-            buttonPad.getButton(6).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 2));
-            buttonPad.getButton(7).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 0));
-            buttonPad.getButton(9).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 2));
-            buttonPad.getButton(10).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 0));
-            buttonPad.getButton(12).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 2));
+            buttonPad.getButton(4).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 0));
+            buttonPad.getButton(6).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 2));
+            buttonPad.getButton(7).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 0));
+            buttonPad.getButton(9).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 2));
+            buttonPad.getButton(10).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 0));
+            buttonPad.getButton(12).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 2));
             
         }
         else {
-            buttonPad.getButton(6).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 0));
-            buttonPad.getButton(4).onTrue(new CmdScoreOptimized(ArmPosition.LOW_FLOOR, 2));
-            buttonPad.getButton(9).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 0));
-            buttonPad.getButton(7).onTrue(new CmdScoreOptimized(ArmPosition.MID_CONE, 2));
-            buttonPad.getButton(12).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 0));
-            buttonPad.getButton(10).onTrue(new CmdScoreOptimized(ArmPosition.TOP_CONE, 2));
+            buttonPad.getButton(6).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 0));
+            buttonPad.getButton(4).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 2));
+            buttonPad.getButton(9).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 0));
+            buttonPad.getButton(7).onTrue(new CmdScore(false, ArmPosition.MID_CONE, 2));
+            buttonPad.getButton(12).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 0));
+            buttonPad.getButton(10).onTrue(new CmdScore(false, ArmPosition.TOP_CONE, 2));
         }
     }
 
