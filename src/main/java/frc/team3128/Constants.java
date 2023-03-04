@@ -350,7 +350,7 @@ public class Constants {
     public static class ArmConstants {
 
         public enum ArmPosition {
-            TOP_CONE(107, 43, 0, true), // angles are off by like 10 (should be like 10 down)
+            TOP_CONE(112, 44, 0, true), // angles are off by like 10 (should be like 10 down)
             TOP_CUBE(98, 35, 0, false), 
             MID_CONE(98, 22.5, 1, true), 
             MID_CUBE(87, 15, 1, false), 
@@ -502,8 +502,8 @@ public class Constants {
     }
 
     public static class ManipulatorConstants{
-        public static final int SOLENOID_FORWARD_CHANNEL_ID = 3;
-        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 4;
+        public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
+        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
 
         public static final int ROLLER_MOTOR_ID = 13;
         public static final double ROLLER_POWER = 0.7;

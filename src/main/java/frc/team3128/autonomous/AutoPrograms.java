@@ -102,8 +102,8 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-       String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        // String selectedAutoName = "bottom_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
+    //    String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
+        String selectedAutoName = "bottom_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
         Vision vision = Vision.getInstance();
 
         // if (selectedAutoName == null) {
@@ -116,13 +116,13 @@ public class AutoPrograms {
         //  else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
         //      selectedAutoName = "r_" + selectedAutoName;
         // }
-        Pose2d resetPose = vision.getCamera(VisionConstants.BACK).getPos();
-        Swerve.getInstance().zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 180 : 0);
+        Pose2d resetPose = vision.getCamera(VisionConstants.FRONT).getPos();
+        Swerve.getInstance().zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 0 : 180);
         //if (vision.getCamera(VisionConstants.BACK).hasValidTarget()) resetPose = vision.getCamera(VisionConstants.BACK).getPos();
-        Swerve.getInstance().resetOdometry(new Pose2d(resetPose.getTranslation(), Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Red ? 180 : 0)));
+        Swerve.getInstance().resetOdometry(new Pose2d(resetPose.getTranslation(), Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)));
         
         return Commands.sequence(
-            new WaitUntilCommand(()-> vision.getCamera(VisionConstants.BACK).hasValidTarget()),
+            new WaitUntilCommand(()-> vision.getCamera(VisionConstants.FRONT).hasValidTarget()),
             auto.get(selectedAutoName)
         );
         // return Trajectories.get(selectedAutoName);

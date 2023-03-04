@@ -161,7 +161,7 @@ public class Trajectories {
                 Commands.sequence(
                     new CmdMove(Type.LOADING, false, pose),
                     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.35 : 0.35,0), 0,true), swerve)
-                        .withTimeout(4),
+                        .withTimeout(3),
                     new InstantCommand(()-> swerve.stop(), swerve),
                     new InstantCommand(()-> manipulator.stopRoller()))
                 ),
