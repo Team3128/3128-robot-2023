@@ -52,4 +52,12 @@ public final class CTREConfigs {
         config.sensorTimeBase = SensorTimeBase.PerSecond;
         return config;
     }
+
+    public static CANCoderConfiguration pivotCancoderConfig() {
+        CANCoderConfiguration config = new CANCoderConfiguration();
+        config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180; // used to be unsigned 
+        config.sensorDirection = canCoderInvert;
+        config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+        return config;
+    }
 }

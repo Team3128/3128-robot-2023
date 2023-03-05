@@ -34,10 +34,10 @@ public class Constants {
     }
 
     public static class AutoConstants {
-        public static final Pose2d PICKUP_1 = new Pose2d(6.2, 0.92, Rotation2d.fromDegrees(180));
-        public static final Pose2d PICKUP_2 = new Pose2d(6.2, 2.15, Rotation2d.fromDegrees(180));
-        public static final Pose2d PICKUP_3 = new Pose2d(6.2, 3.38, Rotation2d.fromDegrees(180));
-        public static final Pose2d PICKUP_4 = new Pose2d(6.2, 4.6, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.92, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_2 = new Pose2d(5.9, 2.15, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_3 = new Pose2d(5.9, 3.38, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.6, Rotation2d.fromDegrees(180));
 
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));
         public static final Pose2d ClimbSetupOutside = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
@@ -47,7 +47,7 @@ public class Constants {
             new Pose2d(1.85 ,1.05, Rotation2d.fromDegrees(180)),
             new Pose2d(1.85 ,1.65, Rotation2d.fromDegrees(180)),
             new Pose2d(1.85 ,2.15, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,2.75, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.85 ,2.75, Rotation2d.fromDegrees(0)),
             new Pose2d(1.85 ,3.3, Rotation2d.fromDegrees(180)),
             new Pose2d(1.85 ,3.85, Rotation2d.fromDegrees(180)),
             new Pose2d(1.85 ,4.45, Rotation2d.fromDegrees(180)),
@@ -325,13 +325,13 @@ public class Constants {
         public static final double kP = 0.2;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0.7;
+        public static final double kF = 0.6;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         public static final int CANCODER_ID = 24;
-        public static final double ANGLE_OFFSET = 114.25-3.42-2.5+0.65;//-29.7 +7.55 + 85+4.91+0.88-3.7-9.8+60;
+        public static final double ANGLE_OFFSET = 149.5 +4.9 +3.07 + 7.2;//140.97-6 + 18.1;//-29.7 +7.55 + 85+4.91+0.88-3.7-9.8+60;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -350,7 +350,7 @@ public class Constants {
         public static final double MIN_DIST = 11.5;
         public static final double MAX_DIST = 48;
         public static final double TELE_OFFSET = 0;
-        public static final double TELE_TOLERANCE = 1;
+        public static final double TELE_TOLERANCE = 2;
         public static final int TELE_CURRENT_LIMIT = 40;
         public static final boolean isReversed = true;
 
@@ -364,13 +364,13 @@ public class Constants {
         public enum ArmPosition {
             TOP_CONE(109, 42, 0, true), // 112,44 
             TOP_CUBE(95, 37, 0, false), //98,35
-            MID_CONE(90, 24, 1, true), //98,22.5
+            MID_CONE(100, 25, 1, true), //98,22.5
             MID_CUBE(85, 20, 1, false), //87,15
             LOW_FLOOR(45, 13, 2, false), 
 
             NEUTRAL(0, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF(93, 20, null, null), //105
+            HP_SHELF(100, 20, null, null), //105
             GROUND_PICKUP_CONE(38, 24.5, null, null), 
             GROUND_PICKUP_CUBE(37, 26, null, null), 
             CONE_POLE(-40, 11.5, null, null),

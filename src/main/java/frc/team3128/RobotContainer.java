@@ -108,7 +108,10 @@ public class RobotContainer {
         CmdMove.setController(controller::getLeftX, controller::getLeftY, controller::getRightX, ()-> Swerve.throttle);
 
         // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(rightStick::getX, rightStick::getY, rightStick::getZ, true));
-        // commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true));
+        
+        
+        //uncomment line below to enable driving
+        //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true));
         initDashboard();
         configureButtonBindings();
         
@@ -132,13 +135,21 @@ public class RobotContainer {
                                                                 andThen(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))));
         
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
+        // rightStick.getButton(1).onTrue(new InstantCommand(()-> pivot.offset = pivot.getAngle()));
         rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
         rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
         rightStick.getButton(7).onTrue(Commands.deadline(Commands.sequence(new WaitCommand(1), new CmdBangBangBalance()), new CmdBalance()));
-        rightStick.getButton(8).onTrue(new SequentialCommandGroup(new CmdDriveUp(), new WaitCommand(1), new CmdBangBangBalance()));
+        rightStick.getButton(8).onTrue(new SequentialCommandGroup(new InstantCommand(()-> Vision.GROUND_DIRECTION = false),
+        // new CmdMoveArm(ArmPosition.NEUTRAL, false),
+        //new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : AutoConstants.ClimbSetupOutside),
+        new CmdDriveUp(),
+        new WaitCommand(1),
+        new CmdBangBangBalance(),
+        new RunCommand(()-> swerve.xlock(), swerve),
+        new CmdMoveArm(90, 11.5, false)));
         
         //rightStick.getButton(8).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         // rightStick.getButton(8).onTrue(new CmdGyroBalance());
@@ -195,15 +206,15 @@ public class RobotContainer {
         operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
         operatorController.getButton("RightTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(true), manipulator));
         // on false pidlock to getmeasurement
-        operatorController.getRightPOVButton().onTrue(new InstantCommand(()->pivot.setPower(0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        operatorController.getLeftPOVButton().onTrue(new InstantCommand(()->pivot.setPower(-0.3))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        operatorController.getUpPOVButton().onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele()));
-        operatorController.getDownPOVButton().onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele()));
+        operatorController.getButton("LeftPosY").onTrue(new InstantCommand(()->pivot.setPower(0.25), pivot)).onFalse(new InstantCommand(()->{pivot.setPower(0.0); pivot.startPID(pivot.getMeasurement());}, pivot));
+        operatorController.getButton("LeftNegY").onTrue(new InstantCommand(()->pivot.setPower(-0.25), pivot)).onFalse(new InstantCommand(()->{pivot.setPower(0.0); pivot.startPID(pivot.getMeasurement());}, pivot));
+        operatorController.getButton("RightNegY").onTrue(new InstantCommand(()->telescope.extend(), telescope)).onFalse(new InstantCommand(() -> {telescope.stopTele(); telescope.engageBrake();}, telescope));
+        operatorController.getButton("RightPosY").onTrue(new InstantCommand(()->telescope.retract(), telescope)).onFalse(new InstantCommand(() -> {telescope.stopTele(); telescope.engageBrake();}, telescope));
 
-        operatorController.getButton("RightPosY").whileTrue(new InstantCommand(()-> telescope.changeSetpoint(true), telescope));
-        operatorController.getButton("RightNegY").whileTrue(new InstantCommand(()-> telescope.changeSetpoint(false), telescope));
-        operatorController.getButton("LeftPosY").whileTrue(new InstantCommand(()-> pivot.changeSetpoint(true), pivot));
-        operatorController.getButton("LeftPosY").whileTrue(new InstantCommand(()-> pivot.changeSetpoint(false), pivot));
+        // operatorController.getButton("RightPosY").whileTrue(new InstantCommand(()-> telescope.changeSetpoint(true), telescope));
+        // operatorController.getButton("RightNegY").whileTrue(new InstantCommand(()-> telescope.changeSetpoint(false), telescope));
+        // operatorController.getButton("LeftPosY").whileTrue(new InstantCommand(()-> pivot.changeSetpoint(true), pivot));
+        // operatorController.getButton("LeftNegY").whileTrue(new InstantCommand(()-> pivot.changeSetpoint(false), pivot));
 
         isAuto.onTrue(new InstantCommand(() -> led.setAutoColor())).onFalse(new InstantCommand(()-> led.setAllianceColor()));
 

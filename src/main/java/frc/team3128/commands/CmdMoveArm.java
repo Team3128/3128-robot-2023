@@ -47,9 +47,9 @@ public class CmdMoveArm extends CommandBase{
 
     @Override
     public void execute(){
-        if (pivot.atSetpoint() && telescope.getSetpoint() != dist)
+        if (pivot.atSetpoint() && (telescope.getSetpoint() != dist || !telescope.isEnabled()))
             telescope.startPID(dist);
-        if (telescope.atSetpoint() && pivot.getSetpoint() != angle) 
+        if (telescope.atSetpoint() && (pivot.getSetpoint() != angle || !pivot.isEnabled())) 
             pivot.startPID(angle);
     }
 

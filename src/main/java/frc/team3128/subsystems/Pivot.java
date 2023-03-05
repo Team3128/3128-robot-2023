@@ -28,7 +28,8 @@ public class Pivot extends PIDSubsystem {
     private static Pivot instance;
     private NAR_CANSparkMax m_rotateMotor;
     private SparkMaxRelativeEncoder m_encoder;
-    private CANCoder m_cancoder;
+    public CANCoder m_cancoder;
+    public double offset;
 
     public Pivot() {
         super(new PIDController(kP, kI, kD));
@@ -36,7 +37,6 @@ public class Pivot extends PIDSubsystem {
         //getController().enableContinuousInput(-180, 180);
 
         configMotors();
-        Timer.delay(1.5);
         configEncoders();
         getController().setTolerance(PIVOT_TOLERANCE);
 
@@ -59,11 +59,13 @@ public class Pivot extends PIDSubsystem {
     }
 
     private void configEncoders() {
-        // m_encoder = (SparkMaxRelativeEncoder) m_rotateMotor.getEncoder();
-        // m_encoder.setPositionConversionFactor(ENC_CONV);
         m_cancoder = new CANCoder(CANCODER_ID, "rio");
         m_cancoder.configFactoryDefault();
-        m_cancoder.configAllSettings(swerveCancoderConfig());
+        m_cancoder.configAllSettings(pivotCancoderConfig());
+        Timer.delay(1.5);
+        // m_encoder = (SparkMaxRelativeEncoder) m_rotateMotor.getEncoder();
+        // m_encoder.setPositionConversionFactor(ENC_CONV);
+        //offset = m_cancoder.getAbsolutePosition();
     }
 
     public void setPower(double power) {
@@ -80,7 +82,7 @@ public class Pivot extends PIDSubsystem {
     }
 
     public double getAngle(){
-        return MathUtil.inputModulus(-m_cancoder.getAbsolutePosition() - ANGLE_OFFSET, -180, 180);
+        return MathUtil.inputModulus(-m_cancoder.getAbsolutePosition() - offset, -180, 180);
     }
 
     public void initShuffleboard() {
@@ -111,7 +113,7 @@ public class Pivot extends PIDSubsystem {
     }
 
     @Override
-    protected double getMeasurement() { // returns degrees
+    public double getMeasurement() { // returns degrees
         return getAngle();
         // return m_rotateMotor.getSelectedSensorPosition();
     }

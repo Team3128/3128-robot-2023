@@ -160,16 +160,18 @@ public class Trajectories {
     public static CommandBase loadingPoint(Pose2d pose, boolean cone) {
         return Commands.sequence(
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
+            new CmdMove(Type.LOADING, false, pose),
             Commands.race(
                 new CmdGroundPickup(cone),
                 Commands.sequence(
-                    new CmdMove(Type.LOADING, false, pose),
-                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.35 : 0.35,0), 0,true), swerve)
-                        .withTimeout(2)
+                    new WaitCommand(0.5),
+                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
+                        .withTimeout(1.25)
                 )
             ),
             new InstantCommand(()-> swerve.stop(), swerve),
-            new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))
+            new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)),
+            new CmdMoveArm(ArmPosition.NEUTRAL, false)
         );
     }
 
@@ -207,22 +209,37 @@ public class Trajectories {
 
     public static CommandBase startScoringPoint(int grid, int node, boolean reversed, ArmPosition position) {
         return Commands.sequence(
-            new CmdMoveArm(position, reversed),
+            //new InstantCommand(() -> swerve.resetOdometry(FieldConstants.allianceFlip(AutoConstants.STARTING_POINTS[grid * 3 + node]))),
+            new CmdMoveArm(position, reversed).withTimeout(3),
             new InstantCommand(()-> manipulator.outtake(position.cone), manipulator),
             new WaitCommand(0.125),
             new InstantCommand(()-> manipulator.stopRoller(), manipulator),
-            new CmdMoveArm(ArmPosition.NEUTRAL, false),
-            new InstantCommand(() -> swerve.resetOdometry(FieldConstants.allianceFlip(AutoConstants.STARTING_POINTS[grid * 3 + node])))
+            new CmdMoveArm(ArmPosition.NEUTRAL, false)
         );
     }
+
+    // public static CommandBase climbPoint(boolean inside) {
+    //     return Commands.sequence(
+    //         new InstantCommand(()-> Vision.GROUND_DIRECTION = false),
+    //         new CmdMoveArm(ArmPosition.NEUTRAL, false),
+    //         new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : AutoConstants.ClimbSetupOutside),
+    //         new CmdDriveUp(),
+    //         new CmdBangBangBalance(),
+    //         new RunCommand(()-> swerve.xlock(), swerve),
+    //         new CmdMoveArm(90, 11.5, false)
+    //     );
+    // }
 
     public static CommandBase climbPoint(boolean inside) {
         return Commands.sequence(
             new InstantCommand(()-> Vision.GROUND_DIRECTION = false),
-            new CmdMoveArm(ArmPosition.NEUTRAL, false),
-            new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : AutoConstants.ClimbSetupOutside),
+            // new CmdMoveArm(ArmPosition.NEUTRAL, false),
+            //new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : AutoConstants.ClimbSetupOutside),
             new CmdDriveUp(),
-            new CmdBangBangBalance()
+            new WaitCommand(1),
+            new CmdBangBangBalance(),
+            new RunCommand(()-> swerve.xlock(), swerve)
+            // new CmdMoveArm(90, 11.5, false)
         );
     }
     

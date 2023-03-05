@@ -41,12 +41,12 @@ public class CmdScore extends SequentialCommandGroup {
             new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             // new InstantCommand(() -> {if (DriverStation.isAutonomous()) Vision.AUTO_ENABLED = true;}),
-            Commands.parallel(
-                new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]),
+            // Commands.parallel(
+            //     new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]),
                 // Commands.sequence(
                 //     new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-                new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot)
-            ),
+            new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot),
+            // ),
             Commands.deadline(
                 Commands.sequence(
                     new WaitUntilCommand(()-> pivot.atSetpoint()),

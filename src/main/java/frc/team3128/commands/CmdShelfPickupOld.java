@@ -23,14 +23,14 @@ import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 
-public class CmdShelfPickup extends SequentialCommandGroup{
+public class CmdShelfPickupOld extends SequentialCommandGroup{
     
     private Telescope telescope;
     private Pivot pivot;
     private NAR_XboxController controller;
     private Led led;
 
-    public CmdShelfPickup (boolean cone, boolean isReversed) {
+    public CmdShelfPickupOld (boolean cone, boolean isReversed) {
         telescope = Telescope.getInstance();
         pivot = Pivot.getInstance();
         controller = RobotContainer.controller;
@@ -41,10 +41,10 @@ public class CmdShelfPickup extends SequentialCommandGroup{
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             // Commands.parallel(
             //     new CmdMoveLoading(isReversed, VisionConstants.LOADING_ZONE),
-            //     Commands.sequence(
-            //         new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
+                // Commands.sequence(
+                //     new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(() -> pivot.startPID(isReversed ? -ArmPosition.HP_SHELF.pivotAngle : ArmPosition.HP_SHELF.pivotAngle), pivot),
-            // ),
+                // )
             //),
             Commands.deadline(
                 Commands.sequence(
@@ -60,8 +60,8 @@ public class CmdShelfPickup extends SequentialCommandGroup{
             // new WaitUntilCommand(()-> telescope.atSetpoint()),
             // new InstantCommand(()-> {telescope.disable(); telescope.engageBrake();}, telescope),
             // new InstantCommand(()-> pivot.setSetpoint(Vision.GROUND_DIRECTION ? 15 : -15), pivot),
-            new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
-            new InstantCommand(() -> new InstantCommand(()-> Vision.AUTO_ENABLED = false))
+            new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate())))
+            // new InstantCommand(() -> new InstantCommand(()-> Vision.AUTO_ENABLED = false))
         );
     }
 }

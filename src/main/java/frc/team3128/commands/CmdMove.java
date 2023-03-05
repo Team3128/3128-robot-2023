@@ -4,6 +4,7 @@ package frc.team3128.commands;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -150,9 +151,10 @@ public class CmdMove extends CommandBase {
     @Override
     public void execute() {
         Pose2d pose = swerve.getPose();
+        Rotation2d Rotation = swerve.getGyroRotation2d();
         double xDistance = xController.calculate(pose.getX());
         double yDistance = yController.calculate(pose.getY()); 
-        double rotation = rController.calculate(pose.getRotation().getRadians());
+        double rotation = rController.calculate(Rotation.getRadians());
 
         xSetpoint = xController.atSetpoint();
         ySetpoint = yController.atSetpoint();
