@@ -37,7 +37,7 @@ public class Constants {
         public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.92, Rotation2d.fromDegrees(180));
         public static final Pose2d PICKUP_2 = new Pose2d(5.9, 2.15, Rotation2d.fromDegrees(180));
         public static final Pose2d PICKUP_3 = new Pose2d(5.9, 3.38, Rotation2d.fromDegrees(180));
-        public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.6, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.55, Rotation2d.fromDegrees(180));
 
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));
         public static final Pose2d ClimbSetupOutside = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
@@ -325,13 +325,13 @@ public class Constants {
         public static final double kP = 0.2;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0.6;
+        public static final double kF = 0.3;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         public static final int CANCODER_ID = 24;
-        public static final double ANGLE_OFFSET = 149.5 +4.9 +3.07 + 7.2;//140.97-6 + 18.1;//-29.7 +7.55 + 85+4.91+0.88-3.7-9.8+60;
+        public static final double ANGLE_OFFSET = 163.4765625 +16.34 + 6+17.47 + 2.8-4.28+.5 + 9.24;//149.5 +4.9 +3.07 + 7.2;//140.97-6 + 18.1;//-29.7 +7.55 + 85+4.91+0.88-3.7-9.8+60;
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -371,8 +371,8 @@ public class Constants {
             NEUTRAL(0, 11.5, null, null), //pivot should be 0
 
             HP_SHELF(100, 20, null, null), //105
-            GROUND_PICKUP_CONE(38, 24.5, null, null), 
-            GROUND_PICKUP_CUBE(37, 26, null, null), 
+            GROUND_PICKUP_CONE(37, 26.5, null, null), 
+            GROUND_PICKUP_CUBE(37.5, 26, null, null), 
             CONE_POLE(-40, 11.5, null, null),
             AVOID_INTAKE(90, 11.5, null, null);
     

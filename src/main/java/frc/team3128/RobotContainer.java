@@ -111,7 +111,7 @@ public class RobotContainer {
         
         
         //uncomment line below to enable driving
-        //commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true));
+        commandScheduler.setDefaultCommand(swerve, new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true));
         initDashboard();
         configureButtonBindings();
         
@@ -139,8 +139,8 @@ public class RobotContainer {
         rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
         rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
-        rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0)));
-        rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5)));
+        rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0), pivot));
+        rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5), telescope));
         rightStick.getButton(7).onTrue(Commands.deadline(Commands.sequence(new WaitCommand(1), new CmdBangBangBalance()), new CmdBalance()));
         rightStick.getButton(8).onTrue(new SequentialCommandGroup(new InstantCommand(()-> Vision.GROUND_DIRECTION = false),
         // new CmdMoveArm(ArmPosition.NEUTRAL, false),
@@ -199,7 +199,7 @@ public class RobotContainer {
 
         operatorController.getButton("Back").onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
         operatorController.getButton("Y").onTrue(new InstantCommand(()-> telescope.zeroEncoder()));
-        operatorController.getButton("X").onTrue(new InstantCommand(()-> manipulator.stopRoller()));
+        operatorController.getButton("X").onTrue(new InstantCommand(()-> manipulator.stopRoller(), manipulator));
         operatorController.getButton("A").onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
         operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
         operatorController.getButton("LeftTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));

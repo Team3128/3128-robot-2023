@@ -82,7 +82,7 @@ public class Pivot extends PIDSubsystem {
     }
 
     public double getAngle(){
-        return MathUtil.inputModulus(-m_cancoder.getAbsolutePosition() - offset, -180, 180);
+        return MathUtil.inputModulus(-m_cancoder.getAbsolutePosition() - ANGLE_OFFSET, -180, 180);
     }
 
     public void initShuffleboard() {

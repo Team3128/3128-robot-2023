@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit(){
         LiveWindow.disableAllTelemetry();
-        Pivot.getInstance().offset = Pivot.getInstance().getAngle();
+        // Pivot.getInstance().offset = Pivot.getInstance().getAngle();
     }
 
     @Override

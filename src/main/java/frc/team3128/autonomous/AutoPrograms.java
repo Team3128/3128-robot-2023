@@ -57,17 +57,17 @@ public class AutoPrograms {
         auto.put("bottom_1Cone", Commands.sequence(
             Trajectories.startScoringPoint(0, 0, false, ArmPosition.MID_CONE),
             new InstantCommand(()-> swerve.zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.35 : 0.35,0), 
+            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.7 : 0.7,0), 
                                     0, true), swerve).until(() -> Vision.getInstance().getCamera(VisionConstants.FRONT).hasValidTarget()),
             new InstantCommand(()-> swerve.stop(), swerve),
             new InstantCommand(()-> swerve.resetOdometry(new Pose2d(Vision.getInstance().getCamera(VisionConstants.FRONT).getPos().getTranslation(), swerve.getGyroRotation2d()))),
             Trajectories.loadingPoint(AutoConstants.PICKUP_1, false)
         ));
 
-        auto.put("bottom_1Cone+1Cube", Commands.sequence(
+        auto.put("bottom_1Cone+1Cone", Commands.sequence(
             Trajectories.startScoringPoint(0, 0, false, ArmPosition.MID_CONE),
             new InstantCommand(()-> swerve.zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.35 : 0.35,0), 
+            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.7 : 0.7,0), 
                                     0, true), swerve).until(() -> Vision.getInstance().getCamera(VisionConstants.FRONT).hasValidTarget()),
             new InstantCommand(()-> swerve.stop(), swerve),
             new InstantCommand(()-> swerve.resetOdometry(new Pose2d(Vision.getInstance().getCamera(VisionConstants.FRONT).getPos().getTranslation(), swerve.getGyroRotation2d()))),
@@ -75,10 +75,10 @@ public class AutoPrograms {
             Trajectories.scoringPoint(0, 1, false, ArmPosition.MID_CUBE)
         ));
 
-        auto.put("top_1Cone+1Cube", Commands.sequence(
+        auto.put("top_1Cone+1Cone", Commands.sequence(
             Trajectories.startScoringPoint(2, 2, false, ArmPosition.MID_CONE),
             new InstantCommand(()-> swerve.zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.35 : 0.35,0), 
+            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.7 : 0.7,0), 
                                     0, true), swerve).until(() -> Vision.getInstance().getCamera(VisionConstants.FRONT).hasValidTarget()),
             new InstantCommand(()-> swerve.stop(), swerve),
             new InstantCommand(()-> swerve.resetOdometry(new Pose2d(Vision.getInstance().getCamera(VisionConstants.FRONT).getPos().getTranslation(), swerve.getGyroRotation2d()))),
@@ -89,7 +89,7 @@ public class AutoPrograms {
         auto.put("bottom_1Cone+Climb", Commands.sequence(
             Trajectories.startScoringPoint(0, 0, false, ArmPosition.MID_CONE),
             new InstantCommand(()-> swerve.zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.35 : 0.35,0), 
+            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.7 : 0.7,0), 
                                     0, true), swerve).until(() -> Vision.getInstance().getCamera(VisionConstants.FRONT).hasValidTarget()),
             new InstantCommand(()-> swerve.stop(), swerve),
             new InstantCommand(()-> swerve.resetOdometry(new Pose2d(Vision.getInstance().getCamera(VisionConstants.FRONT).getPos().getTranslation(), swerve.getGyroRotation2d()))),
@@ -100,7 +100,7 @@ public class AutoPrograms {
         auto.put("bottom_1Cone+1Cube+Climb", Commands.sequence(
             Trajectories.startScoringPoint(0, 0, false, ArmPosition.MID_CONE),
             new InstantCommand(()-> swerve.zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 0 : 180)),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.35 : 0.35,0), 
+            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.7 : 0.7,0), 
                                     0, true), swerve).until(() -> Vision.getInstance().getCamera(VisionConstants.FRONT).hasValidTarget()),
             new InstantCommand(()-> swerve.stop(), swerve),
             new InstantCommand(()-> swerve.resetOdometry(new Pose2d(Vision.getInstance().getCamera(VisionConstants.FRONT).getPos().getTranslation(), swerve.getGyroRotation2d()))),
@@ -115,7 +115,7 @@ public class AutoPrograms {
         auto.put("mid_1Cube+Climb", Commands.sequence(
             Trajectories.startScoringPoint(1, 1, true, ArmPosition.MID_CUBE),
             new InstantCommand(()-> swerve.zeroGyro(DriverStation.getAlliance() == Alliance.Red ? 180 : 0)),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.35 : 0.35,0), 
+            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.7 : 0.7,0), 
                                     0, true), swerve).until(() -> vision.getCamera(VisionConstants.BACK).hasValidTarget()),
             new InstantCommand(()-> swerve.stop(), swerve),
             new InstantCommand(()-> swerve.resetOdometry(new Pose2d(vision.getCamera(VisionConstants.BACK).getPos().getTranslation(), swerve.getGyroRotation2d()))),
