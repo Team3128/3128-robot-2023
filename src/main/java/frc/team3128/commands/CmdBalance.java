@@ -25,4 +25,9 @@ public class CmdBalance extends PIDCommand {
         );
         m_controller.setTolerance(SwerveConstants.DRIVE_TOLERANCE);
     }
+
+    @Override
+    public boolean isFinished() {
+        return m_controller.atSetpoint();
+    }
 }

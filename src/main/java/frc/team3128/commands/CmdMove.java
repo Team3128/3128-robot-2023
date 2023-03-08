@@ -70,7 +70,7 @@ public class CmdMove extends CommandBase {
     private boolean xSetpoint, ySetpoint, rSetpoint, atDestination;
     private boolean inXDead;
     protected Pose2d[] poses;
-    private int index;
+    protected int index;
     private Type type;
 
     private boolean joystickOverride;
@@ -175,6 +175,9 @@ public class CmdMove extends CommandBase {
         if (Math.abs(xDistance) > maxSpeed && Math.abs(yDistance) < maxSpeed)
             xDistance = (Math.sqrt(Math.pow(maxSpeed,2) - Math.pow(yDistance,2))) * Math.signum(xDistance);
 
+        if (nearBump())
+            xDistance = Math.min(xDistance, bumpSpeed);
+
         if (!Vision.AUTO_ENABLED) {
             xDistance = 0;
             yDistance = 0;
@@ -234,6 +237,12 @@ public class CmdMove extends CommandBase {
         double top = constraints[0];
         double bottom = constraints[1];
         return (yPos >= bottom && yPos <= top);
+    }
+
+    private boolean nearBump() {
+        Pose2d pose = swerve.getPose();
+        return inXConstraints(new double[]{cableBumpInnerX - robotLength, cableBumpOuterX + robotLength}, pose.getX()) &&
+            inYConstraints(new double[]{chargingStationRightY, 0}, FIELD_X_LENGTH);
     }
 
     protected void nextPoint() {
