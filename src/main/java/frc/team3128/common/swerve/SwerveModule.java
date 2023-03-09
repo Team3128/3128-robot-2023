@@ -64,9 +64,10 @@ public class SwerveModule {
         SmartDashboard.putNumber("angle set position" + moduleNumber, desiredState.angle.getDegrees());
     }
 
-    public void xLock(double angle) {
+    public void xLock(Rotation2d angle) {
+        double desiredAngle = CTREModuleState.optimize(new SwerveModuleState(0, angle), getState().angle).angle.getDegrees();
         driveMotor.set(ControlMode.Velocity, 0);
-        angleMotor.set(ControlMode.Position, degreesToFalcon(angle, angleGearRatio)); 
+        angleMotor.set(ControlMode.Position, degreesToFalcon(desiredAngle, angleGearRatio)); 
     }
 
     public void resetToAbsolute(){
