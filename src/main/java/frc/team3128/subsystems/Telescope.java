@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -32,6 +33,7 @@ public class Telescope extends PIDSubsystem {
     private NAR_CANSparkMax m_teleMotor;
     private SparkMaxRelativeEncoder m_encoder;
     private DoubleSolenoid m_solenoid; 
+    private DigitalInput m_limitSwitch;
 
     public Telescope() {
         super(new PIDController(kP, kI, kD));
@@ -69,6 +71,11 @@ public class Telescope extends PIDSubsystem {
     private void configEncoders() {
         m_encoder = (SparkMaxRelativeEncoder) m_teleMotor.getEncoder();
         m_encoder.setPositionConversionFactor(ENC_CONV); 
+        m_limitSwitch = new DigitalInput(0);
+    }
+
+    public boolean getLimitSwitch() {
+        return m_limitSwitch.get();
     }
 
     public double getDist() {
