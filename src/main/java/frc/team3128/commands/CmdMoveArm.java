@@ -16,6 +16,7 @@ public class CmdMoveArm extends CommandBase{
 
     private double angle;
     private double dist;
+    private boolean teleStatic;
     
     public CmdMoveArm(double angle, double dist, boolean reversed){
         this.angle = reversed ? -angle : angle;
@@ -33,12 +34,17 @@ public class CmdMoveArm extends CommandBase{
     @Override
     public void initialize(){
 
+        teleStatic = false;
+
         if (angle == ArmPosition.NEUTRAL.pivotAngle && dist == ArmPosition.NEUTRAL.teleDist && !Manipulator.objectPresent) 
             angle = Vision.GROUND_DIRECTION ? 15 : -15;
         if (Math.abs(angle) == 15 && dist == ArmPosition.NEUTRAL.teleDist && !Manipulator.objectPresent) 
             angle = Vision.GROUND_DIRECTION ? 15 : -15;
-        if (dist >= telescope.getDist()) 
+        if (dist >= telescope.getSetpoint()) {
             pivot.startPID(angle);
+            if (dist == telescope.getSetpoint()) teleStatic = true;
+            // might have a bug if pidcontroller setpoint resets when pid disabled
+        }
         else 
             telescope.startPID(dist);
 
@@ -47,7 +53,7 @@ public class CmdMoveArm extends CommandBase{
 
     @Override
     public void execute(){
-        if (pivot.atSetpoint() && (telescope.getSetpoint() != dist || !telescope.isEnabled()))
+        if (pivot.atSetpoint() && (telescope.getSetpoint() != dist))
             telescope.startPID(dist);
         if (telescope.atSetpoint() && (pivot.getSetpoint() != angle || !pivot.isEnabled())) 
             pivot.startPID(angle);
@@ -55,13 +61,12 @@ public class CmdMoveArm extends CommandBase{
 
     @Override
     public void end(boolean interrupted){
-        telescope.disable();
-        telescope.engageBrake();
+        telescope.setPower(0.0); 
     }
 
     @Override
     public boolean isFinished(){
-        return pivot.atSetpoint() && telescope.atSetpoint();
+        return pivot.atSetpoint() && (telescope.atSetpoint() || teleStatic);
     }
 
 }

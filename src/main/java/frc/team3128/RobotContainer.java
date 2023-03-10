@@ -167,9 +167,8 @@ public class RobotContainer {
         rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
-        buttonPad.getButton(14).onTrue(new InstantCommand(()->{pivot.setPower(0); telescope.stopTele(); 
-                                                                telescope.engageBrake(); manipulator.stopRoller(); 
-                                                                swerve.stop();}, pivot, telescope, swerve, manipulator));
+        buttonPad.getButton(14).onTrue(new InstantCommand(()->{pivot.setPower(0); telescope.setPower(0); 
+                                                                manipulator.stopRoller(); swerve.stop();}, pivot, telescope, swerve, manipulator));
         // cancel button
         buttonPad.getButton(16).onTrue(new CmdShelfPickup(true, false));
         buttonPad.getButton(15).onTrue(new CmdShelfPickup(false, false));
