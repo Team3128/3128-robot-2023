@@ -40,6 +40,7 @@ import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
+import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Led;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.common.utility.NAR_Shuffleboard;
@@ -62,7 +63,7 @@ public class RobotContainer {
     private Swerve swerve;
     private Vision vision;
     private NAR_Camera cam;
-    // private Intake intake;
+    private Intake intake;
     private Pivot pivot;
     private Telescope telescope;
     private Manipulator manipulator;
@@ -88,7 +89,7 @@ public class RobotContainer {
         DEBUG = ()-> x.getEntry().getBoolean(false);
 
         swerve = Swerve.getInstance();
-        // intake = Intake.getInstance();
+        intake = Intake.getInstance();
         vision = Vision.getInstance();
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
@@ -266,7 +267,7 @@ public class RobotContainer {
 
         swerve.initShuffleboard();
         vision.initShuffleboard();
-        // intake.initShuffleboard();
+        intake.initShuffleboard();
         telescope.initShuffleboard();
         pivot.initShuffleboard();
         manipulator.initShuffleboard();
