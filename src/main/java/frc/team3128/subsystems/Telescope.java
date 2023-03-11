@@ -161,7 +161,9 @@ public class Telescope extends PIDSubsystem {
     }
 
     public void stopTele() {
+        disable();
         m_teleMotor.set(0);
+        engageBrake();
     }
 
     public void zeroEncoder() { //returns inches

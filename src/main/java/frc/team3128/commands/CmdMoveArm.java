@@ -40,7 +40,7 @@ public class CmdMoveArm extends CommandBase{
             angle = Vision.GROUND_DIRECTION ? 15 : -15;
         if (Math.abs(angle) == 15 && dist == ArmPosition.NEUTRAL.teleDist && !Manipulator.objectPresent) 
             angle = Vision.GROUND_DIRECTION ? 15 : -15;
-        if (dist >= telescope.getSetpoint()) {
+        if (dist >= telescope.getDist()) {
             pivot.startPID(angle);
             if (dist == telescope.getSetpoint()) teleStatic = true;
             // might have a bug if pidcontroller setpoint resets when pid disabled
@@ -61,7 +61,7 @@ public class CmdMoveArm extends CommandBase{
 
     @Override
     public void end(boolean interrupted){
-        telescope.setPower(0.0); 
+        telescope.stopTele(); 
     }
 
     @Override
