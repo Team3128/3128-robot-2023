@@ -1,5 +1,6 @@
 package frc.team3128.common.swerve;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -102,12 +103,7 @@ public class SwerveModule {
     }
 
     public double makePositiveDegrees(double angle) {
-        double degrees = angle;
-        degrees = degrees % 360;
-        if (degrees < 0.0){
-            degrees = degrees + 360;
-        }
-        return degrees;
+        return MathUtil.inputModulus(angle, 0, 360);
     }
 
     public double makePositiveDegrees(Rotation2d angle){
