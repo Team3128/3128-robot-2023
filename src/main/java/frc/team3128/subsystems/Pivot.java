@@ -3,6 +3,7 @@ package frc.team3128.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.team3128.Constants.PivotConstants.*;
@@ -27,8 +28,9 @@ public class Pivot extends PIDSubsystem {
 
     private static Pivot instance;
     private NAR_CANSparkMax m_rotateMotor;
-    private SparkMaxRelativeEncoder m_encoder;
-    public CANCoder m_cancoder;
+    // private SparkMaxRelativeEncoder m_encoder;
+    // public CANCoder m_cancoder;
+    private DutyCycleEncoder m_encoder;
     public double offset;
 
     public Pivot() {
@@ -59,6 +61,8 @@ public class Pivot extends PIDSubsystem {
     }
 
     private void configEncoders() {
+        m_encoder = new DutyCycleEncoder(ENC_DIO_ID);
+
         // m_cancoder = new CANCoder(CANCODER_ID, "rio");
         // m_cancoder.configFactoryDefault();
         // m_cancoder.configAllSettings(pivotCancoderConfig());
@@ -81,6 +85,14 @@ public class Pivot extends PIDSubsystem {
         startPID(getSetpoint() + (direction ? 10.0 / 50.0 : -10.0/50.0));
     }
 
+    public double getAngle(){
+        // return MathUtil.inputModulus(-m_cancoder.getAbsolutePosition() - ANGLE_OFFSET, -180, 180);
+        return m_encoder.get()*360 - ANGLE_OFFSET;
+    }
+
+    public void initShuffleboard() {
+        NAR_Shuffleboard.addData("pivot","pivot angle", ()->getMeasurement(),0,0);
+        NAR_Shuffleboard.addData("pivot","encoder angle", ()->getAngle(),0,3);
     // public double getAngle(){
     //     return MathUtil.inputModulus(-m_cancoder.getAbsolutePosition() - ANGLE_OFFSET, -180, 180);
     // }
