@@ -237,9 +237,12 @@ public class Swerve extends SubsystemBase {
         return getRotation2d().getDegrees();
     }
 
+    //Pitch is Roll
     public double getPitch() {
         return gyro.getPitch();
     }
+
+    //Roll is Pitch
     public double getRoll() {
         return gyro.getRoll();
     }
