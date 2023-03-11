@@ -120,17 +120,19 @@ public class Telescope extends PIDSubsystem {
     /*If extends actually extends set isReversed to false,
     if extends retracts, set isReversed to true*/
     public void extend() {
-        disable();
-        releaseBrake();
-        m_teleMotor.set(0.40);
+        setPower(0.4);
     }
 
     /*If retracts actually retracts set isReversed to false,
     if retracts extends, set isReversed to true*/
     public void retract() {
+        setPower(-0.4);
+    }
+    
+    public void setPower(double power) {
         disable();
         releaseBrake();
-        m_teleMotor.set(-0.40);
+        m_teleMotor.set(power);
     }
 
     public void releaseBrake(){
@@ -166,7 +168,9 @@ public class Telescope extends PIDSubsystem {
     }
 
     public void stopTele() {
+        disable();
         m_teleMotor.set(0);
+        engageBrake();
     }
 
     public void zeroEncoder() { //returns inches

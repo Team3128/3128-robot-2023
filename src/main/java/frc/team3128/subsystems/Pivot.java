@@ -119,7 +119,7 @@ public class Pivot extends PIDSubsystem {
     }
 
     public void stopPivot() {
-        m_rotateMotor.set(0);
+        setPower(0);
     }
 
     public boolean atSetpoint() {
