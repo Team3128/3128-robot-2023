@@ -12,12 +12,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdScoreOptimized;
 import frc.team3128.commands.CmdShelfPickup;
 import frc.team3128.commands.CmdSwerveDrive;
-import frc.team3128.commands.CmdZeroTelescope;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdPickupOptimized;
@@ -32,6 +32,7 @@ import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdGroundPickup;
 import frc.team3128.Constants.ManipulatorConstants;
+import frc.team3128.Constants.TelescopeConstants;
 import frc.team3128.commands.CmdManipGrab;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_ButtonBoard;
@@ -134,13 +135,13 @@ public class RobotContainer {
                                                                 andThen(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))));
         controller.getButton("LeftBumper").onTrue(new CmdGroundPickup(false)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false).
                                                                 andThen(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))));
-        controller.getButton("Back").onTrue(new CmdZeroTelescope());
+        rightStick.getButton(4).onTrue(new StartEndCommand(() ->telescope.retract(), () -> {telescope.stopTele(); telescope.zeroEncoder(TelescopeConstants.TELE_OFFSET);}).until(() -> !telescope.getLimitSwitch()));
         
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
         // rightStick.getButton(1).onTrue(new InstantCommand(()-> pivot.offset = pivot.getAngle()));
         rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
-        rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
+        // rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0), pivot));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5), telescope));
         rightStick.getButton(7).onTrue(Commands.deadline(Commands.sequence(new WaitCommand(1), new CmdBangBangBalance()), new CmdBalance()));

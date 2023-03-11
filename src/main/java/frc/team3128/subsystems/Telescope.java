@@ -79,7 +79,7 @@ public class Telescope extends PIDSubsystem {
     }
 
     public double getDist() {
-        return -m_encoder.getPosition() + MIN_DIST + TELE_OFFSET;
+        return -m_encoder.getPosition() + MIN_DIST;
     }
 
     public void startPID(double teleDist) {
@@ -170,7 +170,11 @@ public class Telescope extends PIDSubsystem {
     }
 
     public void zeroEncoder() { //returns inches
-        m_encoder.setPosition(0);
+        zeroEncoder(0);
+    }
+
+    public void zeroEncoder(double dist) { //returns inches
+        m_encoder.setPosition(dist);
     }
 
     public boolean atSetpoint() {
