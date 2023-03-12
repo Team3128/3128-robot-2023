@@ -168,7 +168,8 @@ public class Trajectories {
                 )
             ),
             new InstantCommand(()-> swerve.stop(), swerve),
-            new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)),
+            // new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)),
+            new InstantCommand(() -> manipulator.setRollerPower(0)),
             new CmdMoveArm(ArmPosition.NEUTRAL, false)
         );
     }

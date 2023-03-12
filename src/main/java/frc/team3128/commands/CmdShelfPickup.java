@@ -52,7 +52,8 @@ public class CmdShelfPickup extends SequentialCommandGroup{
                     new WaitUntilCommand(()-> pivot.atSetpoint()),
                     new InstantCommand(() -> telescope.startPID(ArmPosition.HP_SHELF.teleDist), telescope),
                     new WaitUntilCommand(()-> telescope.atSetpoint()),
-                    new CmdManipGrab(false)
+                    // new CmdManipGrab(false)
+                    new CmdManipGrab(false, true)
                     //new InstantCommand(() -> {if (cone) Manipulator.getInstance().closeClaw();})
                 ),
                 new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)

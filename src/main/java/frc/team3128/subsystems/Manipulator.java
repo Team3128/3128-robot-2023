@@ -15,7 +15,7 @@ public class Manipulator extends SubsystemBase {
 
     private static Manipulator instance;
 
-    public static boolean objectPresent = false;
+    //public static boolean objectPresent = false;
 
     public Manipulator(){
         configPneumatics();
@@ -41,12 +41,20 @@ public class Manipulator extends SubsystemBase {
         m_roller.setNeutralMode(NeutralMode.Brake);
     }
 
-    public void openClaw(){
-        m_solenoid.set(Value.kForward);
+    // public void openClaw(){
+    //     m_solenoid.set(Value.kForward);
+    // }
+
+    // public void closeClaw(){
+    //     m_solenoid.set(Value.kReverse);
+    // }
+
+    public void retractMnp() {
+        m_solenoid.set(Value.kReverse);
     }
 
-    public void closeClaw(){
-        m_solenoid.set(Value.kReverse);
+    public void extendMnp() {
+        m_solenoid.set(Value.kForward);
     }
     
     public void toggleClaw() {
@@ -81,15 +89,44 @@ public class Manipulator extends SubsystemBase {
         return getCurrent() > CURRENT_THRESHOLD;
     }
 
-    public void intake(boolean cone) {
-        if (cone) closeClaw();
-        else openClaw();
-        enableRollersForward(); 
+    // public void intake(boolean cone) {
+    //     if (cone) closeClaw();
+    //     else openClaw();
+    //     enableRollersForward(); 
+    // }    
+
+    // public void outtake(boolean cone){
+    //     openClaw();
+    //     if (!cone) enableRollersReverse();
+    // }
+
+    public void intake(boolean cone, boolean shelf) {
+        if (cone && shelf) {
+            extendMnp();
+            // roller might be reversed
+            enableRollersForward();
+        } else if (!cone && shelf) {
+            // TODO not sure about piston state in this one
+            extendMnp();
+            enableRollersReverse();
+        } else if (cone && !shelf) {
+            retractMnp();
+            enableRollersForward();
+        } else if (!cone && !shelf) {
+            retractMnp();
+            enableRollersReverse();
+        }
+
     }    
 
     public void outtake(boolean cone){
-        openClaw();
-        if (!cone) enableRollersReverse();
+        if (cone) {
+            extendMnp();
+            enableRollersReverse();
+        } else {
+            retractMnp();
+            enableRollersForward();
+        }
     }
 
     //forbidden method
@@ -102,6 +139,6 @@ public class Manipulator extends SubsystemBase {
         NAR_Shuffleboard.addData("Manipulator", "Manip current", () -> getCurrent(), 0, 1);
         // NAR_Shuffleboard.addData("Manipulator", "Has object", () -> hasObject(), 0, 2);
         NAR_Shuffleboard.addData("Manipulator", "get", () -> m_roller.getMotorOutputPercent(), 0, 3);
-        NAR_Shuffleboard.addData("Manipulator", "ObjectPresent", ()-> objectPresent, 1, 1);
+        // NAR_Shuffleboard.addData("Manipulator", "ObjectPresent", ()-> objectPresent, 1, 1);
     }
 }

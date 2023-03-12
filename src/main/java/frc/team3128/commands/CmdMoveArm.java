@@ -36,10 +36,10 @@ public class CmdMoveArm extends CommandBase{
 
         teleStatic = false;
 
-        if (angle == ArmPosition.NEUTRAL.pivotAngle && dist == ArmPosition.NEUTRAL.teleDist && !Manipulator.objectPresent) 
-            angle = Vision.GROUND_DIRECTION ? 15 : -15;
-        if (Math.abs(angle) == 15 && dist == ArmPosition.NEUTRAL.teleDist && !Manipulator.objectPresent) 
-            angle = Vision.GROUND_DIRECTION ? 15 : -15;
+        // if (angle == ArmPosition.NEUTRAL.pivotAngle && dist == ArmPosition.NEUTRAL.teleDist && !Manipulator.objectPresent) 
+        //     angle = Vision.GROUND_DIRECTION ? 15 : -15;
+        // if (Math.abs(angle) == 15 && dist == ArmPosition.NEUTRAL.teleDist && !Manipulator.objectPresent) 
+        //     angle = Vision.GROUND_DIRECTION ? 15 : -15;
         if (dist >= telescope.getDist()) {
             pivot.startPID(angle);
             if (dist == telescope.getSetpoint()) teleStatic = true;

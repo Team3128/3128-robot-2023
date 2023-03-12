@@ -125,18 +125,21 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         controller.getButton("A").onTrue(new InstantCommand(()-> Vision.AUTO_ENABLED = !Vision.AUTO_ENABLED));
-        controller.getButton("Y").onTrue(new InstantCommand(()-> {Vision.GROUND_DIRECTION = !Vision.GROUND_DIRECTION; 
-                                                                            Manipulator.objectPresent = false;})
-                                                                            .andThen(new CmdMoveArm(ArmPosition.NEUTRAL, false)));
+        // controller.getButton("Y").onTrue(new InstantCommand(()-> {Vision.GROUND_DIRECTION = !Vision.GROUND_DIRECTION; 
+        //                                                                     Manipulator.objectPresent = false;})
+        //                                                                     .andThen(new CmdMoveArm(ArmPosition.NEUTRAL, false)));
         controller.getButton("RightTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = 1)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("LeftTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = .25)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         controller.getButton("B").onTrue(new InstantCommand(()-> swerve.resetEncoders()));
         //controller.getButton("X").onTrue(new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))));
-        controller.getButton("RightBumper").onTrue(new CmdGroundPickup(true)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false).
-                                                                andThen(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))));
-        controller.getButton("LeftBumper").onTrue(new CmdGroundPickup(false)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false).
-                                                                andThen(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))));
+        // controller.getButton("RightBumper").onTrue(new CmdGroundPickup(true)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false).
+        //                                                         andThen(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))));
+        // controller.getButton("LeftBumper").onTrue(new CmdGroundPickup(false)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false).
+        //                                                         andThen(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))));
+        controller.getButton("RightBumper").onTrue(new CmdGroundPickup(true)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false));
+        controller.getButton("LeftBumper").onTrue(new CmdGroundPickup(false)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false));
+
         rightStick.getButton(4).onTrue(new StartEndCommand(() ->telescope.retract(), () -> {telescope.stopTele(); telescope.zeroEncoder(TelescopeConstants.TELE_OFFSET);}).until(() -> !telescope.getLimitSwitch()));
         
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
@@ -166,12 +169,17 @@ public class RobotContainer {
         rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
 
-        rightStick.getButton(13).onTrue(new CmdManipGrab(true)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
-        rightStick.getButton(14).onTrue(new CmdManipGrab(false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
+        // rightStick.getButton(13).onTrue(new CmdManipGrab(true)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
+        // rightStick.getButton(14).onTrue(new CmdManipGrab(false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
+        
+        rightStick.getButton(13).onTrue(new CmdManipGrab(true, false));
+        rightStick.getButton(14).onTrue(new CmdManipGrab(false, false));
         rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.stopRoller(), manipulator));
         rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
 
-        buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
+        // buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
+        buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
+
         buttonPad.getButton(14).onTrue(new InstantCommand(()->{pivot.setPower(0); telescope.stopTele(); 
                                                                 manipulator.stopRoller(); swerve.stop();}, pivot, telescope, swerve, manipulator));
         // cancel button
@@ -204,9 +212,11 @@ public class RobotContainer {
         operatorController.getButton("Y").onTrue(new InstantCommand(()-> telescope.zeroEncoder()));
         operatorController.getButton("X").onTrue(new InstantCommand(()-> manipulator.stopRoller(), manipulator));
         operatorController.getButton("A").onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
-        operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
+        // operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
+        operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false, false));
         operatorController.getButton("LeftTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(false), manipulator));
-        operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
+        // operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
+        operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true, false));
         operatorController.getButton("RightTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(true), manipulator));
         // on false pidlock to getmeasurement
         operatorController.getButton("LeftPosY").onTrue(new InstantCommand(()->pivot.setPower(0.25), pivot)).onFalse(new InstantCommand(()->{pivot.setPower(0.0); pivot.startPID(pivot.getMeasurement());}, pivot));

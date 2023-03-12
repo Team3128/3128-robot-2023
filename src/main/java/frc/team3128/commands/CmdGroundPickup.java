@@ -12,7 +12,8 @@ public class CmdGroundPickup extends SequentialCommandGroup {
     public CmdGroundPickup(boolean cone) {
         super(
             new CmdMoveArm(cone ? ArmPosition.GROUND_PICKUP_CONE : ArmPosition.GROUND_PICKUP_CUBE, !Vision.GROUND_DIRECTION),
-            new CmdManipGrab(cone),
+            // new CmdManipGrab(cone),
+            new CmdManipGrab(cone, false),
             new InstantCommand(
                 ()-> {
                     if (cone) Vision.FIXED_DIRECTION = Vision.GROUND_DIRECTION;
