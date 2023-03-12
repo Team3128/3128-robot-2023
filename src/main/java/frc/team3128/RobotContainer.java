@@ -31,6 +31,7 @@ import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdGroundPickup;
+import frc.team3128.commands.CmdIntake;
 import frc.team3128.Constants.ManipulatorConstants;
 import frc.team3128.Constants.TelescopeConstants;
 import frc.team3128.commands.CmdManipGrab;
@@ -181,13 +182,12 @@ public class RobotContainer {
         rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> led.setAutoColor()));
 
         //Intake Buttons
-        
-        // leftStick.getButton(8).onTrue(new CmdExtendIntake()).onFalse(new CmdRetractIntake());
-        // leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
-        // leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));
-        // leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(30)));
-        // leftStick.getButton(12).onTrue(new InstantCommand(()->intake.setIntake(0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
-        // leftStick.getButton(13).onTrue(new InstantCommand(()->intake.setIntake(-0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
+        leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.setForward(), intake)).onFalse(new InstantCommand(()-> intake.disableRollers(), intake));
+        leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.setReverse(), intake)).onFalse(new InstantCommand(()-> intake.disableRollers(), intake));
+        leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(90)));
+        leftStick.getButton(1).onTrue(new InstantCommand(()->intake.setIntake(0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
+        leftStick.getButton(2).onTrue(new InstantCommand(()->intake.setIntake(-0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
+        leftStick.getButton(3).onTrue(new CmdIntake());
         
         buttonPad.getButton(5).onTrue(new CmdScore(false, ArmPosition.LOW_FLOOR, 1));
         buttonPad.getButton(8).onTrue(new CmdScore(false, ArmPosition.MID_CUBE, 1));
