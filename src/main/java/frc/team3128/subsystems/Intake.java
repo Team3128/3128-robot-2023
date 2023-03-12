@@ -4,6 +4,7 @@ import static frc.team3128.Constants.IntakeConstants.*;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
@@ -27,17 +28,15 @@ public class Intake extends PIDSubsystem {
     private DoubleSupplier setpoint, power;
 
     // Encoder
-    private DutyCycleEncoder m_encoder;;
+    private DutyCycleEncoder m_encoder;
 
     public boolean objectPresent;
 
     private static Intake instance;
 
     public enum IntakeState {
-        DEPLOYED(0),
-        RETRACTED(90),
-        SEMI_DEPLOYED(60),
-        STOWED(177);
+        DEPLOYED(5),
+        RETRACTED(110);
 
         public double angle;
 
@@ -67,6 +66,9 @@ public class Intake extends PIDSubsystem {
         m_intakeRollers = new NAR_TalonSRX(INTAKE_ROLLERS_ID);
 
         m_intakePivot.setIdleMode(IdleMode.kBrake);
+        m_intakeRollers.setNeutralMode(NeutralMode.Brake);
+        
+        
 
         m_intakePivot.setInverted(true);
         m_intakeRollers.setInverted(false);
@@ -78,7 +80,7 @@ public class Intake extends PIDSubsystem {
     }
 
     public double getAngle() {
-        return -m_encoder.get() * ENCODER_CONVERSION_FACTOR_TO_DEGREES - ANGLE_OFFSET;
+        return MathUtil.inputModulus(-m_encoder.get() * ENCODER_CONVERSION_FACTOR_TO_DEGREES - ANGLE_OFFSET,-180, 180);
     }
 
     public void startPID(IntakeState desiredState) {
@@ -132,19 +134,19 @@ public class Intake extends PIDSubsystem {
     }
 
     // Roller Control
-    public void enableRollersForward() {
-        enableRollers(ROLLER_POWER);
+    public void setForward() {
+        set(ROLLER_POWER);
     }
 
     public boolean hasObjectPresent(){
         return getCurrent() > CURRENT_THRESHOLD;
     }
 
-    public void enableRollersReverse() {
-        enableRollers(-ROLLER_POWER);
+    public void setReverse() {
+        set(-ROLLER_POWER);
     }
 
-    public void enableRollers(double wheelsPower) {
+    public void set(double wheelsPower) {
         m_intakeRollers.set(wheelsPower);
     }
 

@@ -322,7 +322,7 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 0.2;
+        public static final double kP = 0.3;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kF = 0.3;
@@ -331,8 +331,8 @@ public class Constants {
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         // public static final int CANCODER_ID = 24;
-        public static final int ENC_DIO_ID = 9;
-        public static final double ANGLE_OFFSET = 0; //get from new encoder
+        public static final int ENC_DIO_ID = 7;
+        public static final double ANGLE_OFFSET = -308; //get from new encoder
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -438,24 +438,24 @@ public class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double ROLLER_POWER = 6.0/12.0;
+        public static final double ROLLER_POWER = 0.75;
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
-        public static final double CURRENT_THRESHOLD = 40;
+        public static final double CURRENT_THRESHOLD = 50;
 
         public static final double kP = 0.065;
         public static final double kI = 0;
         public static final double kD = 0; // 0.001
 
-        public static final double kF = 0.3;
+        public static final double kF = 0.2;
 
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TO_DEGREES = 360;
-        public static final double ANGLE_OFFSET = -237; //Mika: 37, Mason: -37, Teja: 38
+        public static final double ANGLE_OFFSET = -243-7.4; 
 
-        public static final int ENCODER_DIO_ID = 9;
+        public static final int ENCODER_DIO_ID = 8;
 
         public static final double VELOCITY_SETPOINT = 0.5;
         public static final double INTAKE_TOLERANCE = 7.5;

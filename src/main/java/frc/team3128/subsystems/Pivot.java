@@ -57,7 +57,7 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.setSmartCurrentLimit(PIVOT_CURRENT_LIMIT);
         m_rotateMotor.setInverted(true);
         m_rotateMotor.enableVoltageCompensation(12.0);
-        m_rotateMotor.setIdleMode(IdleMode.kBrake);
+        m_rotateMotor.setIdleMode(IdleMode.kCoast);
     }
 
     private void configEncoders() {
@@ -87,17 +87,11 @@ public class Pivot extends PIDSubsystem {
 
     public double getAngle(){
         // return MathUtil.inputModulus(-m_cancoder.getAbsolutePosition() - ANGLE_OFFSET, -180, 180);
-        return m_encoder.get()*360 - ANGLE_OFFSET;
+        return -m_encoder.get() * 360 - ANGLE_OFFSET;
     }
 
     public void initShuffleboard() {
-        NAR_Shuffleboard.addData("pivot","pivot angle", ()->getMeasurement(),0,0);
         NAR_Shuffleboard.addData("pivot","encoder angle", ()->getAngle(),0,3);
-    // public double getAngle(){
-    //     return MathUtil.inputModulus(-m_cancoder.getAbsolutePosition() - ANGLE_OFFSET, -180, 180);
-    // }
-
-    public void initShuffleboard() {
         NAR_Shuffleboard.addData("pivot","pivot angle", ()->getMeasurement(),0,0);
         // NAR_Shuffleboard.addData("pivot","cancoder angle", ()->getAngle(),0,3);
         NAR_Shuffleboard.addData("pivot", "pivot setpoint", ()->getSetpoint(), 0, 1);
@@ -126,8 +120,7 @@ public class Pivot extends PIDSubsystem {
 
     @Override
     public double getMeasurement() { // returns degrees
-        // return getAngle();
-        return m_rotateMotor.getSelectedSensorPosition();
+        return getAngle();
     }
 
     public void stopPivot() {
