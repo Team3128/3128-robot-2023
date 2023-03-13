@@ -63,7 +63,7 @@ public class CmdScoreOld extends SequentialCommandGroup {
             new InstantCommand(() -> manipulator.stopRoller(), manipulator),
             // new InstantCommand(() -> pivot.startPID(position.pivotAngle)),
             // new WaitUntilCommand(() ->pivot.atSetpoint()),
-            new InstantCommand(() -> Manipulator.objectPresent = false),
+            // new InstantCommand(() -> Manipulator.objectPresent = false),
             new InstantCommand(() -> telescope.setSetpoint(ArmPosition.NEUTRAL.teleDist), telescope),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
             new InstantCommand(()-> {telescope.disable(); telescope.engageBrake();}, telescope),
