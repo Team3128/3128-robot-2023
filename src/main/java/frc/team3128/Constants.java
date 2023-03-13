@@ -34,10 +34,10 @@ public class Constants {
     }
 
     public static class AutoConstants {
-        public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.92, Rotation2d.fromDegrees(180));
-        public static final Pose2d PICKUP_2 = new Pose2d(5.9, 2.15, Rotation2d.fromDegrees(180));
-        public static final Pose2d PICKUP_3 = new Pose2d(5.9, 3.38, Rotation2d.fromDegrees(180));
-        public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.55, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.92, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_2 = new Pose2d(5.9, 2.15, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_3 = new Pose2d(5.9, 3.38, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.55, Rotation2d.fromDegrees(0));
 
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));
         public static final Pose2d ClimbSetupOutside = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
@@ -54,7 +54,7 @@ public class Constants {
             new Pose2d(1.85 ,5, Rotation2d.fromDegrees(180))
         };
 
-        public static final double BALANCE_FF = 0;
+        public static final double BALANCE_FF = 0.2;
     }
 
     public static class SwerveConstants {
@@ -94,7 +94,7 @@ public class Constants {
 
         public static final double TURN_TOLERANCE = 5;
 
-        public static final double DRIVE_TOLERANCE = 0.025;
+        public static final double DRIVE_TOLERANCE = 0.03;
 
         /* Translation PID Values */
         public static final double translationKP = 3;
@@ -327,7 +327,7 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 0.2;
+        public static final double kP = 0.15;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kF = 0.3;
@@ -335,8 +335,9 @@ public class Constants {
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
-        public static final int CANCODER_ID = 24;
-        public static final double ANGLE_OFFSET = 163.4765625 +16.34 + 6+17.47 + 2.8-4.28+.5 + 9.24;//149.5 +4.9 +3.07 + 7.2;//140.97-6 + 18.1;//-29.7 +7.55 + 85+4.91+0.88-3.7-9.8+60;
+        // public static final int CANCODER_ID = 24;
+        public static final int ENC_DIO_ID = 7;
+        public static final double ANGLE_OFFSET = -308-6+1.3; //get from new encoder
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -452,24 +453,24 @@ public class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double ROLLER_POWER = 6.0/12.0;
+        public static final double ROLLER_POWER = 0.75;
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
-        public static final double CURRENT_THRESHOLD = 40;
+        public static final double CURRENT_THRESHOLD = 50;
 
         public static final double kP = 0.065;
         public static final double kI = 0;
         public static final double kD = 0; // 0.001
 
-        public static final double kF = 0.3;
+        public static final double kF = 0.2;
 
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TO_DEGREES = 360;
-        public static final double ANGLE_OFFSET = -237; //Mika: 37, Mason: -37, Teja: 38
+        public static final double ANGLE_OFFSET = -125.7; 
 
-        public static final int ENCODER_DIO_ID = 9;
+        public static final int ENCODER_DIO_ID = 8;
 
         public static final double VELOCITY_SETPOINT = 0.5;
         public static final double INTAKE_TOLERANCE = 7.5;
@@ -533,7 +534,7 @@ public class Constants {
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
 
         public static final int ROLLER_MOTOR_ID = 13;
-        public static final double ROLLER_POWER = 0.7;
+        public static final double ROLLER_POWER = 0.25;
         public static final double STALL_POWER = 0.25;
 
         public static final double CURRENT_THRESHOLD = 35;

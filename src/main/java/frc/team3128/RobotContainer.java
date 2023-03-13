@@ -1,6 +1,7 @@
 package frc.team3128;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -12,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -20,6 +22,7 @@ import frc.team3128.commands.CmdShelfPickup;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
+import frc.team3128.commands.CmdMoveIntake;
 import frc.team3128.commands.CmdPickupOptimized;
 import frc.team3128.commands.CmdScore;
 
@@ -31,7 +34,9 @@ import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdGroundPickup;
+import frc.team3128.commands.CmdIntake;
 import frc.team3128.Constants.ManipulatorConstants;
+import frc.team3128.Constants.TelescopeConstants;
 import frc.team3128.commands.CmdManipGrab;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_ButtonBoard;
@@ -39,6 +44,7 @@ import frc.team3128.common.hardware.input.NAR_Joystick;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
+import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Led;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.common.utility.NAR_Shuffleboard;
@@ -48,6 +54,7 @@ import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import static frc.team3128.Constants.ArmConstants.*;
 
+import java.sql.Driver;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -62,7 +69,7 @@ public class RobotContainer {
     private Swerve swerve;
     private Vision vision;
     private NAR_Camera cam;
-    // private Intake intake;
+    private Intake intake;
     private Pivot pivot;
     private Telescope telescope;
     private Manipulator manipulator;
@@ -88,7 +95,7 @@ public class RobotContainer {
         DEBUG = ()-> x.getEntry().getBoolean(false);
 
         swerve = Swerve.getInstance();
-        // intake = Intake.getInstance();
+        intake = Intake.getInstance();
         vision = Vision.getInstance();
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
@@ -131,19 +138,23 @@ public class RobotContainer {
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         controller.getButton("B").onTrue(new InstantCommand(()-> swerve.resetEncoders()));
         //controller.getButton("X").onTrue(new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))));
-        controller.getButton("RightBumper").onTrue(new CmdGroundPickup(true)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false).
-                                                                andThen(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))));
-        controller.getButton("LeftBumper").onTrue(new CmdGroundPickup(false)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false).
-                                                                andThen(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0))));
+        controller.getButton("RightBumper").onTrue(new InstantCommand(() -> intake.setReverse())).onFalse(new InstantCommand(()->intake.disableRollers()));
+        controller.getButton("LeftBumper").onTrue(new CmdIntake()).onFalse(new CmdMoveIntake(Intake.IntakeState.RETRACTED).
+                                                                andThen(new InstantCommand(() -> intake.disableRollers(), intake)));
+        rightStick.getButton(4).onTrue(new StartEndCommand(() ->telescope.retract(), () -> {telescope.stopTele(); telescope.zeroEncoder(TelescopeConstants.TELE_OFFSET);}).until(() -> !telescope.getLimitSwitch()));
         
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
         // rightStick.getButton(1).onTrue(new InstantCommand(()-> pivot.offset = pivot.getAngle()));
         rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
-        rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
+        // rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0), pivot));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5), telescope));
-        rightStick.getButton(7).onTrue(Commands.deadline(Commands.sequence(new WaitCommand(1), new CmdBangBangBalance()), new CmdBalance()));
+        //rightStick.getButton(7).onTrue(new CmdBalance());
+        rightStick.getButton(7).onTrue(Commands.sequence(
+                                            Commands.deadline(Commands.sequence(new WaitCommand(1), new CmdBangBangBalance()), new CmdBalance()), 
+                                            //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
+                                            new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())));
         rightStick.getButton(8).onTrue(new SequentialCommandGroup(new InstantCommand(()-> Vision.GROUND_DIRECTION = false),
         // new CmdMoveArm(ArmPosition.NEUTRAL, false),
         //new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : AutoConstants.ClimbSetupOutside),
@@ -170,8 +181,7 @@ public class RobotContainer {
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false)).onFalse(new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)));
         buttonPad.getButton(14).onTrue(new InstantCommand(()->{pivot.setPower(0); telescope.stopTele(); 
-                                                                telescope.engageBrake(); manipulator.stopRoller(); 
-                                                                swerve.stop();}, pivot, telescope, swerve, manipulator));
+                                                                manipulator.stopRoller(); swerve.stop();}, pivot, telescope, swerve, manipulator));
         // cancel button
         buttonPad.getButton(16).onTrue(Commands.sequence(
             new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
@@ -186,13 +196,12 @@ public class RobotContainer {
         rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> led.setAutoColor()));
 
         //Intake Buttons
-        
-        // leftStick.getButton(8).onTrue(new CmdExtendIntake()).onFalse(new CmdRetractIntake());
-        // leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.enableRollersForward())).onFalse(new InstantCommand(()-> intake.disableRollers()));
-        // leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.enableRollersReverse())).onFalse(new InstantCommand(()-> intake.disableRollers()));
-        // leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(30)));
-        // leftStick.getButton(12).onTrue(new InstantCommand(()->intake.setIntake(0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
-        // leftStick.getButton(13).onTrue(new InstantCommand(()->intake.setIntake(-0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
+        leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.setForward(), intake)).onFalse(new InstantCommand(()-> intake.disableRollers(), intake));
+        leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.setReverse(), intake)).onFalse(new InstantCommand(()-> intake.disableRollers(), intake));
+        leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(90)));
+        leftStick.getButton(1).onTrue(new InstantCommand(()->intake.setIntake(0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
+        leftStick.getButton(2).onTrue(new InstantCommand(()->intake.setIntake(-0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
+        leftStick.getButton(3).onTrue(new CmdIntake());
         
         buttonPad.getButton(5).onTrue(Commands.sequence(
             new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
@@ -313,7 +322,7 @@ public class RobotContainer {
 
         swerve.initShuffleboard();
         vision.initShuffleboard();
-        // intake.initShuffleboard();
+        intake.initShuffleboard();
         telescope.initShuffleboard();
         pivot.initShuffleboard();
         manipulator.initShuffleboard();

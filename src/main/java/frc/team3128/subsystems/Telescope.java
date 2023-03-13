@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -32,6 +33,7 @@ public class Telescope extends PIDSubsystem {
     private NAR_CANSparkMax m_teleMotor;
     private SparkMaxRelativeEncoder m_encoder;
     private DoubleSolenoid m_solenoid; 
+    private DigitalInput m_limitSwitch;
 
     public Telescope() {
         super(new PIDController(kP, kI, kD));
@@ -69,10 +71,15 @@ public class Telescope extends PIDSubsystem {
     private void configEncoders() {
         m_encoder = (SparkMaxRelativeEncoder) m_teleMotor.getEncoder();
         m_encoder.setPositionConversionFactor(ENC_CONV); 
+        m_limitSwitch = new DigitalInput(0);
+    }
+
+    public boolean getLimitSwitch() {
+        return m_limitSwitch.get();
     }
 
     public double getDist() {
-        return -m_encoder.getPosition() + MIN_DIST + TELE_OFFSET;
+        return -m_encoder.getPosition() + MIN_DIST;
     }
 
     public void startPID(double teleDist) {
@@ -113,17 +120,19 @@ public class Telescope extends PIDSubsystem {
     /*If extends actually extends set isReversed to false,
     if extends retracts, set isReversed to true*/
     public void extend() {
-        disable();
-        releaseBrake();
-        m_teleMotor.set(0.40);
+        setPower(0.4);
     }
 
     /*If retracts actually retracts set isReversed to false,
     if retracts extends, set isReversed to true*/
     public void retract() {
+        setPower(-0.4);
+    }
+    
+    public void setPower(double power) {
         disable();
         releaseBrake();
-        m_teleMotor.set(-0.40);
+        m_teleMotor.set(power);
     }
 
     public void releaseBrake(){
@@ -159,11 +168,17 @@ public class Telescope extends PIDSubsystem {
     }
 
     public void stopTele() {
+        disable();
         m_teleMotor.set(0);
+        engageBrake();
     }
 
     public void zeroEncoder() { //returns inches
-        m_encoder.setPosition(0);
+        zeroEncoder(0);
+    }
+
+    public void zeroEncoder(double dist) { //returns inches
+        m_encoder.setPosition(dist);
     }
 
     public boolean atSetpoint() {
