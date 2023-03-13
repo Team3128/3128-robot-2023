@@ -28,9 +28,10 @@ public class CmdMoveLoading extends CmdMove {
     @Override
     public void initialize() {
         currentSelectedGrid = Vision.SELECTED_GRID;
-        var newPoses = new Pose2d[positions.length + 1];
+        var newPoses = new Pose2d[positions.length + 2];
         newPoses[0] = swerve.getPose().nearest(Arrays.asList(VisionConstants.RAMP_AVOID_LOADING));
-        for (int i = 1; i < positions.length + 1; i ++) {
+        newPoses[1] = VisionConstants.HPWall_Loading;
+        for (int i = 2; i < newPoses.length; i ++) {
             newPoses[i] = positions[i - 1][currentSelectedGrid];
         }
 
@@ -49,9 +50,9 @@ public class CmdMoveLoading extends CmdMove {
 
     @Override
     public void execute() {
-        if (pastX(PASS_LINE) && !atLastPoint()) {
+        if ((pastX(PASS_LINE) && index == 0) || (swerve.getPose().getY() > VisionConstants.WALL_PASS && index == 1))
             nextPoint();
-        }
+        
         super.execute();
     }
     

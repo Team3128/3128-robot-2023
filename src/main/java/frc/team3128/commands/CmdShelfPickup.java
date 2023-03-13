@@ -39,7 +39,10 @@ public class CmdShelfPickup extends SequentialCommandGroup{
         addCommands(
             new InstantCommand(() -> led.setPickupColor(cone)),
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
-            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
+            Commands.deadline(
+                new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
+                new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)
+            ),
             // Commands.parallel(
             //     new CmdMoveLoading(isReversed, VisionConstants.LOADING_ZONE),
             //     Commands.sequence(

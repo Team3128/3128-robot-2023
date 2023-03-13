@@ -252,19 +252,14 @@ public class Trajectories {
         );
     }
 
-    // front == true use frog, front == false use blog
     public static CommandBase resetOdometry(boolean front) {
         return Commands.sequence(
-
-        // red and front 0
-        // red and back 180
-        // blue and front 180
-        // blue and back 0 
+            new InstantCommand(()-> Vision.AUTO_ENABLED = true),
             new InstantCommand(()-> swerve.zeroGyro((DriverStation.getAlliance() == Alliance.Red && front) || (DriverStation.getAlliance() == Alliance.Blue && !front) ? 0 : 180)),
             new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.7 : 0.7,0), 
                                     0, true), swerve).until(() -> Vision.getInstance().getCamera(front ? VisionConstants.FRONT : VisionConstants.BACK).hasValidTarget()),
             new InstantCommand(()-> swerve.stop(), swerve),
-            new InstantCommand(()-> swerve.resetOdometry(new Pose2d(Vision.getInstance().getCamera(front ? VisionConstants.FRONT : VisionConstants.BACK).getPos().getTranslation(), swerve.getGyroRotation2d())))
+            new InstantCommand(()-> Vision.getInstance().visionReset())
         );
     }
 
@@ -282,10 +277,9 @@ public class Trajectories {
 
     public static CommandBase climbPoint(boolean inside) {
         return Commands.sequence(
-            new InstantCommand(()-> Vision.AUTO_ENABLED = true),
             // new CmdMoveArm(ArmPosition.NEUTRAL, false),
             new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : AutoConstants.ClimbSetupOutside),
-            Commands.deadline(Commands.sequence(new WaitCommand(3), new CmdBangBangBalance()), new CmdBalance()), 
+            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getRoll()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
                                             new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())
             // new CmdMoveArm(90, 11.5, false)
