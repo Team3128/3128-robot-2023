@@ -19,10 +19,9 @@ public class Vision extends SubsystemBase{
     public static boolean MANUAL = false;
     public static boolean GROUND_DIRECTION = false; 
 
-    private double prevTime = 0;
-    private static Vision instance;
-
     private HashMap<String,NAR_Camera> cameras;
+  
+    private static Vision instance;
 
     public static synchronized Vision getInstance(){
         if(instance == null) {
@@ -36,8 +35,7 @@ public class Vision extends SubsystemBase{
         NAR_Camera.setGyro(()-> swerve.getYaw());
         NAR_Camera.setOdometry((pose,time) -> swerve.addVisionMeasurement(pose,time));
         NAR_Camera.setAprilTags(APRIL_TAG_POS);
-        NAR_Camera.setVisionTarget(FieldConstants.HUB_POSITION);
-        NAR_Camera.multipleTargets = false;
+        NAR_Camera.multipleTargets = true;
         cameras = new HashMap<String,NAR_Camera>();
         cameras.put(FRONT.hostname, new NAR_Camera(FRONT));
         cameras.put(BACK.hostname, new NAR_Camera(BACK));
@@ -45,6 +43,17 @@ public class Vision extends SubsystemBase{
 
     public Pose2d targetPos(String name, Pose2d robotPos) {
         return cameras.get(name).getTargetPos(robotPos);
+    }
+
+    public void visionReset() {
+        Swerve swerve = Swerve.getInstance();
+        for (NAR_Camera cam : getCameras()) {
+            Pose2d pose = cam.getPos();
+            if (!pose.equals(new Pose2d())) {
+                swerve.resetOdometry(new Pose2d(pose.getTranslation(),swerve.getGyroRotation2d()));
+                return;
+            }
+        }
     }
 
     public Pose2d robotPos(String name) {

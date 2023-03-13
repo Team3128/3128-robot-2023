@@ -44,8 +44,4 @@ public class CmdBalance extends PIDCommand {
         return m_controller.atSetpoint();
     }
 
-    @Override
-    public boolean isFinished() {
-        return m_controller.atSetpoint();
-    }
 }

@@ -143,16 +143,16 @@ public class RobotContainer {
                                                                 andThen(new InstantCommand(() -> intake.disableRollers(), intake)));
         rightStick.getButton(4).onTrue(new StartEndCommand(() ->telescope.retract(), () -> {telescope.stopTele(); telescope.zeroEncoder(TelescopeConstants.TELE_OFFSET);}).until(() -> !telescope.getLimitSwitch()));
         
-        rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
+        rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.zeroGyro()));
         // rightStick.getButton(1).onTrue(new InstantCommand(()-> pivot.offset = pivot.getAngle()));
-        rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
+        rightStick.getButton(2).onTrue(new InstantCommand(()->vision.visionReset()));
         rightStick.getButton(3).onTrue(new InstantCommand(()-> telescope.releaseBrake()));
         // rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0), pivot));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5), telescope));
         //rightStick.getButton(7).onTrue(new CmdBalance());
         rightStick.getButton(7).onTrue(Commands.sequence(
-                                            Commands.deadline(Commands.sequence(new WaitCommand(1), new CmdBangBangBalance()), new CmdBalance()), 
+                                            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getRoll()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
                                             new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())));
         rightStick.getButton(8).onTrue(new SequentialCommandGroup(new InstantCommand(()-> Vision.GROUND_DIRECTION = false),
@@ -259,6 +259,7 @@ public class RobotContainer {
     }
 
     public void init() {
+        Vision.AUTO_ENABLED = false;
         if (DriverStation.getAlliance() == Alliance.Red) {
             buttonPad.getButton(4).onTrue(Commands.sequence(
                 new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),

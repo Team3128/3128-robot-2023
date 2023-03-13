@@ -224,6 +224,8 @@ public class Constants {
 
         public static final double TX_THRESHOLD = 3; // degrees
 
+        public static final double POSE_THRESH = 1;
+
         public static final double ANGLE_THRESHOLD = 10; // degrees
 
         public static final double TARGET_AREA = 6.25 * 6.25; //inches
@@ -399,7 +401,6 @@ public class Constants {
     }
     
     public static class FieldConstants{
-        public static final Pose2d HUB_POSITION = new Pose2d(Units.inchesToMeters(324), Units.inchesToMeters(162),Rotation2d.fromDegrees(-90));
         public static final double FIELD_X_LENGTH = Units.inchesToMeters(651.25); // meters
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(315.5); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters

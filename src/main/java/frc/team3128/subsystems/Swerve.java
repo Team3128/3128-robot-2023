@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.Constants.FieldConstants;
+import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.swerve.SwerveModule;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
@@ -110,11 +111,13 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return estimatedPose;
+        return new Pose2d(estimatedPose.getTranslation(), getGyroRotation2d());
     }
 
     public void addVisionMeasurement(Pose2d pose, double timeStamp) {
-        odometry.addVisionMeasurement(new Pose2d(pose.getTranslation(), getGyroRotation2d()), timeStamp);
+        if (Math.abs(pose.getX() - getPose().getX()) > VisionConstants.POSE_THRESH && 
+            Math.abs(pose.getY() - getPose().getY()) > VisionConstants.POSE_THRESH) return;
+        odometry.addVisionMeasurement(pose, timeStamp);
     }
 
     public void resetEncoders() {
@@ -171,20 +174,10 @@ public class Swerve extends SubsystemBase {
         resetOdometry(new Pose2d(0,0, new Rotation2d(0)));
         resetEncoders();
     }
-
+    
+    //DON't USE RELIES ON APRIL TAG BAD ANGLE MEASUREMENT
     public Rotation2d getRotation2d() {
         return estimatedPose.getRotation();
-    }
-    
-    public double calculateDegreesToTurn(){
-        double alpha = getHeading();
-        return MathUtil.inputModulus(calculateDesiredAngle() - alpha,-180,180);
-    }
-
-    public double calculateDesiredAngle(){
-        Pose2d location = getPose().relativeTo(FieldConstants.HUB_POSITION);
-        double theta = Math.toDegrees(Math.atan2(location.getY(),location.getX()));
-        return MathUtil.inputModulus(theta - 180,-180,180);
     }
 
     public void logPose() {
@@ -219,6 +212,7 @@ public class Swerve extends SubsystemBase {
         return Rotation2d.fromDegrees(getYaw());
     }
 
+    //DONT USE THIS METHOD, it relies on the bad april tag angle measurements
     public double getHeading() {
         return getRotation2d().getDegrees();
     }
