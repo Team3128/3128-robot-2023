@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.PivotConstants;
+import frc.team3128.Constants.TelescopeConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
@@ -112,9 +113,11 @@ public class Pivot extends PIDSubsystem {
 
     @Override
     protected void useOutput(double output, double setpoint) {
-        double ff = kF.getAsDouble() * Math.sin(Units.degreesToRadians(setpoint)); //Need to calculate this
+        double ff = kF.getAsDouble() * Math.sin(Units.degreesToRadians(setpoint)); 
+        double teleDist = Telescope.getInstance().getDist();
+        ff *= ((teleDist-11.5) / (TelescopeConstants.MAX_DIST - TelescopeConstants.MIN_DIST))*0.5 + 1; 
         double voltageOutput = output + ff;
-
+        
         m_rotateMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
     }
 

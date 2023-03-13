@@ -379,6 +379,7 @@ public class Constants {
             NEUTRAL(0, 11.5, null, null), //pivot should be 0
 
             HP_SHELF(100, 20, null, null), //105
+            GROUND_PICKUP(37, 26.5, null, null),
             GROUND_PICKUP_CONE(37, 26.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 26, null, null), 
             CONE_POLE(-40, 11.5, null, null),
