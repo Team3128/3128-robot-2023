@@ -57,7 +57,7 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.setSmartCurrentLimit(PIVOT_CURRENT_LIMIT);
         m_rotateMotor.setInverted(true);
         m_rotateMotor.enableVoltageCompensation(12.0);
-        m_rotateMotor.setIdleMode(IdleMode.kCoast);
+        m_rotateMotor.setIdleMode(IdleMode.kBrake);
     }
 
     private void configEncoders() {

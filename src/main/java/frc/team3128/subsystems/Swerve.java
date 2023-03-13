@@ -41,10 +41,6 @@ public class Swerve extends SubsystemBase {
 
     private Field2d field;
 
-    private double prevRoll;
-    private double prevYaw;
-    private double prevPitch;
-
     public static synchronized Swerve getInstance() {
         if (instance == null) {
             instance = new Swerve();
@@ -81,10 +77,6 @@ public class Swerve extends SubsystemBase {
 
         field = new Field2d();
         SmartDashboard.putData("Field", field);
-
-        prevRoll = getRoll();
-        prevPitch = getPitch();
-        prevYaw = getYaw();
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
@@ -115,9 +107,6 @@ public class Swerve extends SubsystemBase {
         NAR_Shuffleboard.addData("Drivetrain", "Roll", this::getRoll, 0, 2);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
         NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
-        NAR_Shuffleboard.addData("Drivetrain","YawRate",this::getYawRate,4,2);
-        NAR_Shuffleboard.addData("Drivetrain","PitchRate",this::getPitchRate,5,2);
-        NAR_Shuffleboard.addData("Drivetrain", "RollRate", this::getRollRate, 6, 2);
     }
 
     public Pose2d getPose() {
@@ -173,9 +162,6 @@ public class Swerve extends SubsystemBase {
         odometry.update(getGyroRotation2d(), getPositions());
         estimatedPose = odometry.getEstimatedPosition();
         logPose();
-        prevPitch = getPitch();
-        prevYaw = getYaw();
-        prevRoll = getRoll();
         for (SwerveModule module : modules) {
             SmartDashboard.putNumber("module " + module.moduleNumber, module.getCanCoder().getDegrees());
         }
@@ -242,18 +228,6 @@ public class Swerve extends SubsystemBase {
     }
     public double getRoll() {
         return gyro.getRoll();
-    }
-
-    public double getYawRate() {
-        return (getYaw() - prevYaw) / 0.02;
-    }
-
-    public double getPitchRate() {
-        return (getPitch() - prevPitch) / 0.02;
-    }
-
-    public double getRollRate() {
-        return (getRoll() - prevRoll) / 0.02;
     }
 
     public void zeroGyro() {
