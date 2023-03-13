@@ -113,7 +113,7 @@ public class Trajectories {
                                                 new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, false))
                                                 ));
         
-        CommandEventMap.put("IntakeCube", new CmdGroundPickup(false));
+        CommandEventMap.put("IntakeCube", new CmdGroundPickup());
 
         CommandEventMap.put("Climb", new SequentialCommandGroup(
                                                 // new CmdInPlaceTurn(0),
@@ -163,7 +163,7 @@ public class Trajectories {
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
             new CmdMove(Type.LOADING, false, pose),
             Commands.race(
-                new CmdGroundPickup(cone),
+                new CmdGroundPickup(),
                 Commands.sequence(
                     new WaitCommand(0.5),
                     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
@@ -171,7 +171,7 @@ public class Trajectories {
                 )
             ),
             new InstantCommand(()-> swerve.stop(), swerve),
-            new InstantCommand(() -> manipulator.setRollerPower(0)),
+            new InstantCommand(() -> manipulator.stopRoller()),
             new CmdMoveArm(ArmPosition.NEUTRAL, false)
         );
     }
@@ -202,15 +202,19 @@ public class Trajectories {
 
     public static CommandBase intakePointSpecial(Pose2d pose) {
         return Commands.sequence(
+            new InstantCommand(()->Vision.AUTO_ENABLED = true),
             new CmdMove(Type.NONE, false, pose),
             Commands.race(
+                //new CmdIntake(),
+                // new CmdGroundPickup(cone),
                 Commands.sequence(
                     new WaitCommand(0.5),
                     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
                         .withTimeout(1.25)
                 )
-                // new CmdIntake()
-            ));
+            ),
+            new InstantCommand(()-> swerve.stop(), swerve)
+        );
     }
 
     // public static CommandBase preloadScoringPoint(int grid, int node, boolean reversed) {
