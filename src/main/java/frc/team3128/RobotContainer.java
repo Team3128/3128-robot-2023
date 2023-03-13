@@ -1,6 +1,7 @@
 package frc.team3128;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -20,6 +21,7 @@ import frc.team3128.commands.CmdShelfPickup;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
+import frc.team3128.commands.CmdMoveIntake;
 import frc.team3128.commands.CmdPickupOptimized;
 import frc.team3128.commands.CmdScore;
 
@@ -51,6 +53,7 @@ import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import static frc.team3128.Constants.ArmConstants.*;
 
+import java.sql.Driver;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -130,9 +133,12 @@ public class RobotContainer {
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         controller.getButton("B").onTrue(new InstantCommand(()-> swerve.resetEncoders()));
 
-        controller.getButton("RightBumper").onTrue(new CmdGroundPickup())
-                .onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false).andThen(new InstantCommand(() -> manipulator.stopRoller(), manipulator)));
+        //controller.getButton("RightBumper").onTrue(new CmdGroundPickup())
+        //        .onFalse(new CmdMoveArm(ArmPosition.NEUTRAL, false).andThen(new InstantCommand(() -> manipulator.stopRoller(), manipulator)));
 
+        controller.getButton("RightBumper").onTrue(new InstantCommand(() -> intake.setReverse())).onFalse(new InstantCommand(()->intake.disableRollers()));
+        controller.getButton("LeftBumper").onTrue(new CmdIntake()).onFalse(new CmdMoveIntake(Intake.IntakeState.RETRACTED).
+                                                                andThen(new InstantCommand(() -> intake.disableRollers(), intake)));
         rightStick.getButton(4).onTrue(new StartEndCommand(() ->telescope.retract(), () -> {telescope.stopTele(); telescope.zeroEncoder(TelescopeConstants.TELE_OFFSET);}).until(() -> !telescope.getLimitSwitch()));
         
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.resetOdometry(new Pose2d())));
@@ -141,8 +147,13 @@ public class RobotContainer {
         // rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0), pivot));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5), telescope));
-        rightStick.getButton(7).onTrue(Commands.deadline(Commands.sequence(new WaitCommand(1), new CmdBangBangBalance()), new CmdBalance()));
 
+        //rightStick.getButton(7).onTrue(new CmdBalance());
+        rightStick.getButton(7).onTrue(Commands.sequence(
+                                            Commands.deadline(Commands.sequence(new WaitCommand(1), new CmdBangBangBalance()), new CmdBalance()), 
+                                            //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
+                                            new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())));
+    
         // manual controls
         rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele()));
         rightStick.getButton(10).onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele()));
