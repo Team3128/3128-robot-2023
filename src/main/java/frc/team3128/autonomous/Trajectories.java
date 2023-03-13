@@ -110,7 +110,7 @@ public class Trajectories {
                                                 new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, false))
                                                 ));
         
-        CommandEventMap.put("IntakeCube", new CmdGroundPickup(false));
+        CommandEventMap.put("IntakeCube", new CmdGroundPickup());
 
         CommandEventMap.put("Climb", new SequentialCommandGroup(
                                                 // new CmdInPlaceTurn(0),
@@ -160,7 +160,7 @@ public class Trajectories {
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
             new CmdMove(Type.LOADING, false, pose),
             Commands.race(
-                new CmdGroundPickup(cone),
+                new CmdGroundPickup(),
                 Commands.sequence(
                     new WaitCommand(0.5),
                     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
@@ -168,8 +168,7 @@ public class Trajectories {
                 )
             ),
             new InstantCommand(()-> swerve.stop(), swerve),
-            // new InstantCommand(() -> manipulator.setRollerPower(Manipulator.objectPresent ? ManipulatorConstants.STALL_POWER : 0)),
-            new InstantCommand(() -> manipulator.setRollerPower(0)),
+            new InstantCommand(() -> manipulator.stopRoller()),
             new CmdMoveArm(ArmPosition.NEUTRAL, false)
         );
     }
@@ -188,7 +187,7 @@ public class Trajectories {
                     new InstantCommand(()-> swerve.stop(), swerve),
                     new InstantCommand(()-> manipulator.stopRoller())
                 ),
-                new CmdGroundPickup(cone)
+                new CmdGroundPickup()
             ));
     }
 

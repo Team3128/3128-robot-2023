@@ -7,19 +7,10 @@ import frc.team3128.subsystems.Vision;
 
 public class CmdGroundPickup extends SequentialCommandGroup {
 
-    // Vision.GROUND_DIRECTION = false will pick up from battery side which will score cone on front side
-    // Vision.GROUND_DIRECTION = true will pick up from front and score cone on battery side
-    public CmdGroundPickup(boolean cone) {
+    public CmdGroundPickup() {
         super(
-            new CmdMoveArm(cone ? ArmPosition.GROUND_PICKUP_CONE : ArmPosition.GROUND_PICKUP_CUBE, !Vision.GROUND_DIRECTION),
-            // new CmdManipGrab(cone),
-            new CmdManipGrab(cone, false),
-            new InstantCommand(
-                ()-> {
-                    if (cone) Vision.FIXED_DIRECTION = Vision.GROUND_DIRECTION;
-                    else Vision.FIXED_DIRECTION = null;
-                }
-            ),
+            new CmdMoveArm(ArmPosition.GROUND_PICKUP, false),
+            new CmdManipGrab(false),
             new CmdMoveArm(ArmPosition.NEUTRAL, false));
     }
 }

@@ -2,6 +2,7 @@ package frc.team3128.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.common.hardware.motorcontroller.NAR_TalonSRX;
@@ -10,7 +11,7 @@ import static frc.team3128.Constants.ManipulatorConstants.*;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 public class Manipulator extends SubsystemBase {
     
-    private DoubleSolenoid m_solenoid;
+    private Solenoid m_solenoid;
     private NAR_TalonSRX m_roller;
 
     private static Manipulator instance;
@@ -31,7 +32,8 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void configPneumatics(){
-        m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID, SOLENOID_BACKWARD_CHANNEL_ID);
+        m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID);
+        // m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID, SOLENOID_BACKWARD_CHANNEL_ID);
         // closeClaw();
     }
 
@@ -49,21 +51,21 @@ public class Manipulator extends SubsystemBase {
     //     m_solenoid.set(Value.kReverse);
     // }
 
-    public void retractMnp() {
-        m_solenoid.set(Value.kReverse);
+    public void retractPiston() {
+        m_solenoid.set(false);
     }
 
-    public void extendMnp() {
-        m_solenoid.set(Value.kForward);
+    public void extendPiston() {
+        m_solenoid.set(true);
     }
     
     public void toggleClaw() {
         m_solenoid.toggle();
     }
 
-    // public Value getClawState() {
-    //     return m_solenoid.get();
-    // }
+    public boolean getPistonState() {
+        return m_solenoid.get();
+    }
 
     public void setRollerPower(double power){
         m_roller.set(power);
@@ -100,33 +102,14 @@ public class Manipulator extends SubsystemBase {
     //     if (!cone) enableRollersReverse();
     // }
 
-    public void intake(boolean cone, boolean shelf) {
-        if (cone && shelf) {
-            extendMnp();
-            // roller might be reversed
-            enableRollersForward();
-        } else if (!cone && shelf) {
-            // TODO not sure about piston state in this one
-            extendMnp();
-            enableRollersReverse();
-        } else if (cone && !shelf) {
-            retractMnp();
-            enableRollersForward();
-        } else if (!cone && !shelf) {
-            retractMnp();
-            enableRollersReverse();
-        }
-
+    public void intake(boolean shelf) {
+        if (shelf) extendPiston();
+        enableRollersForward();
     }    
 
     public void outtake(boolean cone){
-        if (cone) {
-            extendMnp();
-            enableRollersReverse();
-        } else {
-            retractMnp();
-            enableRollersForward();
-        }
+        if (cone) extendPiston();
+        enableRollersReverse();
     }
 
     //forbidden method
