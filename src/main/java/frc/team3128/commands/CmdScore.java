@@ -40,7 +40,10 @@ public class CmdScore extends SequentialCommandGroup {
         addCommands(
             new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
-            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
+            Commands.deadline(
+                new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
+                new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)
+            ),
             // new InstantCommand(() -> {if (DriverStation.isAutonomous()) Vision.AUTO_ENABLED = true;}),
             Commands.parallel(
                 new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]),

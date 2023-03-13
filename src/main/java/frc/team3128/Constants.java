@@ -99,7 +99,7 @@ public class Constants {
         /* Translation PID Values */
         public static final double translationKP = 3;
         public static final double translationKI = 0;
-        public static final double translationKD = 0.1;
+        public static final double translationKD = 0;
 
         /* Translation PID Values */
         public static final double distanceKP = 3;
@@ -146,6 +146,7 @@ public class Constants {
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
         public static final double maxSpeed = 4.5; //meters per second - 16.3 ft/sec
+        public static final double bumpSpeed = 2.5;
         public static final double maxAcceleration = 2;
         public static final double maxAngularVelocity = 5; //3; //11.5; // citrus: 10
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
@@ -223,6 +224,8 @@ public class Constants {
 
         public static final double TX_THRESHOLD = 3; // degrees
 
+        public static final double POSE_THRESH = 1;
+
         public static final double ANGLE_THRESHOLD = 10; // degrees
 
         public static final double TARGET_AREA = 6.25 * 6.25; //inches
@@ -273,6 +276,10 @@ public class Constants {
             new Pose2d(10, 0.7, new Rotation2d()),
             new Pose2d(10, 4.65, new Rotation2d())
         };
+
+        public static final Pose2d HPWall_Loading = new Pose2d(12.4, 7.5, new Rotation2d());
+
+        public static final double WALL_PASS = 5.8 + SwerveConstants.robotLength/2.0;
 
         public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
 
@@ -395,7 +402,6 @@ public class Constants {
     }
     
     public static class FieldConstants{
-        public static final Pose2d HUB_POSITION = new Pose2d(Units.inchesToMeters(324), Units.inchesToMeters(162),Rotation2d.fromDegrees(-90));
         public static final double FIELD_X_LENGTH = Units.inchesToMeters(651.25); // meters
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(315.5); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
@@ -420,6 +426,16 @@ public class Constants {
           new Translation2d(chargingStationInnerX, chargingStationLeftY),
           new Translation2d(chargingStationOuterX, chargingStationRightY),
           new Translation2d(chargingStationOuterX, chargingStationLeftY)
+        };
+
+        public static final double cableBumpInnerX = Units.inchesToMeters(149.5);
+        public static final double cableBumpOuterX = cableBumpInnerX + Units.inchesToMeters(7);
+        public static final Translation2d[] cableBumpCorners =
+        new Translation2d[] {
+          new Translation2d(cableBumpInnerX, 0.0),
+          new Translation2d(cableBumpInnerX, chargingStationRightY),
+          new Translation2d(cableBumpOuterX, 0.0),
+          new Translation2d(cableBumpOuterX, chargingStationRightY)
         };
 
 
