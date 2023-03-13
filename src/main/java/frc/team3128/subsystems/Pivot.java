@@ -116,6 +116,7 @@ public class Pivot extends PIDSubsystem {
         double ff = kF.getAsDouble() * Math.sin(Units.degreesToRadians(setpoint)); 
         double teleDist = Telescope.getInstance().getDist();
         ff *= ((teleDist-11.5) / (TelescopeConstants.MAX_DIST - TelescopeConstants.MIN_DIST))*0.5 + 1; 
+
         double voltageOutput = output + ff;
         
         m_rotateMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));

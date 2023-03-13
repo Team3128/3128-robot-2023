@@ -2,6 +2,7 @@ package frc.team3128.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -20,6 +21,8 @@ public class CmdSwerveDrive extends CommandBase {
     private final DoubleSupplier xAxis;
     private final DoubleSupplier yAxis;
     private final DoubleSupplier zAxis;
+
+    private final SlewRateLimiter accelLimiter;
     
     public CmdSwerveDrive(DoubleSupplier xAxis, DoubleSupplier yAxis, DoubleSupplier zAxis, boolean fieldRelative) {
         this.swerve = Swerve.getInstance();
@@ -28,6 +31,8 @@ public class CmdSwerveDrive extends CommandBase {
         this.xAxis = xAxis;
         this.yAxis = yAxis;
         this.zAxis = zAxis;
+
+        accelLimiter = new SlewRateLimiter(maxAcceleration);
         swerve.fieldRelative = fieldRelative;
     }
 
@@ -44,6 +49,12 @@ public class CmdSwerveDrive extends CommandBase {
         }
         
         rotation = -zAxis.getAsDouble() * maxAngularVelocity; 
+
+        Rotation2d driveAngle = translation.getAngle();
+        double slowedDist = accelLimiter.calculate(translation.getNorm());
+
+        translation = new Translation2d(slowedDist, driveAngle);
+
         SmartDashboard.putBoolean("fieldOriented",swerve.fieldRelative);
         SmartDashboard.putNumber("yAXIS",yAxis.getAsDouble());
         SmartDashboard.putNumber("xAXIS",xAxis.getAsDouble());
