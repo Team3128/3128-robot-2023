@@ -120,13 +120,13 @@ public class Telescope extends PIDSubsystem {
     /*If extends actually extends set isReversed to false,
     if extends retracts, set isReversed to true*/
     public void extend() {
-        setPower(0.4);
+        setPower(-0.4);
     }
 
     /*If retracts actually retracts set isReversed to false,
     if retracts extends, set isReversed to true*/
     public void retract() {
-        setPower(-0.4);
+        setPower(0.4);
     }
     
     public void setPower(double power) {
