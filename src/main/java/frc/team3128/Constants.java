@@ -329,7 +329,7 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 0.15;
+        public static final double kP = 0.2;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kF = 0.3;
@@ -356,7 +356,7 @@ public class Constants {
         public static final double TELE_MOTOR_POWER = 0.5;
         public static final double ENC_CONV = (1/5.0) * 2 * Math.PI * 0.4; //55.0 /35.0
         public static final double MIN_DIST = 11.5;
-        public static final double MAX_DIST = 48;
+        public static final double MAX_DIST = 51.5;
         public static final double TELE_OFFSET = 0;
         public static final double TELE_TOLERANCE = 2;
         public static final int TELE_CURRENT_LIMIT = 40;
@@ -536,7 +536,7 @@ public class Constants {
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
 
         public static final int ROLLER_MOTOR_ID = 13;
-        public static final double ROLLER_POWER = 0.25;
+        public static final double ROLLER_POWER = 1;
         public static final double STALL_POWER = 0.25;
 
         public static final double CURRENT_THRESHOLD = 35;

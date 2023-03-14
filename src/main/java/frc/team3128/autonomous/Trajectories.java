@@ -107,7 +107,7 @@ public class Trajectories {
 
         CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
                                                 new CmdMoveArm(ArmPosition.TOP_CONE, true),
-                                                new InstantCommand(() -> manipulator.outtake(true)),
+                                                new InstantCommand(() -> manipulator.outtake()),
                                                 new WaitCommand(0.125),
                                                 new InstantCommand(() -> manipulator.stopRoller()),
                                                 new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, false))
@@ -179,12 +179,11 @@ public class Trajectories {
     public static CommandBase intakePoint(Pose2d pose) {
         return Commands.sequence(
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
-            new CmdMove(Type.LOADING, false, pose),
             Commands.race(
-                //new CmdIntake(),
+                new CmdIntake(),
                 // new CmdGroundPickup(cone),
                 Commands.sequence(
-                    new WaitCommand(0.5),
+                    new CmdMove(Type.LOADING, false, pose),
                     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
                         .withTimeout(1.25)
                 )
@@ -245,7 +244,7 @@ public class Trajectories {
         return Commands.sequence(
             //new InstantCommand(() -> swerve.resetOdometry(FieldConstants.allianceFlip(AutoConstants.STARTING_POINTS[grid * 3 + node]))),
             new CmdMoveArm(position, reversed).withTimeout(3),
-            new InstantCommand(()-> manipulator.outtake(position.cone), manipulator),
+            new InstantCommand(()-> manipulator.outtake(), manipulator),
             new WaitCommand(0.125),
             new InstantCommand(()-> manipulator.stopRoller(), manipulator),
             new CmdMoveArm(ArmPosition.NEUTRAL, false)

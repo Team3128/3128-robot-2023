@@ -23,11 +23,11 @@ public class CmdManipGrab extends SequentialCommandGroup {
     //     );
     // }
 
-    public CmdManipGrab(boolean shelf) {
+    public CmdManipGrab(boolean cone, boolean shelf) {
         var manipulator = Manipulator.getInstance();
         
         addCommands(
-        new InstantCommand(()-> manipulator.intake(shelf), manipulator),
+        new InstantCommand(()-> manipulator.intake(cone, shelf), manipulator),
             new WaitCommand(0.1),
             new WaitUntilCommand(()-> manipulator.hasObjectPresent()),
             new InstantCommand(()-> manipulator.stopRoller(), manipulator)

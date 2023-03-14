@@ -71,7 +71,7 @@ public class Telescope extends PIDSubsystem {
     private void configEncoders() {
         m_encoder = (SparkMaxRelativeEncoder) m_teleMotor.getEncoder();
         m_encoder.setPositionConversionFactor(ENC_CONV); 
-        m_limitSwitch = new DigitalInput(0);
+        m_limitSwitch = new DigitalInput(9);
     }
 
     public boolean getLimitSwitch() {
@@ -157,6 +157,8 @@ public class Telescope extends PIDSubsystem {
 
         NAR_Shuffleboard.addData("telescope", "atSetpoint", ()->getController().atSetpoint(), 3, 0);
         NAR_Shuffleboard.addData("telescope", "isEnabled", ()->isEnabled(), 4, 0);
+
+        NAR_Shuffleboard.addData("telescope", "limit switch",()-> getLimitSwitch(), 5, 0);
         
     }
 

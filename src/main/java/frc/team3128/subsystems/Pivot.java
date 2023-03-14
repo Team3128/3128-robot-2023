@@ -37,7 +37,7 @@ public class Pivot extends PIDSubsystem {
     public Pivot() {
         super(new PIDController(kP, kI, kD));
 
-        //getController().enableContinuousInput(-180, 180);
+        getController().enableContinuousInput(-180, 180);
 
         configMotors();
         configEncoders();
@@ -88,7 +88,7 @@ public class Pivot extends PIDSubsystem {
 
     public double getAngle(){
         // return MathUtil.inputModulus(-m_cancoder.getAbsolutePosition() - ANGLE_OFFSET, -180, 180);
-        return -m_encoder.get() * 360 - ANGLE_OFFSET;
+        return MathUtil.inputModulus(-m_encoder.get() * 360 - ANGLE_OFFSET,-180,180);
     }
 
     public void initShuffleboard() {
@@ -115,7 +115,8 @@ public class Pivot extends PIDSubsystem {
     protected void useOutput(double output, double setpoint) {
         double ff = kF.getAsDouble() * Math.sin(Units.degreesToRadians(setpoint)); 
         double teleDist = Telescope.getInstance().getDist();
-        ff *= ((teleDist-11.5) / (TelescopeConstants.MAX_DIST - TelescopeConstants.MIN_DIST))*0.5 + 1; 
+
+        ff *= ((teleDist-11.5) / (TelescopeConstants.MAX_DIST - TelescopeConstants.MIN_DIST))*2 + 1; 
 
         double voltageOutput = output + ff;
         

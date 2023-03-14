@@ -17,10 +17,12 @@ public class CmdMoveArm extends CommandBase{
     private double angle;
     private double dist;
     private boolean teleStatic;
+    private final boolean cone;
     
     public CmdMoveArm(double angle, double dist, boolean reversed){
         this.angle = reversed ? -angle : angle;
         this.dist = dist;
+        cone = true;
 
         addRequirements(pivot, telescope);
     }
@@ -28,6 +30,10 @@ public class CmdMoveArm extends CommandBase{
     public CmdMoveArm(ArmPosition position, boolean reversed){
         this.angle = reversed ? -position.pivotAngle : position.pivotAngle;
         this.dist = position.teleDist;
+        if (position.cone == null) 
+            cone = true;
+        else
+            cone = position.cone;
         addRequirements(pivot, telescope);
     }
 
@@ -35,6 +41,7 @@ public class CmdMoveArm extends CommandBase{
     public void initialize(){
 
         teleStatic = false;
+        Manipulator.CONE = cone;
 
         if (dist >= telescope.getDist()) {
             pivot.startPID(angle);
