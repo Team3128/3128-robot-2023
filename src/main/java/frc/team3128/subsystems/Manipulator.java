@@ -12,7 +12,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class Manipulator extends SubsystemBase {
     
-    private DoubleSolenoid m_solenoid;
+    // private DoubleSolenoid m_solenoid;
     private NAR_TalonSRX m_roller;
 
     private static Manipulator instance;
@@ -22,7 +22,7 @@ public class Manipulator extends SubsystemBase {
     //public static boolean objectPresent = false;
 
     public Manipulator(){
-        configPneumatics();
+        //configPneumatics();
         configMotor();
     }
 
@@ -34,40 +34,17 @@ public class Manipulator extends SubsystemBase {
         return instance;
     }
 
-    public void configPneumatics(){
-        // m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID);
-        m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID, SOLENOID_BACKWARD_CHANNEL_ID);
-        // closeClaw();
-    }
+    // public void configPneumatics(){
+    //     // m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID);
+    //     m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID, SOLENOID_BACKWARD_CHANNEL_ID);
+    //     // closeClaw();
+    // }
 
     public void configMotor(){
         m_roller = new NAR_TalonSRX(ROLLER_MOTOR_ID);
         m_roller.setInverted(true);
         m_roller.setNeutralMode(NeutralMode.Brake);
-    }
-
-    // public void openClaw(){
-    //     m_solenoid.set(Value.kForward);
-    // }
-
-    // public void closeClaw(){
-    //     m_solenoid.set(Value.kReverse);
-    // }
-
-    public void retractPiston() {
-        m_solenoid.set(Value.kReverse);
-    }
-
-    public void extendPiston() {
-        m_solenoid.set(Value.kForward);
-    }
-    
-    public void togglePiston() {
-        m_solenoid.toggle();
-    }
-
-    public Value getPistonState() {
-        return m_solenoid.get();
+        m_roller.enableVoltageCompensation(true);
     }
 
     public void setRollerPower(double power){
@@ -91,33 +68,17 @@ public class Manipulator extends SubsystemBase {
     }
 
     public boolean hasObjectPresent(){
-        return getCurrent() > CURRENT_THRESHOLD;
+        return Math.abs(getCurrent()) > (CONE ? CONE_CURRENT_THRESHOLD : CUBE_CURRENT_THRESHOLD);
     }
 
-    // public void intake(boolean cone) {
-    //     if (cone) closeClaw();
-    //     else openClaw();
-    //     enableRollersForward(); 
-    // }    
-
-    // public void outtake(boolean cone){
-    //     openClaw();
-    //     if (!cone) enableRollersReverse();
-    // }
-
-    public void intake(boolean cone, boolean shelf) {
+    public void intake(boolean cone) {
         CONE = cone;
-        if (shelf) extendPiston();
-        else retractPiston();
         if (cone) enableRollersReverse();
         else enableRollersForward();
     }    
 
     public void outtake(){
-        if (CONE) {
-            extendPiston();
-            enableRollersForward();
-        } 
+        if (CONE) enableRollersForward();
         else enableRollersReverse();
     }
 
@@ -131,7 +92,6 @@ public class Manipulator extends SubsystemBase {
         NAR_Shuffleboard.addData("Manipulator", "Manip current", () -> getCurrent(), 0, 1);
         // NAR_Shuffleboard.addData("Manipulator", "Has object", () -> hasObject(), 0, 2);
         NAR_Shuffleboard.addData("Manipulator", "get", () -> m_roller.getMotorOutputPercent(), 0, 3);
-        NAR_Shuffleboard.addData("Manipulator", "PistonState", ()->getPistonState().toString(), 0, 0);
-        // NAR_Shuffleboard.addData("Manipulator", "ObjectPresent", ()-> objectPresent, 1, 1);
+        NAR_Shuffleboard.addData("Manipulator", "ObjectPresent", ()-> hasObjectPresent(), 1, 1);
     }
 }

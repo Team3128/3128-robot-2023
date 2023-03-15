@@ -47,15 +47,15 @@ public class CmdShelfPickup extends SequentialCommandGroup{
             //     new CmdMoveLoading(isReversed, VisionConstants.LOADING_ZONE),
             //     Commands.sequence(
             //         new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-            new InstantCommand(() -> pivot.startPID(isReversed ? -ArmPosition.HP_SHELF.pivotAngle : ArmPosition.HP_SHELF.pivotAngle), pivot),
+            new InstantCommand(() -> pivot.startPID(cone ? ArmPosition.HP_SHELF_CONE : ArmPosition.HP_SHELF_CUBE, isReversed), pivot),
             // ),
             //),
             Commands.deadline(
                 Commands.sequence(
                     new WaitUntilCommand(()-> pivot.atSetpoint()),
-                    new InstantCommand(() -> telescope.startPID(ArmPosition.HP_SHELF.teleDist), telescope),
+                    new InstantCommand(() -> telescope.startPID(cone ? ArmPosition.HP_SHELF_CONE : ArmPosition.HP_SHELF_CUBE), telescope),
                     new WaitUntilCommand(()-> telescope.atSetpoint()),
-                    new CmdManipGrab(true, true)
+                    new CmdManipGrab(true)
                     //new InstantCommand(() -> {if (cone) Manipulator.getInstance().closeClaw();})
                 ),
                 new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)

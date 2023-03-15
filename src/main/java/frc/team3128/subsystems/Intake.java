@@ -71,7 +71,9 @@ public class Intake extends PIDSubsystem {
         
 
         m_intakePivot.setInverted(true);
-        m_intakeRollers.setInverted(false);
+        m_intakeRollers.setInverted(true);
+
+        m_intakeRollers.enableVoltageCompensation(true);
         
     }
 
@@ -89,8 +91,7 @@ public class Intake extends PIDSubsystem {
 
     public void startPID(double setpoint) {
         setpoint = RobotContainer.DEBUG.getAsBoolean() ? this.setpoint.getAsDouble() : setpoint;
-        // setpoint = setpoint > 170 ? 170 : setpoint;
-        // setpoint = setpoint < 0 ? 0 : setpoint;
+        setpoint = MathUtil.clamp(0,0,120);
         setSetpoint(setpoint);
         enable();
     }

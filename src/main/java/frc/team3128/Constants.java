@@ -329,10 +329,10 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 0.2;
+        public static final double kP = 1.15;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0.3;
+        public static final double kF = 0.7;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 3.0;
@@ -370,15 +370,16 @@ public class Constants {
     public static class ArmConstants {
 
         public enum ArmPosition {
-            TOP_CONE(109, 42, 0, true), // 112,44 
-            TOP_CUBE(95, 37, 0, false), //98,35
-            MID_CONE(100, 25, 1, true), //98,22.5
-            MID_CUBE(85, 20, 1, false), //87,15
-            LOW_FLOOR(45, 13, 2, false), 
+            TOP_CONE(110, 38.5, 0, true), // 112,44 
+            TOP_CUBE(105, 38.5, 0, false), //98,35
+            MID_CONE(105, 22, 1, true), //98,22.5
+            MID_CUBE(90, 22, 1, false), //87,15
+            LOW_FLOOR(45, 11.5, 2, false), 
 
             NEUTRAL(0, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF(100, 20, null, null), //105
+            HP_SHELF_CONE(120, 11.5, null, null), //105
+            HP_SHELF_CUBE(115, 11.5, null, null), //105
             GROUND_PICKUP(37, 26.5, null, null),
             GROUND_PICKUP_CONE(37, 26.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 26, null, null), 
@@ -470,7 +471,7 @@ public class Constants {
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TO_DEGREES = 360;
-        public static final double ANGLE_OFFSET = -125.7; 
+        public static final double ANGLE_OFFSET = -143; 
 
         public static final int ENCODER_DIO_ID = 8;
 
@@ -536,10 +537,11 @@ public class Constants {
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
 
         public static final int ROLLER_MOTOR_ID = 13;
-        public static final double ROLLER_POWER = 1;
+        public static final double ROLLER_POWER = 0.8;
         public static final double STALL_POWER = 0.25;
 
-        public static final double CURRENT_THRESHOLD = 35;
+        public static final double CUBE_CURRENT_THRESHOLD = 18;
+        public static final double CONE_CURRENT_THRESHOLD = 20;
     }
 
     public static class BalanceConstants{

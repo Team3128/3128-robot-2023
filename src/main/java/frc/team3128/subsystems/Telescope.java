@@ -15,6 +15,7 @@ import static frc.team3128.Constants.TelescopeConstants.*;
 import java.util.function.DoubleSupplier;
 
 import frc.team3128.RobotContainer;
+import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
@@ -84,15 +85,16 @@ public class Telescope extends PIDSubsystem {
 
     public void startPID(double teleDist) {
         teleDist = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : teleDist;
-
-        teleDist = teleDist > 50 ? 50 : teleDist;
-        teleDist = teleDist < 11.5 ? 11.5 : teleDist;
-
+        teleDist = MathUtil.clamp(teleDist,11.5,57);
 
         releaseBrake();
         enable();
 
         setSetpoint(teleDist);
+    }
+
+    public void startPID(ArmPosition position) {
+        startPID(position.teleDist);
     }
 
     @Override

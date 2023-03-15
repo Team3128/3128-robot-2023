@@ -10,7 +10,7 @@ public class CmdGroundPickup extends SequentialCommandGroup {
     public CmdGroundPickup() {
         super(
             new CmdMoveArm(ArmPosition.GROUND_PICKUP, false),
-            new CmdManipGrab(false, false),
+            new CmdManipGrab(false),
             new CmdMoveArm(ArmPosition.NEUTRAL, false));
     }
 }

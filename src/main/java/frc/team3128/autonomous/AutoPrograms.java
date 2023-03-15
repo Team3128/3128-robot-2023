@@ -10,8 +10,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.Constants.AutoConstants;
 import frc.team3128.Constants.VisionConstants;
@@ -21,6 +23,7 @@ import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdScoreOptimized;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
+import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
 
@@ -80,14 +83,16 @@ public class AutoPrograms {
             Trajectories.startScoringPoint(0, 0, false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1),
-            Trajectories.climbPoint(false)
+            Trajectories.climbPoint(false),
+            new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop()).withTimeout(1)
         ));
 
         auto.put("top_2pc+Climb", Commands.sequence(
             Trajectories.startScoringPoint(2, 2, false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(true),
             Trajectories.intakePoint(AutoConstants.PICKUP_4),
-            Trajectories.climbPoint(false)
+            Trajectories.climbPoint(false),
+            new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop()).withTimeout(1)
         ));
 
         // auto.put("bottom_1Cone+1Cube+Climb", Commands.sequence(
@@ -121,7 +126,8 @@ public class AutoPrograms {
         auto.put("mid_2pc+Climb", Commands.sequence(
             Trajectories.startScoringPoint(1, 1, false, ArmPosition.MID_CUBE),
             Trajectories.intakePointSpecial(AutoConstants.PICKUP_2),
-            Trajectories.climbPoint(false)
+            Trajectories.climbPoint(false),
+            new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop()).withTimeout(1)
             //Outtake
 
         ));

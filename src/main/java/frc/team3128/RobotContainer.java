@@ -165,8 +165,11 @@ public class RobotContainer {
         rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
         rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
 
-        rightStick.getButton(13).onTrue(new InstantCommand(()-> manipulator.intake(true, true), manipulator));
-        rightStick.getButton(14).onTrue(new InstantCommand(()-> manipulator.intake(false, false), manipulator));
+        rightStick.getButton(13).onTrue(new CmdManipGrab(true));
+        rightStick.getButton(14).onTrue(new CmdManipGrab(false));
+
+        // rightStick.getButton(13).onTrue(new InstantCommand(()-> manipulator.intake(true, true), manipulator));
+        // rightStick.getButton(14).onTrue(new InstantCommand(()-> manipulator.intake(false, true), manipulator));
         
         // rightStick.getButton(13).onTrue(new CmdManipGrab(true));
         // rightStick.getButton(14).onTrue(new CmdManipGrab(false));
@@ -223,10 +226,10 @@ public class RobotContainer {
         operatorController.getButton("X").onTrue(new InstantCommand(()-> manipulator.stopRoller(), manipulator));
         operatorController.getButton("A").onTrue(new CmdMoveArm(ArmPosition.NEUTRAL, false));
 
-        operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false, false)).onFalse(new InstantCommand(()->manipulator.stopRoller(), manipulator));
+        operatorController.getButton("LeftBumper").onTrue(new CmdManipGrab(false)).onFalse(new InstantCommand(()->manipulator.stopRoller(), manipulator));
         operatorController.getButton("LeftTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator));
 
-        operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true, true)).onFalse(new InstantCommand(()->manipulator.stopRoller(), manipulator));
+        operatorController.getButton("RightBumper").onTrue(new CmdManipGrab(true)).onFalse(new InstantCommand(()->manipulator.stopRoller(), manipulator));
         operatorController.getButton("RightTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator));
         // on false pidlock to getmeasurement
         operatorController.getButton("LeftPosY").onTrue(new InstantCommand(()->pivot.setPower(0.25), pivot)).onFalse(new InstantCommand(()->{pivot.setPower(0.0); pivot.startPID(pivot.getMeasurement());}, pivot));

@@ -13,6 +13,7 @@ import java.util.function.DoubleSupplier;
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.PivotConstants;
 import frc.team3128.Constants.TelescopeConstants;
+import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
@@ -105,10 +106,13 @@ public class Pivot extends PIDSubsystem {
 
     public void startPID(double anglePos) {
         anglePos = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : anglePos;
-        anglePos = Math.abs(anglePos) > 135 ? 135 * Math.signum(anglePos) : anglePos;
-
+        anglePos = MathUtil.clamp(anglePos,-135,0);
         enable();
         setSetpoint(anglePos);
+    }
+
+    public void startPID(ArmPosition position, boolean isReversed) {
+        startPID(isReversed ? -position.pivotAngle : position.pivotAngle);
     }
 
     @Override
@@ -116,7 +120,7 @@ public class Pivot extends PIDSubsystem {
         double ff = kF.getAsDouble() * Math.sin(Units.degreesToRadians(setpoint)); 
         double teleDist = Telescope.getInstance().getDist();
 
-        ff *= ((teleDist-11.5) / (TelescopeConstants.MAX_DIST - TelescopeConstants.MIN_DIST))*2 + 1; 
+        ff *= MathUtil.clamp(((teleDist-11.5) / (TelescopeConstants.MAX_DIST - TelescopeConstants.MIN_DIST)),0,1); 
 
         double voltageOutput = output + ff;
         
