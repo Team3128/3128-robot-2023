@@ -160,13 +160,13 @@ public class CmdMove extends CommandBase {
         ySetpoint = yController.atSetpoint();
         rSetpoint = rController.atSetpoint();
 
-
-        if (xSetpoint || !canMoveX(pose)) xDistance = 0;
+        inXDead = !canMoveX(pose);
+        if (xSetpoint || inXDead) xDistance = 0;
         if (ySetpoint || !canMoveY(pose)) yDistance = 0;
         if (rSetpoint) rotation = 0;
 
         //if ((xDistance == 0) && !xSetpoint) yDistance = Math.copySign(maxSpeed, yDistance);
-        inXDead = !canMoveX(pose);  //Try adding logic so you can't move past the value until you clear the barrier
+        //Try adding logic so you can't move past the value until you clear the barrier
         if (inXDead)
             xDistance = xDeadController.calculate(pose.getX());
         if (nearBump())
