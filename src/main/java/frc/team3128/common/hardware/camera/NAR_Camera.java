@@ -92,6 +92,14 @@ public class NAR_Camera extends PhotonCamera {
         visionTarget = pose;
     }
 
+    public void enable() {
+        camera.updatePose = true;
+    }
+
+    public void disable() {
+        camera.updatePose = false;
+    }
+
     public void update() {
         result = this.getLatestResult();
         if (result.hasTargets()) {
@@ -275,7 +283,7 @@ public class NAR_Camera extends PhotonCamera {
     private Pose2d getPosApril(PhotonTrackedTarget tag) {
         if(!hasValidTarget() || !AprilTags.containsKey(targetId(tag))) return new Pose2d();
         Transform2d transform = getProcessedTarget(tag);
-        if (!AprilTags.containsKey(targetId(tag)) || transform.getX() > 4 || Math.abs(transform.getRotation().getDegrees()) < 160) return new Pose2d();
+        if (!AprilTags.containsKey(targetId(tag)) || transform.getX() > 4 || Math.abs(transform.getRotation().getDegrees()) < 165) return new Pose2d();
         Pose2d target = AprilTags.get(targetId());
         if (target == null) return new Pose2d();
         Translation2d coord = target.getTranslation().plus(transform.getTranslation().rotateBy(target.getRotation()));

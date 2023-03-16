@@ -224,7 +224,7 @@ public class Constants {
 
         public static final double TX_THRESHOLD = 3; // degrees
 
-        public static final double POSE_THRESH = 1;
+        public static final double POSE_THRESH = 0.5;
 
         public static final double ANGLE_THRESHOLD = 10; // degrees
 
@@ -329,7 +329,7 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 1.15;
+        public static final double kP = 0.5;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kF = 0.7;
@@ -378,8 +378,8 @@ public class Constants {
 
             NEUTRAL(0, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF_CONE(120, 11.5, null, null), //105
-            HP_SHELF_CUBE(115, 11.5, null, null), //105
+            HP_SHELF_CONE(118, 11.5, null, null), //105
+            HP_SHELF_CUBE(112, 11.5, null, null), //105
             GROUND_PICKUP(37, 26.5, null, null),
             GROUND_PICKUP_CONE(37, 26.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 26, null, null), 

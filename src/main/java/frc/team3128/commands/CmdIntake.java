@@ -18,7 +18,7 @@ public class CmdIntake extends SequentialCommandGroup{
             new CmdMoveIntake(IntakeState.DEPLOYED),
             new WaitCommand(0.1),
             new WaitUntilCommand(()->intake.hasObjectPresent()),
-            new InstantCommand(()->intake.set(0.1)),
+            new InstantCommand(()->intake.set(0.1), intake),
             new CmdMoveIntake(IntakeState.RETRACTED)
         );
     }

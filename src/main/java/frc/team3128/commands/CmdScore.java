@@ -46,10 +46,10 @@ public class CmdScore extends SequentialCommandGroup {
             ),
             // new InstantCommand(() -> {if (DriverStation.isAutonomous()) Vision.AUTO_ENABLED = true;}),
             Commands.parallel(
-                new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]),
+                // new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]),
                 // Commands.sequence(
                 //     new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-                new InstantCommand(() -> pivot.startPID(isReversed ? -position.pivotAngle : position.pivotAngle), pivot)
+                new InstantCommand(() -> pivot.startPID(-position.pivotAngle), pivot)
             ),
             Commands.deadline(
                 Commands.sequence(

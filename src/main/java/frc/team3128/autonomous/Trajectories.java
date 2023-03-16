@@ -53,6 +53,7 @@ import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
+import frc.team3128.subsystems.Intake.IntakeState;
 
 /**
  * Store trajectories for autonomous. Edit points here. 
@@ -188,6 +189,28 @@ public class Trajectories {
                         .withTimeout(1.25)
                 )
             ),
+            new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance()),
+            new InstantCommand(()-> swerve.stop(), swerve)
+        );
+    }
+
+    public static CommandBase intakePointRamp(Pose2d pose) {
+        return Commands.sequence(
+            new InstantCommand(()->Vision.AUTO_ENABLED = true),
+            Commands.race(
+                new CmdIntake(),
+                // new CmdGroundPickup(cone),
+                Commands.sequence(
+                    new CmdMoveLoading(false, new Pose2d[] {
+                        pose,
+                        pose,
+                        pose
+                    }),
+                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
+                        .withTimeout(1.25)
+                )
+            ),
+            new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance()),
             new InstantCommand(()-> swerve.stop(), swerve)
         );
     }
@@ -277,7 +300,9 @@ public class Trajectories {
     public static CommandBase climbPoint(boolean inside) {
         return Commands.sequence(
             // new CmdMoveArm(ArmPosition.NEUTRAL, false),
+            new InstantCommand(()-> Vision.getInstance().disableVision()),
             new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : AutoConstants.ClimbSetupOutside),
+            new InstantCommand(()-> Vision.getInstance().enableVision()),
             Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getRoll()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
                                             new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())

@@ -196,7 +196,7 @@ public class RobotContainer {
         //Intake Buttons
         leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.setForward(), intake)).onFalse(new InstantCommand(()-> intake.disableRollers(), intake));
         leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.setReverse(), intake)).onFalse(new InstantCommand(()-> intake.disableRollers(), intake));
-        leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(90)));
+        leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(90), intake));
         leftStick.getButton(1).onTrue(new InstantCommand(()->intake.setIntake(0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
         leftStick.getButton(2).onTrue(new InstantCommand(()->intake.setIntake(-0.2))).onFalse(new InstantCommand(()->intake.setIntake(0.0)));
         leftStick.getButton(3).onTrue(new CmdIntake());

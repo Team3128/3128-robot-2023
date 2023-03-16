@@ -56,6 +56,18 @@ public class Vision extends SubsystemBase{
         }
     }
 
+    public void enableVision() {
+        for (NAR_Camera cam : getCameras()) {
+            cam.enable();
+        }
+    }
+
+    public void disableVision() {
+        for (NAR_Camera cam : getCameras()) {
+            cam.disable();
+        }
+    }
+
     public Pose2d robotPos(String name) {
         return cameras.get(name).getPos();
     }
