@@ -46,8 +46,7 @@ import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdMoveLoading;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdScore;
-import frc.team3128.commands.CmdScoreOld;
-import frc.team3128.commands.CmdScoreOptimized;
+import frc.team3128.commands.CmdScoreAuto;
 import frc.team3128.commands.CmdMove.Type;
 import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Manipulator;
@@ -107,11 +106,11 @@ public class Trajectories {
         //StartScore
 
         CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
-                                                new CmdMoveArm(ArmPosition.TOP_CONE, true),
+                                                new CmdMoveArm(ArmPosition.TOP_CONE),
                                                 new InstantCommand(() -> manipulator.outtake()),
                                                 new WaitCommand(0.125),
                                                 new InstantCommand(() -> manipulator.stopRoller()),
-                                                new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL, false))
+                                                new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL))
                                                 ));
         
         CommandEventMap.put("IntakeCube", new CmdGroundPickup());
@@ -173,7 +172,7 @@ public class Trajectories {
             ),
             new InstantCommand(()-> swerve.stop(), swerve),
             new InstantCommand(() -> manipulator.stopRoller()),
-            new CmdMoveArm(ArmPosition.NEUTRAL, false)
+            new CmdMoveArm(ArmPosition.NEUTRAL)
         );
     }
 
@@ -239,17 +238,10 @@ public class Trajectories {
         );
     }
 
-    // public static CommandBase preloadScoringPoint(int grid, int node, boolean reversed) {
-    //     return Commands.sequence(
-    //         new InstantCommand(() -> swerve.resetOdometry(),
-    //         new CmdMoveArm(position, reversed)
-    //     );
-    // }
-
     public static CommandBase scoringPoint(int grid, int node, boolean reversed, ArmPosition position) {
         return Commands.sequence(
             new InstantCommand(()-> Vision.SELECTED_GRID = grid),
-            new CmdScoreOld(reversed, position, node)
+            new CmdScoreAuto(reversed, position, node)
         );
     }
 
@@ -266,11 +258,11 @@ public class Trajectories {
     public static CommandBase startScoringPoint(int grid, int node, boolean reversed, ArmPosition position) {
         return Commands.sequence(
             //new InstantCommand(() -> swerve.resetOdometry(FieldConstants.allianceFlip(AutoConstants.STARTING_POINTS[grid * 3 + node]))),
-            new CmdMoveArm(position, reversed).withTimeout(3),
+            new CmdMoveArm(position).withTimeout(3),
             new InstantCommand(()-> manipulator.outtake(), manipulator),
             new WaitCommand(0.125),
             new InstantCommand(()-> manipulator.stopRoller(), manipulator),
-            new CmdMoveArm(ArmPosition.NEUTRAL, false)
+            new CmdMoveArm(ArmPosition.NEUTRAL)
         );
     }
 
@@ -284,18 +276,6 @@ public class Trajectories {
             new InstantCommand(()-> Vision.getInstance().visionReset())
         );
     }
-
-    // public static CommandBase climbPoint(boolean inside) {
-    //     return Commands.sequence(
-    //         new InstantCommand(()-> Vision.GROUND_DIRECTION = false),
-    //         new CmdMoveArm(ArmPosition.NEUTRAL, false),
-    //         new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : AutoConstants.ClimbSetupOutside),
-    //         new CmdDriveUp(),
-    //         new CmdBangBangBalance(),
-    //         new RunCommand(()-> swerve.xlock(), swerve),
-    //         new CmdMoveArm(90, 11.5, false)
-    //     );
-    // }
 
     public static CommandBase climbPoint(boolean inside) {
         return Commands.sequence(

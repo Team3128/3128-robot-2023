@@ -4,24 +4,11 @@ import java.util.HashMap;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.Constants.AutoConstants;
-import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
-import frc.team3128.commands.CmdInPlaceTurn;
-import frc.team3128.commands.CmdMove;
-import frc.team3128.commands.CmdMoveScore;
-import frc.team3128.commands.CmdScoreOptimized;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Swerve;
@@ -107,9 +94,9 @@ public class AutoPrograms {
         auto.put("top_3pc", Commands.sequence(
             Trajectories.startScoringPoint(2, 2, false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
-            Trajectories.intakePoint(AutoConstants.PICKUP_1),
+            Trajectories.intakePoint(AutoConstants.PICKUP_4),
             Trajectories.scoreIntake(2, 1),
-            Trajectories.intakePointRamp(AutoConstants.PICKUP_2),
+            Trajectories.intakePointRamp(AutoConstants.PICKUP_3),
             Trajectories.scoreIntake(2, 2)
         ));
 

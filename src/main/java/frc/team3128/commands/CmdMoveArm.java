@@ -19,21 +19,21 @@ public class CmdMoveArm extends CommandBase{
     private boolean teleStatic;
     private final boolean cone;
     
-    public CmdMoveArm(double angle, double dist, boolean reversed){
-        this.angle = reversed ? -angle : angle;
+    public CmdMoveArm(double angle, double dist){
+        this.angle = angle;
         this.dist = dist;
         cone = true;
 
         addRequirements(pivot, telescope);
     }
 
-    public CmdMoveArm(ArmPosition position, boolean reversed){
-        this.angle = reversed ? -position.pivotAngle : position.pivotAngle;
+    public CmdMoveArm(ArmPosition position){
+        this.angle = position.pivotAngle;
         this.dist = position.teleDist;
-        if (position.cone == null) 
-            cone = true;
-        else
-            cone = position.cone;
+
+        if (position.cone == null) cone = true;
+        else cone = position.cone;
+        
         addRequirements(pivot, telescope);
     }
 
@@ -46,10 +46,8 @@ public class CmdMoveArm extends CommandBase{
         if (dist >= telescope.getDist()) {
             pivot.startPID(angle);
             if (dist == telescope.getSetpoint()) teleStatic = true;
-            // might have a bug if pidcontroller setpoint resets when pid disabled
         }
-        else 
-            telescope.startPID(dist);
+        else telescope.startPID(dist);
 
     }
 

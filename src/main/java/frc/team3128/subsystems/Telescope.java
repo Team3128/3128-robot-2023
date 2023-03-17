@@ -79,46 +79,6 @@ public class Telescope extends PIDSubsystem {
         return m_limitSwitch.get();
     }
 
-    public double getDist() {
-        return -m_encoder.getPosition() + MIN_DIST;
-    }
-
-    public void startPID(double teleDist) {
-        teleDist = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : teleDist;
-        teleDist = MathUtil.clamp(teleDist,11.5,57);
-
-        releaseBrake();
-        enable();
-
-        setSetpoint(teleDist);
-    }
-
-    public void startPID(ArmPosition position) {
-        startPID(position.teleDist);
-    }
-
-    @Override
-    protected void useOutput(double output, double setpoint) {
-        if (!getController().atSetpoint())
-            releaseBrake();
-
-        double pivotAngle = Math.toRadians(Pivot.getInstance().getMeasurement());
-        double ff = -kG.getAsDouble() * Math.cos(pivotAngle) + kF.getAsDouble();
-        double voltageOutput = isReversed ? -(output + ff) : output + ff;
-
-        m_teleMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
-    }
-
-    public void changeSetpoint(boolean direction) {
-        startPID(getSetpoint() + (direction ? 2.0/50 : -2.0/50));
-    }
-
-
-    @Override
-    protected double getMeasurement() {
-       return getDist();
-    }
-
     /*If extends actually extends set isReversed to false,
     if extends retracts, set isReversed to true*/
     public void extend() {
@@ -137,31 +97,46 @@ public class Telescope extends PIDSubsystem {
         m_teleMotor.set(power);
     }
 
+    public double getDist() {
+        return -m_encoder.getPosition() + MIN_DIST;
+    }
+
+    @Override
+    protected double getMeasurement() {
+       return getDist();
+    }
+
+    public void startPID(double teleDist) {
+        teleDist = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : teleDist;
+        teleDist = MathUtil.clamp(teleDist,11.5,57);
+
+        releaseBrake();
+        enable();
+
+        setSetpoint(teleDist);
+    }
+
+    public void startPID(ArmPosition position) {
+        startPID(position.teleDist);
+    }
+
+    @Override
+    protected void useOutput(double output, double setpoint) {
+        if (!atSetpoint()) releaseBrake();
+
+        double pivotAngle = Math.toRadians(Pivot.getInstance().getMeasurement());
+        double ff = -kG.getAsDouble() * Math.cos(pivotAngle) + kF.getAsDouble();
+        double voltageOutput = isReversed ? -(output + ff) : output + ff;
+
+        m_teleMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
+    }
+
     public void releaseBrake(){
         m_solenoid.set(Value.kReverse);
     }
 
     public void engageBrake(){
         m_solenoid.set(Value.kForward);
-    }
-
-    /**
-     * Data for Shuffleboard
-     */
-    public void initShuffleboard() {
-        NAR_Shuffleboard.addData("telescope","telescope dist", ()->getMeasurement(),0,0);
-        NAR_Shuffleboard.addData("telescope", "telescope setpoint",()->getSetpoint(), 0, 1);
-
-        kG = NAR_Shuffleboard.debug("telescope","kG", TelescopeConstants.kG,0,2);
-        kF = NAR_Shuffleboard.debug("telescope", "kF", TelescopeConstants.kF, 1, 2);
-        setpoint = NAR_Shuffleboard.debug("telescope","setpoint", TelescopeConstants.MIN_DIST, 2,0);
-        NAR_Shuffleboard.addComplex("telescope", "tele-PID", m_controller, 2, 0);
-
-        NAR_Shuffleboard.addData("telescope", "atSetpoint", ()->getController().atSetpoint(), 3, 0);
-        NAR_Shuffleboard.addData("telescope", "isEnabled", ()->isEnabled(), 4, 0);
-
-        NAR_Shuffleboard.addData("telescope", "limit switch",()-> getLimitSwitch(), 5, 0);
-        
     }
 
     /**
@@ -187,6 +162,24 @@ public class Telescope extends PIDSubsystem {
 
     public boolean atSetpoint() {
         return getController().atSetpoint();
+    }
+
+    /**
+     * Data for Shuffleboard
+     */
+    public void initShuffleboard() {
+        NAR_Shuffleboard.addData("telescope","telescope dist", ()->getMeasurement(),0,0);
+        NAR_Shuffleboard.addData("telescope", "telescope setpoint",()->getSetpoint(), 0, 1);
+
+        kG = NAR_Shuffleboard.debug("telescope","kG", TelescopeConstants.kG,0,2);
+        kF = NAR_Shuffleboard.debug("telescope", "kF", TelescopeConstants.kF, 1, 2);
+        setpoint = NAR_Shuffleboard.debug("telescope","setpoint", TelescopeConstants.MIN_DIST, 3,1);
+        NAR_Shuffleboard.addComplex("telescope", "tele-PID", m_controller, 2, 0);
+
+        NAR_Shuffleboard.addData("telescope", "atSetpoint", ()->getController().atSetpoint(), 3, 0);
+        NAR_Shuffleboard.addData("telescope", "isEnabled", ()->isEnabled(), 4, 0);
+
+        NAR_Shuffleboard.addData("telescope", "limit switch",()-> getLimitSwitch(), 5, 0);   
     }
 
 }

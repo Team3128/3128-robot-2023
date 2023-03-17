@@ -19,8 +19,6 @@ public class Manipulator extends SubsystemBase {
 
     public static boolean CONE = true;
 
-    //public static boolean objectPresent = false;
-
     public Manipulator(){
         //configPneumatics();
         configMotor();
@@ -80,6 +78,10 @@ public class Manipulator extends SubsystemBase {
     public void outtake(){
         if (CONE) enableRollersForward();
         else enableRollersReverse();
+    }
+
+    public void enableRollersStall() {
+        setRollerPower(CONE ? -STALL_POWER : STALL_POWER);
     }
 
     //forbidden method

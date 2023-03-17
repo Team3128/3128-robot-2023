@@ -67,8 +67,6 @@ public class Intake extends PIDSubsystem {
 
         m_intakePivot.setIdleMode(IdleMode.kBrake);
         m_intakeRollers.setNeutralMode(NeutralMode.Brake);
-        
-        
 
         m_intakePivot.setInverted(true);
         m_intakeRollers.setInverted(true);
@@ -98,7 +96,6 @@ public class Intake extends PIDSubsystem {
 
     @Override
     public void periodic() {
-        // TODO Auto-generated method stub
         super.periodic();
         NAR_Shuffleboard.addData("intake", "output current", m_intakeRollers.getStatorCurrent(), 4, 1);
         NAR_Shuffleboard.addData("intake", "input current", m_intakeRollers.getSupplyCurrent(), 4, 2);

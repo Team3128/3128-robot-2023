@@ -332,14 +332,15 @@ public class Constants {
         public static final double kP = 0.5;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0.7;
+        public static final double kF = 0;
+        public static final double kG = 0.7;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 3.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         // public static final int CANCODER_ID = 24;
         public static final int ENC_DIO_ID = 7;
-        public static final double ANGLE_OFFSET = -308-6+1.3; //get from new encoder
+        public static final double ANGLE_OFFSET = 308+6-1.3; //get from new encoder
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -490,6 +491,27 @@ public class Constants {
         
     }
 
+    public static class ManipulatorConstants{
+        public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
+        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
+
+        public static final int ROLLER_MOTOR_ID = 13;
+        public static final double ROLLER_POWER = 0.8;
+        public static final double STALL_POWER = 0.1;
+
+        public static final double CUBE_CURRENT_THRESHOLD = 18;
+        public static final double CONE_CURRENT_THRESHOLD = 20;
+    }
+
+    public static class BalanceConstants{
+        public static final double turnKP = 0.05;
+        public static final double turnKI = 0;
+        public static final double turnKD = .005;
+        public static final double TURN_TOLERANCE = 1.5;
+        public static final double CHARGE_STATION_X = 5;
+        public static final double CHARGE_STATION_Y = 5;
+    }
+
     public static class LedConstants{
         public static class Green{
             public static final int HUE = 60;
@@ -530,27 +552,6 @@ public class Constants {
 
         public static final int PORT = 9; 
         public static final int LENGTH = 288;
-    }
-
-    public static class ManipulatorConstants{
-        public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
-        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
-
-        public static final int ROLLER_MOTOR_ID = 13;
-        public static final double ROLLER_POWER = 0.8;
-        public static final double STALL_POWER = 0.25;
-
-        public static final double CUBE_CURRENT_THRESHOLD = 18;
-        public static final double CONE_CURRENT_THRESHOLD = 20;
-    }
-
-    public static class BalanceConstants{
-        public static final double turnKP = 0.05;
-        public static final double turnKI = 0;
-        public static final double turnKD = .005;
-        public static final double TURN_TOLERANCE = 1.5;
-        public static final double CHARGE_STATION_X = 5;
-        public static final double CHARGE_STATION_Y = 5;
     }
 
 
