@@ -40,7 +40,8 @@ public class Constants {
         public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.55, Rotation2d.fromDegrees(0));
 
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));
-        public static final Pose2d ClimbSetupOutside = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
+        public static final Pose2d ClimbSetupOutsideBot = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
+        public static final Pose2d ClimbSetupOutsideTop = new Pose2d(5.6, 3.5, Rotation2d.fromDegrees(180));
 
         public static final Pose2d[] STARTING_POINTS = new Pose2d[] {
             new Pose2d(1.85 ,0.5, Rotation2d.fromDegrees(180)),
@@ -112,7 +113,7 @@ public class Constants {
         public static final double alignKD = 0;
       
         /* Rotation PID Values */
-        public static final double rotationKP = 3;
+        public static final double rotationKP = 1.5;
         public static final double rotationKI = 0;
         public static final double rotationKD = 0;
 

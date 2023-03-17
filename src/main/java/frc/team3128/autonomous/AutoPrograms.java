@@ -70,7 +70,7 @@ public class AutoPrograms {
             Trajectories.startScoringPoint(0, 0, true, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1),
-            Trajectories.climbPoint(false),
+            Trajectories.climbPoint(false, true),
             new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop()).withTimeout(1)
         ));
 
@@ -78,7 +78,7 @@ public class AutoPrograms {
             Trajectories.startScoringPoint(2, 2, false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(true),
             Trajectories.intakePoint(AutoConstants.PICKUP_4),
-            Trajectories.climbPoint(false),
+            Trajectories.climbPoint(false, false),
             new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop()).withTimeout(1)
         ));
 
@@ -107,7 +107,7 @@ public class AutoPrograms {
         auto.put("mid_1Cube+Climb", Commands.sequence(
             Trajectories.startScoringPoint(1, 1, true, ArmPosition.MID_CUBE),
             Trajectories.resetOdometry(false),
-            Trajectories.climbPoint(true)
+            Trajectories.climbPoint(true, false)
             // new InstantCommand(() -> {if (vision.getCamera(VisionConstants.BACK).hasValidTarget()) 
             //                             swerve.resetOdometry(new Pose2d(vision.getCamera(VisionConstants.BACK).getPos().getTranslation(), swerve.getGyroRotation2d()));})
             //                             // ^^ use vision gyro
@@ -120,7 +120,7 @@ public class AutoPrograms {
         auto.put("mid_2pc+Climb", Commands.sequence(
             Trajectories.startScoringPoint(1, 1, false, ArmPosition.MID_CUBE),
             Trajectories.intakePointSpecial(AutoConstants.PICKUP_2),
-            Trajectories.climbPoint(false),
+            Trajectories.climbPoint(false, true),
             new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop()).withTimeout(1)
             //Outtake
 

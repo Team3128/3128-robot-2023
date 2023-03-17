@@ -277,11 +277,11 @@ public class Trajectories {
         );
     }
 
-    public static CommandBase climbPoint(boolean inside) {
+    public static CommandBase climbPoint(boolean inside, boolean bottom) {
         return Commands.sequence(
             // new CmdMoveArm(ArmPosition.NEUTRAL, false),
             new InstantCommand(()-> Vision.getInstance().disableVision()),
-            new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : AutoConstants.ClimbSetupOutside),
+            new CmdMove(Type.NONE, false, inside ? AutoConstants.ClimbSetupInside : (bottom ? AutoConstants.ClimbSetupOutsideBot : AutoConstants.ClimbSetupOutsideTop)),
             new InstantCommand(()-> Vision.getInstance().enableVision()),
             Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getRoll()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
