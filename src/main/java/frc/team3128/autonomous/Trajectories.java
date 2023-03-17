@@ -1,6 +1,5 @@
 package frc.team3128.autonomous;
 
-import java.text.ParsePosition;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,25 +19,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import static frc.team3128.Constants.SwerveConstants.*;
 
-import frc.team3128.RobotContainer;
 import frc.team3128.Constants.AutoConstants;
-import frc.team3128.Constants.FieldConstants;
-import frc.team3128.Constants.ManipulatorConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
-import frc.team3128.commands.CmdGroundPickup;
 import frc.team3128.commands.CmdIntake;
 import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdMove;
@@ -113,7 +106,7 @@ public class Trajectories {
                                                 new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL))
                                                 ));
         
-        CommandEventMap.put("IntakeCube", new CmdGroundPickup());
+        // CommandEventMap.put("IntakeCube", new CmdGroundPickup());
 
         CommandEventMap.put("Climb", new SequentialCommandGroup(
                                                 // new CmdInPlaceTurn(0),
@@ -158,23 +151,23 @@ public class Trajectories {
         return builder.fullAuto(line(start, end));
     }
 
-    public static CommandBase manipPoint(Pose2d pose, boolean cone) {
-        return Commands.sequence(
-            new InstantCommand(()->Vision.AUTO_ENABLED = true),
-            new CmdMove(Type.LOADING, false, pose),
-            Commands.race(
-                new CmdGroundPickup(),
-                Commands.sequence(
-                    new WaitCommand(0.5),
-                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
-                        .withTimeout(1.25)
-                )
-            ),
-            new InstantCommand(()-> swerve.stop(), swerve),
-            new InstantCommand(() -> manipulator.stopRoller()),
-            new CmdMoveArm(ArmPosition.NEUTRAL)
-        );
-    }
+    // public static CommandBase manipPoint(Pose2d pose, boolean cone) {
+    //     return Commands.sequence(
+    //         new InstantCommand(()->Vision.AUTO_ENABLED = true),
+    //         new CmdMove(Type.LOADING, false, pose),
+    //         Commands.race(
+    //             new CmdGroundPickup(),
+    //             Commands.sequence(
+    //                 new WaitCommand(0.5),
+    //                 new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
+    //                     .withTimeout(1.25)
+    //             )
+    //         ),
+    //         new InstantCommand(()-> swerve.stop(), swerve),
+    //         new InstantCommand(() -> manipulator.stopRoller()),
+    //         new CmdMoveArm(ArmPosition.NEUTRAL)
+    //     );
+    // }
 
     public static CommandBase intakePoint(Pose2d pose) {
         return Commands.sequence(
@@ -255,7 +248,7 @@ public class Trajectories {
         );
     }
 
-    public static CommandBase startScoringPoint(int grid, int node, boolean reversed, ArmPosition position) {
+    public static CommandBase startScoringPoint(boolean reversed, ArmPosition position) {
         return Commands.sequence(
             //new InstantCommand(() -> swerve.resetOdometry(FieldConstants.allianceFlip(AutoConstants.STARTING_POINTS[grid * 3 + node]))),
             new CmdMoveArm(position).withTimeout(3),

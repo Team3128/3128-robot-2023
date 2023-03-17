@@ -3,7 +3,6 @@ package frc.team3128.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
 
@@ -16,8 +15,7 @@ public class CmdBangBangBalance extends CommandBase{
     static {
         thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 75, 0, 1);
     }
-
-    //Essentially WaitUntilCommand
+    
     public CmdBangBangBalance() {
         
         swerve = Swerve.getInstance();
@@ -30,6 +28,7 @@ public class CmdBangBangBalance extends CommandBase{
         plateauCount = 0;
         maxRoll = Math.abs(swerve.getRoll());
     }
+
     @Override
     public void execute() {
         if (Math.abs(swerve.getRoll()) > maxRoll) {
@@ -40,12 +39,6 @@ public class CmdBangBangBalance extends CommandBase{
             plateauCount++;
         }
     }
-
-    @Override
-    public void end(boolean interrupted) {
-        // Timer.delay(time.getAsDouble());
-    }
-    // balances better w battery back
 
     @Override
     public boolean isFinished() {

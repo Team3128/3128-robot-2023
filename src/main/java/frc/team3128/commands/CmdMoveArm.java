@@ -2,17 +2,14 @@ package frc.team3128.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
-import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Telescope;
-import frc.team3128.subsystems.Vision;
 
 public class CmdMoveArm extends CommandBase{
 
     private Pivot pivot = Pivot.getInstance();
     private Telescope telescope = Telescope.getInstance();
-    private Manipulator manipulator = Manipulator.getInstance();
 
     private double angle;
     private double dist;

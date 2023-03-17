@@ -1,41 +1,31 @@
 package frc.team3128.commands;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.team3128.Robot;
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
-import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
-import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 
 public class CmdScore extends SequentialCommandGroup {
     
     private Pivot pivot;
-    private Swerve swerve;
     private Telescope telescope;
-    private Manipulator manipulator;
     private NAR_XboxController controller;
 
     public CmdScore(boolean isReversed, ArmPosition position, int xpos) {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
-        manipulator = Manipulator.getInstance();
-        swerve = Swerve.getInstance();
         controller = RobotContainer.controller;
         addCommands(
             new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),

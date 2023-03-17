@@ -1,9 +1,5 @@
 package frc.team3128.subsystems;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.common.hardware.motorcontroller.NAR_TalonSRX;
 import frc.team3128.common.utility.NAR_Shuffleboard;
@@ -11,8 +7,7 @@ import static frc.team3128.Constants.ManipulatorConstants.*;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class Manipulator extends SubsystemBase {
-    
-    // private DoubleSolenoid m_solenoid;
+
     private NAR_TalonSRX m_roller;
 
     private static Manipulator instance;
@@ -20,7 +15,6 @@ public class Manipulator extends SubsystemBase {
     public static boolean CONE = true;
 
     public Manipulator(){
-        //configPneumatics();
         configMotor();
     }
 
@@ -31,12 +25,6 @@ public class Manipulator extends SubsystemBase {
         
         return instance;
     }
-
-    // public void configPneumatics(){
-    //     // m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID);
-    //     m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID, SOLENOID_BACKWARD_CHANNEL_ID);
-    //     // closeClaw();
-    // }
 
     public void configMotor(){
         m_roller = new NAR_TalonSRX(ROLLER_MOTOR_ID);
@@ -84,15 +72,8 @@ public class Manipulator extends SubsystemBase {
         setRollerPower(CONE ? -STALL_POWER : STALL_POWER);
     }
 
-    //forbidden method
-    public void shootCubes(){
-        setRollerPower(-1);
-    }
-
     public void initShuffleboard() {
-        // NAR_Shuffleboard.addData("Manipulator","Value", () -> getClawState().toString(),0,0);
         NAR_Shuffleboard.addData("Manipulator", "Manip current", () -> getCurrent(), 0, 1);
-        // NAR_Shuffleboard.addData("Manipulator", "Has object", () -> hasObject(), 0, 2);
         NAR_Shuffleboard.addData("Manipulator", "get", () -> m_roller.getMotorOutputPercent(), 0, 3);
         NAR_Shuffleboard.addData("Manipulator", "ObjectPresent", ()-> hasObjectPresent(), 1, 1);
     }

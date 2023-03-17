@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import static frc.team3128.Constants.VisionConstants.*;
-import frc.team3128.Constants.FieldConstants;
 import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.utility.NAR_Shuffleboard;
@@ -15,9 +14,7 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 public class Vision extends SubsystemBase{
     public static int SELECTED_GRID = 0;
     public static boolean AUTO_ENABLED = false;
-    public static Boolean FIXED_DIRECTION = null;
     public static boolean MANUAL = false;
-    public static boolean GROUND_DIRECTION = false; 
 
     private HashMap<String,NAR_Camera> cameras;
   
@@ -146,13 +143,7 @@ public class Vision extends SubsystemBase{
         NAR_Shuffleboard.addData("Test", "TESTING", ()->cam2.getTest().toString(),0,2,3,1);
 
         NAR_Shuffleboard.addData("Togglables", "AUTO_ENABLED", ()-> AUTO_ENABLED, 0, 0);
-        NAR_Shuffleboard.addData("Togglables", "Fixed_Direction", ()-> {
-            if (FIXED_DIRECTION == null)
-                return "null";
-            return FIXED_DIRECTION.toString();
-        }, 0, 1);//Might not work as the value is null at certain points
         NAR_Shuffleboard.addData("Togglables", "MANUAL", ()-> MANUAL, 1, 0);
-        NAR_Shuffleboard.addData("Togglables", "GROUND_DIRECTION", ()-> GROUND_DIRECTION, 1, 1);
     }
 
     public void logCameraAll() {

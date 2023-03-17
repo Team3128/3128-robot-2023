@@ -148,7 +148,7 @@ public class Constants {
         // For safety, use less than theoretical and real values
         public static final double maxSpeed = 4.5; //meters per second - 16.3 ft/sec
         public static final double bumpSpeed = 2.5;
-        public static final double maxAcceleration = 2;
+        public static final double maxAcceleration = 2.3;
         public static final double maxAngularVelocity = 5; //3; //11.5; // citrus: 10
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
 
@@ -463,6 +463,8 @@ public class Constants {
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
         public static final double CURRENT_THRESHOLD = 50;
+
+        public static final double STALL_POWER = 0.1;
 
         public static final double kP = 0.065;
         public static final double kI = 0;

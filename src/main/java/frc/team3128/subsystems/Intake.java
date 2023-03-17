@@ -30,7 +30,7 @@ public class Intake extends PIDSubsystem {
     // Encoder
     private DutyCycleEncoder m_encoder;
 
-    public boolean objectPresent;
+    public static boolean objectPresent;
 
     private static Intake instance;
 

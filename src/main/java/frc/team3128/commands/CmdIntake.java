@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.team3128.Constants.IntakeConstants;
 import frc.team3128.subsystems.Intake;
-import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Intake.IntakeState;
 
 public class CmdIntake extends SequentialCommandGroup{
@@ -14,12 +14,16 @@ public class CmdIntake extends SequentialCommandGroup{
         Intake intake = Intake.getInstance();
         
         addCommands(
+            new InstantCommand(()-> Intake.objectPresent = false),
             new InstantCommand(()-> intake.setForward(), intake),
-            new CmdMoveIntake(IntakeState.DEPLOYED),
+            new InstantCommand(()-> intake.startPID(IntakeState.DEPLOYED.angle)),
+            new WaitUntilCommand(()-> intake.atSetpoint()),
             new WaitCommand(0.1),
             new WaitUntilCommand(()->intake.hasObjectPresent()),
-            new InstantCommand(()->intake.set(0.1), intake),
-            new CmdMoveIntake(IntakeState.RETRACTED)
+            new InstantCommand(()-> Intake.objectPresent = true),
+            new InstantCommand(()->intake.set(IntakeConstants.STALL_POWER), intake),
+            new InstantCommand(()-> intake.startPID(IntakeState.RETRACTED.angle)),
+            new WaitUntilCommand(()-> intake.atSetpoint())
         );
     }
 }

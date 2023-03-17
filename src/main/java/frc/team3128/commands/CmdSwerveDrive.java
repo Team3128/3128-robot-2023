@@ -51,9 +51,8 @@ public class CmdSwerveDrive extends CommandBase {
         rotation = -zAxis.getAsDouble() * maxAngularVelocity; 
 
         Rotation2d driveAngle = translation.getAngle();
-        // double slowedDist = accelLimiter.calculate(translation.getNorm());
-
-        // translation = new Translation2d(slowedDist, driveAngle);
+        double slowedDist = accelLimiter.calculate(translation.getNorm());
+        translation = new Translation2d(slowedDist, driveAngle);
 
         SmartDashboard.putBoolean("fieldOriented",swerve.fieldRelative);
         SmartDashboard.putNumber("yAXIS",yAxis.getAsDouble());
