@@ -1,5 +1,6 @@
 package frc.team3128.subsystems;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.common.hardware.motorcontroller.NAR_TalonSRX;
 import frc.team3128.common.utility.NAR_Shuffleboard;
@@ -39,16 +40,20 @@ public class Manipulator extends SubsystemBase {
         m_roller.enableVoltageCompensation(true);
     }
 
-    public void setRollerPower(double power){
-        m_roller.set(power);
+    public void set(double power){
+        m_roller.set(power * RobotController.getBatteryVoltage());
     }
 
-    public void enableRollersForward(){
-        m_roller.set(ROLLER_POWER);
+    public void setVoltage(double voltage){
+        m_roller.setVoltage(voltage);
     }
 
-    public void enableRollersReverse(){
-        m_roller.set(-ROLLER_POWER);
+    public void forward(){
+        m_roller.setVoltage(ROLLER_VOLTAGE);
+    }
+
+    public void reverse(){
+        m_roller.setVoltage(-ROLLER_VOLTAGE);
     }
 
     public void stopRoller(){
@@ -59,23 +64,27 @@ public class Manipulator extends SubsystemBase {
         return m_roller.getStatorCurrent();
     }
 
+    public double getVoltage() {
+        return m_roller.getMotorOutputVoltage();
+    }
+
     public boolean hasObjectPresent(){
         return Math.abs(getCurrent()) > (CONE ? CONE_CURRENT_THRESHOLD : CUBE_CURRENT_THRESHOLD);
     }
 
     public void intake(boolean cone) {
         CONE = cone;
-        if (cone) enableRollersReverse();
-        else enableRollersForward();
+        if (cone) reverse();
+        else forward();
     }    
 
     public void outtake(){
-        if (CONE) enableRollersForward();
-        else enableRollersReverse();
+        if (CONE) forward();
+        else reverse();
     }
 
     public void enableRollersStall() {
-        setRollerPower(CONE ? -STALL_POWER : STALL_POWER);
+        set(CONE ? -STALL_POWER : STALL_POWER);
     }
 
     public void initShuffleboard() {

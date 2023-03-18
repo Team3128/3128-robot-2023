@@ -119,7 +119,7 @@ public class AutoPrograms {
             Trajectories.resetOdometry(false),
             Trajectories.intakePointSpecial(AutoConstants.PICKUP_2),
             Trajectories.climbPoint(false, true),
-            new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(1)
+            new StartEndCommand(()-> Intake.getInstance().outake(), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(1)
             //Outtake
 
         ));

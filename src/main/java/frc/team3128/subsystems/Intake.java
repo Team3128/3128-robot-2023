@@ -108,6 +108,10 @@ public class Intake extends PIDSubsystem {
         return m_intakeRollers.getStatorCurrent();
     }
 
+    public double getVoltage() {
+        return m_intakeRollers.getMotorOutputVoltage();
+    }
+
     @Override
     protected void useOutput(double output, double setpoint) {
         var ff = Math.cos(Units.degreesToRadians(setpoint)) * kF.getAsDouble();
@@ -125,32 +129,36 @@ public class Intake extends PIDSubsystem {
     public void stop() {
         disable();
         m_intakePivot.set(0);
-        disableRollers();
+        outake();
     }
 
-    public void setIntake(double power) {
+    public void move(double power) {
         disable();
         m_intakePivot.set(power);
     }
 
     // Roller Control
-    public void setForward() {
-        set(ROLLER_POWER);
+    public void intake() {
+        setVoltage(INTAKE_VOLTAGE);
     }
 
     public boolean hasObjectPresent(){
         return getCurrent() > CURRENT_THRESHOLD;
     }
 
-    public void setReverse() {
-        set(-ROLLER_POWER);
+    public void outake() {
+        setVoltage(-INTAKE_VOLTAGE);
+    }
+
+    public void setVoltage(double voltage) {
+        m_intakePivot.setVoltage(voltage);
     }
 
     public void set(double wheelsPower) {
         m_intakeRollers.set(wheelsPower);
     }
 
-    public void disableRollers() {
+    public void stopRollers() {
         m_intakeRollers.set(0);
     }
 
