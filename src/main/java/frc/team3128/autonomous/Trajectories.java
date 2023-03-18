@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import static frc.team3128.Constants.SwerveConstants.*;
 
 import frc.team3128.Constants.AutoConstants;
+import frc.team3128.Constants.IntakeConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdBangBangBalance;
@@ -181,6 +182,7 @@ public class Trajectories {
                         .withTimeout(1.25)
                 )
             ),
+            new InstantCommand(()-> Intake.getInstance().set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), Intake.getInstance()),
             new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance()),
             new InstantCommand(()-> swerve.stop(), swerve)
         );
@@ -202,6 +204,7 @@ public class Trajectories {
                         .withTimeout(1.25)
                 )
             ),
+            new InstantCommand(()-> Intake.getInstance().set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), Intake.getInstance()),
             new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance()),
             new InstantCommand(()-> swerve.stop(), swerve)
         );
@@ -217,16 +220,17 @@ public class Trajectories {
     public static CommandBase intakePointSpecial(Pose2d pose) {
         return Commands.sequence(
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
-            new CmdMove(Type.NONE, false, pose),
             Commands.race(
-                //new CmdIntake(),
+                new CmdIntake(),
                 // new CmdGroundPickup(cone),
                 Commands.sequence(
-                    new WaitCommand(0.5),
+                    new CmdMove(Type.NONE, false, pose),
                     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
                         .withTimeout(1.25)
                 )
             ),
+            new InstantCommand(()-> Intake.getInstance().set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), Intake.getInstance()),
+            new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance()),
             new InstantCommand(()-> swerve.stop(), swerve)
         );
     }
@@ -241,10 +245,13 @@ public class Trajectories {
     public static CommandBase scoreIntake(int grid, int node) {
         return Commands.sequence(
             new InstantCommand(()-> Vision.SELECTED_GRID = grid),
-            new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[node], true, VisionConstants.SCORES_GRID[node]),
+            new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[node], false, VisionConstants.SCORES_GRID[node]),
             new InstantCommand(()-> Intake.getInstance().setReverse()),
             new WaitCommand(0.125),
-            new InstantCommand(()->Intake.getInstance().stop())
+            new InstantCommand(()->Intake.getInstance().stop()),
+            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 0, true), swerve)
+                        .withTimeout(0.75),
+            new InstantCommand(()-> swerve.stop(), swerve)
         );
     }
 

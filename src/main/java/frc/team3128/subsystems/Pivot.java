@@ -97,7 +97,7 @@ public class Pivot extends PIDSubsystem {
 
         double voltageOutput = output + fG;
 
-        if (!atSetpoint()) voltageOutput += Math.copySign(kF.getAsDouble(), voltageOutput);
+        if (Math.abs(setpoint - getAngle()) > kF.getAsDouble()) voltageOutput = Math.copySign(12, voltageOutput);
         
         m_rotateMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
     }

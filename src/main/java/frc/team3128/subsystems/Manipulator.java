@@ -26,6 +26,12 @@ public class Manipulator extends SubsystemBase {
         return instance;
     }
 
+    @Override
+    public void periodic() {
+        if (Math.abs(getCurrent()) > CUBE_CURRENT_THRESHOLD + 20)
+            enableRollersStall();
+    }
+
     public void configMotor(){
         m_roller = new NAR_TalonSRX(ROLLER_MOTOR_ID);
         m_roller.setInverted(true);

@@ -13,6 +13,7 @@ import java.util.function.DoubleSupplier;
 
 import static frc.team3128.Constants.FieldConstants.*;
 
+import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
@@ -106,7 +107,7 @@ public class CmdMove extends CommandBase {
         xController.setTolerance(DRIVE_TOLERANCE);
         xDeadController.setTolerance(DRIVE_TOLERANCE);
         yController.setTolerance(DRIVE_TOLERANCE);
-        rController.setTolerance(Math.PI/90);
+        rController.setTolerance(Math.PI/60);
 
         NAR_Shuffleboard.addComplex("VisionPID","XCONTROLLER",xController,0,0);
         NAR_Shuffleboard.addComplex("VisionPID","YCONTROLLER",yController,1,0);
@@ -151,7 +152,9 @@ public class CmdMove extends CommandBase {
         Pose2d pose = swerve.getPose();
         Rotation2d Rotation = swerve.getGyroRotation2d();
         double xDistance = xController.calculate(pose.getX());
+        //xDistance = xDistance + Math.signum(xDistance) * VisionConstants.AUTO_FF;
         double yDistance = yController.calculate(pose.getY()); 
+        //yDistance = yDistance + Math.signum(yDistance) * VisionConstants.AUTO_FF;
         double rotation = rController.calculate(Rotation.getRadians());
 
         xSetpoint = xController.atSetpoint();
@@ -198,7 +201,7 @@ public class CmdMove extends CommandBase {
             nextPoint();
         }
 
-        atDestination = (xSetpoint && ySetpoint && rSetpoint && atLastPoint());
+        atDestination = (xSetpoint && ySetpoint && atLastPoint());
     }
 
     private boolean canMoveX(Pose2d pose) {

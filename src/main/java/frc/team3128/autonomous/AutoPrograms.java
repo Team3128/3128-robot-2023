@@ -75,7 +75,7 @@ public class AutoPrograms {
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1),
             Trajectories.climbPoint(false, true),
-            new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop()).withTimeout(1)
+            new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(1)
         ));
 
         auto.put("top_2pc+Climb", Commands.sequence(
@@ -116,9 +116,10 @@ public class AutoPrograms {
         
         auto.put("mid_2pc+Climb", Commands.sequence(
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
+            Trajectories.resetOdometry(false),
             Trajectories.intakePointSpecial(AutoConstants.PICKUP_2),
             Trajectories.climbPoint(false, true),
-            new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop()).withTimeout(1)
+            new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(1)
             //Outtake
 
         ));
@@ -138,7 +139,7 @@ public class AutoPrograms {
 
     public Command getAutonomousCommand() {
         // String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "bottom_2pc+Climb"; //uncomment and change this for testing without opening Narwhal Dashboard
+        String selectedAutoName = "bottom_2pc"; //uncomment and change this for testing without opening Narwhal Dashboard
 
         if (selectedAutoName == null) {
             return auto.get("DEFAULT");

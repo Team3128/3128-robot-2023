@@ -34,10 +34,10 @@ public class Constants {
     }
 
     public static class AutoConstants {
-        public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.92, Rotation2d.fromDegrees(0));
-        public static final Pose2d PICKUP_2 = new Pose2d(5.9, 2.15, Rotation2d.fromDegrees(0));
-        public static final Pose2d PICKUP_3 = new Pose2d(5.9, 3.38, Rotation2d.fromDegrees(0));
-        public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.55, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_1 = new Pose2d(6.4, 0.92, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_2 = new Pose2d(6.4, 2.15, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_3 = new Pose2d(6.4, 3.38, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_4 = new Pose2d(6.4, 4.55, Rotation2d.fromDegrees(0));
 
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));
         public static final Pose2d ClimbSetupOutsideBot = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
@@ -113,7 +113,7 @@ public class Constants {
         public static final double alignKD = 0;
       
         /* Rotation PID Values */
-        public static final double rotationKP = 1.5;
+        public static final double rotationKP = 3;
         public static final double rotationKI = 0;
         public static final double rotationKD = 0;
 
@@ -225,7 +225,9 @@ public class Constants {
 
         public static final double TX_THRESHOLD = 3; // degrees
 
-        public static final double POSE_THRESH = 0.5;
+        public static final double POSE_THRESH = 2;
+
+        public static final double AUTO_FF = 0.1;
 
         public static final double ANGLE_THRESHOLD = 10; // degrees
 
@@ -333,7 +335,7 @@ public class Constants {
         public static final double kP = 0.5;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0;
+        public static final double kF = 15;
         public static final double kG = 0.7;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);

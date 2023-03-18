@@ -32,7 +32,7 @@ public class Vision extends SubsystemBase{
         NAR_Camera.setGyro(()-> swerve.getYaw());
         NAR_Camera.setOdometry((pose,time) -> swerve.addVisionMeasurement(pose,time));
         NAR_Camera.setAprilTags(APRIL_TAG_POS);
-        NAR_Camera.multipleTargets = true;
+        NAR_Camera.multipleTargets = false;
         cameras = new HashMap<String,NAR_Camera>();
         cameras.put(FRONT.hostname, new NAR_Camera(FRONT));
         cameras.put(BACK.hostname, new NAR_Camera(BACK));

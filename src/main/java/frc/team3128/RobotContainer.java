@@ -152,8 +152,8 @@ public class RobotContainer {
         rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele()));
         rightStick.getButton(10).onTrue(new InstantCommand(()->telescope.extend())).onFalse(new InstantCommand(() -> telescope.stopTele()));
         
-        rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
-        rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.2))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        rightStick.getButton(11).onTrue(new InstantCommand(()->pivot.setPower(0.4))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
+        rightStick.getButton(12).onTrue(new InstantCommand(()->pivot.setPower(-0.4))).onFalse(new InstantCommand(()->pivot.setPower(0.0)));
 
         rightStick.getButton(13).onTrue(new CmdManipGrab(true));
         rightStick.getButton(14).onTrue(new CmdManipGrab(false));
