@@ -60,7 +60,7 @@ public class CmdSystemCheck extends SequentialCommandGroup{
             new WaitUntilCommand(()-> RobotContainer.systemCheck == 3),
             new CmdIntake(),
             new WaitCommand(1),
-            new InstantCommand(()-> intake.outake()),
+            new InstantCommand(()-> intake.outtake()),
             new WaitUntilCommand(()-> RobotContainer.systemCheck == 4),
             new CmdManipGrab(true),
             new WaitCommand(1),

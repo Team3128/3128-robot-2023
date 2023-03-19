@@ -465,7 +465,8 @@ public class Constants {
 
         public static final double CURRENT_THRESHOLD = 50;
 
-        public static final double INTAKE_VOLTAGE = 9.0;
+        public static final double ROLLER_POWER = 0.75;
+        public static final double OUTTAKE_POWER = 0.5;
 
         public static final double STALL_POWER = 0.1;
 

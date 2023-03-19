@@ -30,7 +30,7 @@ public class Manipulator extends SubsystemBase {
     @Override
     public void periodic() {
         if (Math.abs(getCurrent()) > CUBE_CURRENT_THRESHOLD + 20)
-            enableRollersStall();
+            stallPower();
     }
 
     public void configMotor(){
@@ -41,19 +41,15 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void set(double power){
-        m_roller.set(power * RobotController.getBatteryVoltage());
-    }
-
-    public void setVoltage(double voltage){
-        m_roller.setVoltage(voltage);
+        m_roller.set(power);
     }
 
     public void forward(){
-        m_roller.setVoltage(ROLLER_VOLTAGE);
+        m_roller.set(ROLLER_POWER);
     }
 
     public void reverse(){
-        m_roller.setVoltage(-ROLLER_VOLTAGE);
+        m_roller.set(-ROLLER_POWER);
     }
 
     public void stopRoller(){
@@ -83,7 +79,7 @@ public class Manipulator extends SubsystemBase {
         else reverse();
     }
 
-    public void enableRollersStall() {
+    public void stallPower() {
         set(CONE ? -STALL_POWER : STALL_POWER);
     }
 

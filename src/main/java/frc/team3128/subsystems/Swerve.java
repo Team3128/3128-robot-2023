@@ -197,10 +197,10 @@ public class Swerve extends SubsystemBase {
     }
 
     public void xlock() {
-        modules[0].xLock(45);
-        modules[1].xLock(-45);
-        modules[2].xLock(-45);
-        modules[3].xLock(45);
+        modules[0].xLock(Rotation2d.fromDegrees(45));
+        modules[1].xLock(Rotation2d.fromDegrees(-45));
+        modules[2].xLock(Rotation2d.fromDegrees(-45));
+        modules[3].xLock(Rotation2d.fromDegrees(45));
     }
 
     public double getYaw() {
