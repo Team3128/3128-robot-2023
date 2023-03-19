@@ -19,10 +19,14 @@ public class CmdMoveLoading extends CmdMove {
     private double PASS_LINE;
     private boolean isReversed;
 
-    public CmdMoveLoading(boolean isReversed, Pose2d[]... positions) {
-        super(CmdMove.Type.LOADING, true, positions[0]);
+    public CmdMoveLoading(boolean isReversed, double maxSpeed, Pose2d[]... positions) {
+        super(CmdMove.Type.LOADING, true, maxSpeed, positions[0]);
         this.positions = positions;
         this.isReversed = isReversed;
+    }
+
+    public CmdMoveLoading(boolean isReversed, Pose2d[]... positions) {
+        this(isReversed, SwerveConstants.maxSpeed, positions);
     }
 
     @Override

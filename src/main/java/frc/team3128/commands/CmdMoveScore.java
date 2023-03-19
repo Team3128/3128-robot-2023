@@ -21,12 +21,16 @@ public class CmdMoveScore extends CmdMove {
     private int currSelectedGrid;
     private boolean isReversed;
 
-    public CmdMoveScore(boolean[] overrides, boolean isReversed, Pose2d[]... positions) {
+    public CmdMoveScore(boolean[] overrides, boolean isReversed, double maxSpeed, Pose2d[]... positions) {
         super(CmdMove.Type.SCORE, true, positions[0]);
         this.positions = positions;
         this.overrides = overrides;
         this.isReversed = isReversed;
         avoidRamp = new ArrayList<Pose2d>();
+    }
+
+    public CmdMoveScore(boolean[] overrides, boolean isReversed, Pose2d[]... positions) {
+        this(overrides, isReversed, SwerveConstants.maxSpeed, positions);
     }
 
     @Override

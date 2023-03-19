@@ -126,8 +126,8 @@ public class RobotContainer {
         controller.getButton("LeftTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = .25)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         controller.getButton("B").onTrue(new InstantCommand(()-> swerve.resetEncoders()));
-        controller.getButton("Y").onTrue(new InstantCommand(() -> manipulator.outtake()))
-                                .onFalse(new InstantCommand(() -> manipulator.stopRoller())
+        controller.getButton("Y").onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator))
+                                .onFalse(new InstantCommand(() -> manipulator.stopRoller(), manipulator)
                                     .andThen(new CmdMoveArm(ArmPosition.NEUTRAL)));
 
         controller.getButton("RightBumper").onTrue(new InstantCommand(() -> intake.outake())).onFalse(new InstantCommand(()->intake.stopRollers()));
@@ -142,6 +142,7 @@ public class RobotContainer {
         rightStick.getButton(2).onTrue(new InstantCommand(()->vision.visionReset()));
         
         rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
+        rightStick.getButton(4).onTrue(new InstantCommand(()->telescope.releaseBrake()));
         rightStick.getButton(5).onTrue(new InstantCommand(()->pivot.startPID(0), pivot));
         rightStick.getButton(6).onTrue(new InstantCommand(()->telescope.startPID(11.5), telescope));
 
@@ -150,6 +151,8 @@ public class RobotContainer {
                                             Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getRoll()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
                                             new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())));
+
+        rightStick.getButton(8).onTrue(new InstantCommand(()->intake.disableRollers()));
     
         // manual controls
         rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.retract())).onFalse(new InstantCommand(() -> telescope.stopTele()));

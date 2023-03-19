@@ -13,6 +13,7 @@ import java.util.function.DoubleSupplier;
 
 import static frc.team3128.Constants.FieldConstants.*;
 
+import frc.team3128.Constants.SwerveConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
@@ -71,15 +72,16 @@ public class CmdMove extends CommandBase {
     protected Pose2d[] poses;
     protected int index;
     private Type type;
+    private double maxSpeed;
 
     private boolean joystickOverride;
 
     protected Swerve swerve;
 
-    public CmdMove(Type type, boolean joystickOverride, Pose2d... poses) {
+    public CmdMove(Type type, boolean joystickOverride, double maxSpeed, Pose2d... poses) {
         this.poses = poses;
         this.type = type;
-
+        this.maxSpeed = maxSpeed;
         this.joystickOverride = joystickOverride;
         atDestination = false;
 
@@ -89,6 +91,9 @@ public class CmdMove extends CommandBase {
         addRequirements(swerve);
     }
 
+    public CmdMove(Type type, boolean joystickOverride, Pose2d... poses) {
+        this(type, joystickOverride, SwerveConstants.maxSpeed, poses);
+    }
 
     public static void setController(DoubleSupplier x, DoubleSupplier y, DoubleSupplier r, DoubleSupplier accel) {
         xAxis = x;
@@ -195,7 +200,13 @@ public class CmdMove extends CommandBase {
             }
         }
 
-        swerve.drive(new Translation2d(xDistance, yDistance), rotation, true);
+        Translation2d translation = new Translation2d(xDistance, yDistance);
+        if (translation.getNorm() > maxSpeed) {
+            Rotation2d driveAngle = translation.getAngle();
+            translation = new Translation2d(maxSpeed, driveAngle);
+        }
+
+        swerve.drive(translation, rotation, true);
 
         if (xSetpoint && ySetpoint && !atLastPoint()) {
             nextPoint();

@@ -108,7 +108,7 @@ public class Telescope extends PIDSubsystem {
 
     public void startPID(double teleDist) {
         teleDist = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : teleDist;
-        teleDist = MathUtil.clamp(teleDist,11.5,57);
+        teleDist = MathUtil.clamp(teleDist,MIN_DIST,MAX_DIST);
 
         releaseBrake();
         enable();

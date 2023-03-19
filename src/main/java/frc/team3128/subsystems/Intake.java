@@ -36,7 +36,7 @@ public class Intake extends PIDSubsystem {
 
     public enum IntakeState {
         DEPLOYED(5),
-        RETRACTED(110);
+        RETRACTED(105);
 
         public double angle;
 
@@ -89,7 +89,7 @@ public class Intake extends PIDSubsystem {
 
     public void startPID(double setpoint) {
         setpoint = RobotContainer.DEBUG.getAsBoolean() ? this.setpoint.getAsDouble() : setpoint;
-        setpoint = MathUtil.clamp(setpoint,0,120);
+        setpoint = MathUtil.clamp(setpoint,0,105);
         setSetpoint(setpoint);
         enable();
     }
@@ -129,33 +129,33 @@ public class Intake extends PIDSubsystem {
     public void stop() {
         disable();
         m_intakePivot.set(0);
-        outake();
+        stopRollers();
     }
 
-    public void move(double power) {
+    public void moveIntakeManual(double power) {
         disable();
         m_intakePivot.set(power);
     }
 
     // Roller Control
     public void intake() {
-        setVoltage(INTAKE_VOLTAGE);
+        set(ROLLER_POWER);
     }
 
     public boolean hasObjectPresent(){
         return getCurrent() > CURRENT_THRESHOLD;
     }
 
-    public void outake() {
-        setVoltage(-INTAKE_VOLTAGE);
+    public void outtake() {
+        set(-OUTTAKE_POWER);
     }
 
-    public void setVoltage(double voltage) {
-        m_intakePivot.setVoltage(voltage);
+    public void shoot() {
+        set(-1);
     }
 
-    public void set(double wheelsPower) {
-        m_intakeRollers.set(wheelsPower);
+    public void set(double power) {
+        m_intakeRollers.set(power);
     }
 
     public void stopRollers() {
