@@ -250,7 +250,7 @@ public class Trajectories {
         return Commands.sequence(
             new InstantCommand(()-> Vision.SELECTED_GRID = grid),
             new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[node], false, autoSpeed, VisionConstants.SCORES_GRID[node]),
-            new InstantCommand(()-> Intake.getInstance().setReverse()),
+            new InstantCommand(()-> Intake.getInstance().outtake()),
             new WaitCommand(0.125),
             new InstantCommand(()->Intake.getInstance().stop()),
             new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 0, true), swerve)
@@ -291,7 +291,7 @@ public class Trajectories {
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
                                             new InstantCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance()),
             // new CmdMoveArm(90, 11.5, false)
-            new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(eject ? 1 : 0),
+            new StartEndCommand(()-> Intake.getInstance().shoot(), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(eject ? 1 : 0),
             new WaitCommand(100000000)
         );
     }

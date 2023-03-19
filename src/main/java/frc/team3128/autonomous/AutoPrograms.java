@@ -125,9 +125,7 @@ public class AutoPrograms {
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePointSpecial(AutoConstants.PICKUP_2),
-            Trajectories.climbPoint(false, true, true),
-            new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(1),
-            new WaitCommand(100000000)
+            Trajectories.climbPoint(false, true, true)
             //Outtake
 
         ));

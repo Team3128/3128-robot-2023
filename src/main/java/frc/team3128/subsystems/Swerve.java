@@ -233,4 +233,9 @@ public class Swerve extends SubsystemBase {
     public void zeroGyro(double reset) {
         gyro.setYaw(reset);
     }
+
+    public boolean compare(SwerveModuleState measured, SwerveModuleState theoretical) {
+        return (Math.abs(measured.speedMetersPerSecond - theoretical.speedMetersPerSecond)/ theoretical.speedMetersPerSecond) < 0.05 
+        && (Math.abs(measured.angle.getDegrees() - theoretical.angle.getDegrees())/ theoretical.angle.getDegrees()) < 0.05;
+      }
 }
