@@ -35,8 +35,8 @@ public class CmdScore extends SequentialCommandGroup {
                 new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)
             ),
             Commands.parallel(
-                new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], isReversed, VisionConstants.SCORES_GRID[xpos]),
-                new InstantCommand(() -> pivot.startPID(-position.pivotAngle), pivot)
+                new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], true, VisionConstants.SCORES_GRID[xpos]),
+                new InstantCommand(() -> pivot.startPID(position.pivotAngle), pivot)
             ),
             Commands.deadline(
                 Commands.sequence(

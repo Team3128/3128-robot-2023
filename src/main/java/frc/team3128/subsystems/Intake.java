@@ -36,7 +36,7 @@ public class Intake extends PIDSubsystem {
 
     public enum IntakeState {
         DEPLOYED(5),
-        RETRACTED(110);
+        RETRACTED(105);
 
         public double angle;
 
@@ -89,7 +89,7 @@ public class Intake extends PIDSubsystem {
 
     public void startPID(double setpoint) {
         setpoint = RobotContainer.DEBUG.getAsBoolean() ? this.setpoint.getAsDouble() : setpoint;
-        setpoint = MathUtil.clamp(setpoint,0,120);
+        setpoint = MathUtil.clamp(setpoint,0,105);
         setSetpoint(setpoint);
         enable();
     }
@@ -143,7 +143,7 @@ public class Intake extends PIDSubsystem {
     }
 
     public void setReverse() {
-        set(-ROLLER_POWER);
+        set(-0.5);
     }
 
     public void set(double wheelsPower) {

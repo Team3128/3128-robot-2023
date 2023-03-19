@@ -17,7 +17,7 @@ public class CmdBalance extends PIDCommand {
 
     public CmdBalance () {
         super(
-            new PIDController(0.75,0,0),
+            new PIDController(1,0,0),
             () -> Swerve.getInstance().getPose().getX(),
             //() -> DriverStation.getAlliance() == Alliance.Red ? 12.55 : 3.95,
             () -> DriverStation.getAlliance() == Alliance.Red ? FIELD_X_LENGTH - (chargingStationInnerX + chargingStationOuterX) / 2.0 : (chargingStationInnerX + chargingStationOuterX) / 2.0,

@@ -113,7 +113,7 @@ public class Constants {
         public static final double alignKD = 0;
       
         /* Rotation PID Values */
-        public static final double rotationKP = 3;
+        public static final double rotationKP = 2.5;
         public static final double rotationKI = 0;
         public static final double rotationKD = 0;
 
@@ -360,13 +360,13 @@ public class Constants {
         public static final double TELE_MOTOR_POWER = 0.5;
         public static final double ENC_CONV = (1/5.0) * 2 * Math.PI * 0.4; //55.0 /35.0
         public static final double MIN_DIST = 11.5;
-        public static final double MAX_DIST = 51.5;
+        public static final double MAX_DIST = 40;
         public static final double TELE_OFFSET = 0;
         public static final double TELE_TOLERANCE = 2;
         public static final int TELE_CURRENT_LIMIT = 40;
         public static final boolean isReversed = true;
 
-        public static final double ARM_LENGTH = 56.75; // inches
+        public static final double ARM_LENGTH = 40; // inches
         public static final int SOLENOID_FORWARD_CHANNEL_ID = 5; 
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 2; 
     }
@@ -380,10 +380,10 @@ public class Constants {
             MID_CUBE(90, 22, 1, false), //87,15
             LOW_FLOOR(45, 11.5, 2, false), 
 
-            NEUTRAL(0, 11.5, null, null), //pivot should be 0
+            NEUTRAL(5, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF_CONE(118, 11.5, null, null), //105
-            HP_SHELF_CUBE(112, 11.5, null, null), //105
+            HP_SHELF_CONE(113, 17.5, null, null), //105
+            HP_SHELF_CUBE(108, 17.5, null, null), //105
             GROUND_PICKUP(37, 26.5, null, null),
             GROUND_PICKUP_CONE(37, 26.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 26, null, null), 
@@ -502,7 +502,7 @@ public class Constants {
 
         public static final int ROLLER_MOTOR_ID = 13;
         public static final double ROLLER_POWER = 0.8;
-        public static final double STALL_POWER = 0.1;
+        public static final double STALL_POWER = 0.25;
 
         public static final double CUBE_CURRENT_THRESHOLD = 18;
         public static final double CONE_CURRENT_THRESHOLD = 20;

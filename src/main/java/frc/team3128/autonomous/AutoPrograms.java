@@ -6,7 +6,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team3128.Constants.AutoConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
@@ -45,18 +47,21 @@ public class AutoPrograms {
         ));
 
         auto.put("bottom_1pc+mobility", Commands.sequence(
+            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(true),
             Trajectories.movePoint(AutoConstants.PICKUP_1)
         ));
 
         auto.put("top_1pc+mobility", Commands.sequence(
+            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(true),
             Trajectories.movePoint(AutoConstants.PICKUP_4)
         ));
 
         auto.put("bottom_2pc", Commands.sequence(
+            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1),
@@ -71,19 +76,19 @@ public class AutoPrograms {
         ));
 
         auto.put("bottom_2pc+Climb", Commands.sequence(
-            Trajectories.startScoringPoint(true, ArmPosition.TOP_CONE),
+            // Trajectories.startScoringPoint(true, ArmPosition.TOP_CONE),
+            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1),
-            Trajectories.climbPoint(false, true),
-            new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(1)
+            Trajectories.climbPoint(false, true, true)
         ));
 
         auto.put("top_2pc+Climb", Commands.sequence(
+            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(true),
             Trajectories.intakePoint(AutoConstants.PICKUP_4),
-            Trajectories.climbPoint(false, false),
-            new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop()).withTimeout(1)
+            Trajectories.climbPoint(false, false, true)
         ));
 
         auto.put("bottom_3pc", Commands.sequence(
@@ -109,17 +114,20 @@ public class AutoPrograms {
         */
 
         auto.put("mid_1Cube+Climb", Commands.sequence(
+            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.startScoringPoint(true, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
-            Trajectories.climbPoint(true, false)
+            Trajectories.climbPoint(true, false, false)
         ));
         
         auto.put("mid_2pc+Climb", Commands.sequence(
+            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePointSpecial(AutoConstants.PICKUP_2),
-            Trajectories.climbPoint(false, true),
-            new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(1)
+            Trajectories.climbPoint(false, true, true),
+            new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(1),
+            new WaitCommand(100000000)
             //Outtake
 
         ));
@@ -139,7 +147,7 @@ public class AutoPrograms {
 
     public Command getAutonomousCommand() {
         // String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "bottom_2pc"; //uncomment and change this for testing without opening Narwhal Dashboard
+        String selectedAutoName = "bottom_2pc+Climb"; //uncomment and change this for testing without opening Narwhal Dashboard
 
         if (selectedAutoName == null) {
             return auto.get("DEFAULT");

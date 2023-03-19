@@ -31,25 +31,17 @@ public class CmdShelfPickup extends SequentialCommandGroup{
         addCommands(
             new InstantCommand(() -> led.setPickupColor(cone)),
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
-            Commands.deadline(
-                new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-                new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)
-            ),
+            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             // Commands.parallel(
             //     new CmdMoveLoading(isReversed, VisionConstants.LOADING_ZONE),
             new InstantCommand(() -> pivot.startPID(cone ? ArmPosition.HP_SHELF_CONE : ArmPosition.HP_SHELF_CUBE), pivot),
-
-            Commands.deadline(
-                Commands.sequence(
-                    new WaitUntilCommand(()-> pivot.atSetpoint()),
-                    new InstantCommand(() -> telescope.startPID(cone ? ArmPosition.HP_SHELF_CONE : ArmPosition.HP_SHELF_CUBE), telescope),
-                    new WaitUntilCommand(()-> telescope.atSetpoint()),
-                    new CmdManipGrab(true)
-                ),
-                new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)
-            ),
+            new WaitUntilCommand(()-> pivot.atSetpoint()),
+            new InstantCommand(() -> telescope.startPID(cone ? ArmPosition.HP_SHELF_CONE : ArmPosition.HP_SHELF_CUBE), telescope),
+            new WaitUntilCommand(()-> telescope.atSetpoint()),
+            new CmdManipGrab(cone),
             new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
             new InstantCommand(() -> new InstantCommand(()-> Vision.AUTO_ENABLED = false))
+            //new CmdMoveArm(ArmPosition.NEUTRAL)
         );
     }
 }
