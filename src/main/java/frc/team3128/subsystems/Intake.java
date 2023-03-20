@@ -143,7 +143,7 @@ public class Intake extends PIDSubsystem {
     }
 
     public void setReverse() {
-        set(-0.5);
+        set(-0.3);
     }
 
     public void set(double wheelsPower) {

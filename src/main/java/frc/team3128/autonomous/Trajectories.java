@@ -291,7 +291,7 @@ public class Trajectories {
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
                                             new InstantCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance()),
             // new CmdMoveArm(90, 11.5, false)
-            new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(eject ? 1 : 0),
+            new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(eject ? 1 : 0),
             new WaitCommand(100000000)
         );
     }

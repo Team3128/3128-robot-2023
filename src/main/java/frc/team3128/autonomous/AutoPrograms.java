@@ -76,19 +76,37 @@ public class AutoPrograms {
         ));
 
         auto.put("bottom_2pc+Climb", Commands.sequence(
-            // Trajectories.startScoringPoint(true, ArmPosition.TOP_CONE),
             new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
+            Trajectories.startScoringPoint(true, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1),
             Trajectories.climbPoint(false, true, true)
         ));
 
+        auto.put("bottom_2pc+Climb2", Commands.sequence(
+            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
+            Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
+            Trajectories.resetOdometry(false),
+            Trajectories.intakePoint(AutoConstants.PICKUP_1),
+            Trajectories.scoreIntake(0, 1),
+            Trajectories.climbPoint(true, false, false)
+        ));
+
         auto.put("top_2pc+Climb", Commands.sequence(
             new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
-            Trajectories.resetOdometry(true),
+            Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_4),
             Trajectories.climbPoint(false, false, true)
+        ));
+
+        auto.put("top_2pc+Climb2", Commands.sequence(
+            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
+            Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
+            Trajectories.resetOdometry(false),
+            Trajectories.intakePoint(AutoConstants.PICKUP_4),
+            Trajectories.scoreIntake(2, 1),
+            Trajectories.climbPoint(true, false, false)
         ));
 
         auto.put("bottom_3pc", Commands.sequence(
@@ -147,7 +165,7 @@ public class AutoPrograms {
 
     public Command getAutonomousCommand() {
         // String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "bottom_2pc+Climb"; //uncomment and change this for testing without opening Narwhal Dashboard
+        String selectedAutoName = "bottom_2pc+Climb2"; //uncomment and change this for testing without opening Narwhal Dashboard
 
         if (selectedAutoName == null) {
             return auto.get("DEFAULT");

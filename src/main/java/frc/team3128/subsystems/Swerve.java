@@ -30,6 +30,8 @@ public class Swerve extends SubsystemBase {
     private volatile FileWriter txtFile;
     public static double throttle = 0.8;
     private String poseLogger = "";
+    public static boolean error = false;
+    private Pose2d prevPose;
     private double prevTime = 0; 
     public SwerveDrivePoseEstimator odometry;
     public SwerveModule[] modules;
@@ -161,7 +163,11 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // error = false;
         odometry.update(getGyroRotation2d(), getPositions());
+        // if(error) {
+        //     resetOdometry(new Pose2d(estimatedPose.getTranslation(), getGyroRotation2d()));
+        // }
         estimatedPose = odometry.getEstimatedPosition();
         logPose();
         for (SwerveModule module : modules) {
@@ -191,6 +197,7 @@ public class Swerve extends SubsystemBase {
             // try {
             //     txtFile.flush();
             // } catch (IOException e) {}
+            
             prevTime = currTime;
             NAR_Shuffleboard.addData("Logger","Positions",poseLogger,0,0);
         }

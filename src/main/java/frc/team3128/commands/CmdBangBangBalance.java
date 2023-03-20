@@ -13,7 +13,7 @@ public class CmdBangBangBalance extends CommandBase{
     private static DoubleSupplier thresh;
 
     static {
-        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 90, 0, 1);
+        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 75, 0, 1);
     }
     
     public CmdBangBangBalance() {
