@@ -460,11 +460,13 @@ public class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double ROLLER_POWER = 0.75;
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
         public static final double CURRENT_THRESHOLD = 50;
+
+        public static final double ROLLER_POWER = 0.75;
+        public static final double OUTTAKE_POWER = 0.5;
 
         public static final double STALL_POWER = 0.1;
 
@@ -506,6 +508,8 @@ public class Constants {
 
         public static final double CUBE_CURRENT_THRESHOLD = 20;
         public static final double CONE_CURRENT_THRESHOLD = 20;
+
+        public static final double ROLLER_VOLTAGE = 8;
     }
 
     public static class BalanceConstants{

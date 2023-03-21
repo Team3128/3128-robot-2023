@@ -212,7 +212,7 @@ public class Trajectories {
         return Commands.sequence(
             new InstantCommand(()-> Vision.SELECTED_GRID = grid),
             new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[node], false, autoSpeed, VisionConstants.SCORES_GRID[node]),
-            new InstantCommand(()-> Intake.getInstance().setReverse()),
+            new InstantCommand(()-> Intake.getInstance().outtake()),
             new WaitCommand(0.125),
             new InstantCommand(()->Intake.getInstance().stop()),
             // new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 0, true), swerve)
