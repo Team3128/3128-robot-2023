@@ -9,31 +9,31 @@ import frc.team3128.subsystems.Swerve;
 public class CmdBangBangBalance extends CommandBase{
     private int plateauCount = 0;
     private Swerve swerve;
-    private double maxRoll; 
+    private double maxPitch; 
     private static DoubleSupplier thresh;
 
     static {
-        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 90, 0, 1);
+        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 75, 0, 1);
     }
     
     public CmdBangBangBalance() {
         
         swerve = Swerve.getInstance();
         plateauCount = 0;
-        maxRoll = 0;
+        maxPitch = 0;
     }
 
     @Override
     public void initialize() {
         plateauCount = 0;
-        maxRoll = Math.abs(swerve.getRoll());
+        maxPitch = Math.abs(swerve.getPitch());
     }
 
     @Override
     public void execute() {
-        if (Math.abs(swerve.getRoll()) > maxRoll) {
+        if (Math.abs(swerve.getPitch()) > maxPitch) {
             plateauCount = 0;
-            maxRoll = Math.abs(swerve.getRoll());
+            maxPitch = Math.abs(swerve.getPitch());
         }
         else {
             plateauCount++;
@@ -42,6 +42,6 @@ public class CmdBangBangBalance extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        return plateauCount >= thresh.getAsDouble() || Math.abs(swerve.getRoll()) < 3;
+        return plateauCount >= thresh.getAsDouble() && Math.abs(swerve.getPitch()) < 10;
     }
 }
