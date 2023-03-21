@@ -132,7 +132,7 @@ public class Intake extends PIDSubsystem {
         stopRollers();
     }
 
-    public void moveIntakeManual(double power) {
+    public void moveIntake(double power) {
         disable();
         m_intakePivot.set(power);
     }

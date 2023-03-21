@@ -5,6 +5,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.RobotContainer;
@@ -51,7 +52,7 @@ public class CmdSystemCheck extends SequentialCommandGroup{
         
         addCommands(
             new WaitUntilCommand(()-> RobotContainer.systemCheck == 1),
-            new InstantCommand(()-> swerveCheck(driveVelocity)),
+            new InstantCommand(()-> swerveCheck(driveVelocity), swerve),
             new WaitUntilCommand(()-> RobotContainer.systemCheck == 2),
             new CmdMoveArm(ArmPosition.NEUTRAL).withTimeout(3),
             new CmdMoveArm(ArmPosition.TOP_CONE.pivotAngle, 25).withTimeout(3),
@@ -60,19 +61,17 @@ public class CmdSystemCheck extends SequentialCommandGroup{
             new WaitUntilCommand(()-> RobotContainer.systemCheck == 3),
             new CmdIntake(),
             new WaitCommand(1),
-            new InstantCommand(()-> intake.outtake()),
+            new StartEndCommand(()-> intake.outtake(), ()-> intake.stopRollers(), intake).withTimeout(1),
+            new InstantCommand(()-> intakeSystemCheck = true),
             new WaitUntilCommand(()-> RobotContainer.systemCheck == 4),
             new CmdManipGrab(true),
             new WaitCommand(1),
-            new InstantCommand(()-> manip.reverse()),
+            new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(1),
             new CmdManipGrab(false),
             new WaitCommand(1),
-            new InstantCommand(()-> manip.reverse()),
+            new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(1),
             new InstantCommand(()-> manipulatorSystemCheck = true)
-
         );
-
-        addRequirements(swerve, tele, pivot, manip, intake);
     }
 
     public void swerveCheck(double velocity) {
@@ -88,6 +87,7 @@ public class CmdSystemCheck extends SequentialCommandGroup{
                 System.out.println("Module " + module.moduleNumber + ": " + swerve.compare(module.getState(), desiredTestState));
             }
         }
+        swerveSystemCheck = true;
     }
 
     public static void initShuffleboard() {

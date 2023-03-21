@@ -191,8 +191,8 @@ public class RobotContainer {
         leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.intake(), intake)).onFalse(new InstantCommand(()-> intake.stopRollers(), intake));
         leftStick.getButton(10).onTrue(new InstantCommand(()-> intake.outtake(), intake)).onFalse(new InstantCommand(()-> intake.stopRollers(), intake));
         leftStick.getButton(11).onTrue(new InstantCommand(()-> intake.startPID(90), intake));
-        leftStick.getButton(1).onTrue(new InstantCommand(()->intake.moveIntakeManual(0.2), intake)).onFalse(new InstantCommand(()->intake.stop(), intake));
-        leftStick.getButton(2).onTrue(new InstantCommand(()->intake.moveIntakeManual(-0.2), intake)).onFalse(new InstantCommand(()->intake.stop(), intake));
+        leftStick.getButton(1).onTrue(new InstantCommand(()->intake.moveIntake(0.2), intake)).onFalse(new InstantCommand(()->intake.stop(), intake));
+        leftStick.getButton(2).onTrue(new InstantCommand(()->intake.moveIntake(-0.2), intake)).onFalse(new InstantCommand(()->intake.stop(), intake));
         leftStick.getButton(3).onTrue(new CmdIntake());
         
         buttonPad.getButton(5).onTrue(Commands.sequence(
@@ -226,8 +226,8 @@ public class RobotContainer {
         operatorController.getButton("LeftTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator));
         operatorController.getButton("RightTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator));
 
-        operatorController.getUpPOVButton().onTrue(new InstantCommand(()-> intake.moveIntakeManual(0.2), intake)).onFalse(new InstantCommand(()-> intake.stop(), intake));
-        operatorController.getDownPOVButton().onTrue(new InstantCommand(()-> intake.moveIntakeManual(-0.2), intake)).onFalse(new InstantCommand(()-> intake.stop(), intake));
+        operatorController.getUpPOVButton().onTrue(new InstantCommand(()-> intake.moveIntake(0.2), intake)).onFalse(new InstantCommand(()-> intake.stop(), intake));
+        operatorController.getDownPOVButton().onTrue(new InstantCommand(()-> intake.moveIntake(-0.2), intake)).onFalse(new InstantCommand(()-> intake.stop(), intake));
         operatorController.getRightPOVButton().onTrue(new InstantCommand(()-> intake.intake(), intake)).onFalse(new InstantCommand(()-> intake.set(intake.hasObjectPresent() ? 0.1 : 0), intake));
         operatorController.getLeftPOVButton().onTrue(new InstantCommand(()-> intake.outtake(), intake)).onFalse(new InstantCommand(()-> intake.stopRollers(), intake));
 
