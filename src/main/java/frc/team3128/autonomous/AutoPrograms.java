@@ -111,24 +111,46 @@ public class AutoPrograms {
             Trajectories.climbPoint(true, false, false)
         ));
 
-        Trajectories.autoSpeed = 2.5;
+        Trajectories.autoSpeed = 3.5;
         auto.put("bottom_3pc", Commands.sequence(
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1),
             Trajectories.scoreIntake(0, 0),
-            Trajectories.intakePointRamp(AutoConstants.PICKUP_2),
+            Trajectories.intakePoint(AutoConstants.PICKUP_2),
             Trajectories.scoreIntake(0, 1)
         ));
 
-        Trajectories.autoSpeed = 4.5;
+        Trajectories.autoSpeed = 3.5;
         auto.put("top_3pc", Commands.sequence(
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_4),
             Trajectories.scoreIntake(2, 1),
-            Trajectories.intakePointRamp(AutoConstants.PICKUP_3),
+            Trajectories.intakePoint(AutoConstants.PICKUP_3),
             Trajectories.scoreIntake(2, 2)
+        ));
+
+        Trajectories.autoSpeed = 4.5;
+        auto.put("bottom_3pc+Climb", Commands.sequence(
+            new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop()).withTimeout(0.5),
+            Trajectories.resetOdometry(true),
+            Trajectories.intakePoint(AutoConstants.PICKUP_1),
+            Trajectories.scoreIntake(0, 1),
+            Trajectories.intakePoint(AutoConstants.PICKUP_2),
+            Trajectories.scoreIntake(0, 2),
+            Trajectories.climbPoint(true, false, false)
+        ));
+
+        Trajectories.autoSpeed = 4.5;
+        auto.put("top_3pc+Climb", Commands.sequence(
+            new StartEndCommand(()-> Intake.getInstance().setReverse(), ()-> Intake.getInstance().stop()).withTimeout(0.5),
+            Trajectories.resetOdometry(true),
+            Trajectories.intakePoint(AutoConstants.PICKUP_1),
+            Trajectories.scoreIntake(2, 0),
+            Trajectories.intakePoint(AutoConstants.PICKUP_2),
+            Trajectories.scoreIntake(2, 1),
+            Trajectories.climbPoint(true, false, false)
         ));
 
         /**

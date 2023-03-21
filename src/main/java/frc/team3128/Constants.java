@@ -276,8 +276,8 @@ public class Constants {
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
-            new Pose2d(10, 0.7, new Rotation2d()),
-            new Pose2d(10, 4.65, new Rotation2d())
+            new Pose2d(10, 0.95, new Rotation2d()),
+            new Pose2d(10, 4.5, new Rotation2d())
         };
 
         public static final Pose2d HPWall_Loading = new Pose2d(12.4, 7.5, new Rotation2d());

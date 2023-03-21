@@ -22,8 +22,8 @@ public class CmdIntake extends SequentialCommandGroup{
             new WaitUntilCommand(()->intake.hasObjectPresent()),
             new InstantCommand(()-> Intake.objectPresent = true),
             new InstantCommand(()->intake.set(IntakeConstants.STALL_POWER), intake),
-            new InstantCommand(()-> intake.startPID(IntakeState.RETRACTED.angle)),
-            new WaitUntilCommand(()-> intake.atSetpoint())
+            new InstantCommand(()-> intake.startPID(IntakeState.RETRACTED.angle))
+            // new WaitUntilCommand(()-> intake.atSetpoint())
         );
     }
 }

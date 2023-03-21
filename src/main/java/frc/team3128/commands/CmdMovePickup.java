@@ -10,36 +10,28 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.team3128.Constants.FieldConstants;
 import frc.team3128.Constants.SwerveConstants;
 import frc.team3128.Constants.VisionConstants;
-import frc.team3128.subsystems.Vision;
 
-//Can't be bothered with this mess - Mason
-public class CmdMoveLoading extends CmdMove {
+public class CmdMovePickup extends CmdMove {
 
-    public Pose2d[][] positions;
-    private int currentSelectedGrid; 
+    public Pose2d position;
     private double PASS_LINE;
     private boolean isReversed;
 
-    public CmdMoveLoading(boolean isReversed, double maxSpeed, Pose2d[]... positions) {
-        super(CmdMove.Type.LOADING, true, maxSpeed, positions[0]);
-        this.positions = positions;
+    public CmdMovePickup(boolean isReversed, double maxSpeed, Pose2d position) {
+        super(CmdMove.Type.LOADING, false, maxSpeed, position);
+        this.position = position;
         this.isReversed = isReversed;
     }
 
-    public CmdMoveLoading(boolean isReversed, Pose2d[]... positions) {
-        this(isReversed, SwerveConstants.maxSpeed, positions);
+    public CmdMovePickup(boolean isReversed, Pose2d position) {
+        this(isReversed, SwerveConstants.maxSpeed, position);
     }
 
     @Override
     public void initialize() {
-        currentSelectedGrid = Vision.SELECTED_GRID;
-        var newPoses = new Pose2d[positions.length + 2];
+        var newPoses = new Pose2d[2];
         newPoses[0] = swerve.getPose().nearest(Arrays.asList(VisionConstants.RAMP_AVOID_LOADING));
-        newPoses[1] = VisionConstants.HPWall_Loading; //REMIND ME TO FIX LATER
-        for (int i = 2; i < newPoses.length; i ++) {
-            newPoses[i] = positions[i - 2][currentSelectedGrid];
-        }
-
+        newPoses[1] = position;
         if (isReversed) {
             for (int i = 0; i < newPoses.length; i++) {
                 var newRotation = new Rotation2d(MathUtil.inputModulus(poses[i].getRotation().getRadians() + Math.PI, -Math.PI, Math.PI));
@@ -55,9 +47,8 @@ public class CmdMoveLoading extends CmdMove {
 
     @Override
     public void execute() {
-        if ((pastX(PASS_LINE) && index == 0) || (swerve.getPose().getY() > VisionConstants.WALL_PASS && index == 1))
+        if ((pastX(PASS_LINE) && index == 0))
             nextPoint();
-        
         super.execute();
     }
     
