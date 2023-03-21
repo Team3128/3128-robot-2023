@@ -40,6 +40,6 @@ public class CmdDriveUp extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(swerve.getRoll()) >= 10);
+        return (Math.abs(swerve.getPitch()) >= 10);
     }
 }

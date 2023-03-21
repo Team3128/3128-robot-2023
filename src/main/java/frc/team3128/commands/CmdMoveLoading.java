@@ -36,7 +36,7 @@ public class CmdMoveLoading extends CmdMove {
         newPoses[0] = swerve.getPose().nearest(Arrays.asList(VisionConstants.RAMP_AVOID_LOADING));
         newPoses[1] = VisionConstants.HPWall_Loading;
         for (int i = 2; i < newPoses.length; i ++) {
-            newPoses[i] = positions[i - 1][currentSelectedGrid];
+            newPoses[i] = positions[i - 2][currentSelectedGrid];
         }
 
         if (isReversed) {

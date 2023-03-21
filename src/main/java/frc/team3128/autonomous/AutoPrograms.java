@@ -41,33 +41,35 @@ public class AutoPrograms {
         /**
             * Bottom Position Autos
         */
+        Trajectories.autoSpeed = 2.5;
         auto.put("DEFAULT", Commands.sequence(
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(true)
         ));
 
+        Trajectories.autoSpeed = 2.5;
         auto.put("bottom_1pc+mobility", Commands.sequence(
-            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(true),
             Trajectories.movePoint(AutoConstants.PICKUP_1)
         ));
 
+        Trajectories.autoSpeed = 2.5;
         auto.put("top_1pc+mobility", Commands.sequence(
-            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(true),
             Trajectories.movePoint(AutoConstants.PICKUP_4)
         ));
 
+        Trajectories.autoSpeed = 2.5;
         auto.put("bottom_2pc", Commands.sequence(
-            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1),
             Trajectories.scoreIntake(0, 1)
         ));
 
+        Trajectories.autoSpeed = 2.5;
         auto.put("top_2pc", Commands.sequence(
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(true),
@@ -75,16 +77,16 @@ public class AutoPrograms {
             Trajectories.scoreIntake(2, 1)
         ));
 
-        auto.put("bottom_2pc+Climb", Commands.sequence(
-            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
+        Trajectories.autoSpeed = 2.5;
+        auto.put("bottom_1.5pc+Climb", Commands.sequence(
             Trajectories.startScoringPoint(true, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1),
             Trajectories.climbPoint(false, true, true)
         ));
 
-        auto.put("bottom_2pc+Climb2", Commands.sequence(
-            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
+        Trajectories.autoSpeed = 3.5;
+        auto.put("bottom_2pc+Climb", Commands.sequence(
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1),
@@ -92,16 +94,16 @@ public class AutoPrograms {
             Trajectories.climbPoint(true, false, false)
         ));
 
-        auto.put("top_2pc+Climb", Commands.sequence(
-            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
+        Trajectories.autoSpeed = 2.5;
+        auto.put("top_1.5pc+Climb", Commands.sequence(
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_4),
             Trajectories.climbPoint(false, false, true)
         ));
 
-        auto.put("top_2pc+Climb2", Commands.sequence(
-            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
+        Trajectories.autoSpeed = 3.5;
+        auto.put("top_2pc+Climb", Commands.sequence(
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_4),
@@ -109,6 +111,7 @@ public class AutoPrograms {
             Trajectories.climbPoint(true, false, false)
         ));
 
+        Trajectories.autoSpeed = 2.5;
         auto.put("bottom_3pc", Commands.sequence(
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
@@ -118,6 +121,7 @@ public class AutoPrograms {
             Trajectories.scoreIntake(0, 1)
         ));
 
+        Trajectories.autoSpeed = 4.5;
         auto.put("top_3pc", Commands.sequence(
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
@@ -131,21 +135,19 @@ public class AutoPrograms {
             * Middle Position Autos
         */
 
+        Trajectories.autoSpeed = 2.5;
         auto.put("mid_1Cube+Climb", Commands.sequence(
-            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
             Trajectories.startScoringPoint(true, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.climbPoint(true, false, false)
         ));
         
-        auto.put("mid_2pc+Climb", Commands.sequence(
-            new InstantCommand(()-> Trajectories.autoSpeed = 2.5),
+        Trajectories.autoSpeed = 2.5;
+        auto.put("mid_1.5pc+Climb", Commands.sequence(
             Trajectories.startScoringPoint(false, ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePointSpecial(AutoConstants.PICKUP_2),
-            Trajectories.climbPoint(false, true, true),
-            new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(1),
-            new WaitCommand(100000000)
+            Trajectories.climbPoint(false, true, true)
             //Outtake
 
         ));
@@ -165,8 +167,8 @@ public class AutoPrograms {
 
     public Command getAutonomousCommand() {
         // String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "bottom_2pc+Climb2"; //uncomment and change this for testing without opening Narwhal Dashboard
-
+        String selectedAutoName = "bottom_3pc"; //uncomment and change this for testing without opening Narwhal Dashboard
+        //REMINDER TO TEST AUTO SPEED AT SOME POINT
         if (selectedAutoName == null) {
             return auto.get("DEFAULT");
         }

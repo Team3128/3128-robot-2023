@@ -253,8 +253,8 @@ public class Trajectories {
             new InstantCommand(()-> Intake.getInstance().setReverse()),
             new WaitCommand(0.125),
             new InstantCommand(()->Intake.getInstance().stop()),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 0, true), swerve)
-                        .withTimeout(0.75),
+            // new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 0, true), swerve)
+            //             .withTimeout(0.75),
             new InstantCommand(()-> swerve.stop(), swerve)
         );
     }
@@ -287,7 +287,7 @@ public class Trajectories {
             new InstantCommand(()-> Vision.getInstance().disableVision()),
             new CmdMove(Type.NONE, false, autoSpeed, inside ? AutoConstants.ClimbSetupInside : (bottom ? AutoConstants.ClimbSetupOutsideBot : AutoConstants.ClimbSetupOutsideTop)),
             new InstantCommand(()-> Vision.getInstance().enableVision()),
-            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getRoll()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
+            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getPitch()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
                                             new InstantCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance()),
             // new CmdMoveArm(90, 11.5, false)

@@ -57,6 +57,10 @@ public class CmdMoveScore extends CmdMove {
                 var newRotation = new Rotation2d(MathUtil.inputModulus(poses[i].getRotation().getRadians() + Math.PI, -Math.PI, Math.PI));
                 poses[i] = new Pose2d(poses[i].getTranslation(), newRotation);
             }
+            for (int i = 0; i < avoidRamp.size(); i++) {
+                var newRotation = new Rotation2d(MathUtil.inputModulus(avoidRamp.get(i).getRotation().getRadians() + Math.PI, -Math.PI, Math.PI));
+                avoidRamp.set(i, new Pose2d(avoidRamp.get(i).getTranslation(), newRotation));
+            }
         }
         PASS_LINE = FieldConstants.chargingStationOuterX - SwerveConstants.robotLength/2 - 0.02;
         PASS_LINE = DriverStation.getAlliance() == Alliance.Red ? FieldConstants.FIELD_X_LENGTH - PASS_LINE : PASS_LINE;
@@ -69,7 +73,7 @@ public class CmdMoveScore extends CmdMove {
             if (pastX(PASS_LINE)) {
                 nextPoint();
             }
-            else {
+            else if (!atLastPoint()) {
                 setPoint(swerve.getPose().nearest(avoidRamp));
             }
         }

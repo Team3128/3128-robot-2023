@@ -145,7 +145,7 @@ public class RobotContainer {
 
         //rightStick.getButton(7).onTrue(new CmdBalance());
         rightStick.getButton(7).onTrue(Commands.sequence(
-                                            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getRoll()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
+                                            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getPitch()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
                                             new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())));
 
@@ -167,7 +167,7 @@ public class RobotContainer {
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).andThen(new InstantCommand(()->manipulator.enableRollersStall(), manipulator)));
 
         buttonPad.getButton(14).onTrue(new InstantCommand(()->{pivot.setPower(0); telescope.stopTele(); 
-                                                                manipulator.stopRoller(); swerve.stop();}, pivot, telescope, swerve, manipulator));
+                                                                manipulator.stopRoller(); swerve.stop(); intake.stop();}, pivot, telescope, swerve, manipulator, intake));
         // cancel button
         buttonPad.getButton(16).onTrue(
             new CmdShelfPickup(true)
@@ -233,11 +233,13 @@ public class RobotContainer {
             () -> {
                 Pose2d pose = Swerve.getInstance().getPose();
                 if (DriverStation.getAlliance() == Alliance.Red) {
-                    return (pose.getY() < midY + robotLength/2 && pose.getX() < outerX + robotLength/2) || 
-                        (pose.getY() < leftY + robotLength/2 && pose.getX() < midX + robotLength/2);
+                    return ((pose.getY() < midY + robotLength/2 && pose.getX() < outerX + robotLength/2) || 
+                        (pose.getY() < leftY + robotLength/2 && pose.getX() < midX + robotLength/2)) ||
+                        ((pose.getY() > 6.85 && pose.getX() > FIELD_X_LENGTH - 6.70) || (pose.getY() > 5.50 && pose.getX() > FIELD_X_LENGTH - 3.30));
                 }
-                return (pose.getY() < midY + robotLength/2 && pose.getX() > FIELD_X_LENGTH - outerX - robotLength/2) || 
-                    (pose.getY() < leftY + robotLength/2 && pose.getX() > FIELD_X_LENGTH - midX - robotLength/2);
+                return ((pose.getY() < midY + robotLength/2 && pose.getX() > FIELD_X_LENGTH - outerX - robotLength/2) || 
+                    (pose.getY() < leftY + robotLength/2 && pose.getX() > FIELD_X_LENGTH - midX - robotLength/2)) ||
+                    ((pose.getY() > 6.85 && pose.getX() < 6.70) || (pose.getY() > 5.50 && pose.getX() < 3.30));
             }
         );
         inProtected.onTrue(new InstantCommand(()-> controller.startVibrate())).onFalse(new InstantCommand(()-> controller.stopVibrate()));
