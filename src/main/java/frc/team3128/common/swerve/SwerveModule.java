@@ -5,6 +5,9 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.team3128.subsystems.Swerve;
+
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -23,6 +26,8 @@ public class SwerveModule {
     private final CANCoder angleEncoder;
     
     private Rotation2d lastAngle;
+    private double prevPosition;
+    private boolean hadError;
 
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(driveKS, driveKV, driveKA);
 
@@ -43,6 +48,7 @@ public class SwerveModule {
         configDriveMotor();
 
         lastAngle = getState().angle;
+        prevPosition = driveMotor.getSelectedSensorPosition();
     }
 
     public void setDesiredState(SwerveModuleState desiredState){
@@ -126,6 +132,12 @@ public class SwerveModule {
 
     public SwerveModulePosition getPosition() {
         double position = falconToMeters(driveMotor.getSelectedSensorPosition(), wheelCircumference, driveGearRatio);
+        if (driveMotor.getLastError().value == -3 && moduleNumber == 1) {
+            Swerve.error = true;
+        }
+        // if (moduleNumber == 1) 
+        //     System.out.println(position);
+        // System.out.println(driveMotor.getLastError().value);
         Rotation2d angle = getAngle();
         return new SwerveModulePosition(position, angle);
     }
@@ -153,6 +165,7 @@ public class SwerveModule {
         driveMotor.configAllSettings(swerveDriveFXConfig());
         driveMotor.setInverted(driveMotorInvert);
         driveMotor.setNeutralMode(NeutralMode.Coast); 
+        // driveMotor.setControlFramePeriod(ControlFrame.Control, angleContinuousCurrentLimit)
         driveMotor.setSelectedSensorPosition(0);
     }
     

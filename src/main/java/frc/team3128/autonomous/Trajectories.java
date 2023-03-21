@@ -39,14 +39,16 @@ import frc.team3128.commands.CmdIntake;
 import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
-import frc.team3128.commands.CmdMoveLoading;
+import frc.team3128.commands.CmdMovePickup;
 import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdScore;
 import frc.team3128.commands.CmdScoreAuto;
 import frc.team3128.commands.CmdMove.Type;
 import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Manipulator;
+import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import frc.team3128.subsystems.Intake.IntakeState;
 
@@ -156,24 +158,6 @@ public class Trajectories {
         return builder.fullAuto(line(start, end));
     }
 
-    // public static CommandBase manipPoint(Pose2d pose, boolean cone) {
-    //     return Commands.sequence(
-    //         new InstantCommand(()->Vision.AUTO_ENABLED = true),
-    //         new CmdMove(Type.LOADING, false, pose),
-    //         Commands.race(
-    //             new CmdGroundPickup(),
-    //             Commands.sequence(
-    //                 new WaitCommand(0.5),
-    //                 new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
-    //                     .withTimeout(1.25)
-    //             )
-    //         ),
-    //         new InstantCommand(()-> swerve.stop(), swerve),
-    //         new InstantCommand(() -> manipulator.stopRoller()),
-    //         new CmdMoveArm(ArmPosition.NEUTRAL)
-    //     );
-    // }
-
     public static CommandBase intakePoint(Pose2d pose) {
         return Commands.sequence(
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
@@ -181,29 +165,7 @@ public class Trajectories {
                 new CmdIntake(),
                 // new CmdGroundPickup(cone),
                 Commands.sequence(
-                    new CmdMove(Type.LOADING, false, autoSpeed, pose),
-                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
-                        .withTimeout(1.25)
-                )
-            ),
-            new InstantCommand(()-> Intake.getInstance().set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), Intake.getInstance()),
-            new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance()),
-            new InstantCommand(()-> swerve.stop(), swerve)
-        );
-    }
-
-    public static CommandBase intakePointRamp(Pose2d pose) {
-        return Commands.sequence(
-            new InstantCommand(()->Vision.AUTO_ENABLED = true),
-            Commands.race(
-                new CmdIntake(),
-                // new CmdGroundPickup(cone),
-                Commands.sequence(
-                    new CmdMoveLoading(false, autoSpeed, new Pose2d[] {
-                        pose,
-                        pose,
-                        pose
-                    }),
+                    new CmdMovePickup(false, pose),
                     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
                         .withTimeout(1.25)
                 )
@@ -253,8 +215,8 @@ public class Trajectories {
             new InstantCommand(()-> Intake.getInstance().outtake()),
             new WaitCommand(0.125),
             new InstantCommand(()->Intake.getInstance().stop()),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 0, true), swerve)
-                        .withTimeout(0.75),
+            // new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 0, true), swerve)
+            //             .withTimeout(0.75),
             new InstantCommand(()-> swerve.stop(), swerve)
         );
     }
@@ -262,11 +224,13 @@ public class Trajectories {
     public static CommandBase startScoringPoint(boolean reversed, ArmPosition position) {
         return Commands.sequence(
             //new InstantCommand(() -> swerve.resetOdometry(FieldConstants.allianceFlip(AutoConstants.STARTING_POINTS[grid * 3 + node]))),
-            new CmdMoveArm(position).withTimeout(3),
+            new CmdMoveArm(position),
             new InstantCommand(()-> manipulator.outtake(), manipulator),
             new WaitCommand(0.125),
             new InstantCommand(()-> manipulator.stopRoller(), manipulator),
-            new CmdMoveArm(ArmPosition.NEUTRAL)
+            new InstantCommand(()-> Telescope.getInstance().startPID(ArmPosition.NEUTRAL), Telescope.getInstance()),
+            new WaitUntilCommand(() -> Telescope.getInstance().atSetpoint()),
+            new InstantCommand(()-> Pivot.getInstance().startPID(ArmPosition.NEUTRAL), Pivot.getInstance())
         );
     }
 
@@ -287,11 +251,11 @@ public class Trajectories {
             new InstantCommand(()-> Vision.getInstance().disableVision()),
             new CmdMove(Type.NONE, false, autoSpeed, inside ? AutoConstants.ClimbSetupInside : (bottom ? AutoConstants.ClimbSetupOutsideBot : AutoConstants.ClimbSetupOutsideTop)),
             new InstantCommand(()-> Vision.getInstance().enableVision()),
-            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getRoll()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
+            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getPitch()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
                                             new InstantCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance()),
             // new CmdMoveArm(90, 11.5, false)
-            new StartEndCommand(()-> Intake.getInstance().shoot(), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(eject ? 1 : 0),
+            new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(eject ? 0.5 : 0),
             new WaitCommand(100000000)
         );
     }

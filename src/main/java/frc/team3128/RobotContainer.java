@@ -126,7 +126,7 @@ public class RobotContainer {
         controller.getButton("LeftTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = .25)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         controller.getButton("B").onTrue(new InstantCommand(()-> swerve.resetEncoders()));
-        controller.getButton("Y").onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator))
+        controller.getButton("Y").onTrue(new RunCommand(() -> manipulator.outtake(), manipulator))
                                 .onFalse(new InstantCommand(() -> manipulator.stopRoller(), manipulator)
                                     .andThen(new CmdMoveArm(ArmPosition.NEUTRAL)));
 
@@ -148,7 +148,7 @@ public class RobotContainer {
 
         //rightStick.getButton(7).onTrue(new CmdBalance());
         rightStick.getButton(7).onTrue(Commands.sequence(
-                                            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getRoll()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
+                                            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getPitch()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
                                             new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())));
 
@@ -175,14 +175,12 @@ public class RobotContainer {
         buttonPad.getButton(14).onTrue(new InstantCommand(()->{pivot.setPower(0); telescope.stopTele(); 
                                                                 manipulator.stopRoller(); swerve.stop(); intake.stop();}, pivot, telescope, swerve, manipulator, intake));
         // cancel button
-        buttonPad.getButton(16).onTrue(Commands.sequence(
-            new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
+        buttonPad.getButton(16).onTrue(
             new CmdShelfPickup(true)
-        ));
-        buttonPad.getButton(15).onTrue(Commands.sequence(
-            new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
+        );
+        buttonPad.getButton(15).onTrue(
             new CmdShelfPickup(false)
-        ));
+        );
 
         rightStick.getUpPOVButton().onTrue(new InstantCommand(()-> led.setAllianceColor()));
         rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> led.setAutoColor()));
@@ -195,18 +193,15 @@ public class RobotContainer {
         leftStick.getButton(2).onTrue(new InstantCommand(()->intake.moveIntake(-0.2), intake)).onFalse(new InstantCommand(()->intake.stop(), intake));
         leftStick.getButton(3).onTrue(new CmdIntake());
         
-        buttonPad.getButton(5).onTrue(Commands.sequence(
-            new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-            new CmdScore(false, ArmPosition.LOW_FLOOR, 1).asProxy()
-        ));
-        buttonPad.getButton(8).onTrue(Commands.sequence(
-            new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-            new CmdScore(false, ArmPosition.MID_CUBE, 1).asProxy()
-        ));
-        buttonPad.getButton(11).onTrue(Commands.sequence(
-            new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-            new CmdScore(false, ArmPosition.TOP_CUBE, 1).asProxy()
-        ));
+        buttonPad.getButton(5).onTrue(
+            new CmdScore(false, ArmPosition.LOW_FLOOR, 1)
+        );
+        buttonPad.getButton(8).onTrue(
+            new CmdScore(false, ArmPosition.MID_CUBE, 1)
+        );
+        buttonPad.getButton(11).onTrue(
+            new CmdScore(false, ArmPosition.TOP_CUBE, 1)
+        );
         buttonPad.getButton(1).onTrue(new InstantCommand(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 0 : 2;
         }));
@@ -244,11 +239,13 @@ public class RobotContainer {
             () -> {
                 Pose2d pose = Swerve.getInstance().getPose();
                 if (DriverStation.getAlliance() == Alliance.Red) {
-                    return (pose.getY() < midY + robotLength/2 && pose.getX() < outerX + robotLength/2) || 
-                        (pose.getY() < leftY + robotLength/2 && pose.getX() < midX + robotLength/2);
+                    return ((pose.getY() < midY + robotLength/2 && pose.getX() < outerX + robotLength/2) || 
+                        (pose.getY() < leftY + robotLength/2 && pose.getX() < midX + robotLength/2)) ||
+                        ((pose.getY() > 6.85 && pose.getX() > FIELD_X_LENGTH - 6.70) || (pose.getY() > 5.50 && pose.getX() > FIELD_X_LENGTH - 3.30));
                 }
-                return (pose.getY() < midY + robotLength/2 && pose.getX() > FIELD_X_LENGTH - outerX - robotLength/2) || 
-                    (pose.getY() < leftY + robotLength/2 && pose.getX() > FIELD_X_LENGTH - midX - robotLength/2);
+                return ((pose.getY() < midY + robotLength/2 && pose.getX() > FIELD_X_LENGTH - outerX - robotLength/2) || 
+                    (pose.getY() < leftY + robotLength/2 && pose.getX() > FIELD_X_LENGTH - midX - robotLength/2)) ||
+                    ((pose.getY() > 6.85 && pose.getX() < 6.70) || (pose.getY() > 5.50 && pose.getX() < 3.30));
             }
         );
         inProtected.onTrue(new InstantCommand(()-> controller.startVibrate())).onFalse(new InstantCommand(()-> controller.stopVibrate()));
@@ -257,57 +254,45 @@ public class RobotContainer {
     public void init() {
         Vision.AUTO_ENABLED = false;
         if (DriverStation.getAlliance() == Alliance.Red) {
-            buttonPad.getButton(4).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.LOW_FLOOR, 0).asProxy()
-            ));
-            buttonPad.getButton(6).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.LOW_FLOOR, 2).asProxy()
-            ));
-            buttonPad.getButton(7).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.MID_CONE, 0).asProxy()
-            ));
-            buttonPad.getButton(9).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.MID_CONE, 2).asProxy()
-            ));
-            buttonPad.getButton(10).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.TOP_CONE, 0).asProxy()
-            ));
-            buttonPad.getButton(12).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.TOP_CONE, 2).asProxy()
-            ));
+            buttonPad.getButton(4).onTrue(
+                new CmdScore(false, ArmPosition.LOW_FLOOR, 0)
+            );
+            buttonPad.getButton(6).onTrue(
+                new CmdScore(false, ArmPosition.LOW_FLOOR, 2)
+            );
+            buttonPad.getButton(7).onTrue(
+                new CmdScore(false, ArmPosition.MID_CONE, 0)
+            );
+            buttonPad.getButton(9).onTrue(
+                new CmdScore(false, ArmPosition.MID_CONE, 2)
+            );
+            buttonPad.getButton(10).onTrue(
+                new CmdScore(false, ArmPosition.TOP_CONE, 0)
+            );
+            buttonPad.getButton(12).onTrue(
+                new CmdScore(false, ArmPosition.TOP_CONE, 2)
+            );
             
         }
         else {
-            buttonPad.getButton(6).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.LOW_FLOOR, 0).asProxy()
-            ));
-            buttonPad.getButton(4).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.LOW_FLOOR, 2).asProxy()
-            ));
-            buttonPad.getButton(9).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.MID_CONE, 0).asProxy()
-            ));
-            buttonPad.getButton(7).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.MID_CONE, 2).asProxy()
-            ));
-            buttonPad.getButton(12).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.TOP_CONE, 0).asProxy()
-            ));
-            buttonPad.getButton(10).onTrue(Commands.sequence(
-                new WaitUntilCommand(()-> !Vision.AUTO_ENABLED),
-                new CmdScore(false, ArmPosition.TOP_CONE, 2).asProxy()
-            ));
+            buttonPad.getButton(6).onTrue(
+                new CmdScore(false, ArmPosition.LOW_FLOOR, 0)
+            );
+            buttonPad.getButton(4).onTrue(
+                new CmdScore(false, ArmPosition.LOW_FLOOR, 2)
+            );
+            buttonPad.getButton(9).onTrue(
+                new CmdScore(false, ArmPosition.MID_CONE, 0)
+            );
+            buttonPad.getButton(7).onTrue(
+                new CmdScore(false, ArmPosition.MID_CONE, 2)
+            );
+            buttonPad.getButton(12).onTrue(
+                new CmdScore(false, ArmPosition.TOP_CONE, 0)
+            );
+            buttonPad.getButton(10).onTrue(
+                new CmdScore(false, ArmPosition.TOP_CONE, 2)
+            );
         }
     }
 

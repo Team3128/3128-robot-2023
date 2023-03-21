@@ -34,10 +34,10 @@ public class Constants {
     }
 
     public static class AutoConstants {
-        public static final Pose2d PICKUP_1 = new Pose2d(6.4, 0.92, Rotation2d.fromDegrees(0));
-        public static final Pose2d PICKUP_2 = new Pose2d(6.4, 2.15, Rotation2d.fromDegrees(0));
-        public static final Pose2d PICKUP_3 = new Pose2d(6.4, 3.38, Rotation2d.fromDegrees(0));
-        public static final Pose2d PICKUP_4 = new Pose2d(6.4, 4.55, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.95, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_2 = new Pose2d(5.9, 2.15, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_3 = new Pose2d(5.9, 3.38, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.50, Rotation2d.fromDegrees(0));
 
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));
         public static final Pose2d ClimbSetupOutsideBot = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
@@ -95,7 +95,7 @@ public class Constants {
 
         public static final double TURN_TOLERANCE = 5;
 
-        public static final double DRIVE_TOLERANCE = 0.03;
+        public static final double DRIVE_TOLERANCE = 0.04;
 
         /* Translation PID Values */
         public static final double translationKP = 3;
@@ -225,7 +225,7 @@ public class Constants {
 
         public static final double TX_THRESHOLD = 3; // degrees
 
-        public static final double POSE_THRESH = 2;
+        public static final double POSE_THRESH = 5;
 
         public static final double AUTO_FF = 0.1;
 
@@ -246,7 +246,7 @@ public class Constants {
             new Pose2d(1.95,3.3,Rotation2d.fromDegrees(180)),
             new Pose2d(1.95,3.85,Rotation2d.fromDegrees(180)),
             new Pose2d(1.95,4.45,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.95,5,Rotation2d.fromDegrees(180))
+            new Pose2d(1.95,4.89,Rotation2d.fromDegrees(180))
         };
 
         public static final Pose2d[][] SCORES_GRID = new Pose2d[][] {
@@ -276,8 +276,8 @@ public class Constants {
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
-            new Pose2d(10, 0.7, new Rotation2d()),
-            new Pose2d(10, 4.65, new Rotation2d())
+            new Pose2d(10, 0.95, new Rotation2d()),
+            new Pose2d(10, 4.5, new Rotation2d())
         };
 
         public static final Pose2d HPWall_Loading = new Pose2d(12.4, 7.5, new Rotation2d());
@@ -339,11 +339,11 @@ public class Constants {
         public static final double kG = 0.7;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
-        public static final double PIVOT_TOLERANCE = 3.0;
+        public static final double PIVOT_TOLERANCE = 5.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         // public static final int CANCODER_ID = 24;
         public static final int ENC_DIO_ID = 7;
-        public static final double ANGLE_OFFSET = 308+6-1.3; //get from new encoder
+        public static final double ANGLE_OFFSET = 308+6-1.3-3.5+4.5; //get from new encoder
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -376,14 +376,14 @@ public class Constants {
         public enum ArmPosition {
             TOP_CONE(110, 38.5, 0, true), // 112,44 
             TOP_CUBE(105, 38.5, 0, false), //98,35
-            MID_CONE(105, 22, 1, true), //98,22.5
+            MID_CONE(105, 20.5, 1, true), //98,22.5
             MID_CUBE(90, 22, 1, false), //87,15
             LOW_FLOOR(45, 11.5, 2, false), 
 
             NEUTRAL(5, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF_CONE(113, 17.5, null, null), //105
-            HP_SHELF_CUBE(108, 17.5, null, null), //105
+            HP_SHELF_CONE(112, 17.5, null, null), //105
+            HP_SHELF_CUBE(106.5, 17.5, null, null), //105
             GROUND_PICKUP(37, 26.5, null, null),
             GROUND_PICKUP_CONE(37, 26.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 26, null, null), 
@@ -504,9 +504,9 @@ public class Constants {
 
         public static final int ROLLER_MOTOR_ID = 13;
         public static final double ROLLER_POWER = 0.8;
-        public static final double STALL_POWER = 0.25;
+        public static final double STALL_POWER = 0.3;
 
-        public static final double CUBE_CURRENT_THRESHOLD = 18;
+        public static final double CUBE_CURRENT_THRESHOLD = 20;
         public static final double CONE_CURRENT_THRESHOLD = 20;
 
         public static final double ROLLER_VOLTAGE = 8;

@@ -153,6 +153,9 @@ public class Intake extends PIDSubsystem {
     public void shoot() {
         set(-1);
     }
+    public void setReverse() {
+        set(-0.3);
+    }
 
     public void set(double power) {
         m_intakeRollers.set(power);
