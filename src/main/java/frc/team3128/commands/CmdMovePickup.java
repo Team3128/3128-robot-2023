@@ -39,6 +39,8 @@ public class CmdMovePickup extends CmdMove {
             }
         }
 
+        poses = newPoses;
+
         PASS_LINE = FieldConstants.chargingStationInnerX + SwerveConstants.robotLength/2 + 0.02;
         PASS_LINE = DriverStation.getAlliance() == Alliance.Red ? FieldConstants.FIELD_X_LENGTH - PASS_LINE : PASS_LINE;
         

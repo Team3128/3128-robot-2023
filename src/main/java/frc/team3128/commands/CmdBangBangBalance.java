@@ -13,7 +13,7 @@ public class CmdBangBangBalance extends CommandBase{
     private static DoubleSupplier thresh;
 
     static {
-        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 75, 0, 1);
+        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 80, 0, 1);
     }
     
     public CmdBangBangBalance() {
@@ -39,9 +39,10 @@ public class CmdBangBangBalance extends CommandBase{
             plateauCount++;
         }
     }
+    // todo remember to check if it changed signs 
 
     @Override
     public boolean isFinished() {
-        return plateauCount >= thresh.getAsDouble() && Math.abs(swerve.getPitch()) < 10;
+        return plateauCount >= thresh.getAsDouble();
     }
 }

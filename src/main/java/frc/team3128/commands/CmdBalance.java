@@ -21,7 +21,7 @@ public class CmdBalance extends PIDCommand {
             () -> Swerve.getInstance().getPose().getX(),
             //() -> DriverStation.getAlliance() == Alliance.Red ? 12.55 : 3.95,
             () -> DriverStation.getAlliance() == Alliance.Red ? FIELD_X_LENGTH - (chargingStationInnerX + chargingStationOuterX) / 2.0 : (chargingStationInnerX + chargingStationOuterX) / 2.0,
-            output -> Swerve.getInstance().drive(new Translation2d(output + Math.copySign(AutoConstants.BALANCE_FF, output),0), 0,true),
+            output -> Swerve.getInstance().drive(new Translation2d(output - AutoConstants.BALANCE_FF,0), 0,true),
             Swerve.getInstance()
         );
         m_controller.setTolerance(SwerveConstants.DRIVE_TOLERANCE);

@@ -165,8 +165,26 @@ public class Trajectories {
                 new CmdIntake(),
                 // new CmdGroundPickup(cone),
                 Commands.sequence(
-                    new CmdMovePickup(false, pose),
+                    new CmdMovePickup(false, autoSpeed, pose),
                     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
+                        .withTimeout(1.25)
+                )
+            ),
+            new InstantCommand(()-> Intake.getInstance().set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), Intake.getInstance()),
+            new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance()),
+            new InstantCommand(()-> swerve.stop(), swerve)
+        );
+    }
+
+    public static CommandBase intakePoint2(Pose2d pose) {
+        return Commands.sequence(
+            new InstantCommand(()->Vision.AUTO_ENABLED = true),
+            Commands.race(
+                new CmdIntake(),
+                // new CmdGroundPickup(cone),
+                Commands.sequence(
+                    new CmdMovePickup(false, autoSpeed, pose),
+                    new RunCommand(()-> swerve.drive(new Translation2d(0,0.5), 0,true), swerve)
                         .withTimeout(1.25)
                 )
             ),
@@ -221,7 +239,7 @@ public class Trajectories {
         );
     }
 
-    public static CommandBase startScoringPoint(boolean reversed, ArmPosition position) {
+    public static CommandBase startScoringPoint(ArmPosition position) {
         return Commands.sequence(
             //new InstantCommand(() -> swerve.resetOdometry(FieldConstants.allianceFlip(AutoConstants.STARTING_POINTS[grid * 3 + node]))),
             new CmdMoveArm(position),
@@ -230,6 +248,7 @@ public class Trajectories {
             new InstantCommand(()-> manipulator.stopRoller(), manipulator),
             new InstantCommand(()-> Telescope.getInstance().startPID(ArmPosition.NEUTRAL), Telescope.getInstance()),
             new WaitUntilCommand(() -> Telescope.getInstance().atSetpoint()),
+            new InstantCommand(()->Telescope.getInstance().stopTele(), Telescope.getInstance()),
             new InstantCommand(()-> Pivot.getInstance().startPID(ArmPosition.NEUTRAL), Pivot.getInstance())
         );
     }
@@ -245,7 +264,7 @@ public class Trajectories {
         );
     }
 
-    public static CommandBase climbPoint(boolean inside, boolean bottom, boolean eject) {
+    public static CommandBase climbPoint(boolean inside, boolean bottom) {
         return Commands.sequence(
             // new CmdMoveArm(ArmPosition.NEUTRAL, false),
             new InstantCommand(()-> Vision.getInstance().disableVision()),
@@ -253,10 +272,8 @@ public class Trajectories {
             new InstantCommand(()-> Vision.getInstance().enableVision()),
             Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getPitch()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
-                                            new InstantCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance()),
+            new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())
             // new CmdMoveArm(90, 11.5, false)
-            new StartEndCommand(()-> Intake.getInstance().set(-1), ()-> Intake.getInstance().stop(), Intake.getInstance()).withTimeout(eject ? 0.5 : 0),
-            new WaitCommand(100000000)
         );
     }
     

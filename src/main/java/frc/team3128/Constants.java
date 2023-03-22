@@ -35,8 +35,8 @@ public class Constants {
 
     public static class AutoConstants {
         public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.95, Rotation2d.fromDegrees(0));
-        public static final Pose2d PICKUP_2 = new Pose2d(5.9, 2.15, Rotation2d.fromDegrees(0));
-        public static final Pose2d PICKUP_3 = new Pose2d(5.9, 3.38, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_2 = new Pose2d(7.3, 2.15, Rotation2d.fromDegrees(90));
+        public static final Pose2d PICKUP_3 = new Pose2d(7.3, 3.38, Rotation2d.fromDegrees(-90));
         public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.50, Rotation2d.fromDegrees(0));
 
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));
@@ -326,8 +326,8 @@ public class Constants {
             TestTags.put(7, APRIL_TAG_POS.get(2));
             TestTags.put(6,APRIL_TAG_POS.get(1));
 
-            RAMP_AVOID_SCORE.add(new Pose2d(2.1,4.65, Rotation2d.fromDegrees(180)));
-            RAMP_AVOID_SCORE.add(new Pose2d(2.1, 0.7, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1,4.75, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1, 0.6, Rotation2d.fromDegrees(180)));
         } 
     }
 
@@ -466,7 +466,7 @@ public class Constants {
         public static final double CURRENT_THRESHOLD = 50;
 
         public static final double ROLLER_POWER = 0.75;
-        public static final double OUTTAKE_POWER = 0.5;
+        public static final double OUTTAKE_POWER = 0.3;
 
         public static final double STALL_POWER = 0.1;
 
@@ -479,7 +479,7 @@ public class Constants {
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TO_DEGREES = 360;
-        public static final double ANGLE_OFFSET = -143; 
+        public static final double ANGLE_OFFSET = 23; 
 
         public static final int ENCODER_DIO_ID = 8;
 

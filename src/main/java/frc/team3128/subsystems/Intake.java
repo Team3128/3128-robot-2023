@@ -100,7 +100,7 @@ public class Intake extends PIDSubsystem {
         NAR_Shuffleboard.addData("intake", "output current", m_intakeRollers.getStatorCurrent(), 4, 1);
         NAR_Shuffleboard.addData("intake", "input current", m_intakeRollers.getSupplyCurrent(), 4, 2);
         NAR_Shuffleboard.addData("intake", "output voltage", m_intakeRollers.getMotorOutputVoltage(), 5, 1);
-        if (Math.abs(getCurrent()) > CURRENT_THRESHOLD + 20)
+        if (Math.abs(getCurrent()) > CURRENT_THRESHOLD + 40)
             set(STALL_POWER);
     }
 
@@ -152,9 +152,6 @@ public class Intake extends PIDSubsystem {
 
     public void shoot() {
         set(-1);
-    }
-    public void setReverse() {
-        set(-0.3);
     }
 
     public void set(double power) {

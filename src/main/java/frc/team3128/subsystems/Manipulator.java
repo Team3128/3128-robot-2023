@@ -29,7 +29,7 @@ public class Manipulator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (Math.abs(getCurrent()) > CUBE_CURRENT_THRESHOLD + 20)
+        if (Math.abs(getCurrent()) > CUBE_CURRENT_THRESHOLD + 40)
             stallPower();
     }
 
