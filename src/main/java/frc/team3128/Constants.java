@@ -35,8 +35,8 @@ public class Constants {
 
     public static class AutoConstants {
         public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.95, Rotation2d.fromDegrees(0));
-        public static final Pose2d PICKUP_2 = new Pose2d(7.3, 2.15, Rotation2d.fromDegrees(90));
-        public static final Pose2d PICKUP_3 = new Pose2d(7.3, 3.38, Rotation2d.fromDegrees(-90));
+        public static final Pose2d PICKUP_2 = new Pose2d(7.4, 2.15, Rotation2d.fromDegrees(45));
+        public static final Pose2d PICKUP_3 = new Pose2d(7.4, 3.38, Rotation2d.fromDegrees(-45));
         public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.50, Rotation2d.fromDegrees(0));
 
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));

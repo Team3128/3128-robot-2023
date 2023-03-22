@@ -158,33 +158,18 @@ public class Trajectories {
         return builder.fullAuto(line(start, end));
     }
 
-    public static CommandBase intakePoint(Pose2d pose) {
+    // inner = two inner points, bottom = if bottom or top
+    public static CommandBase intakePoint(Pose2d pose, boolean inner, boolean bottom) {
         return Commands.sequence(
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
             Commands.race(
-                new CmdIntake(),
-                // new CmdGroundPickup(cone),
                 Commands.sequence(
+                    new WaitCommand(1),
+                    new CmdIntake()
+                ), Commands.sequence(
                     new CmdMovePickup(false, autoSpeed, pose),
-                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,0), 0,true), swerve)
-                        .withTimeout(1.25)
-                )
-            ),
-            new InstantCommand(()-> Intake.getInstance().set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), Intake.getInstance()),
-            new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance()),
-            new InstantCommand(()-> swerve.stop(), swerve)
-        );
-    }
-
-    public static CommandBase intakePoint2(Pose2d pose) {
-        return Commands.sequence(
-            new InstantCommand(()->Vision.AUTO_ENABLED = true),
-            Commands.race(
-                new CmdIntake(),
-                // new CmdGroundPickup(cone),
-                Commands.sequence(
-                    new CmdMovePickup(false, autoSpeed, pose),
-                    new RunCommand(()-> swerve.drive(new Translation2d(0,0.5), 0,true), swerve)
+                    new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,
+                                                        inner ? (bottom ? 0.5 : -0.5) : 0), 0,true), swerve)
                         .withTimeout(1.25)
                 )
             ),

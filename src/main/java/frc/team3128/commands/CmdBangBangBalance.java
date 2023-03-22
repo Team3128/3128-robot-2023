@@ -11,6 +11,7 @@ public class CmdBangBangBalance extends CommandBase{
     private Swerve swerve;
     private double maxPitch; 
     private static DoubleSupplier thresh;
+    private double initialPitch;
 
     static {
         thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 80, 0, 1);
@@ -21,12 +22,14 @@ public class CmdBangBangBalance extends CommandBase{
         swerve = Swerve.getInstance();
         plateauCount = 0;
         maxPitch = 0;
+        initialPitch = 0;
     }
 
     @Override
     public void initialize() {
         plateauCount = 0;
         maxPitch = Math.abs(swerve.getPitch());
+        initialPitch = swerve.getPitch();
     }
 
     @Override
@@ -39,10 +42,9 @@ public class CmdBangBangBalance extends CommandBase{
             plateauCount++;
         }
     }
-    // todo remember to check if it changed signs 
 
     @Override
     public boolean isFinished() {
-        return plateauCount >= thresh.getAsDouble();
+        return plateauCount >= thresh.getAsDouble() && initialPitch * swerve.getPitch() < 0;
     }
 }

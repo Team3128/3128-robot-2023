@@ -14,6 +14,7 @@ import frc.team3128.subsystems.Swerve;
 public class CmdBalance extends PIDCommand {
 
     public static boolean DIRECTION;
+    // TODO: make it go further than the center (but corresponding to the side that we want to go)
 
     public CmdBalance () {
         super(
