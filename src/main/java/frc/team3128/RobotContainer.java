@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdShelfPickup;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdSystemCheck;
+import frc.team3128.commands.CmdSystemCheckFancy;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdScore;
@@ -78,8 +79,6 @@ public class RobotContainer {
 
     private Trigger inProtected;
     private Trigger isAuto;
-
-    public static int systemCheck = 0;
 
     public RobotContainer() {
         NAR_Shuffleboard.addData("DEBUG", "DEBUG", ()-> DEBUG.getAsBoolean(), 0, 1);
@@ -168,7 +167,12 @@ public class RobotContainer {
         rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator));
 
         rightStick.getUpPOVButton().onTrue(new CmdSystemCheck());
-        rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> systemCheck++));
+        rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> CmdSystemCheck.systemCheck++));
+
+        // rightStick.getDownPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck++; CmdSystemCheckFancy.repeat = true;}));
+        // rightStick.getUpPOVButton().onTrue(new CmdSystemCheckFancy());
+        // rightStick.getLeftPOVButton().onTrue(new InstantCommand(()-> CmdSystemCheckFancy.repeat = true));
+        // rightStick.getRightPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck--; CmdSystemCheckFancy.repeat = true;}));
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).andThen(new InstantCommand(()->manipulator.stallPower(), manipulator)));
 

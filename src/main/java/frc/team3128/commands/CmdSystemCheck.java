@@ -27,6 +27,8 @@ import static frc.team3128.Constants.IntakeConstants.*;
 
 
 public class CmdSystemCheck extends SequentialCommandGroup{
+    public static double systemCheck = 0;
+
     private Swerve swerve;
     private Telescope tele;
     private Pivot pivot;
@@ -34,10 +36,6 @@ public class CmdSystemCheck extends SequentialCommandGroup{
     private Intake intake;
 
     private double driveVelocity = 1;
-
-    private double checkCounter = 0;
-
-    boolean moduleFunction[] = new boolean[4];
 
     private static boolean swerveSystemCheck, armSystemCheck, manipulatorSystemCheck, intakeSystemCheck = false;
 
@@ -47,23 +45,22 @@ public class CmdSystemCheck extends SequentialCommandGroup{
         pivot = Pivot.getInstance();
         manip = Manipulator.getInstance();
         intake = Intake.getInstance();
-
-        RobotContainer.systemCheck = 0;
         
         addCommands(
-            new WaitUntilCommand(()-> RobotContainer.systemCheck == 1),
+            new InstantCommand(()-> systemCheck = 0),
+            new WaitUntilCommand(()-> systemCheck == 1),
             new InstantCommand(()-> swerveCheck(driveVelocity), swerve),
-            new WaitUntilCommand(()-> RobotContainer.systemCheck == 2),
+            new WaitUntilCommand(()-> systemCheck == 2),
             new CmdMoveArm(ArmPosition.NEUTRAL).withTimeout(3),
             new CmdMoveArm(ArmPosition.TOP_CONE.pivotAngle, 25).withTimeout(3),
             new CmdMoveArm(ArmPosition.NEUTRAL).withTimeout(3),
             new InstantCommand(()-> armSystemCheck = true),
-            new WaitUntilCommand(()-> RobotContainer.systemCheck == 3),
+            new WaitUntilCommand(()-> systemCheck == 3),
             new CmdIntake(),
             new WaitCommand(1),
             new StartEndCommand(()-> intake.outtake(), ()-> intake.stopRollers(), intake).withTimeout(1),
             new InstantCommand(()-> intakeSystemCheck = true),
-            new WaitUntilCommand(()-> RobotContainer.systemCheck == 4),
+            new WaitUntilCommand(()-> systemCheck == 4),
             new CmdManipGrab(true),
             new WaitCommand(1),
             new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(1),
@@ -77,7 +74,7 @@ public class CmdSystemCheck extends SequentialCommandGroup{
     public void swerveCheck(double velocity) {
         for(int i = 0; i < 8; i++){
             double angle  = i*45;
-            SwerveModuleState desiredTestState = new SwerveModuleState(velocity * (angle > 180 ? -1 : 1), new Rotation2d(angle));
+            SwerveModuleState desiredTestState = new SwerveModuleState(velocity * (angle > 180 ? -1 : 1), Rotation2d.fromDegrees(angle));
             SwerveModuleState[] desiredTestStates = new SwerveModuleState[4];
             Arrays.fill(desiredTestStates, desiredTestState);
             swerve.setModuleStates(desiredTestStates);
