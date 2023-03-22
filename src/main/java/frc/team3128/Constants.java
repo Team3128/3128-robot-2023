@@ -55,7 +55,7 @@ public class Constants {
             new Pose2d(1.85 ,5, Rotation2d.fromDegrees(180))
         };
 
-        public static final double BALANCE_FF = 0.2;
+        public static final double BALANCE_FF = 0.3;
     }
 
     public static class SwerveConstants {
