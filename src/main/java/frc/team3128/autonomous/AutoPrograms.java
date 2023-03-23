@@ -116,9 +116,10 @@ public class AutoPrograms {
             Trajectories.startScoringPoint(ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1, false, false),
-            Trajectories.scoreIntake(0, 1),
+            Trajectories.scoreIntake(0, 0),
             Trajectories.intakePoint(AutoConstants.PICKUP_2, true, true),
-            Trajectories.scoreIntake(0, 0)
+            Trajectories.scoreIntake(0, 1),
+            Trajectories.movePoint(AutoConstants.PICKUP_1)
         ));
 
         Trajectories.autoSpeed = 4.5;
@@ -126,9 +127,10 @@ public class AutoPrograms {
             Trajectories.startScoringPoint(ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_4, false, false),
-            Trajectories.scoreIntake(2, 1),
+            Trajectories.scoreIntake(2, 2),
             Trajectories.intakePoint(AutoConstants.PICKUP_3, true, false),
-            Trajectories.scoreIntake(2, 2)
+            Trajectories.scoreIntake(2, 1), 
+            Trajectories.movePoint(AutoConstants.PICKUP_4)
         ));
 
         Trajectories.autoSpeed = 4.5;
@@ -168,8 +170,6 @@ public class AutoPrograms {
             Trajectories.resetOdometry(false),
             Trajectories.intakePointSpecial(AutoConstants.PICKUP_2),
             Trajectories.climbPoint(false, true)
-            //Outtake
-
         ));
 
         
@@ -186,8 +186,8 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-        // String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "bottom_2.5pc+Climb"; //uncomment and change this for testing without opening Narwhal Dashboard
+        String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
+        // String selectedAutoName = "bottom_2.5pc+Climb"; //uncomment and change this for testing without opening Narwhal Dashboard
         //REMINDER TO TEST AUTO SPEED AT SOME POINT
         if (selectedAutoName == null) {
             return auto.get("DEFAULT");

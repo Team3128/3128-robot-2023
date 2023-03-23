@@ -164,7 +164,7 @@ public class Trajectories {
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
             Commands.race(
                 Commands.sequence(
-                    new WaitCommand(inner ? 1.5 : 1),
+                    new WaitCommand(inner ? 1.25 : 0.75),
                     new CmdIntake()
                 ), Commands.sequence(
                     new CmdMovePickup(false, autoSpeed, pose),
@@ -182,7 +182,7 @@ public class Trajectories {
     public static CommandBase movePoint(Pose2d pose) {
         return Commands.sequence(
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
-            new CmdMove(Type.LOADING, false, autoSpeed, pose)
+            new CmdMovePickup(false, autoSpeed, pose)
         ); 
     }
 
