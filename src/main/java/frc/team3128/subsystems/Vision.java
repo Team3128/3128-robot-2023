@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import static frc.team3128.Constants.VisionConstants.*;
-import frc.team3128.Constants.FieldConstants;
 import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.utility.NAR_Shuffleboard;
@@ -15,14 +14,11 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 public class Vision extends SubsystemBase{
     public static int SELECTED_GRID = 0;
     public static boolean AUTO_ENABLED = false;
-    public static Boolean FIXED_DIRECTION = null;
     public static boolean MANUAL = false;
-    public static boolean GROUND_DIRECTION = false; 
-
-    private double prevTime = 0;
-    private static Vision instance;
 
     private HashMap<String,NAR_Camera> cameras;
+  
+    private static Vision instance;
 
     public static synchronized Vision getInstance(){
         if(instance == null) {
@@ -36,7 +32,6 @@ public class Vision extends SubsystemBase{
         NAR_Camera.setGyro(()-> swerve.getYaw());
         NAR_Camera.setOdometry((pose,time) -> swerve.addVisionMeasurement(pose,time));
         NAR_Camera.setAprilTags(APRIL_TAG_POS);
-        NAR_Camera.setVisionTarget(FieldConstants.HUB_POSITION);
         NAR_Camera.multipleTargets = false;
         cameras = new HashMap<String,NAR_Camera>();
         cameras.put(FRONT.hostname, new NAR_Camera(FRONT));
@@ -45,6 +40,29 @@ public class Vision extends SubsystemBase{
 
     public Pose2d targetPos(String name, Pose2d robotPos) {
         return cameras.get(name).getTargetPos(robotPos);
+    }
+
+    public void visionReset() {
+        Swerve swerve = Swerve.getInstance();
+        for (NAR_Camera cam : getCameras()) {
+            Pose2d pose = cam.getPos();
+            if (!pose.equals(new Pose2d())) {
+                swerve.resetOdometry(new Pose2d(pose.getTranslation(),swerve.getGyroRotation2d()));
+                return;
+            }
+        }
+    }
+
+    public void enableVision() {
+        for (NAR_Camera cam : getCameras()) {
+            cam.enable();
+        }
+    }
+
+    public void disableVision() {
+        for (NAR_Camera cam : getCameras()) {
+            cam.disable();
+        }
     }
 
     public Pose2d robotPos(String name) {
@@ -125,13 +143,7 @@ public class Vision extends SubsystemBase{
         NAR_Shuffleboard.addData("Test", "TESTING", ()->cam2.getTest().toString(),0,2,3,1);
 
         NAR_Shuffleboard.addData("Togglables", "AUTO_ENABLED", ()-> AUTO_ENABLED, 0, 0);
-        NAR_Shuffleboard.addData("Togglables", "Fixed_Direction", ()-> {
-            if (FIXED_DIRECTION == null)
-                return "null";
-            return FIXED_DIRECTION.toString();
-        }, 0, 1);//Might not work as the value is null at certain points
         NAR_Shuffleboard.addData("Togglables", "MANUAL", ()-> MANUAL, 1, 0);
-        NAR_Shuffleboard.addData("Togglables", "GROUND_DIRECTION", ()-> GROUND_DIRECTION, 1, 1);
     }
 
     public void logCameraAll() {

@@ -4,6 +4,7 @@ import static frc.team3128.Constants.IntakeConstants.*;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
@@ -27,17 +28,15 @@ public class Intake extends PIDSubsystem {
     private DoubleSupplier setpoint, power;
 
     // Encoder
-    private DutyCycleEncoder m_encoder;;
+    private DutyCycleEncoder m_encoder;
 
-    public boolean objectPresent;
+    public static boolean objectPresent;
 
     private static Intake instance;
 
     public enum IntakeState {
-        DEPLOYED(0),
-        RETRACTED(90),
-        SEMI_DEPLOYED(60),
-        STOWED(177);
+        DEPLOYED(5),
+        RETRACTED(105);
 
         public double angle;
 
@@ -67,9 +66,12 @@ public class Intake extends PIDSubsystem {
         m_intakeRollers = new NAR_TalonSRX(INTAKE_ROLLERS_ID);
 
         m_intakePivot.setIdleMode(IdleMode.kBrake);
+        m_intakeRollers.setNeutralMode(NeutralMode.Brake);
 
         m_intakePivot.setInverted(true);
-        m_intakeRollers.setInverted(false);
+        m_intakeRollers.setInverted(true);
+
+        m_intakeRollers.enableVoltageCompensation(true);
         
     }
 
@@ -78,7 +80,7 @@ public class Intake extends PIDSubsystem {
     }
 
     public double getAngle() {
-        return -m_encoder.get() * ENCODER_CONVERSION_FACTOR_TO_DEGREES - ANGLE_OFFSET;
+        return MathUtil.inputModulus(-m_encoder.get() * ENCODER_CONVERSION_FACTOR_TO_DEGREES - ANGLE_OFFSET,-180, 180);
     }
 
     public void startPID(IntakeState desiredState) {
@@ -87,23 +89,27 @@ public class Intake extends PIDSubsystem {
 
     public void startPID(double setpoint) {
         setpoint = RobotContainer.DEBUG.getAsBoolean() ? this.setpoint.getAsDouble() : setpoint;
-        // setpoint = setpoint > 170 ? 170 : setpoint;
-        // setpoint = setpoint < 0 ? 0 : setpoint;
+        setpoint = MathUtil.clamp(setpoint,0,105);
         setSetpoint(setpoint);
         enable();
     }
 
     @Override
     public void periodic() {
-        // TODO Auto-generated method stub
         super.periodic();
         NAR_Shuffleboard.addData("intake", "output current", m_intakeRollers.getStatorCurrent(), 4, 1);
         NAR_Shuffleboard.addData("intake", "input current", m_intakeRollers.getSupplyCurrent(), 4, 2);
         NAR_Shuffleboard.addData("intake", "output voltage", m_intakeRollers.getMotorOutputVoltage(), 5, 1);
+        if (Math.abs(getCurrent()) > CURRENT_THRESHOLD + 40)
+            set(STALL_POWER);
     }
 
     public double getCurrent() {
         return m_intakeRollers.getStatorCurrent();
+    }
+
+    public double getVoltage() {
+        return m_intakeRollers.getMotorOutputVoltage();
     }
 
     @Override
@@ -123,32 +129,36 @@ public class Intake extends PIDSubsystem {
     public void stop() {
         disable();
         m_intakePivot.set(0);
-        disableRollers();
+        stopRollers();
     }
 
-    public void setIntake(double power) {
+    public void moveIntake(double power) {
         disable();
         m_intakePivot.set(power);
     }
 
     // Roller Control
-    public void enableRollersForward() {
-        enableRollers(ROLLER_POWER);
+    public void intake() {
+        set(ROLLER_POWER);
     }
 
     public boolean hasObjectPresent(){
         return getCurrent() > CURRENT_THRESHOLD;
     }
 
-    public void enableRollersReverse() {
-        enableRollers(-ROLLER_POWER);
+    public void outtake() {
+        set(-OUTTAKE_POWER);
     }
 
-    public void enableRollers(double wheelsPower) {
-        m_intakeRollers.set(wheelsPower);
+    public void shoot() {
+        set(-1);
     }
 
-    public void disableRollers() {
+    public void set(double power) {
+        m_intakeRollers.set(power);
+    }
+
+    public void stopRollers() {
         m_intakeRollers.set(0);
     }
 

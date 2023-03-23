@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team3128.Constants.FieldConstants;
+import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.swerve.SwerveModule;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
@@ -30,6 +30,8 @@ public class Swerve extends SubsystemBase {
     private volatile FileWriter txtFile;
     public static double throttle = 0.8;
     private String poseLogger = "";
+    public static boolean error = false;
+    private Pose2d prevPose;
     private double prevTime = 0; 
     public SwerveDrivePoseEstimator odometry;
     public SwerveModule[] modules;
@@ -40,10 +42,6 @@ public class Swerve extends SubsystemBase {
     public boolean fieldRelative;
 
     private Field2d field;
-
-    private double prevRoll;
-    private double prevYaw;
-    private double prevPitch;
 
     public static synchronized Swerve getInstance() {
         if (instance == null) {
@@ -81,10 +79,6 @@ public class Swerve extends SubsystemBase {
 
         field = new Field2d();
         SmartDashboard.putData("Field", field);
-
-        prevRoll = getRoll();
-        prevPitch = getPitch();
-        prevYaw = getYaw();
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
@@ -115,17 +109,16 @@ public class Swerve extends SubsystemBase {
         NAR_Shuffleboard.addData("Drivetrain", "Roll", this::getRoll, 0, 2);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
         NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
-        NAR_Shuffleboard.addData("Drivetrain","YawRate",this::getYawRate,4,2);
-        NAR_Shuffleboard.addData("Drivetrain","PitchRate",this::getPitchRate,5,2);
-        NAR_Shuffleboard.addData("Drivetrain", "RollRate", this::getRollRate, 6, 2);
     }
 
     public Pose2d getPose() {
-        return estimatedPose;
+        return new Pose2d(estimatedPose.getTranslation(), getGyroRotation2d());
     }
 
     public void addVisionMeasurement(Pose2d pose, double timeStamp) {
-        odometry.addVisionMeasurement(new Pose2d(pose.getTranslation(), getGyroRotation2d()), timeStamp);
+        if (Math.abs(pose.getX() - getPose().getX()) > VisionConstants.POSE_THRESH && 
+            Math.abs(pose.getY() - getPose().getY()) > VisionConstants.POSE_THRESH) return;
+        odometry.addVisionMeasurement(pose, timeStamp);
     }
 
     public void resetEncoders() {
@@ -170,12 +163,13 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // error = false;
         odometry.update(getGyroRotation2d(), getPositions());
+        // if(error) {
+        //     resetOdometry(new Pose2d(estimatedPose.getTranslation(), getGyroRotation2d()));
+        // }
         estimatedPose = odometry.getEstimatedPosition();
         logPose();
-        prevPitch = getPitch();
-        prevYaw = getYaw();
-        prevRoll = getRoll();
         for (SwerveModule module : modules) {
             SmartDashboard.putNumber("module " + module.moduleNumber, module.getCanCoder().getDegrees());
         }
@@ -185,20 +179,10 @@ public class Swerve extends SubsystemBase {
         resetOdometry(new Pose2d(0,0, new Rotation2d(0)));
         resetEncoders();
     }
-
+    
+    //DON't USE RELIES ON APRIL TAG BAD ANGLE MEASUREMENT
     public Rotation2d getRotation2d() {
         return estimatedPose.getRotation();
-    }
-    
-    public double calculateDegreesToTurn(){
-        double alpha = getHeading();
-        return MathUtil.inputModulus(calculateDesiredAngle() - alpha,-180,180);
-    }
-
-    public double calculateDesiredAngle(){
-        Pose2d location = getPose().relativeTo(FieldConstants.HUB_POSITION);
-        double theta = Math.toDegrees(Math.atan2(location.getY(),location.getX()));
-        return MathUtil.inputModulus(theta - 180,-180,180);
     }
 
     public void logPose() {
@@ -213,16 +197,17 @@ public class Swerve extends SubsystemBase {
             // try {
             //     txtFile.flush();
             // } catch (IOException e) {}
+            
             prevTime = currTime;
             NAR_Shuffleboard.addData("Logger","Positions",poseLogger,0,0);
         }
     }
 
     public void xlock() {
-        modules[0].xLock(45);
-        modules[1].xLock(-45);
-        modules[2].xLock(-45);
-        modules[3].xLock(45);
+        modules[0].xLock(Rotation2d.fromDegrees(45));
+        modules[1].xLock(Rotation2d.fromDegrees(-45));
+        modules[2].xLock(Rotation2d.fromDegrees(-45));
+        modules[3].xLock(Rotation2d.fromDegrees(45));
     }
 
     public double getYaw() {
@@ -233,6 +218,7 @@ public class Swerve extends SubsystemBase {
         return Rotation2d.fromDegrees(getYaw());
     }
 
+    //DONT USE THIS METHOD, it relies on the bad april tag angle measurements
     public double getHeading() {
         return getRotation2d().getDegrees();
     }
@@ -240,20 +226,9 @@ public class Swerve extends SubsystemBase {
     public double getPitch() {
         return gyro.getPitch();
     }
+
     public double getRoll() {
         return gyro.getRoll();
-    }
-
-    public double getYawRate() {
-        return (getYaw() - prevYaw) / 0.02;
-    }
-
-    public double getPitchRate() {
-        return (getPitch() - prevPitch) / 0.02;
-    }
-
-    public double getRollRate() {
-        return (getRoll() - prevRoll) / 0.02;
     }
 
     public void zeroGyro() {
@@ -263,4 +238,9 @@ public class Swerve extends SubsystemBase {
     public void zeroGyro(double reset) {
         gyro.setYaw(reset);
     }
+
+    public boolean compare(SwerveModuleState measured, SwerveModuleState theoretical) {
+        return (Math.abs(measured.speedMetersPerSecond - theoretical.speedMetersPerSecond)/ theoretical.speedMetersPerSecond) < 0.05 
+        && (Math.abs(measured.angle.getDegrees() - theoretical.angle.getDegrees())/ theoretical.angle.getDegrees()) < 0.05;
+      }
 }

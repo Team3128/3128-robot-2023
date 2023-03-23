@@ -1,7 +1,5 @@
 package frc.team3128.commands;
 
-
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +13,8 @@ import java.util.function.DoubleSupplier;
 
 import static frc.team3128.Constants.FieldConstants.*;
 
+import frc.team3128.Constants.SwerveConstants;
+import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Vision;
@@ -70,17 +70,18 @@ public class CmdMove extends CommandBase {
     private boolean xSetpoint, ySetpoint, rSetpoint, atDestination;
     private boolean inXDead;
     protected Pose2d[] poses;
-    private int index;
+    protected int index;
     private Type type;
+    private double maxSpeed;
 
     private boolean joystickOverride;
 
     protected Swerve swerve;
 
-    public CmdMove(Type type, boolean joystickOverride, Pose2d... poses) {
+    public CmdMove(Type type, boolean joystickOverride, double maxSpeed, Pose2d... poses) {
         this.poses = poses;
         this.type = type;
-
+        this.maxSpeed = maxSpeed;
         this.joystickOverride = joystickOverride;
         atDestination = false;
 
@@ -90,6 +91,9 @@ public class CmdMove extends CommandBase {
         addRequirements(swerve);
     }
 
+    public CmdMove(Type type, boolean joystickOverride, Pose2d... poses) {
+        this(type, joystickOverride, SwerveConstants.maxSpeed, poses);
+    }
 
     public static void setController(DoubleSupplier x, DoubleSupplier y, DoubleSupplier r, DoubleSupplier accel) {
         xAxis = x;
@@ -108,7 +112,7 @@ public class CmdMove extends CommandBase {
         xController.setTolerance(DRIVE_TOLERANCE);
         xDeadController.setTolerance(DRIVE_TOLERANCE);
         yController.setTolerance(DRIVE_TOLERANCE);
-        rController.setTolerance(Math.PI/90);
+        rController.setTolerance(Math.PI/60);
 
         NAR_Shuffleboard.addComplex("VisionPID","XCONTROLLER",xController,0,0);
         NAR_Shuffleboard.addComplex("VisionPID","YCONTROLLER",yController,1,0);
@@ -153,27 +157,33 @@ public class CmdMove extends CommandBase {
         Pose2d pose = swerve.getPose();
         Rotation2d Rotation = swerve.getGyroRotation2d();
         double xDistance = xController.calculate(pose.getX());
+        //xDistance = xDistance + Math.signum(xDistance) * VisionConstants.AUTO_FF;
         double yDistance = yController.calculate(pose.getY()); 
+        //yDistance = yDistance + Math.signum(yDistance) * VisionConstants.AUTO_FF;
         double rotation = rController.calculate(Rotation.getRadians());
 
         xSetpoint = xController.atSetpoint();
         ySetpoint = yController.atSetpoint();
         rSetpoint = rController.atSetpoint();
 
-
-        if (xSetpoint || !canMoveX(pose)) xDistance = 0;
+        inXDead = !canMoveX(pose);
+        if (xSetpoint || inXDead) xDistance = 0;
         if (ySetpoint || !canMoveY(pose)) yDistance = 0;
         if (rSetpoint) rotation = 0;
 
         //if ((xDistance == 0) && !xSetpoint) yDistance = Math.copySign(maxSpeed, yDistance);
-        inXDead = !canMoveX(pose);  //Try adding logic so you can't move past the value until you clear the barrier
+        //Try adding logic so you can't move past the value until you clear the barrier
         if (inXDead)
             xDistance = xDeadController.calculate(pose.getX());
+        if (nearBump())
+            xDistance = Math.min(xDistance, bumpSpeed);
         
         if (Math.abs(yDistance) > maxSpeed)
             xDistance = Math.min(Math.abs(xDistance), maxSpeed) * Math.signum(xDistance);
         if (Math.abs(xDistance) > maxSpeed && Math.abs(yDistance) < maxSpeed)
             xDistance = (Math.sqrt(Math.pow(maxSpeed,2) - Math.pow(yDistance,2))) * Math.signum(xDistance);
+        if (Math.abs(xDistance) < maxSpeed && yDistance > maxSpeed)
+            yDistance = (Math.sqrt(Math.pow(maxSpeed,2) - Math.pow(xDistance,2))) * Math.signum(yDistance);
 
         if (!Vision.AUTO_ENABLED) {
             xDistance = 0;
@@ -190,13 +200,19 @@ public class CmdMove extends CommandBase {
             }
         }
 
-        swerve.drive(new Translation2d(xDistance, yDistance), rotation, true);
+        Translation2d translation = new Translation2d(xDistance, yDistance);
+        if (translation.getNorm() > maxSpeed) {
+            Rotation2d driveAngle = translation.getAngle();
+            translation = new Translation2d(maxSpeed, driveAngle);
+        }
+
+        swerve.drive(translation, rotation, true);
 
         if (xSetpoint && ySetpoint && !atLastPoint()) {
             nextPoint();
         }
 
-        atDestination = (xSetpoint && ySetpoint && rSetpoint && atLastPoint());
+        atDestination = (xSetpoint && ySetpoint && atLastPoint());
     }
 
     private boolean canMoveX(Pose2d pose) {
@@ -209,6 +225,8 @@ public class CmdMove extends CommandBase {
 
     private boolean canMoveY(Pose2d pose) {
         if (type == Type.NONE) return true;
+        // if (pose.getY() < chargingStationRightY - robotLength/2 - 0.05 && yController.getSetpoint() < chargingStationRightY - robotLength/2 - 0.05) return true;
+        // if (pose.getY() > chargingStationLeftY + robotLength/2 + 0.05 && yController.getSetpoint() > chargingStationLeftY + robotLength/2 + 0.05) return true;
         double[][] constraints = type.xConstraints;
         for (int i = 0; i < constraints.length; i ++) {
             if (inXConstraints(constraints[i], pose.getX())){
@@ -234,6 +252,12 @@ public class CmdMove extends CommandBase {
         double top = constraints[0];
         double bottom = constraints[1];
         return (yPos >= bottom && yPos <= top);
+    }
+
+    private boolean nearBump() {
+        Pose2d pose = swerve.getPose();
+        return inXConstraints(new double[]{cableBumpInnerX - robotLength, cableBumpOuterX + robotLength}, pose.getX()) &&
+            inYConstraints(new double[]{chargingStationRightY, 0}, FIELD_X_LENGTH);
     }
 
     protected void nextPoint() {

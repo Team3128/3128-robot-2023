@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -14,6 +15,7 @@ import static frc.team3128.Constants.TelescopeConstants.*;
 import java.util.function.DoubleSupplier;
 
 import frc.team3128.RobotContainer;
+import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
@@ -32,6 +34,7 @@ public class Telescope extends PIDSubsystem {
     private NAR_CANSparkMax m_teleMotor;
     private SparkMaxRelativeEncoder m_encoder;
     private DoubleSolenoid m_solenoid; 
+    private DigitalInput m_limitSwitch;
 
     public Telescope() {
         super(new PIDController(kP, kI, kD));
@@ -69,18 +72,43 @@ public class Telescope extends PIDSubsystem {
     private void configEncoders() {
         m_encoder = (SparkMaxRelativeEncoder) m_teleMotor.getEncoder();
         m_encoder.setPositionConversionFactor(ENC_CONV); 
+        m_limitSwitch = new DigitalInput(9);
+    }
+
+    public boolean getLimitSwitch() {
+        return m_limitSwitch.get();
+    }
+
+    /*If extends actually extends set isReversed to false,
+    if extends retracts, set isReversed to true*/
+    public void extend() {
+        setPower(-0.4);
+    }
+
+    /*If retracts actually retracts set isReversed to false,
+    if retracts extends, set isReversed to true*/
+    public void retract() {
+        setPower(0.4);
+    }
+    
+    public void setPower(double power) {
+        disable();
+        releaseBrake();
+        m_teleMotor.set(power);
     }
 
     public double getDist() {
-        return -m_encoder.getPosition() + MIN_DIST + TELE_OFFSET;
+        return -m_encoder.getPosition() + MIN_DIST;
+    }
+
+    @Override
+    protected double getMeasurement() {
+       return getDist();
     }
 
     public void startPID(double teleDist) {
         teleDist = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : teleDist;
-
-        teleDist = teleDist > 50 ? 50 : teleDist;
-        teleDist = teleDist < 11.5 ? 11.5 : teleDist;
-
+        teleDist = MathUtil.clamp(teleDist,MIN_DIST,MAX_DIST);
 
         releaseBrake();
         enable();
@@ -88,42 +116,19 @@ public class Telescope extends PIDSubsystem {
         setSetpoint(teleDist);
     }
 
+    public void startPID(ArmPosition position) {
+        startPID(position.teleDist);
+    }
+
     @Override
     protected void useOutput(double output, double setpoint) {
-        if (!getController().atSetpoint())
-            releaseBrake();
+        if (!atSetpoint()) releaseBrake();
 
         double pivotAngle = Math.toRadians(Pivot.getInstance().getMeasurement());
         double ff = -kG.getAsDouble() * Math.cos(pivotAngle) + kF.getAsDouble();
         double voltageOutput = isReversed ? -(output + ff) : output + ff;
 
         m_teleMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
-    }
-
-    public void changeSetpoint(boolean direction) {
-        startPID(getSetpoint() + (direction ? 2.0/50 : -2.0/50));
-    }
-
-
-    @Override
-    protected double getMeasurement() {
-       return getDist();
-    }
-
-    /*If extends actually extends set isReversed to false,
-    if extends retracts, set isReversed to true*/
-    public void extend() {
-        disable();
-        releaseBrake();
-        m_teleMotor.set(0.40);
-    }
-
-    /*If retracts actually retracts set isReversed to false,
-    if retracts extends, set isReversed to true*/
-    public void retract() {
-        disable();
-        releaseBrake();
-        m_teleMotor.set(-0.40);
     }
 
     public void releaseBrake(){
@@ -135,6 +140,31 @@ public class Telescope extends PIDSubsystem {
     }
 
     /**
+     * Telescope goes into neutral position (sets power to 0)
+     */
+    public void resetToDefault() {
+        startPID(MIN_DIST);
+    }
+
+    public void stopTele() {
+        disable();
+        m_teleMotor.set(0);
+        engageBrake();
+    }
+
+    public void zeroEncoder() { //returns inches
+        zeroEncoder(0);
+    }
+
+    public void zeroEncoder(double dist) { //returns inches
+        m_encoder.setPosition(dist);
+    }
+
+    public boolean atSetpoint() {
+        return getController().atSetpoint();
+    }
+
+    /**
      * Data for Shuffleboard
      */
     public void initShuffleboard() {
@@ -143,31 +173,13 @@ public class Telescope extends PIDSubsystem {
 
         kG = NAR_Shuffleboard.debug("telescope","kG", TelescopeConstants.kG,0,2);
         kF = NAR_Shuffleboard.debug("telescope", "kF", TelescopeConstants.kF, 1, 2);
-        setpoint = NAR_Shuffleboard.debug("telescope","setpoint", TelescopeConstants.MIN_DIST, 2,0);
+        setpoint = NAR_Shuffleboard.debug("telescope","setpoint", TelescopeConstants.MIN_DIST, 3,1);
         NAR_Shuffleboard.addComplex("telescope", "tele-PID", m_controller, 2, 0);
 
         NAR_Shuffleboard.addData("telescope", "atSetpoint", ()->getController().atSetpoint(), 3, 0);
         NAR_Shuffleboard.addData("telescope", "isEnabled", ()->isEnabled(), 4, 0);
-        
-    }
 
-    /**
-     * Telescope goes into neutral position (sets power to 0)
-     */
-    public void resetToDefault() {
-        startPID(MIN_DIST);
-    }
-
-    public void stopTele() {
-        m_teleMotor.set(0);
-    }
-
-    public void zeroEncoder() { //returns inches
-        m_encoder.setPosition(0);
-    }
-
-    public boolean atSetpoint() {
-        return getController().atSetpoint();
+        NAR_Shuffleboard.addData("telescope", "limit switch",()-> getLimitSwitch(), 5, 0);   
     }
 
 }

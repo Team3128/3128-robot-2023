@@ -34,13 +34,14 @@ public class Constants {
     }
 
     public static class AutoConstants {
-        public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.92, Rotation2d.fromDegrees(180));
-        public static final Pose2d PICKUP_2 = new Pose2d(5.9, 2.15, Rotation2d.fromDegrees(180));
-        public static final Pose2d PICKUP_3 = new Pose2d(5.9, 3.38, Rotation2d.fromDegrees(180));
-        public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.55, Rotation2d.fromDegrees(180));
+        public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.95, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_2 = new Pose2d(7.20, 2.15, Rotation2d.fromDegrees(45));
+        public static final Pose2d PICKUP_3 = new Pose2d(7.25, 3.38, Rotation2d.fromDegrees(-45));
+        public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.50, Rotation2d.fromDegrees(0));
 
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));
-        public static final Pose2d ClimbSetupOutside = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
+        public static final Pose2d ClimbSetupOutsideBot = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
+        public static final Pose2d ClimbSetupOutsideTop = new Pose2d(5.6, 3.5, Rotation2d.fromDegrees(180));
 
         public static final Pose2d[] STARTING_POINTS = new Pose2d[] {
             new Pose2d(1.85 ,0.5, Rotation2d.fromDegrees(180)),
@@ -54,7 +55,7 @@ public class Constants {
             new Pose2d(1.85 ,5, Rotation2d.fromDegrees(180))
         };
 
-        public static final double BALANCE_FF = 0;
+        public static final double BALANCE_FF = 0.3;
     }
 
     public static class SwerveConstants {
@@ -94,12 +95,12 @@ public class Constants {
 
         public static final double TURN_TOLERANCE = 5;
 
-        public static final double DRIVE_TOLERANCE = 0.025;
+        public static final double DRIVE_TOLERANCE = 0.04;
 
         /* Translation PID Values */
         public static final double translationKP = 3;
         public static final double translationKI = 0;
-        public static final double translationKD = 0.1;
+        public static final double translationKD = 0;
 
         /* Translation PID Values */
         public static final double distanceKP = 3;
@@ -112,7 +113,7 @@ public class Constants {
         public static final double alignKD = 0;
       
         /* Rotation PID Values */
-        public static final double rotationKP = 3;
+        public static final double rotationKP = 2;
         public static final double rotationKI = 0;
         public static final double rotationKD = 0;
 
@@ -146,7 +147,8 @@ public class Constants {
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
         public static final double maxSpeed = 4.5; //meters per second - 16.3 ft/sec
-        public static final double maxAcceleration = 2;
+        public static final double bumpSpeed = 2.5;
+        public static final double maxAcceleration = 2.3;
         public static final double maxAngularVelocity = 5; //3; //11.5; // citrus: 10
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
 
@@ -223,6 +225,10 @@ public class Constants {
 
         public static final double TX_THRESHOLD = 3; // degrees
 
+        public static final double POSE_THRESH = 5;
+
+        public static final double AUTO_FF = 0.1;
+
         public static final double ANGLE_THRESHOLD = 10; // degrees
 
         public static final double TARGET_AREA = 6.25 * 6.25; //inches
@@ -240,7 +246,7 @@ public class Constants {
             new Pose2d(1.95,3.3,Rotation2d.fromDegrees(180)),
             new Pose2d(1.95,3.85,Rotation2d.fromDegrees(180)),
             new Pose2d(1.95,4.45,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.95,5,Rotation2d.fromDegrees(180))
+            new Pose2d(1.95,4.89,Rotation2d.fromDegrees(180))
         };
 
         public static final Pose2d[][] SCORES_GRID = new Pose2d[][] {
@@ -270,9 +276,13 @@ public class Constants {
         };
 
         public static final Pose2d[] RAMP_AVOID_LOADING = new Pose2d[] {
-            new Pose2d(10, 0.7, new Rotation2d()),
-            new Pose2d(10, 4.65, new Rotation2d())
+            new Pose2d(10, 0.95, new Rotation2d()),
+            new Pose2d(10, 4.5, new Rotation2d())
         };
+
+        public static final Pose2d HPWall_Loading = new Pose2d(12.4, 7.5, new Rotation2d());
+
+        public static final double WALL_PASS = 5.8 + SwerveConstants.robotLength/2.0;
 
         public static final HashMap<Integer,Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
 
@@ -316,22 +326,24 @@ public class Constants {
             TestTags.put(7, APRIL_TAG_POS.get(2));
             TestTags.put(6,APRIL_TAG_POS.get(1));
 
-            RAMP_AVOID_SCORE.add(new Pose2d(2.1,4.65, Rotation2d.fromDegrees(180)));
-            RAMP_AVOID_SCORE.add(new Pose2d(2.1, 0.7, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1,4.75, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1, 0.6, Rotation2d.fromDegrees(180)));
         } 
     }
 
     public static class PivotConstants {
-        public static final double kP = 0.2;
+        public static final double kP = 0.5;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0.3;
+        public static final double kF = 15;
+        public static final double kG = 0.7;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
-        public static final double PIVOT_TOLERANCE = 3.0;
+        public static final double PIVOT_TOLERANCE = 5.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
-        public static final int CANCODER_ID = 24;
-        public static final double ANGLE_OFFSET = 163.4765625 +16.34 + 6+17.47 + 2.8-4.28+.5 + 9.24;//149.5 +4.9 +3.07 + 7.2;//140.97-6 + 18.1;//-29.7 +7.55 + 85+4.91+0.88-3.7-9.8+60;
+        // public static final int CANCODER_ID = 24;
+        public static final int ENC_DIO_ID = 7;
+        public static final double ANGLE_OFFSET = 308+6-1.3-3.5+4.5; //get from new encoder
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -348,13 +360,13 @@ public class Constants {
         public static final double TELE_MOTOR_POWER = 0.5;
         public static final double ENC_CONV = (1/5.0) * 2 * Math.PI * 0.4; //55.0 /35.0
         public static final double MIN_DIST = 11.5;
-        public static final double MAX_DIST = 48;
+        public static final double MAX_DIST = 40;
         public static final double TELE_OFFSET = 0;
         public static final double TELE_TOLERANCE = 2;
         public static final int TELE_CURRENT_LIMIT = 40;
         public static final boolean isReversed = true;
 
-        public static final double ARM_LENGTH = 56.75; // inches
+        public static final double ARM_LENGTH = 40; // inches
         public static final int SOLENOID_FORWARD_CHANNEL_ID = 5; 
         public static final int SOLENOID_BACKWARD_CHANNEL_ID = 2; 
     }
@@ -362,15 +374,17 @@ public class Constants {
     public static class ArmConstants {
 
         public enum ArmPosition {
-            TOP_CONE(109, 42, 0, true), // 112,44 
-            TOP_CUBE(95, 37, 0, false), //98,35
-            MID_CONE(100, 25, 1, true), //98,22.5
-            MID_CUBE(85, 20, 1, false), //87,15
-            LOW_FLOOR(45, 13, 2, false), 
+            TOP_CONE(110, 38.5, 0, true), // 112,44 
+            TOP_CUBE(105, 38.5, 0, false), //98,35
+            MID_CONE(105, 20.5, 1, true), //98,22.5
+            MID_CUBE(90, 22, 1, false), //87,15
+            LOW_FLOOR(45, 11.5, 2, false), 
 
-            NEUTRAL(0, 11.5, null, null), //pivot should be 0
+            NEUTRAL(5, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF(100, 20, null, null), //105
+            HP_SHELF_CONE(112, 17.5, null, null), //105
+            HP_SHELF_CUBE(106.5, 17.5, null, null), //105
+            GROUND_PICKUP(37, 26.5, null, null),
             GROUND_PICKUP_CONE(37, 26.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 26, null, null), 
             CONE_POLE(-40, 11.5, null, null),
@@ -393,7 +407,6 @@ public class Constants {
     }
     
     public static class FieldConstants{
-        public static final Pose2d HUB_POSITION = new Pose2d(Units.inchesToMeters(324), Units.inchesToMeters(162),Rotation2d.fromDegrees(-90));
         public static final double FIELD_X_LENGTH = Units.inchesToMeters(651.25); // meters
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(315.5); // meters
         public static final double HUB_RADIUS = Units.inchesToMeters(26.69); // meters
@@ -420,6 +433,16 @@ public class Constants {
           new Translation2d(chargingStationOuterX, chargingStationLeftY)
         };
 
+        public static final double cableBumpInnerX = Units.inchesToMeters(149.5);
+        public static final double cableBumpOuterX = cableBumpInnerX + Units.inchesToMeters(7);
+        public static final Translation2d[] cableBumpCorners =
+        new Translation2d[] {
+          new Translation2d(cableBumpInnerX, 0.0),
+          new Translation2d(cableBumpInnerX, chargingStationRightY),
+          new Translation2d(cableBumpOuterX, 0.0),
+          new Translation2d(cableBumpOuterX, chargingStationRightY)
+        };
+
 
         public static Pose2d allianceFlip(Pose2d pose) {
             if (DriverStation.getAlliance() == Alliance.Red) {
@@ -437,24 +460,28 @@ public class Constants {
     }
 
     public static class IntakeConstants {
-        public static final double ROLLER_POWER = 6.0/12.0;
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
-        public static final double CURRENT_THRESHOLD = 40;
+        public static final double CURRENT_THRESHOLD = 50;
+
+        public static final double ROLLER_POWER = 0.75;
+        public static final double OUTTAKE_POWER = 0.3;
+
+        public static final double STALL_POWER = 0.1;
 
         public static final double kP = 0.065;
         public static final double kI = 0;
         public static final double kD = 0; // 0.001
 
-        public static final double kF = 0.3;
+        public static final double kF = 0.2;
 
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TO_DEGREES = 360;
-        public static final double ANGLE_OFFSET = -237; //Mika: 37, Mason: -37, Teja: 38
+        public static final double ANGLE_OFFSET = 23; 
 
-        public static final int ENCODER_DIO_ID = 9;
+        public static final int ENCODER_DIO_ID = 8;
 
         public static final double VELOCITY_SETPOINT = 0.5;
         public static final double INTAKE_TOLERANCE = 7.5;
@@ -469,6 +496,29 @@ public class Constants {
         // public static final int INTAKE_SENSOR_LEFT_ID = 1;
         // public static final int INTAKE_SENSOR_RIGHT_ID = 2;
         
+    }
+
+    public static class ManipulatorConstants{
+        public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
+        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
+
+        public static final int ROLLER_MOTOR_ID = 13;
+        public static final double ROLLER_POWER = 0.8;
+        public static final double STALL_POWER = 0.3;
+
+        public static final double CUBE_CURRENT_THRESHOLD = 20;
+        public static final double CONE_CURRENT_THRESHOLD = 20;
+
+        public static final double ROLLER_VOLTAGE = 8;
+    }
+
+    public static class BalanceConstants{
+        public static final double turnKP = 0.05;
+        public static final double turnKI = 0;
+        public static final double turnKD = .005;
+        public static final double TURN_TOLERANCE = 1.5;
+        public static final double CHARGE_STATION_X = 5;
+        public static final double CHARGE_STATION_Y = 5;
     }
 
     public static class LedConstants{
@@ -511,26 +561,6 @@ public class Constants {
 
         public static final int PORT = 9; 
         public static final int LENGTH = 288;
-    }
-
-    public static class ManipulatorConstants{
-        public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
-        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
-
-        public static final int ROLLER_MOTOR_ID = 13;
-        public static final double ROLLER_POWER = 0.7;
-        public static final double STALL_POWER = 0.25;
-
-        public static final double CURRENT_THRESHOLD = 35;
-    }
-
-    public static class BalanceConstants{
-        public static final double turnKP = 0.05;
-        public static final double turnKI = 0;
-        public static final double turnKD = .005;
-        public static final double TURN_TOLERANCE = 1.5;
-        public static final double CHARGE_STATION_X = 5;
-        public static final double CHARGE_STATION_Y = 5;
     }
 
 
