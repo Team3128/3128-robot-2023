@@ -73,6 +73,8 @@ public class CmdSystemCheckFancy extends CommandBase {
                 new CmdMoveArm(ArmPosition.NEUTRAL).withTimeout(3),
                 new WaitCommand(1),
                 new CmdMoveArm(ArmPosition.TOP_CONE.pivotAngle, 25).withTimeout(3),
+                new WaitCommand(1),
+                new CmdMoveArm(90, 11.5),
                 new InstantCommand(()-> armSystemCheck = true)
             );
             armTest.schedule();

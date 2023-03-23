@@ -25,7 +25,8 @@ import java.util.Arrays;
 
 import static frc.team3128.Constants.IntakeConstants.*;
 
-
+@Deprecated
+//Please Refrain from using this in favor of the much cooler CmdSystemCheck fancy, thanks - Mason
 public class CmdSystemCheck extends SequentialCommandGroup{
     public static double systemCheck = 0;
 
