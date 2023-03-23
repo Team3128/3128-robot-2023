@@ -45,6 +45,6 @@ public class CmdBangBangBalance extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        return plateauCount >= thresh.getAsDouble() && Math.abs(swerve.getPitch() - pitchOffset) < 10;
+        return plateauCount >= thresh.getAsDouble() && Math.abs(swerve.getPitch() - pitchOffset) < 9;
     }
 }

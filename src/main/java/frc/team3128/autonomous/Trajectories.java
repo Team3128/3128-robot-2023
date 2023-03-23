@@ -164,7 +164,7 @@ public class Trajectories {
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
             Commands.race(
                 Commands.sequence(
-                    new WaitCommand(1),
+                    new WaitCommand(inner ? 1.5 : 1),
                     new CmdIntake()
                 ), Commands.sequence(
                     new CmdMovePickup(false, autoSpeed, pose),
@@ -228,6 +228,7 @@ public class Trajectories {
         return Commands.sequence(
             //new InstantCommand(() -> swerve.resetOdometry(FieldConstants.allianceFlip(AutoConstants.STARTING_POINTS[grid * 3 + node]))),
             new CmdMoveArm(position),
+            new InstantCommand(()-> manipulator.CONE = true),
             new InstantCommand(()-> manipulator.outtake(), manipulator),
             new WaitCommand(0.125),
             new InstantCommand(()-> manipulator.stopRoller(), manipulator),
@@ -242,7 +243,7 @@ public class Trajectories {
         return Commands.sequence(
             new InstantCommand(()-> Vision.AUTO_ENABLED = true),
             new InstantCommand(()-> swerve.zeroGyro((DriverStation.getAlliance() == Alliance.Red && front) || (DriverStation.getAlliance() == Alliance.Blue && !front) ? 0 : 180)),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -autoSpeed : autoSpeed,0), 
+            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -1.5 : 1.5,0), 
                                     0, true), swerve).until(() -> Vision.getInstance().getCamera(front ? VisionConstants.FRONT : VisionConstants.BACK).hasValidTarget()),
             new InstantCommand(()-> swerve.stop(), swerve),
             new InstantCommand(()-> Vision.getInstance().visionReset())

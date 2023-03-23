@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -65,42 +66,41 @@ public class CmdSystemCheckFancy extends CommandBase {
         }
         else if (systemCheck == 2) {
             armSystemCheck = false;
-            var arm1 = new CmdMoveArm(ArmPosition.NEUTRAL).withTimeout(3);
-            arm1.schedule();
-            while (arm1.isScheduled()) Timer.delay(0.1);
-            var arm2 = new CmdMoveArm(ArmPosition.TOP_CONE.pivotAngle, 25).withTimeout(3);
-            arm2.schedule();
-            while (arm2.isScheduled()) Timer.delay(0.1);
-            arm1.schedule();
-            while (arm1.isScheduled()) Timer.delay(0.1);
+            CommandBase armTest = Commands.sequence(
+                new CmdMoveArm(ArmPosition.NEUTRAL).withTimeout(3),
+                new WaitCommand(1),
+                new CmdMoveArm(ArmPosition.TOP_CONE.pivotAngle, 25).withTimeout(3),
+                new WaitCommand(1),
+                new CmdMoveArm(ArmPosition.NEUTRAL).withTimeout(3)
+            );
+            armTest.schedule();
+            while (armTest.isScheduled()) Timer.delay(0.1);
             armSystemCheck = true;
         }
         else if (systemCheck == 3) {
             intakeSystemCheck = false;
-            var cmdIntake = new CmdIntake();
-            cmdIntake.schedule();
-            while (cmdIntake.isScheduled()) Timer.delay(0.1);
-            Timer.delay(1);
-            CommandBase outtake = new StartEndCommand(()-> intake.outtake(), ()-> intake.stopRollers(), intake).withTimeout(1);
-            outtake.schedule();
-            while (outtake.isScheduled()) Timer.delay(0.1);
+            CommandBase intakeCheck = Commands.sequence(
+                new CmdIntake(),
+                new WaitCommand(1),
+                new StartEndCommand(()-> intake.outtake(), ()-> intake.stopRollers(), intake).withTimeout(1)
+            );
+            intakeCheck.schedule();
+            while (intakeCheck.isScheduled()) Timer.delay(0.1);
             intakeSystemCheck = true;
         }
         else if (systemCheck == 4) {
             manipulatorSystemCheck = false;
-            var manipGrabCone = new CmdManipGrab(true);
-            manipGrabCone.schedule();
-            while (manipGrabCone.isScheduled()) Timer.delay(0.1);
-            Timer.delay(1);
-            CommandBase manipOuttake = new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(1);
-            manipOuttake.schedule();
-            while (manipOuttake.isScheduled()) Timer.delay(0.1);
-            var manipGrabCube = new CmdManipGrab(false);
-            manipGrabCube.schedule();
-            while (manipGrabCube.isScheduled()) Timer.delay(0.1);
-            Timer.delay(1);
-            manipOuttake.schedule();
-            while (manipOuttake.isScheduled()) Timer.delay(0.1);
+            CommandBase armCheck = Commands.sequence(
+                new CmdMoveArm(90,11.5),
+                new CmdManipGrab(true),
+                new WaitCommand(2),
+                new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(2),
+                new CmdManipGrab(false),
+                new WaitCommand(2),
+                new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(2)
+            );
+            armCheck.schedule();
+            while (armCheck.isScheduled()) Timer.delay(0.1);
             manipulatorSystemCheck = true;
         }
     }
@@ -118,17 +118,19 @@ public class CmdSystemCheckFancy extends CommandBase {
             SwerveModuleState[] desiredTestStates = new SwerveModuleState[4];
             Arrays.fill(desiredTestStates, desiredTestState);
             swerve.setModuleStates(desiredTestStates);
-            Timer.delay(0.2);
+            Timer.delay(1);
             System.out.println("Angle: " + i);
             for (SwerveModule module : swerve.modules) {
                 System.out.println(
                         "Module " + module.moduleNumber + ": " + swerve.compare(module.getState(), desiredTestState));
             }
         }
+        swerve.stop();
         swerveSystemCheck = true;
     }
 
     public static void initShuffleboard() {
+        NAR_Shuffleboard.addData("System Check", "Count", ()-> systemCheck, 1,0);
         NAR_Shuffleboard.addData("System Check", "Swerve", () -> swerveSystemCheck, 0, 0);
         NAR_Shuffleboard.addData("System Check", "Arm", () -> armSystemCheck, 0, 1);
         NAR_Shuffleboard.addData("System Check", "Intake", () -> intakeSystemCheck, 0, 2);

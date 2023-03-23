@@ -225,8 +225,8 @@ public class CmdMove extends CommandBase {
 
     private boolean canMoveY(Pose2d pose) {
         if (type == Type.NONE) return true;
-        if (pose.getY() < chargingStationRightY - robotLength/2 - 0.05 && yController.getSetpoint() < chargingStationRightY - robotLength/2 - 0.05) return true;
-        if (pose.getY() > chargingStationLeftY + robotLength/2 + 0.05 && yController.getSetpoint() > chargingStationLeftY + robotLength/2 + 0.05) return true;
+        // if (pose.getY() < chargingStationRightY - robotLength/2 - 0.05 && yController.getSetpoint() < chargingStationRightY - robotLength/2 - 0.05) return true;
+        // if (pose.getY() > chargingStationLeftY + robotLength/2 + 0.05 && yController.getSetpoint() > chargingStationLeftY + robotLength/2 + 0.05) return true;
         double[][] constraints = type.xConstraints;
         for (int i = 0; i < constraints.length; i ++) {
             if (inXConstraints(constraints[i], pose.getX())){

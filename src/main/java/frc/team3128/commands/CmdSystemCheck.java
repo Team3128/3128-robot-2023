@@ -61,12 +61,13 @@ public class CmdSystemCheck extends SequentialCommandGroup{
             new StartEndCommand(()-> intake.outtake(), ()-> intake.stopRollers(), intake).withTimeout(1),
             new InstantCommand(()-> intakeSystemCheck = true),
             new WaitUntilCommand(()-> systemCheck == 4),
+            new CmdMoveArm(90, 11.5),
             new CmdManipGrab(true),
-            new WaitCommand(1),
-            new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(1),
+            new WaitCommand(2),
+            new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(2),
             new CmdManipGrab(false),
-            new WaitCommand(1),
-            new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(1),
+            new WaitCommand(2),
+            new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(2),
             new InstantCommand(()-> manipulatorSystemCheck = true)
         );
     }
@@ -78,16 +79,18 @@ public class CmdSystemCheck extends SequentialCommandGroup{
             SwerveModuleState[] desiredTestStates = new SwerveModuleState[4];
             Arrays.fill(desiredTestStates, desiredTestState);
             swerve.setModuleStates(desiredTestStates);
-            Timer.delay(0.2);
+            Timer.delay(1);
             System.out.println("Angle: " + i);
             for(SwerveModule module: swerve.modules){
                 System.out.println("Module " + module.moduleNumber + ": " + swerve.compare(module.getState(), desiredTestState));
             }
         }
+        swerve.stop();
         swerveSystemCheck = true;
     }
 
     public static void initShuffleboard() {
+        NAR_Shuffleboard.addData("System Check", "Count", ()-> systemCheck, 1, 0);
         NAR_Shuffleboard.addData("System Check", "Swerve", ()-> swerveSystemCheck, 0, 0);
         NAR_Shuffleboard.addData("System Check", "Arm", ()-> armSystemCheck, 0, 1);
         NAR_Shuffleboard.addData("System Check", "Intake", ()-> intakeSystemCheck, 0, 2);

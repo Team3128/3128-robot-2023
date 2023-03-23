@@ -166,13 +166,13 @@ public class RobotContainer {
         rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.stopRoller(), manipulator));
         rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator));
 
-        rightStick.getUpPOVButton().onTrue(new CmdSystemCheck());
-        rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> CmdSystemCheck.systemCheck++));
+        // rightStick.getUpPOVButton().onTrue(new CmdSystemCheck());
+        // rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> CmdSystemCheck.systemCheck++));
 
-        // rightStick.getDownPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck++; CmdSystemCheckFancy.repeat = true;}));
-        // rightStick.getUpPOVButton().onTrue(new CmdSystemCheckFancy());
-        // rightStick.getLeftPOVButton().onTrue(new InstantCommand(()-> CmdSystemCheckFancy.repeat = true));
-        // rightStick.getRightPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck--; CmdSystemCheckFancy.repeat = true;}));
+        rightStick.getDownPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck++;}));
+        rightStick.getUpPOVButton().onTrue(new CmdSystemCheckFancy());
+        rightStick.getLeftPOVButton().onTrue(new InstantCommand(()-> CmdSystemCheckFancy.repeat = true));
+        rightStick.getRightPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck--;}));
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).andThen(new InstantCommand(()->manipulator.stallPower(), manipulator)));
 
@@ -312,7 +312,7 @@ public class RobotContainer {
         telescope.initShuffleboard();
         pivot.initShuffleboard();
         manipulator.initShuffleboard();
-        CmdSystemCheck.initShuffleboard();
+        CmdSystemCheckFancy.initShuffleboard();
 
         NarwhalDashboard.startServer();
         
