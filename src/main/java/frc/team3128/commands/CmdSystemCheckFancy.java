@@ -53,6 +53,10 @@ public class CmdSystemCheckFancy extends CommandBase {
     public void initialize() {
         systemCheck = 0;
         repeat = true;
+        swerveSystemCheck = false;
+        armSystemCheck = false;
+        manipulatorSystemCheck = false;
+        intakeSystemCheck = false;
     }
 
     @Override
@@ -62,46 +66,41 @@ public class CmdSystemCheckFancy extends CommandBase {
         if (systemCheck == 1) {
             swerveSystemCheck = false;
             swerveCheck(driveVelocity);
-            swerveSystemCheck = true;
         }
         else if (systemCheck == 2) {
-            armSystemCheck = false;
             CommandBase armTest = Commands.sequence(
+                new InstantCommand(()-> armSystemCheck = false),
                 new CmdMoveArm(ArmPosition.NEUTRAL).withTimeout(3),
                 new WaitCommand(1),
                 new CmdMoveArm(ArmPosition.TOP_CONE.pivotAngle, 25).withTimeout(3),
-                new WaitCommand(1),
-                new CmdMoveArm(ArmPosition.NEUTRAL).withTimeout(3)
+                new InstantCommand(()-> armSystemCheck = true)
             );
             armTest.schedule();
-            while (armTest.isScheduled()) Timer.delay(0.1);
-            armSystemCheck = true;
         }
         else if (systemCheck == 3) {
-            intakeSystemCheck = false;
-            CommandBase intakeCheck = Commands.sequence(
-                new CmdIntake(),
-                new WaitCommand(1),
-                new StartEndCommand(()-> intake.outtake(), ()-> intake.stopRollers(), intake).withTimeout(1)
-            );
-            intakeCheck.schedule();
-            while (intakeCheck.isScheduled()) Timer.delay(0.1);
-            intakeSystemCheck = true;
-        }
-        else if (systemCheck == 4) {
-            manipulatorSystemCheck = false;
             CommandBase armCheck = Commands.sequence(
+                new InstantCommand(()-> manipulatorSystemCheck = false),
                 new CmdMoveArm(90,11.5),
                 new CmdManipGrab(true),
                 new WaitCommand(2),
                 new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(2),
                 new CmdManipGrab(false),
                 new WaitCommand(2),
-                new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(2)
+                new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(2),
+                new CmdMoveArm(ArmPosition.NEUTRAL),
+                new InstantCommand(()-> manipulatorSystemCheck = true)
             );
             armCheck.schedule();
-            while (armCheck.isScheduled()) Timer.delay(0.1);
-            manipulatorSystemCheck = true;
+        }
+        else if (systemCheck == 4) {
+            CommandBase intakeCheck = Commands.sequence(
+                new InstantCommand(()-> intakeSystemCheck = false),
+                new CmdIntake(),
+                new WaitCommand(1),
+                new StartEndCommand(()-> intake.outtake(), ()-> intake.stopRollers(), intake).withTimeout(1),
+                new InstantCommand(()-> intakeSystemCheck = true)
+            );
+            intakeCheck.schedule();
         }
     }
 

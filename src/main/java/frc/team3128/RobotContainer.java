@@ -169,10 +169,10 @@ public class RobotContainer {
         // rightStick.getUpPOVButton().onTrue(new CmdSystemCheck());
         // rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> CmdSystemCheck.systemCheck++));
 
-        rightStick.getDownPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck++;}));
         rightStick.getUpPOVButton().onTrue(new CmdSystemCheckFancy());
-        rightStick.getLeftPOVButton().onTrue(new InstantCommand(()-> CmdSystemCheckFancy.repeat = true));
-        rightStick.getRightPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck--;}));
+        rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> CmdSystemCheckFancy.repeat = true));
+        rightStick.getRightPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck++;}));
+        rightStick.getLeftPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck--;}));
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).andThen(new InstantCommand(()->manipulator.stallPower(), manipulator)));
 
