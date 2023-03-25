@@ -23,6 +23,7 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
     public static AutoPrograms autoPrograms = new AutoPrograms();
     public Timer timer;
+    public Timer xlockTimer;
     public double startTime;
 
     @Override
@@ -50,7 +51,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         CommandScheduler.getInstance().run();
-        if (timer.hasElapsed(14.85) && Math.abs(Swerve.getInstance().getPitch()) > 6) {
+        if (timer.hasElapsed(14.75) && Math.abs(Swerve.getInstance().getPitch()) > 6) {
             new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance()).schedule();
         }
     }
@@ -58,12 +59,17 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         m_robotContainer.init();
+        xlockTimer = new Timer();
+        xlockTimer.start();
         CommandScheduler.getInstance().cancelAll();
     }
 
     @Override
     public void teleopPeriodic() {
         CommandScheduler.getInstance().run();
+        if (xlockTimer.hasElapsed(134.75)) {
+            new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance()).schedule();
+        }
     }
 
     @Override

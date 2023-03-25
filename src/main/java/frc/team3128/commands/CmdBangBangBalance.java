@@ -14,7 +14,7 @@ public class CmdBangBangBalance extends CommandBase{
     private double pitchOffset;
 
     static {
-        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 80, 0, 1);
+        thresh = NAR_Shuffleboard.debug("Aflack","Popeyes", 85, 0, 1);
     }
     
     public CmdBangBangBalance() {

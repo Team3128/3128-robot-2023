@@ -28,6 +28,7 @@ public class CmdScore extends SequentialCommandGroup {
         telescope = Telescope.getInstance();
         controller = RobotContainer.controller;
         addCommands(
+            new InstantCommand(()-> Vision.position = position),
             new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             Commands.deadline(
@@ -38,14 +39,14 @@ public class CmdScore extends SequentialCommandGroup {
                 new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], true, VisionConstants.SCORES_GRID[xpos]),
                 new InstantCommand(() -> pivot.startPID(position.pivotAngle), pivot)
             ),
-            Commands.deadline(
-                Commands.sequence(
-                    new WaitUntilCommand(()-> pivot.atSetpoint()),
-                    new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
-                    new WaitUntilCommand(()-> telescope.atSetpoint())                    
-                ),
-                new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)
-            ),
+            // Commands.deadline(
+            //     Commands.sequence(
+            //         new WaitUntilCommand(()-> pivot.atSetpoint()),
+            //         new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
+            //         new WaitUntilCommand(()-> telescope.atSetpoint())                    
+            //     ),
+            //     new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)
+            // ),
             new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate()))),
             new InstantCommand(() -> Vision.AUTO_ENABLED = DriverStation.isAutonomous())
         );

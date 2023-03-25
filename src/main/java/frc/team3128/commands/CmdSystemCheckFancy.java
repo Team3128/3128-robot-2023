@@ -86,6 +86,7 @@ public class CmdSystemCheckFancy extends CommandBase {
                 new CmdManipGrab(true),
                 new WaitCommand(2),
                 new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(2),
+                new WaitCommand(1),
                 new CmdManipGrab(false),
                 new WaitCommand(2),
                 new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(2),

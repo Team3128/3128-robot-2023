@@ -53,10 +53,10 @@ public class CmdScoreAuto extends SequentialCommandGroup {
             new InstantCommand(() -> manipulator.outtake(), manipulator),
             new WaitCommand(0.125),
             new InstantCommand(() -> manipulator.stopRoller(), manipulator),
-            new InstantCommand(() -> telescope.setSetpoint(ArmPosition.NEUTRAL.teleDist), telescope),
+            new InstantCommand(() -> telescope.startPID(ArmPosition.NEUTRAL), telescope),
             new WaitUntilCommand(()-> telescope.atSetpoint()),
             new InstantCommand(()-> telescope.stopTele(), telescope),
-            new InstantCommand(()-> pivot.setSetpoint(0)),
+            new InstantCommand(()-> pivot.startPID(ArmPosition.NEUTRAL), pivot),
             new InstantCommand(() -> Vision.AUTO_ENABLED = DriverStation.isAutonomous())
         );
     }

@@ -35,6 +35,7 @@ import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
+import frc.team3128.commands.CmdInPlaceTurn;
 import frc.team3128.commands.CmdIntake;
 import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdMove;
@@ -45,6 +46,7 @@ import frc.team3128.commands.CmdScore;
 import frc.team3128.commands.CmdScoreAuto;
 import frc.team3128.commands.CmdMove.Type;
 import frc.team3128.subsystems.Intake;
+import frc.team3128.subsystems.Led;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
@@ -243,11 +245,12 @@ public class Trajectories {
         return Commands.sequence(
             new InstantCommand(()-> Vision.AUTO_ENABLED = true),
             new InstantCommand(()-> swerve.zeroGyro((DriverStation.getAlliance() == Alliance.Red && front) || (DriverStation.getAlliance() == Alliance.Blue && !front) ? 0 : 180)),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -1.5 : 1.5,0), 
+            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -2.5 : 2.5,0), 
                                     0, true), swerve).until(() -> Vision.getInstance().getCamera(front ? VisionConstants.FRONT : VisionConstants.BACK).hasValidTarget()),
             new InstantCommand(()-> swerve.stop(), swerve),
-            new InstantCommand(()-> Vision.getInstance().visionReset())
-        );
+            new InstantCommand(()-> Vision.getInstance().visionReset()),
+            new InstantCommand(()-> Led.getInstance().setColorPurple())
+        ).withTimeout(2);
     }
 
     public static CommandBase climbPoint(boolean inside, boolean bottom) {
@@ -256,9 +259,12 @@ public class Trajectories {
             new InstantCommand(()-> Vision.getInstance().disableVision()),
             new CmdMove(Type.NONE, false, autoSpeed, inside ? AutoConstants.ClimbSetupInside : (bottom ? AutoConstants.ClimbSetupOutsideBot : AutoConstants.ClimbSetupOutsideTop)),
             new InstantCommand(()-> Vision.getInstance().enableVision()),
-            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getPitch()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
+            Commands.deadline(Commands.sequence(new CmdBangBangBalance()), new CmdBalance()).withTimeout(5), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
-            new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())
+            Commands.parallel(
+                new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance()),
+                new InstantCommand(()-> Intake.getInstance().shoot(), Intake.getInstance())
+            )
             // new CmdMoveArm(90, 11.5, false)
         );
     }

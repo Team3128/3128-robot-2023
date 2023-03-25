@@ -28,6 +28,7 @@ import static frc.team3128.Constants.SwerveConstants.*;
 
 import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdBangBangBalance;
+import frc.team3128.commands.CmdExtendRelease;
 import frc.team3128.commands.CmdIntake;
 import frc.team3128.Constants.IntakeConstants;
 import frc.team3128.Constants.TelescopeConstants;
@@ -125,9 +126,7 @@ public class RobotContainer {
         controller.getButton("LeftTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = .25)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         controller.getButton("B").onTrue(new InstantCommand(()-> swerve.resetEncoders()));
-        controller.getButton("Y").onTrue(new RunCommand(() -> manipulator.outtake(), manipulator))
-                                .onFalse(new InstantCommand(() -> manipulator.stopRoller(), manipulator)
-                                    .andThen(new CmdMoveArm(ArmPosition.NEUTRAL)));
+        controller.getButton("Y").onTrue(new CmdExtendRelease());
 
         controller.getButton("RightBumper").onTrue(new InstantCommand(() -> intake.outtake())).onFalse(new InstantCommand(()->intake.stopRollers()));
         controller.getButton("LeftBumper").onTrue(new CmdIntake()).onFalse(Commands.sequence(
@@ -186,8 +185,8 @@ public class RobotContainer {
             new CmdShelfPickup(false)
         );
 
-        rightStick.getUpPOVButton().onTrue(new InstantCommand(()-> led.setAllianceColor()));
-        rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> led.setAutoColor()));
+        //rightStick.getUpPOVButton().onTrue(new InstantCommand(()-> led.setAllianceColor()));
+        //rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> led.setAutoColor()));
 
         //Intake Buttons
         leftStick.getButton(9).onTrue(new InstantCommand(()-> intake.intake(), intake)).onFalse(new InstantCommand(()-> intake.stopRollers(), intake));
@@ -232,12 +231,12 @@ public class RobotContainer {
 
         
         // on false pidlock to getmeasurement
-        operatorController.getButton("LeftPosY").onTrue(new InstantCommand(()->pivot.setPower(0.25), pivot)).onFalse(new InstantCommand(()->pivot.startPID(pivot.getAngle()), pivot));
-        operatorController.getButton("LeftNegY").onTrue(new InstantCommand(()->pivot.setPower(-0.25), pivot)).onFalse(new InstantCommand(()->pivot.startPID(pivot.getAngle()), pivot));
+        operatorController.getButton("LeftPosY").onTrue(new InstantCommand(()->pivot.setPower(0.8), pivot));
+        operatorController.getButton("LeftNegY").onTrue(new InstantCommand(()->pivot.setPower(-0.8), pivot));
         operatorController.getButton("RightNegY").onTrue(new InstantCommand(()->telescope.retract(), telescope)).onFalse(new InstantCommand(() -> telescope.engageBrake(), telescope));
         operatorController.getButton("RightPosY").onTrue(new InstantCommand(()->telescope.extend(), telescope)).onFalse(new InstantCommand(() -> telescope.engageBrake(), telescope));
 
-        isAuto.onTrue(new InstantCommand(() -> led.setAutoColor())).onFalse(new InstantCommand(()-> led.setAllianceColor()));
+        // isAuto.onTrue(new InstantCommand(() -> led.setAutoColor())).onFalse(new InstantCommand(()-> led.setAllianceColor()));
 
         inProtected = new Trigger(
             () -> {

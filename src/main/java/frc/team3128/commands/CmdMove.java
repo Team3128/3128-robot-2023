@@ -210,6 +210,7 @@ public class CmdMove extends CommandBase {
 
         if (xSetpoint && ySetpoint && !atLastPoint()) {
             nextPoint();
+            return;
         }
 
         atDestination = (xSetpoint && ySetpoint && atLastPoint());

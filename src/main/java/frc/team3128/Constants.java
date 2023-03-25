@@ -326,8 +326,8 @@ public class Constants {
             TestTags.put(7, APRIL_TAG_POS.get(2));
             TestTags.put(6,APRIL_TAG_POS.get(1));
 
-            RAMP_AVOID_SCORE.add(new Pose2d(2.1,4.75, Rotation2d.fromDegrees(180)));
-            RAMP_AVOID_SCORE.add(new Pose2d(2.1, 0.6, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1,4.85, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1, 0.5, Rotation2d.fromDegrees(180)));
         } 
     }
 
@@ -343,7 +343,7 @@ public class Constants {
         public static final int PIVOT_CURRENT_LIMIT = 40;
         // public static final int CANCODER_ID = 24;
         public static final int ENC_DIO_ID = 7;
-        public static final double ANGLE_OFFSET = 308+6-1.3-3.5+4.5; //get from new encoder
+        public static final double ANGLE_OFFSET = 0; //get from new encoder
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -506,8 +506,8 @@ public class Constants {
         public static final double ROLLER_POWER = 0.8;
         public static final double STALL_POWER = 0.3;
 
-        public static final double CUBE_CURRENT_THRESHOLD = 20;
-        public static final double CONE_CURRENT_THRESHOLD = 20;
+        public static final double CUBE_CURRENT_THRESHOLD = 25;
+        public static final double CONE_CURRENT_THRESHOLD = 25;
 
         public static final double ROLLER_VOLTAGE = 8;
     }
@@ -558,8 +558,7 @@ public class Constants {
             public static final int VALUE = 0;
         }
 
-
-        public static final int PORT = 9; 
+        public static final int PORT = 0; 
         public static final int LENGTH = 288;
     }
 
