@@ -35,8 +35,8 @@ public class Intake extends PIDSubsystem {
     private static Intake instance;
 
     public enum IntakeState {
-        DEPLOYED(5),
-        RETRACTED(105);
+        DEPLOYED(0),
+        RETRACTED(100);
 
         public double angle;
 
@@ -69,7 +69,7 @@ public class Intake extends PIDSubsystem {
         m_intakeRollers.setNeutralMode(NeutralMode.Brake);
 
         m_intakePivot.setInverted(true);
-        m_intakeRollers.setInverted(true);
+        m_intakeRollers.setInverted(false);
 
         m_intakeRollers.enableVoltageCompensation(true);
         
@@ -100,7 +100,7 @@ public class Intake extends PIDSubsystem {
         NAR_Shuffleboard.addData("intake", "output current", m_intakeRollers.getStatorCurrent(), 4, 1);
         NAR_Shuffleboard.addData("intake", "input current", m_intakeRollers.getSupplyCurrent(), 4, 2);
         NAR_Shuffleboard.addData("intake", "output voltage", m_intakeRollers.getMotorOutputVoltage(), 5, 1);
-        if (Math.abs(getCurrent()) > CURRENT_THRESHOLD + 40)
+        if (Math.abs(getCurrent()) > CURRENT_THRESHOLD + 20)
             set(STALL_POWER);
     }
 

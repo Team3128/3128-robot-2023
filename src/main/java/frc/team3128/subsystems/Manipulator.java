@@ -15,6 +15,8 @@ public class Manipulator extends SubsystemBase {
 
     public static boolean CONE = true;
 
+    public boolean outtaking = false;
+
     public Manipulator(){
         configMotor();
     }
@@ -29,13 +31,13 @@ public class Manipulator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (Math.abs(getCurrent()) > CUBE_CURRENT_THRESHOLD + 40)
+        if (Math.abs(getCurrent()) > CUBE_CURRENT_THRESHOLD + 40 && !outtaking)
             stallPower();
     }
 
     public void configMotor(){
         m_roller = new NAR_TalonSRX(ROLLER_MOTOR_ID);
-        m_roller.setInverted(true);
+        m_roller.setInverted(false);
         m_roller.setNeutralMode(NeutralMode.Brake);
         m_roller.enableVoltageCompensation(true);
     }
@@ -69,14 +71,16 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void intake(boolean cone) {
+        outtaking = false;
         CONE = cone;
         if (cone) reverse();
         else forward();
     }    
 
     public void outtake(){
-        if (CONE) forward();
-        else reverse();
+        outtaking = true;
+        if (!CONE) reverse();
+        else forward();
     }
 
     public void stallPower() {

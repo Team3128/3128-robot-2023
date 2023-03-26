@@ -70,9 +70,9 @@ public class CmdSystemCheckFancy extends CommandBase {
         else if (systemCheck == 2) {
             CommandBase armTest = Commands.sequence(
                 new InstantCommand(()-> armSystemCheck = false),
-                new CmdMoveArm(ArmPosition.NEUTRAL).withTimeout(3),
+                new CmdMoveArm(ArmPosition.NEUTRAL),
                 new WaitCommand(1),
-                new CmdMoveArm(ArmPosition.TOP_CONE.pivotAngle, 25).withTimeout(3),
+                new CmdMoveArm(ArmPosition.TOP_CONE.pivotAngle, 25),
                 new WaitCommand(1),
                 new CmdMoveArm(90, 11.5),
                 new InstantCommand(()-> armSystemCheck = true)

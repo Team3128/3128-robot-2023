@@ -46,7 +46,7 @@ public class CmdScoreAuto extends SequentialCommandGroup {
                 ),
                 Commands.sequence(
                     new WaitUntilCommand(()-> pivot.atSetpoint()),
-                    new InstantCommand(() -> telescope.startPID(position.teleDist), telescope),
+                    new InstantCommand(() -> telescope.startPID(position.teleDist + 1), telescope),
                     new WaitUntilCommand(()-> telescope.atSetpoint())                    
                 )
             ),

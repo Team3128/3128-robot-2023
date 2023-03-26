@@ -31,7 +31,7 @@ public class Pivot extends PIDSubsystem {
     public Pivot() {
         super(new PIDController(kP, kI, kD));
 
-        getController().enableContinuousInput(-180, 180);
+        // getController().enableContinuousInput(-180, 180);
 
         configMotors();
         configEncoders();
@@ -69,7 +69,7 @@ public class Pivot extends PIDSubsystem {
     }
 
     public double getAngle(){
-        return MathUtil.inputModulus(m_encoder.get() * 360 - ANGLE_OFFSET,-180,180);
+        return MathUtil.inputModulus(m_encoder.get() * 360.0 - ANGLE_OFFSET,-180,180);
     }
 
     @Override

@@ -172,7 +172,7 @@ public class Trajectories {
                     new CmdMovePickup(false, autoSpeed, pose),
                     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,
                                                         inner ? (bottom ? 0.5 : -0.5) : 0), 0,true), swerve)
-                        .withTimeout(1.25)
+                        .withTimeout(inner ? 0 : 0.25)
                 )
             ),
             new InstantCommand(()-> Intake.getInstance().set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), Intake.getInstance()),
@@ -232,7 +232,7 @@ public class Trajectories {
             new CmdMoveArm(position),
             new InstantCommand(()-> manipulator.CONE = true),
             new InstantCommand(()-> manipulator.outtake(), manipulator),
-            new WaitCommand(0.125),
+            new WaitCommand(0.35),
             new InstantCommand(()-> manipulator.stopRoller(), manipulator),
             new InstantCommand(()-> Telescope.getInstance().startPID(ArmPosition.NEUTRAL), Telescope.getInstance()),
             new WaitUntilCommand(() -> Telescope.getInstance().atSetpoint()),

@@ -61,6 +61,13 @@ public class AutoPrograms {
             Trajectories.movePoint(AutoConstants.PICKUP_4)
         ));
 
+        Trajectories.autoSpeed = 3.5;
+        auto.put("bottom_1.5pc", Commands.sequence(
+            Trajectories.startScoringPoint(ArmPosition.TOP_CONE),
+            Trajectories.resetOdometry(false),
+            Trajectories.intakePoint(AutoConstants.PICKUP_1, false, false)
+        ));
+
         Trajectories.autoSpeed = 2.5;
         auto.put("bottom_2pc", Commands.sequence(
             Trajectories.startScoringPoint(ArmPosition.TOP_CONE),
@@ -119,7 +126,7 @@ public class AutoPrograms {
             Trajectories.scoreIntake(0, 0),
             Trajectories.intakePoint(AutoConstants.PICKUP_2, true, true),
             Trajectories.scoreIntake(0, 1),
-            Trajectories.movePoint(AutoConstants.PICKUP_1)
+            Trajectories.movePoint(AutoConstants.MOBILITY_BOTTOM).withTimeout(1)
         ));
 
         Trajectories.autoSpeed = 4.5;
@@ -130,7 +137,7 @@ public class AutoPrograms {
             Trajectories.scoreIntake(2, 2),
             Trajectories.intakePoint(AutoConstants.PICKUP_3, true, false),
             Trajectories.scoreIntake(2, 1), 
-            Trajectories.movePoint(AutoConstants.PICKUP_4)
+            Trajectories.movePoint(AutoConstants.MOBILITY_TOP).withTimeout(1)
         ));
 
         Trajectories.autoSpeed = 4.5;

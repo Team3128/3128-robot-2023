@@ -35,13 +35,16 @@ public class Constants {
 
     public static class AutoConstants {
         public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.95, Rotation2d.fromDegrees(0));
-        public static final Pose2d PICKUP_2 = new Pose2d(7.20, 2.15, Rotation2d.fromDegrees(45));
-        public static final Pose2d PICKUP_3 = new Pose2d(7.25, 3.38, Rotation2d.fromDegrees(-45));
+        public static final Pose2d PICKUP_2 = new Pose2d(7.1, 2.28, Rotation2d.fromDegrees(45));
+        public static final Pose2d PICKUP_3 = new Pose2d(7.1, 3.3, Rotation2d.fromDegrees(-45));
         public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.50, Rotation2d.fromDegrees(0));
 
+        public static final Pose2d MOBILITY_BOTTOM = new Pose2d(5.5, 0.95, Rotation2d.fromDegrees(0));
+        public static final Pose2d MOBILITY_TOP = new Pose2d(5.5, 4.5, Rotation2d.fromDegrees(0));
+
         public static final Pose2d ClimbSetupInside = new Pose2d(2.2, 2.7, Rotation2d.fromDegrees(0));
-        public static final Pose2d ClimbSetupOutsideBot = new Pose2d(5.6, 2.7, Rotation2d.fromDegrees(180));
-        public static final Pose2d ClimbSetupOutsideTop = new Pose2d(5.6, 3.5, Rotation2d.fromDegrees(180));
+        public static final Pose2d ClimbSetupOutsideBot = new Pose2d(5.6, 2.9, Rotation2d.fromDegrees(180));
+        public static final Pose2d ClimbSetupOutsideTop = new Pose2d(5.6, 3.3, Rotation2d.fromDegrees(180));
 
         public static final Pose2d[] STARTING_POINTS = new Pose2d[] {
             new Pose2d(1.85 ,0.5, Rotation2d.fromDegrees(180)),
@@ -238,15 +241,15 @@ public class Constants {
         public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(1,1,Units.degreesToRadians(10));
 
         public static final Pose2d[] SCORES = new Pose2d[]{
-            new Pose2d(1.95,0.5,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.95,1.05,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.95,1.65,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.95,2.15,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.95,2.75,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.95,3.3,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.95,3.85,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.95,4.45,Rotation2d.fromDegrees(180)),
-            new Pose2d(1.95,4.89,Rotation2d.fromDegrees(180))
+            new Pose2d(1.90,0.5,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.90,1.05,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.90,1.65,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.90,2.15,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.90,2.75,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.90,3.3,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.90,3.85,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.90,4.45,Rotation2d.fromDegrees(180)),
+            new Pose2d(1.90,4.89,Rotation2d.fromDegrees(180))
         };
 
         public static final Pose2d[][] SCORES_GRID = new Pose2d[][] {
@@ -326,8 +329,8 @@ public class Constants {
             TestTags.put(7, APRIL_TAG_POS.get(2));
             TestTags.put(6,APRIL_TAG_POS.get(1));
 
-            RAMP_AVOID_SCORE.add(new Pose2d(2.1,4.85, Rotation2d.fromDegrees(180)));
-            RAMP_AVOID_SCORE.add(new Pose2d(2.1, 0.5, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1,4.87, Rotation2d.fromDegrees(180)));
+            RAMP_AVOID_SCORE.add(new Pose2d(2.1, 0.4, Rotation2d.fromDegrees(180)));
         } 
     }
 
@@ -343,7 +346,7 @@ public class Constants {
         public static final int PIVOT_CURRENT_LIMIT = 40;
         // public static final int CANCODER_ID = 24;
         public static final int ENC_DIO_ID = 7;
-        public static final double ANGLE_OFFSET = 0; //get from new encoder
+        public static final double ANGLE_OFFSET = -158.7+3+4; //get from new encoder
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -374,7 +377,7 @@ public class Constants {
     public static class ArmConstants {
 
         public enum ArmPosition {
-            TOP_CONE(110, 38.5, 0, true), // 112,44 
+            TOP_CONE(112, 38.5, 0, true), // 112,44 
             TOP_CUBE(105, 38.5, 0, false), //98,35
             MID_CONE(105, 20.5, 1, true), //98,22.5
             MID_CUBE(90, 22, 1, false), //87,15
@@ -382,7 +385,7 @@ public class Constants {
 
             NEUTRAL(5, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF_CONE(112, 17.5, null, null), //105
+            HP_SHELF_CONE(118, 17.5, null, null), //105
             HP_SHELF_CUBE(106.5, 17.5, null, null), //105
             GROUND_PICKUP(37, 26.5, null, null),
             GROUND_PICKUP_CONE(37, 26.5, null, null), 
@@ -479,7 +482,7 @@ public class Constants {
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TO_DEGREES = 360;
-        public static final double ANGLE_OFFSET = 23; 
+        public static final double ANGLE_OFFSET = 138; 
 
         public static final int ENCODER_DIO_ID = 8;
 
