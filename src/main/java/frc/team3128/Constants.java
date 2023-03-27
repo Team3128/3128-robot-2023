@@ -37,7 +37,7 @@ public class Constants {
         public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.95, Rotation2d.fromDegrees(0));
         public static final Pose2d PICKUP_2 = new Pose2d(7.1, 2.28, Rotation2d.fromDegrees(45));
         public static final Pose2d PICKUP_3 = new Pose2d(7.1, 3.3, Rotation2d.fromDegrees(-45));
-        public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.50, Rotation2d.fromDegrees(0));
+        public static final Pose2d PICKUP_4 = new Pose2d(5.9, 4.55, Rotation2d.fromDegrees(0));
 
         public static final Pose2d MOBILITY_BOTTOM = new Pose2d(5.5, 0.95, Rotation2d.fromDegrees(0));
         public static final Pose2d MOBILITY_TOP = new Pose2d(5.5, 4.5, Rotation2d.fromDegrees(0));
@@ -346,7 +346,7 @@ public class Constants {
         public static final int PIVOT_CURRENT_LIMIT = 40;
         // public static final int CANCODER_ID = 24;
         public static final int ENC_DIO_ID = 7;
-        public static final double ANGLE_OFFSET = -158.7+3+4; //get from new encoder
+        public static final double ANGLE_OFFSET = -158.7+3+4-2-2-2-4-1; //get from new encoder
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
@@ -385,8 +385,8 @@ public class Constants {
 
             NEUTRAL(5, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF_CONE(118, 17.5, null, null), //105
-            HP_SHELF_CUBE(106.5, 17.5, null, null), //105
+            HP_SHELF_CONE(115, 17.5, null, null), //105
+            HP_SHELF_CUBE(108, 17.5, null, null), //105
             GROUND_PICKUP(37, 26.5, null, null),
             GROUND_PICKUP_CONE(37, 26.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 26, null, null), 

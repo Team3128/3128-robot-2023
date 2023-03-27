@@ -123,9 +123,9 @@ public class AutoPrograms {
             Trajectories.startScoringPoint(ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1, false, false),
-            Trajectories.scoreIntake(0, 0),
-            Trajectories.intakePoint(AutoConstants.PICKUP_2, true, true),
             Trajectories.scoreIntake(0, 1),
+            Trajectories.intakePoint(AutoConstants.PICKUP_2, true, true),
+            Trajectories.scoreIntake(0, 0),
             Trajectories.movePoint(AutoConstants.MOBILITY_BOTTOM).withTimeout(1)
         ));
 
@@ -134,9 +134,9 @@ public class AutoPrograms {
             Trajectories.startScoringPoint(ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_4, false, false),
-            Trajectories.scoreIntake(2, 2),
+            Trajectories.scoreIntake(2, 1),
             Trajectories.intakePoint(AutoConstants.PICKUP_3, true, false),
-            Trajectories.scoreIntake(2, 1), 
+            Trajectories.scoreIntake(2, 2), 
             Trajectories.movePoint(AutoConstants.MOBILITY_TOP).withTimeout(1)
         ));
 
@@ -145,7 +145,7 @@ public class AutoPrograms {
             Trajectories.startScoringPoint(ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_1, false, false),
-            Trajectories.scoreIntake(0, 0),
+            Trajectories.scoreIntake(0, 1),
             Trajectories.intakePoint(AutoConstants.PICKUP_2, true, true),
             Trajectories.climbPoint(false, true)
         ));
@@ -155,7 +155,7 @@ public class AutoPrograms {
             Trajectories.startScoringPoint(ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
             Trajectories.intakePoint(AutoConstants.PICKUP_4, false, false),
-            Trajectories.scoreIntake(2, 2),
+            Trajectories.scoreIntake(2, 1),
             Trajectories.intakePoint(AutoConstants.PICKUP_3, true, false),
             Trajectories.climbPoint(false, false)
         ));

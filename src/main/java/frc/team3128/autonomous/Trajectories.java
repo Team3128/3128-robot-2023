@@ -166,7 +166,7 @@ public class Trajectories {
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
             Commands.race(
                 Commands.sequence(
-                    new WaitCommand(inner ? 1.25 : 0.75),
+                    new WaitCommand(inner ? 1 : 0.5),
                     new CmdIntake()
                 ), Commands.sequence(
                     new CmdMovePickup(false, autoSpeed, pose),
@@ -220,8 +220,8 @@ public class Trajectories {
             new InstantCommand(()-> Intake.getInstance().outtake()),
             new WaitCommand(0.125),
             new InstantCommand(()->Intake.getInstance().stop()),
-            // new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 0, true), swerve)
-            //             .withTimeout(0.75),
+            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? 0.35 : -0.35,0), 0, true), swerve)
+                        .withTimeout(0.75),
             new InstantCommand(()-> swerve.stop(), swerve)
         );
     }
@@ -229,10 +229,10 @@ public class Trajectories {
     public static CommandBase startScoringPoint(ArmPosition position) {
         return Commands.sequence(
             //new InstantCommand(() -> swerve.resetOdometry(FieldConstants.allianceFlip(AutoConstants.STARTING_POINTS[grid * 3 + node]))),
-            new CmdMoveArm(position),
+            new CmdMoveArm(position.pivotAngle, position.teleDist + 0.5),
             new InstantCommand(()-> manipulator.CONE = true),
             new InstantCommand(()-> manipulator.outtake(), manipulator),
-            new WaitCommand(0.35),
+            new WaitCommand(0.4),
             new InstantCommand(()-> manipulator.stopRoller(), manipulator),
             new InstantCommand(()-> Telescope.getInstance().startPID(ArmPosition.NEUTRAL), Telescope.getInstance()),
             new WaitUntilCommand(() -> Telescope.getInstance().atSetpoint()),
