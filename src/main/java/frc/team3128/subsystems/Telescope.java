@@ -2,7 +2,6 @@ package frc.team3128.subsystems;
 
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -57,7 +56,7 @@ public class Telescope extends PIDSubsystem {
      * Initializes motor needed for telelscope and sets up CAN frame periods
      */
     private void configMotors() {
-        m_teleMotor = new NAR_CANSparkMax(TELE_MOTOR_ID, MotorType.kBrushless);
+        m_teleMotor = new NAR_CANSparkMax(TELE_MOTOR_ID);
         m_teleMotor.setSmartCurrentLimit(TELE_CURRENT_LIMIT);
         m_teleMotor.enableVoltageCompensation(12.0);
         m_teleMotor.setIdleMode(IdleMode.kBrake);

@@ -17,7 +17,6 @@ import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Pivot extends PIDSubsystem {
 
@@ -48,7 +47,7 @@ public class Pivot extends PIDSubsystem {
     }
 
     private void configMotors() {
-        m_rotateMotor = new NAR_CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless);
+        m_rotateMotor = new NAR_CANSparkMax(PIVOT_MOTOR_ID);
         m_rotateMotor.setSmartCurrentLimit(PIVOT_CURRENT_LIMIT);
         m_rotateMotor.setInverted(false);
         m_rotateMotor.enableVoltageCompensation(12.0);

@@ -1,38 +1,58 @@
 package frc.team3128.common.hardware.motorcontroller;
 
-import com.revrobotics.REVLibError;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-import frc.team3128.common.hardware.motor.NAR_Motor;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxRelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 public class NAR_CANSparkMax extends CANSparkMax {
+
+	public enum EncoderType {
+		Relative,
+		Absolute
+	}
 	
 	private double prevValue = 0;
-	private SparkMaxRelativeEncoder encoder;
+	private ControlType prevControlType = ControlType.kDutyCycle;
+	private EncoderType encoderType;
+	private SparkMaxRelativeEncoder relativeEncoder;
+	private SparkMaxAbsoluteEncoder absoluteEncoder;
+	private SparkMaxPIDController controller;
 	private SimDeviceSim encoderSim;
 	private SimDouble encoderSimVel;
-	private NAR_Motor motor;
 
 	/**
 	 * 
 	 * @param deviceNumber device id
 	 * @param type         kBrushed(0) for brushed motor, kBrushless(1) for brushless motor
 	 */
-	 public NAR_CANSparkMax(int deviceNumber, MotorType type, NAR_Motor motor) {
+	 public NAR_CANSparkMax(int deviceNumber, EncoderType encoderType, MotorType type, double kP, double kI, double kD) {
 		super(deviceNumber, type);
-		this.motor = motor;
 
 		restoreFactoryDefaults(); // Reset config parameters, unfollow other motor controllers
+		enableVoltageCompensation(12);
 
-		encoder = (SparkMaxRelativeEncoder) getEncoder();
-		encoder.setPositionConversionFactor(MotorControllerConstants.SPARKMAX_ENCODER_RESOLUTION); // convert rotations to encoder ticks
-		encoder.setVelocityConversionFactor(MotorControllerConstants.SPARKMAX_RPM_TO_NUpS); // convert rpm to nu/s
+		this.encoderType = encoderType;
+
+		if (encoderType == EncoderType.Relative) {
+			relativeEncoder = (SparkMaxRelativeEncoder) getEncoder();
+		}
+		else {
+			absoluteEncoder = getAbsoluteEncoder(Type.kDutyCycle);
+		}
+
+		// encoder.setPositionConversionFactor(MotorControllerConstants.SPARKMAX_ENCODER_RESOLUTION); // convert rotations to encoder ticks
+		// encoder.setVelocityConversionFactor(MotorControllerConstants.SPARKMAX_RPM_TO_NUpS); // convert rpm to nu/s
+		controller = getPIDController();
+		controller.setP(kP);
+		controller.setI(kI);
+		controller.setD(kD);
 
 		if(RobotBase.isSimulation()){
 			encoderSim = new SimDeviceSim("CANSparkMax[" + this.getDeviceId() + "] - RelativeEncoder");
@@ -40,29 +60,59 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		}
 	}
 
-	public NAR_CANSparkMax(int deviceNumber, MotorType type) {
-		this(deviceNumber, type, null);
+	public NAR_CANSparkMax(int deviceNumber, EncoderType encoderType, MotorType type) {
+		this(deviceNumber, encoderType, type, 0, 0, 0);
 	}
 
+	public NAR_CANSparkMax(int deviceNumber) {
+		this(deviceNumber, EncoderType.Relative, MotorType.kBrushless);
+	}
 
 	@Override
 	public void set(double outputValue) {
-		if (outputValue != prevValue) {
-			super.set(outputValue);
+		set(outputValue, ControlType.kDutyCycle);
+	}
+
+	public void set(double outputValue, ControlType controlType) {
+		if (outputValue != prevValue || prevControlType != controlType) {
+			controller.setReference(outputValue, controlType);
 			prevValue = outputValue;
+			prevControlType = controlType;
 		}
+	}
+
+	public void set(double outputValue, ControlType controlType, double arbFeedforward, ArbFFUnits arbFFUnits) {
+		controller.setReference(outputValue, controlType, 0, arbFeedforward, arbFFUnits);
 	}
 
 	public double getSetpoint() {
 		return prevValue;
 	}
 
+	//Default Unit: Rotations
 	public double getSelectedSensorPosition() {
-		return encoder.getPosition();
+		return encoderType == EncoderType.Relative ? relativeEncoder.getPosition() : absoluteEncoder.getPosition();
 	}
 
+	//Default Unit: Rotations per minute
 	public double getSelectedSensorVelocity() {
-		return encoder.getVelocity() / 60; // convert from nu/min to nu/sec
+		return encoderType == EncoderType.Relative ? relativeEncoder.getVelocity() : absoluteEncoder.getVelocity();
+	}
+
+	public void setPositionConversionFactor(double factor) {
+		if (encoderType == EncoderType.Relative) {
+			relativeEncoder.setPositionConversionFactor(factor);
+			return;
+		}
+		absoluteEncoder.setPositionConversionFactor(factor);
+	}
+
+	public void setVelocityConversionFactor(double factor) {
+		if (encoderType == EncoderType.Relative) {
+			relativeEncoder.setVelocityConversionFactor(factor);
+			return;
+		}
+		absoluteEncoder.setVelocityConversionFactor(factor);
 	}
 
 	public double getMotorOutputVoltage() {
@@ -70,26 +120,20 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	}
 
 	public void setEncoderPosition(double encPos) {
-		encoder.setPosition(encPos);
+		if (encoderType == EncoderType.Relative) {
+			relativeEncoder.setPosition(encPos);
+			return;
+		}
 	}
 
 	public void setSimPosition(double pos) {
-		encoder.setPosition(pos);
+		if (encoderType == EncoderType.Relative) {
+			relativeEncoder.setPosition(pos);
+			return;
+		}
 	}
 
 	public void setSimVelocity(double vel) {
 		encoderSimVel.set(vel);
 	}
-
-	@Override
-	public REVLibError follow(CANSparkMax motor) {
-		return super.follow((CANSparkMax)motor);
-	}
-
-	// public void follow(NAR_EMotor motor) {
-	// 	if(!(motor instanceof CANSparkMax)) {
-	// 		throw new RuntimeException("Bad follow: NAR_CANSparkMax " + getDeviceId() + " attempted to follow non-CANSparkMax motor controller.");
-	// 	}
-	// 	super.follow((CANSparkMax)motor);
-	// }
 }

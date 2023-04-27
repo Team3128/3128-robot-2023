@@ -6,7 +6,6 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
@@ -62,7 +61,7 @@ public class Intake extends PIDSubsystem {
 
     // Config
     public void configMotors() {
-        m_intakePivot = new NAR_CANSparkMax(INTAKE_PIVOT_ID, MotorType.kBrushless);
+        m_intakePivot = new NAR_CANSparkMax(INTAKE_PIVOT_ID);
         m_intakeRollers = new NAR_TalonSRX(INTAKE_ROLLERS_ID);
 
         m_intakePivot.setIdleMode(IdleMode.kBrake);

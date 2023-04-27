@@ -5,21 +5,18 @@ import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.team3128.common.hardware.motor.NAR_Motor;
 
 public class NAR_TalonFX extends WPI_TalonFX {
 
     private double prevValue = 0;
 	private ControlMode prevControlMode = ControlMode.Disabled;
 	private TalonFXSimCollection motorSim;
-	private NAR_Motor motor;
 
 	/**	 
 	 * @param deviceNumber device id
 	 */
-	public NAR_TalonFX(int deviceNumber, NAR_Motor motor) {
+	public NAR_TalonFX(int deviceNumber) {
 		super(deviceNumber);
-		this.motor = motor;
 
 		if(RobotBase.isSimulation()){
 			motorSim = getTalonFXSimCollection();
@@ -27,10 +24,6 @@ public class NAR_TalonFX extends WPI_TalonFX {
 
 		configVoltageCompSaturation(12, 10);
 		enableVoltageCompensation(true);
-	}
-  
-  public NAR_TalonFX(int deviceNumber) {
-		this(deviceNumber, null);
 	}
 
 	@Override
@@ -74,10 +67,13 @@ public class NAR_TalonFX extends WPI_TalonFX {
 		motorSim.setIntegratedSensorVelocity((int)(vel/10)); // convert nu/s to nu/100ms
 	}
 
+	//Mess with to get it to rotations per minute
 	@Override
 	public double getSelectedSensorVelocity() {
 		return super.getSelectedSensorVelocity() * 10; // convert nu/100ms to nu/s
 	}
+
+	//Mess with it to get it to Rotations
 	public double getSelectedSensorPosition() {
 		return super.getSelectedSensorPosition();
 	}
