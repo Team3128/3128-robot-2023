@@ -1,5 +1,6 @@
 package frc.team3128.common.hardware.motorcontroller;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -47,10 +48,6 @@ public class NAR_TalonSRX extends WPI_TalonSRX {
 		return prevControlMode;
 	}
 
-	public void setEncoderPosition(double n) {
-		setSelectedSensorPosition(n);
-	}
-
 	// getInverted() stuff should only be temporary
 	public void setSimPosition(double pos) {
 		if(super.getInverted()){
@@ -68,8 +65,13 @@ public class NAR_TalonSRX extends WPI_TalonSRX {
 	}
 
 	@Override
+	public ErrorCode setSelectedSensorPosition(double n) {
+		return super.setSelectedSensorPosition(n * MotorControllerConstants.TALONSRX_ENCODER_RESOLUTION); //Rotations to nu
+	}
+
+	@Override
 	public double getSelectedSensorVelocity() {
-		return super.getSelectedSensorVelocity() * 600 / MotorControllerConstants.TALONSRX_ENCODER_RESOLUTION; // convert nu/100ms to nrpm
+		return super.getSelectedSensorVelocity() * 600 / MotorControllerConstants.TALONSRX_ENCODER_RESOLUTION; // convert nu/100ms to rpm
 	}
 
 	@Override

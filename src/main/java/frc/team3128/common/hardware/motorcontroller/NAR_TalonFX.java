@@ -1,5 +1,6 @@
 package frc.team3128.common.hardware.motorcontroller;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -15,8 +16,8 @@ public class NAR_TalonFX extends WPI_TalonFX {
 	/**	 
 	 * @param deviceNumber device id
 	 */
-	public NAR_TalonFX(int deviceNumber) {
-		super(deviceNumber);
+	public NAR_TalonFX(int deviceNumber, String canBus) {
+		super(deviceNumber, canBus);
 
 		if(RobotBase.isSimulation()){
 			motorSim = getTalonFXSimCollection();
@@ -24,6 +25,10 @@ public class NAR_TalonFX extends WPI_TalonFX {
 
 		configVoltageCompSaturation(12, 10);
 		enableVoltageCompensation(true);
+	}
+
+	public NAR_TalonFX(int deviceNumber) {
+		this(deviceNumber, "");
 	}
 
 	@Override
@@ -47,10 +52,6 @@ public class NAR_TalonFX extends WPI_TalonFX {
 		return prevControlMode;
 	}
 
-	public void setEncoderPosition(double n) {
-		super.setSelectedSensorPosition(n);
-	}
-
 	// getInverted() stuff should only be temporary
 	public void setSimPosition(double pos) {
 		if(super.getInverted()) {
@@ -67,14 +68,18 @@ public class NAR_TalonFX extends WPI_TalonFX {
 		motorSim.setIntegratedSensorVelocity((int)(vel/10)); // convert nu/s to nu/100ms
 	}
 
-	//Mess with to get it to rotations per minute
 	@Override
-	public double getSelectedSensorVelocity() {
-		return super.getSelectedSensorVelocity() * 10; // convert nu/100ms to nu/s
+	public ErrorCode setSelectedSensorPosition(double n) {
+		return super.setSelectedSensorPosition(n * MotorControllerConstants.FALCON_ENCODER_RESOLUTION); //Rotations to nu
 	}
 
-	//Mess with it to get it to Rotations
+	@Override
+	public double getSelectedSensorVelocity() {
+		return super.getSelectedSensorVelocity() * 600 / MotorControllerConstants.FALCON_ENCODER_RESOLUTION; // convert nu/100ms to rpm
+	}
+
+	@Override
 	public double getSelectedSensorPosition() {
-		return super.getSelectedSensorPosition();
+		return super.getSelectedSensorPosition() / MotorControllerConstants.FALCON_ENCODER_RESOLUTION; // convert nu to rotations
 	}
 }
