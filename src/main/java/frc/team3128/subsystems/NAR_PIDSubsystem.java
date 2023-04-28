@@ -1,7 +1,6 @@
 package frc.team3128.subsystems;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleSupplier;
 
@@ -9,15 +8,19 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
 //REMINDER ASK MIKA PID QUESTIONS
+/**
+ * A subsystem based off of {@link PIDSubsystem} 
+ */
 public abstract class NAR_PIDSubsystem extends SubsystemBase {
     protected final PIDController m_controller;
     protected boolean m_enabled;
-    private DoubleSupplier kF, kG;
-    private DoubleFunction<Double> kF_Function, kG_Function;
+    private DoubleSupplier kS, kV, kG;
+    private DoubleFunction<Double> kG_Function;
     private BooleanSupplier debug;
     private DoubleSupplier setpoint;
 
@@ -25,15 +28,14 @@ public abstract class NAR_PIDSubsystem extends SubsystemBase {
      * Creates a new PIDSubsystem.
      *
      * @param controller the PIDController to use
-     * @param kF constant value increasing output until setpoint is reached
-     * @param kG constant value used to maintain setpoint
-     * @param kF_Function function in which kF is passed through
+     * @param kS The static gain.
+     * @param kV The velocity gain.
+     * @param kG The gravity gain.
      * @param kG_Function function in which kG is passed through
      */
-    public NAR_PIDSubsystem(PIDController controller, double kF, double kG, DoubleFunction<Double> kF_Function, DoubleFunction<Double> kG_Function) {
+    public NAR_PIDSubsystem(PIDController controller, double kS, double kV, double kG, DoubleFunction<Double> kG_Function) {
         m_controller = controller;
-        initShuffleboard(kF, kG);
-        this.kF_Function = kF_Function;
+        initShuffleboard(kS, kV, kG);
         this.kG_Function = kG_Function;
     }
 
@@ -41,11 +43,12 @@ public abstract class NAR_PIDSubsystem extends SubsystemBase {
      * Creates a new PIDSubsystem.
      *
      * @param controller the PIDController to use
-     * @param kF constant value increasing output until setpoint is reached
-     * @param kG constant value used to maintain setpoint
+     * @param kS The static gain.
+     * @param kV The velocity gain.
+     * @param kG The gravity gain.
      */
-    public NAR_PIDSubsystem(PIDController controller, double kF, double kG) {
-        this(controller, kF, kG, KF -> KF * controller.getSetpoint(), KG -> KG);
+    public NAR_PIDSubsystem(PIDController controller, double kS, double kV, double kG) {
+        this(controller, kS, kG, kV, KG -> KG);
     }
 
     /**
@@ -54,20 +57,21 @@ public abstract class NAR_PIDSubsystem extends SubsystemBase {
      * @param controller the PIDController to use
      */
     public NAR_PIDSubsystem(PIDController controller) {
-        this(controller, 0, 0);
+        this(controller, 0, 0, 0);
     }
 
     @Override
     public void periodic() {
         if (m_enabled) {
             double output = m_controller.calculate(getMeasurement());
-            output += !atSetpoint() ? Math.copySign(kF_Function.apply(kF.getAsDouble()), output) : 0;
+            output += !atSetpoint() ? Math.copySign(kS.getAsDouble(), output) : 0;
+            output += kV.getAsDouble() * getSetpoint();
             output += kG_Function.apply(kG.getAsDouble());
             useOutput(output, getSetpoint());
         }
     }
 
-    private void initShuffleboard(double kF, double kG) {
+    private void initShuffleboard(double kS, double kV, double kG) {
         NAR_Shuffleboard.addComplex(getName(), "PID_Controller", m_controller, 0, 0);
 
         NAR_Shuffleboard.addData(getName(), "Enabled", ()-> isEnabled(), 1, 0);
@@ -79,8 +83,9 @@ public abstract class NAR_PIDSubsystem extends SubsystemBase {
         NAR_Shuffleboard.addData(getName(), "DEBUG", ()-> debug.getAsBoolean(), 2, 1);
         setpoint = NAR_Shuffleboard.debug(getName(), "Debug_Setpoint", 0, 2,2);
 
-        this.kF = NAR_Shuffleboard.debug(getName(), "kF", kF, 3, 0);
-        this.kG = NAR_Shuffleboard.debug(getName(), "kG", kG, 3, 1);
+        this.kS = NAR_Shuffleboard.debug(getName(), "kS", kS, 3, 0);
+        this.kV = NAR_Shuffleboard.debug(getName(), "kV", kV, 3, 1);
+        this.kG = NAR_Shuffleboard.debug(getName(), "kG", kG, 3, 2);
     }
 
     /**
