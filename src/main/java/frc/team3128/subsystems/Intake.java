@@ -68,7 +68,7 @@ public class Intake extends PIDSubsystem {
         m_intakeRollers.setNeutralMode(NeutralMode.Brake);
 
         m_intakePivot.setInverted(true);
-        m_intakeRollers.setInverted(false);
+        m_intakeRollers.setInverted(true);
 
         m_intakeRollers.enableVoltageCompensation(true);
         
@@ -136,17 +136,22 @@ public class Intake extends PIDSubsystem {
         m_intakePivot.set(power);
     }
 
-    // Roller Control
-    public void intake() {
-        set(ROLLER_POWER);
-    }
 
     public boolean hasObjectPresent(){
         return getCurrent() > CURRENT_THRESHOLD;
     }
 
+    // Roller Control
+    public void intake() {
+        set(ROLLER_POWER);
+    }
+
     public void outtake() {
         set(-OUTTAKE_POWER);
+    }
+
+    public void stallPower() {
+        set(STALL_POWER);
     }
 
     public void shoot() {

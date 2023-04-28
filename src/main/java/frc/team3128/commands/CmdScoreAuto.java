@@ -18,6 +18,7 @@ import frc.team3128.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
+@Deprecated
 public class CmdScoreAuto extends SequentialCommandGroup {
     
     private Pivot pivot;
