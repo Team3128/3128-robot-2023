@@ -6,6 +6,7 @@ package frc.team3128.common.hardware.motorcontroller;
 public class MotorControllerConstants {
 
     public static final double FALCON_ENCODER_RESOLUTION = 2048; // CPR
+    public static final double RPM_TO_FALCON = FALCON_ENCODER_RESOLUTION / 600; //Nu/100ms
     public static final double MAG_ENCODER_RESOLUTION = 4096; // CPR
     public static final double TALONSRX_ENCODER_RESOLUTION = 4096;
 

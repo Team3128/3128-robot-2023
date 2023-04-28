@@ -37,6 +37,12 @@ public class NAR_TalonFX extends WPI_TalonFX {
 	}
   
 	public void set(ControlMode controlMode, double outputValue) {
+		if (controlMode == ControlMode.Position) {
+			outputValue *= MotorControllerConstants.FALCON_ENCODER_RESOLUTION;
+		}
+		if (controlMode == ControlMode.Velocity) {
+			outputValue *= MotorControllerConstants.RPM_TO_FALCON;
+		}
 		if (outputValue != prevValue || controlMode != prevControlMode) {
 			super.set(controlMode, outputValue);
 			prevValue = outputValue;

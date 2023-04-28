@@ -346,7 +346,7 @@ public class Constants {
         public static final int PIVOT_CURRENT_LIMIT = 40;
         // public static final int CANCODER_ID = 24;
         public static final int ENC_DIO_ID = 7;
-        public static final double ANGLE_OFFSET = -158.7+3+4-2-2-2-4-1; //get from new encoder
+        public static final double ANGLE_OFFSET = -158.7+3+4-2-2-2-4-1+16; //get from new encoder
         
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
