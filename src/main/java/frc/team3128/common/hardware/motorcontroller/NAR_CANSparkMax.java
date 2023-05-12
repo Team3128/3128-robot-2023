@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 public class NAR_CANSparkMax extends CANSparkMax {
 
@@ -20,6 +19,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	
 	private double prevValue = 0;
 	private ControlType prevControlType = ControlType.kDutyCycle;
+	private double prevFeedForward = 0;
 	private EncoderType encoderType;
 	private SparkMaxRelativeEncoder relativeEncoder;
 	private SparkMaxAbsoluteEncoder absoluteEncoder;
@@ -45,6 +45,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		}
 		else {
 			absoluteEncoder = getAbsoluteEncoder(Type.kDutyCycle);
+			absoluteEncoder.setVelocityConversionFactor(60);
 		}
 
 		// encoder.setPositionConversionFactor(MotorControllerConstants.SPARKMAX_ENCODER_RESOLUTION); // convert rotations to encoder ticks
@@ -74,15 +75,15 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	}
 
 	public void set(double outputValue, ControlType controlType) {
-		if (outputValue != prevValue || prevControlType != controlType) {
-			controller.setReference(outputValue, controlType);
+		set(outputValue, controlType, 0);
+	}
+
+	public void set(double outputValue, ControlType controlType, double arbFeedforward) {
+		if (outputValue != prevValue || prevControlType != controlType || arbFeedforward != prevFeedForward) {
+			controller.setReference(outputValue, controlType, 0, arbFeedforward);
 			prevValue = outputValue;
 			prevControlType = controlType;
 		}
-	}
-
-	public void set(double outputValue, ControlType controlType, double arbFeedforward, ArbFFUnits arbFFUnits) {
-		controller.setReference(outputValue, controlType, 0, arbFeedforward, arbFFUnits);
 	}
 
 	public double getSetpoint() {

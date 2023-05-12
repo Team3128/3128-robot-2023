@@ -121,6 +121,10 @@ public class CmdManager {
         return new InstantCommand(() -> telescope.startPID(Vision.position), telescope);
     }
 
+    public static CommandBase CmdManipIntake(boolean cone) {
+        return new InstantCommand(()-> manipulator.intake(cone), manipulator);
+    }
+
     public static CommandBase vibrateController() {
         return new ScheduleCommand(new WaitCommand(0.5).deadlineWith(new StartEndCommand(() -> RobotContainer.controller.startVibrate(), () -> RobotContainer.controller.stopVibrate())));
     }
