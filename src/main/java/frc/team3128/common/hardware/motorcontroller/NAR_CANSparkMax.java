@@ -16,10 +16,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		Relative,
 		Absolute
 	}
-	
-	private double prevValue = 0;
-	private ControlType prevControlType = ControlType.kDutyCycle;
-	private double prevFeedForward = 0;
+
 	private EncoderType encoderType;
 	private SparkMaxRelativeEncoder relativeEncoder;
 	private SparkMaxAbsoluteEncoder absoluteEncoder;
@@ -43,6 +40,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		if (encoderType == EncoderType.Relative) {
 			relativeEncoder = (SparkMaxRelativeEncoder) getEncoder();
 		}
+		
 		else {
 			absoluteEncoder = getAbsoluteEncoder(Type.kDutyCycle);
 			absoluteEncoder.setVelocityConversionFactor(60);
@@ -78,16 +76,8 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		set(outputValue, controlType, 0);
 	}
 
-	public void set(double outputValue, ControlType controlType, double arbFeedforward) {
-		if (outputValue != prevValue || prevControlType != controlType || arbFeedforward != prevFeedForward) {
-			controller.setReference(outputValue, controlType, 0, arbFeedforward);
-			prevValue = outputValue;
-			prevControlType = controlType;
-		}
-	}
-
-	public double getSetpoint() {
-		return prevValue;
+	public void set(double outputValue, CANSparkMax.ControlType controlType, double arbFeedforward) {
+		controller.setReference(outputValue, controlType, 0, arbFeedforward);
 	}
 
 	//Default Unit: Rotations

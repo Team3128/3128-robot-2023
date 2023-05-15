@@ -10,10 +10,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 
 public class NAR_TalonFX extends WPI_TalonFX {
 
-    private double prevValue = 0;
-	private ControlMode prevControlMode = ControlMode.Disabled;
-	private DemandType prevDemandType = DemandType.Neutral;
-	private double prevDemand = 0;
 	private TalonFXSimCollection motorSim;
 
 	/**	 
@@ -56,21 +52,7 @@ public class NAR_TalonFX extends WPI_TalonFX {
 		if (controlMode == ControlMode.Velocity) {
 			outputValue *= MotorControllerConstants.RPM_TO_FALCON;
 		}
-		if (outputValue != prevValue || controlMode != prevControlMode || demandType != prevDemandType || demand != prevDemand) {
-			super.set(controlMode, outputValue, demandType, demand);
-			prevValue = outputValue;
-			prevControlMode = controlMode;
-			prevDemandType = demandType;
-			prevDemand = demand;
-		}
-	}
-	
-	public double getSetpoint() {
-		return prevValue;
-	}
-
-	public ControlMode getControlMode() {
-		return prevControlMode;
+		super.set(controlMode, outputValue, demandType, demand);
 	}
 
 	// getInverted() stuff should only be temporary
