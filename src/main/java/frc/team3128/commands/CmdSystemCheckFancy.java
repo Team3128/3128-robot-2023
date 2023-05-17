@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
-import frc.team3128.common.swerve.SwerveModule;
+import frc.team3128.common.swerveNeo.SwerveModule;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Manipulator;

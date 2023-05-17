@@ -110,7 +110,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		return getAppliedOutput() * getBusVoltage();
 	}
 
-	public void setEncoderPosition(double encPos) {
+	public void setSelectedSensorPosition(double encPos) {
 		if (encoderType == EncoderType.Relative) {
 			relativeEncoder.setPosition(encPos);
 			return;

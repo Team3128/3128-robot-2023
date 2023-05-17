@@ -32,20 +32,18 @@ public class NAR_TalonFX extends WPI_TalonFX {
 
 	@Override
 	public void set(double speed) {
-		set(ControlMode.PercentOutput, speed);
+		set(speed, ControlMode.PercentOutput);
 	}
-	
-	@Override
-	public void set(ControlMode controlMode, double outputValue) {
+
+	public void set(double outputValue, ControlMode controlMode) {
 		set(controlMode, outputValue, DemandType.Neutral, 0);
 	}
 
-	public void set(ControlMode controlMode, double outputValue, double demand) {
+	public void set(double outputValue, ControlMode controlMode, double demand) {
 		set(controlMode, outputValue, DemandType.ArbitraryFeedForward, demand);
 	}
 
-	@Override
-	public void set(ControlMode controlMode, double outputValue, DemandType demandType, double demand) {
+	public void set(double outputValue, ControlMode controlMode, DemandType demandType, double demand) {
 		if (controlMode == ControlMode.Position) {
 			outputValue *= MotorControllerConstants.FALCON_ENCODER_RESOLUTION;
 		}
