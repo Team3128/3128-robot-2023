@@ -16,7 +16,10 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		Relative,
 		Absolute
 	}
-
+	
+	private double prevValue = 0;
+	private double prevFF = 0;
+	private ControlType prevControlType = ControlType.kDutyCycle;
 	private EncoderType encoderType;
 	private SparkMaxRelativeEncoder relativeEncoder;
 	private SparkMaxAbsoluteEncoder absoluteEncoder;
@@ -32,6 +35,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	 public NAR_CANSparkMax(int deviceNumber, EncoderType encoderType, MotorType type, double kP, double kI, double kD) {
 		super(deviceNumber, type);
 
+		setCANTimeout(10);
 		restoreFactoryDefaults(); // Reset config parameters, unfollow other motor controllers
 		enableVoltageCompensation(12);
 
@@ -49,9 +53,11 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		// encoder.setPositionConversionFactor(MotorControllerConstants.SPARKMAX_ENCODER_RESOLUTION); // convert rotations to encoder ticks
 		// encoder.setVelocityConversionFactor(MotorControllerConstants.SPARKMAX_RPM_TO_NUpS); // convert rpm to nu/s
 		controller = getPIDController();
+		controller.setOutputRange(-1, 1);
 		controller.setP(kP);
 		controller.setI(kI);
 		controller.setD(kD);
+		controller.setFeedbackDevice(encoderType == EncoderType.Relative ? relativeEncoder : absoluteEncoder);
 
 		if(RobotBase.isSimulation()){
 			encoderSim = new SimDeviceSim("CANSparkMax[" + this.getDeviceId() + "] - RelativeEncoder");
@@ -77,7 +83,12 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	}
 
 	public void set(double outputValue, CANSparkMax.ControlType controlType, double arbFeedforward) {
-		controller.setReference(outputValue, controlType, 0, arbFeedforward);
+		if (outputValue != prevValue || controlType != prevControlType || arbFeedforward != prevFF) {
+			controller.setReference(outputValue, controlType, 0, arbFeedforward);
+			prevValue = outputValue;
+			prevControlType = controlType;
+			prevFF = arbFeedforward;
+		}
 	}
 
 	//Default Unit: Rotations

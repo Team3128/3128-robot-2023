@@ -57,15 +57,13 @@ public class SwerveModule {
 
     public void setAngle(SwerveModuleState desiredState) {
         Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (maxSpeed * 0.025)) ? lastAngle : desiredState.angle; //Prevent rotating module if speed is less then 1%. Prevents Jittering.
-        // Rotation2d oldAngle = getAngle();
-        // angle = optimizeTurn(oldAngle, angle);  
         angleMotor.set(degreesToRotations(angle.getDegrees(), angleGearRatio), ControlType.kPosition);
         lastAngle = angle;
     }
 
     public void setSpeed(SwerveModuleState desiredState) {
         double velocity = MPSToRPM(desiredState.speedMetersPerSecond, wheelCircumference, driveGearRatio);
-        driveMotor.set(velocity, ControlType.kVelocity, feedforward.calculate(desiredState.speedMetersPerSecond) / 12);
+        driveMotor.set(velocity, ControlType.kVelocity, feedforward.calculate(desiredState.speedMetersPerSecond));
     }
 
     public void xLock(Rotation2d angle) {
@@ -150,14 +148,14 @@ public class SwerveModule {
     }
 
     private void configAngleMotor(){
-        angleMotor.setSmartCurrentLimit(40);
+        angleMotor.setSmartCurrentLimit(currentLimit);
         angleMotor.setInverted(angleMotorInvert);
         angleMotor.setIdleMode(IdleMode.kCoast);
         resetToAbsolute();
     }
 
     private void configDriveMotor(){        
-        driveMotor.setSmartCurrentLimit(40);
+        driveMotor.setSmartCurrentLimit(currentLimit);
         driveMotor.setInverted(driveMotorInvert);
         driveMotor.setIdleMode(IdleMode.kCoast); 
         // driveMotor.setControlFramePeriod(ControlFrame.Control, angleContinuousCurrentLimit)
