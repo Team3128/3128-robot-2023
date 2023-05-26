@@ -67,8 +67,8 @@ public class Constants {
 
         /* Drivetrain Constants */
         public static final double bumperLength = Units.inchesToMeters(5);
-        public static final double trackWidth = Units.inchesToMeters(26); 
-        public static final double wheelBase = Units.inchesToMeters(26); 
+        public static final double trackWidth = Units.inchesToMeters(26); //Hand measure later
+        public static final double wheelBase = Units.inchesToMeters(26); //Hand measure later
         public static final double robotLength = bumperLength + trackWidth;
         public static final double wheelDiameter = Units.inchesToMeters(4);
         public static final double wheelCircumference = wheelDiameter * Math.PI;

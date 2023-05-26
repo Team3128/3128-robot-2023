@@ -34,7 +34,7 @@ public class SwerveModule {
         angleOffset = moduleConstants.angleOffset;
         
         /* Angle Encoder Config */
-        angleEncoder = new CANCoder(moduleConstants.cancoderID, "drivetrain");
+        angleEncoder = new CANCoder(moduleConstants.cancoderID);
         configAngleEncoder();
 
         /* Angle Motor Config */
@@ -127,12 +127,6 @@ public class SwerveModule {
 
     public SwerveModulePosition getPosition() {
         double position = falconToMeters(driveMotor.getSelectedSensorPosition(), wheelCircumference, driveGearRatio);
-        if (driveMotor.getLastError().value == -3 && moduleNumber == 1) {
-            Swerve.error = true;
-        }
-        // if (moduleNumber == 1) 
-        //     System.out.println(position);
-        // System.out.println(driveMotor.getLastError().value);
         Rotation2d angle = getAngle();
         return new SwerveModulePosition(position, angle);
     }

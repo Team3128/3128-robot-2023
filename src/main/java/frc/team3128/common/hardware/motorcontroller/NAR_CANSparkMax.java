@@ -6,6 +6,11 @@ import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
+import frc.team3128.Robot;
+import frc.team3128.common.utility.NAR_Shuffleboard;
+
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
@@ -91,6 +96,22 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		}
 	}
 
+	//Not working as of now coping
+	public void initShuffleboard(String tabName, String prefix, int column) {
+		DoubleSupplier kP = NAR_Shuffleboard.debug(tabName, prefix + "_kP", controller.getP(), column, 0);
+		DoubleSupplier kI = NAR_Shuffleboard.debug(tabName, prefix + "_kI", controller.getI(), column, 1);
+		DoubleSupplier kD = NAR_Shuffleboard.debug(tabName, prefix + "_kD", controller.getD(), column, 2);
+		Robot.getInstance().addPeriodic(()-> {
+			if (controller.getP() != kP.getAsDouble()) controller.setP(kP.getAsDouble());
+		}, 0.200);
+		Robot.getInstance().addPeriodic(()-> {
+			if (controller.getI() != kI.getAsDouble()) controller.setP(kI.getAsDouble());
+		}, 0.200);
+		Robot.getInstance().addPeriodic(()-> {
+			if (controller.getP() != kD.getAsDouble()) controller.setP(kD.getAsDouble());
+		}, 0.200);
+	}
+
 	//Default Unit: Rotations
 	public double getSelectedSensorPosition() {
 		return encoderType == EncoderType.Relative ? relativeEncoder.getPosition() : absoluteEncoder.getPosition();
@@ -99,6 +120,16 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	//Default Unit: Rotations per minute
 	public double getSelectedSensorVelocity() {
 		return encoderType == EncoderType.Relative ? relativeEncoder.getVelocity() : absoluteEncoder.getVelocity();
+	}
+
+	public void enableContinuousInput(double minInput, double maxInput) {
+		enableContinuousInput(minInput, maxInput, 1);
+	}
+
+	public void enableContinuousInput(double minInput, double maxInput, double conversionFactor) {
+		controller.setPositionPIDWrappingEnabled(true);
+		controller.setPositionPIDWrappingMinInput(minInput * conversionFactor);
+		controller.setPositionPIDWrappingMaxInput(maxInput * conversionFactor);
 	}
 
 	public void setPositionConversionFactor(double factor) {

@@ -18,6 +18,7 @@ import frc.team3128.subsystems.Telescope;
  * each mode, as described in the TimedRobot documentation.
  */
 public class Robot extends TimedRobot {
+    public static Robot instance;
 
     public static RobotContainer m_robotContainer = new RobotContainer();
     private Command m_autonomousCommand;
@@ -25,6 +26,13 @@ public class Robot extends TimedRobot {
     public Timer timer;
     public Timer xlockTimer;
     public double startTime;
+
+    public static synchronized Robot getInstance() {
+        if (instance == null) {
+            instance = new Robot();
+        }
+        return instance;
+    }
 
     @Override
     public void robotInit(){

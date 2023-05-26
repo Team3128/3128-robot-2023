@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
-//REMINDER ASK MIKA PID QUESTIONS
 /**
  * A subsystem based off of {@link PIDSubsystem} 
  */
@@ -64,7 +63,7 @@ public abstract class NAR_PIDSubsystem extends SubsystemBase {
     public void periodic() {
         if (m_enabled) {
             double output = m_controller.calculate(getMeasurement());
-            output += !atSetpoint() ? Math.copySign(kS.getAsDouble(), output) : 0;
+            output += Math.copySign(kS.getAsDouble(), output);
             output += kV.getAsDouble() * getSetpoint();
             output += kG_Function.apply(kG.getAsDouble());
             useOutput(output, getSetpoint());
