@@ -24,7 +24,6 @@ public class Pivot extends PIDSubsystem {
 
     private static Pivot instance;
     private NAR_CANSparkMax m_rotateMotor;
-    private DutyCycleEncoder m_encoder;
     public double offset;
 
     public Pivot() {
@@ -33,7 +32,6 @@ public class Pivot extends PIDSubsystem {
         // getController().enableContinuousInput(-180, 180);
 
         configMotors();
-        configEncoders();
         getController().setTolerance(PIVOT_TOLERANCE);
 
         setSetpoint(getMeasurement());
@@ -52,10 +50,7 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.setInverted(false);
         m_rotateMotor.enableVoltageCompensation(12.0);
         m_rotateMotor.setIdleMode(IdleMode.kBrake);
-    }
-
-    private void configEncoders() {
-        m_encoder = new DutyCycleEncoder(ENC_DIO_ID);
+        m_rotateMotor.setSelectedSensorPosition(ANGLE_OFFSET / 360 / GEAR_RATIO);
     }
 
     public void setPower(double power) {
@@ -68,7 +63,7 @@ public class Pivot extends PIDSubsystem {
     }
 
     public double getAngle(){
-        return MathUtil.inputModulus(m_encoder.get() * 360.0 - ANGLE_OFFSET,-180,180);
+        return m_rotateMotor.getSelectedSensorPosition() * 360 * GEAR_RATIO;
     }
 
     @Override
