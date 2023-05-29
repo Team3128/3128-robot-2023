@@ -25,6 +25,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		Absolute
 	}
 	
+	private double kP, kI, kD;
 	private double prevValue = 0;
 	private double prevFF = 0;
 	private ControlType prevControlType = ControlType.kDutyCycle;
@@ -69,6 +70,10 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		controller.setP(kP);
 		controller.setI(kI);
 		controller.setD(kD);
+		this.kP = kP;
+		this.kI = kI;
+		this.kD = kD;
+		
 		controller.setFeedbackDevice(encoderType == EncoderType.Relative ? relativeEncoder : absoluteEncoder);
 	}
 
@@ -103,18 +108,26 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	 * @param column Column to add the PID widgets to.
 	 */
 	public void initShuffleboard(String tabName, String prefix, int column) {
-		DoubleSupplier kP = NAR_Shuffleboard.debug(tabName, prefix + "_kP", controller.getP(), column, 0);
-		DoubleSupplier kI = NAR_Shuffleboard.debug(tabName, prefix + "_kI", controller.getI(), column, 1);
-		DoubleSupplier kD = NAR_Shuffleboard.debug(tabName, prefix + "_kD", controller.getD(), column, 2);
-		final double epsilon = 0.00001d;
+		DoubleSupplier proportional = NAR_Shuffleboard.debug(tabName, prefix + "_kP", kP, column, 0);
+		DoubleSupplier integral = NAR_Shuffleboard.debug(tabName, prefix + "_kI", kI, column, 1);
+		DoubleSupplier derivative = NAR_Shuffleboard.debug(tabName, prefix + "_kD", kD, column, 2);
 		Robot.getInstance().addPeriodic(()-> {
-			if (Math.abs(controller.getP() - kP.getAsDouble()) < epsilon) controller.setP(kP.getAsDouble());
+			if (proportional.getAsDouble() == kP) {
+				kP = proportional.getAsDouble();
+				controller.setP(kP);
+			}
 		}, 0.200);
 		Robot.getInstance().addPeriodic(()-> {
-			if (Math.abs(controller.getI() - kI.getAsDouble()) < epsilon) controller.setP(kI.getAsDouble());
+			if (integral.getAsDouble() == kI) {
+				kI = proportional.getAsDouble();
+				controller.setI(kI);
+			}
 		}, 0.200);
 		Robot.getInstance().addPeriodic(()-> {
-			if (Math.abs(controller.getD() - kD.getAsDouble()) < epsilon) controller.setP(kD.getAsDouble());
+			if (derivative.getAsDouble() == kD) {
+				kD = derivative.getAsDouble();
+				controller.setD(kD);
+			}
 		}, 0.200);
 	}
 
@@ -136,9 +149,9 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	 *     should be a value between -1 and 1 Otherwise: Voltage Control: Voltage (volts) Velocity
 	 *     Control: Velocity (RPM) Position Control: Position (Rotations) Current Control: Current
 	 *     (Amps).
-	 * @param controlType Is the control type to override with
+	 * @param controlType Is the {@link ControlType} to override with
 	 */
-	public void set(double outputValue, ControlType controlType) {
+	public void set(double outputValue, CANSparkMax.ControlType controlType) {
 		set(outputValue, controlType, 0);
 	}
 
@@ -149,7 +162,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	 *     should be a value between -1 and 1 Otherwise: Voltage Control: Voltage (volts) Velocity
 	 *     Control: Velocity (RPM) Position Control: Position (Rotations) Current Control: Current
 	 *     (Amps).
-	 * @param controlType Is the control type to override with
+	 * @param controlType Is the {@link ControlType} to override with
 	 * @param arbFeedforward A value from which is represented in voltage applied to the motor after
 	 *     the result of the specified control mode. The units for the parameter is Volts. This value
 	 *     is set after the control mode, but before any current limits or ramp rates.
@@ -168,20 +181,22 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	 *
 	 * <p>Each motor controller sends back status frames with different data at set rates. Use this
 	 * function to change the default rates.
+	 * 
 	 * <p><b>Status 1</b>: Applied Output, Faults, Sticky Faults, isFollower
 	 * <p><b>Status 2</b>: Motor Velocity, Motor Temperature, Motor Voltage, Motor Current
-	 * <p><b>Status 3</b> Motor Position
+	 * <p><b>Status 3</b>: Motor Position
 	 * <p><b>Status 4</b>: Analog Sensor Voltage, Analog Sensor Velocity, Analog Sensor Position
 	 * <p><b>Status 5</b>: Alternate Encoder Velocity
 	 * <p><b>Status 6</b>: Duty Cycle Absolute Encoder Position, Duty Cycle Absolute Encoder Absolute Angle
 	 * <p><b>Status 7</b>: Duty Cycle Absolute Encoder Velocity, Duty Cycle Absolute Encoder Frequency
-	 * @param periodicFrame Which type of periodic frame to change the period of
-	 * @param periodMs The rate the controller sends the frame to the controller.
+	 * 
+	 * @param frame Which type of {@link PeriodicFrame} to change the period of
+	 * @param periodMs Period in ms for the given frame.
 	 * @return {@link REVLibError#kOk} if successful
 	 */
 	@Override
-	public REVLibError setPeriodicFramePeriod(PeriodicFrame periodicFrame, int periodMs) {
-		return super.setPeriodicFramePeriod(periodicFrame, periodMs);
+	public REVLibError setPeriodicFramePeriod(PeriodicFrame frame, int periodMs) {
+		return super.setPeriodicFramePeriod(frame, periodMs);
 	}
 
 	/**
