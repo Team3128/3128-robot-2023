@@ -30,12 +30,12 @@ public class CmdCurrentCheck extends CommandBase {
         count++;
         if (count >= 5) {
             double current = motor.getStatorCurrent();
-            SmartDashboard.putNumber("Current ROC", (current - prevCurrent) / 0.1);
-            if ((current - prevCurrent) / 0.1 > threshold) {
+            SmartDashboard.putNumber("Current ROC", Math.abs(current - prevCurrent) / 0.1);
+            if (Math.abs(current - prevCurrent) / 0.1 > threshold) {
                 hasObject = true;
             }
             prevCurrent = current;
-            if (current > absoluteThreshold) hasObject = true;
+            if (Math.abs(current) > absoluteThreshold) hasObject = true;
         }
     }
 

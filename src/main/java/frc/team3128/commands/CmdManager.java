@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.IntakeConstants;
+import frc.team3128.Constants.ManipulatorConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.common.constantsint.ConstantsInt.VisionConstants;
 import frc.team3128.common.hardware.input.NAR_XboxController;
@@ -69,11 +70,11 @@ public class CmdManager {
     public static CommandBase CmdIntake() {
         return Commands.sequence(
             new InstantCommand(()-> Intake.objectPresent = false),
-            new InstantCommand(()-> intake.intake(), intake),
+            CmdIntakeIntake(),
             CmdExtendIntake(IntakeState.DEPLOYED),
             new WaitUntilCommand(()-> intake.atSetpoint()).withTimeout(0.5),
-            new InstantCommand(()-> intake.intake(), intake),
             new WaitCommand(0.2),
+            new CmdCurrentCheck(intake.m_intakeRollers, IntakeConstants.CURRENT_THRESHOLD, IntakeConstants.ABSOLUTE_THRESHOLD),
             new WaitUntilCommand(()->intake.hasObjectPresent()),
             new InstantCommand(()-> Intake.objectPresent = true),
             new InstantCommand(()-> intake.stallPower(), intake),
@@ -83,9 +84,9 @@ public class CmdManager {
     
     public static CommandBase CmdManipGrab(boolean cone) {
         return Commands.sequence(
-            new InstantCommand(()-> manipulator.intake(cone), manipulator),
-            new WaitCommand(0.4),
-            new WaitUntilCommand(()-> manipulator.hasObjectPresent()),
+            CmdManipIntake(cone),
+            new WaitCommand(0.2),
+            new CmdCurrentCheck(manipulator.m_roller, ManipulatorConstants.CURRENT_THRESHOLD, ManipulatorConstants.ABSOLUTE_THRESHOLD),
             new WaitCommand(cone ? 0.1 : 0),
             new InstantCommand(()-> manipulator.stallPower(), manipulator)
         );
@@ -123,6 +124,26 @@ public class CmdManager {
 
     public static CommandBase CmdManipIntake(boolean cone) {
         return new InstantCommand(()-> manipulator.intake(cone), manipulator);
+    }
+
+    public static CommandBase CmdManipOuttake() {
+        return new InstantCommand(()-> manipulator.outtake(), manipulator);
+    }
+
+    public static CommandBase CmdStopManip() {
+        return new InstantCommand(()-> manipulator.stopRoller(), manipulator);
+    }
+
+    public static CommandBase CmdIntakeIntake() {
+        return new InstantCommand(()-> intake.intake(), intake);
+    }
+
+    public static CommandBase CmdIntakeOuttake() {
+        return new InstantCommand(()-> intake.outtake(), intake);
+    }
+
+    public static CommandBase CmdStopIntake() {
+        return new InstantCommand(()-> intake.stopRollers(), intake);
     }
 
     public static CommandBase vibrateController() {

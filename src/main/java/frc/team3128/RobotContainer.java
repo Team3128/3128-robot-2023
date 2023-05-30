@@ -124,13 +124,13 @@ public class RobotContainer {
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         controller.getButton("B").onTrue(new InstantCommand(()-> swerve.resetEncoders()));
         controller.getButton("Y").onTrue(CmdExtendRelease())
-                                        .onFalse(Commands.sequence(new InstantCommand(()->manipulator.outtake(), manipulator), 
-                                            new WaitCommand(0.35), new InstantCommand(()->manipulator.stopRoller(), manipulator), 
+                                        .onFalse(Commands.sequence(CmdManipOuttake(),
+                                            new WaitCommand(0.35), CmdStopManip(), 
                                             new CmdMoveArm(ArmPosition.NEUTRAL)));
 
-        controller.getButton("RightBumper").onTrue(new InstantCommand(() -> intake.outtake())).onFalse(new InstantCommand(()->intake.stopRollers()));
+        controller.getButton("RightBumper").onTrue(CmdIntakeOuttake()).onFalse(CmdStopIntake());
         controller.getButton("LeftBumper").onTrue(CmdIntake()).onFalse(Commands.sequence(
-            new InstantCommand(()-> intake.startPID(Intake.IntakeState.RETRACTED.angle)),
+            CmdExtendIntake(Intake.IntakeState.RETRACTED),
             new WaitUntilCommand(()-> intake.atSetpoint()),
             new InstantCommand(() -> intake.set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), intake)));
 
@@ -150,7 +150,7 @@ public class RobotContainer {
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
                                             new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())));
 
-        rightStick.getButton(8).onTrue(new InstantCommand(()->intake.stopRollers(), intake));
+        rightStick.getButton(8).onTrue(CmdStopIntake());
     
         // manual controls
         rightStick.getButton(9).onTrue(new InstantCommand(()->telescope.retract(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
@@ -162,8 +162,8 @@ public class RobotContainer {
         rightStick.getButton(13).onTrue(CmdManipGrab(true));
         rightStick.getButton(14).onTrue(CmdManipGrab(false));
 
-        rightStick.getButton(15).onTrue(new InstantCommand(() -> manipulator.stopRoller(), manipulator));
-        rightStick.getButton(16).onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator));
+        rightStick.getButton(15).onTrue(CmdStopManip());
+        rightStick.getButton(16).onTrue(CmdManipOuttake());
 
         // rightStick.getUpPOVButton().onTrue(new CmdSystemCheck());
         // rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> CmdSystemCheck.systemCheck++));
@@ -215,19 +215,19 @@ public class RobotContainer {
 
         operatorController.getButton("Back").onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
         operatorController.getButton("Y").onTrue(new InstantCommand(()-> telescope.zeroEncoder()));
-        operatorController.getButton("X").onTrue(new InstantCommand(()-> manipulator.stopRoller(), manipulator));
-        operatorController.getButton("A").onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).alongWith(new InstantCommand(()-> intake.startPID(Intake.IntakeState.RETRACTED), intake)));
+        operatorController.getButton("X").onTrue(CmdStopManip());
+        operatorController.getButton("A").onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).alongWith(CmdExtendIntake(Intake.IntakeState.RETRACTED)));
 
-        operatorController.getButton("LeftBumper").onTrue(CmdManipGrab(false)).onFalse(new InstantCommand(()->manipulator.stopRoller(), manipulator));
-        operatorController.getButton("RightBumper").onTrue(CmdManipGrab(true)).onFalse(new InstantCommand(()->manipulator.stopRoller(), manipulator));
+        operatorController.getButton("LeftBumper").onTrue(CmdManipGrab(false)).onFalse(CmdStopManip());
+        operatorController.getButton("RightBumper").onTrue(CmdManipGrab(true)).onFalse(CmdStopManip());
 
-        operatorController.getButton("LeftTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator));
-        operatorController.getButton("RightTrigger").onTrue(new InstantCommand(() -> manipulator.outtake(), manipulator));
+        operatorController.getButton("LeftTrigger").onTrue(CmdManipOuttake());
+        operatorController.getButton("RightTrigger").onTrue(CmdManipOuttake());
 
         operatorController.getUpPOVButton().onTrue(new InstantCommand(()-> intake.moveIntake(0.2), intake)).onFalse(new InstantCommand(()-> intake.stop(), intake));
         operatorController.getDownPOVButton().onTrue(new InstantCommand(()-> intake.moveIntake(-0.2), intake)).onFalse(new InstantCommand(()-> intake.stop(), intake));
-        operatorController.getRightPOVButton().onTrue(new InstantCommand(()-> intake.intake(), intake)).onFalse(new InstantCommand(()-> intake.set(intake.hasObjectPresent() ? 0.1 : 0), intake));
-        operatorController.getLeftPOVButton().onTrue(new InstantCommand(()-> intake.outtake(), intake)).onFalse(new InstantCommand(()-> intake.stopRollers(), intake));
+        operatorController.getRightPOVButton().onTrue(CmdIntakeIntake()).onFalse(new InstantCommand(()-> intake.set(intake.hasObjectPresent() ? 0.1 : 0), intake));
+        operatorController.getLeftPOVButton().onTrue(CmdIntakeOuttake()).onFalse(CmdStopIntake());
 
         
         // on false pidlock to getmeasurement

@@ -8,7 +8,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.team3128.Constants.SwerveConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax.EncoderType;
-import frc.team3128.subsystems.Swerve;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -77,32 +76,6 @@ public class SwerveModule {
         angleMotor.setSelectedSensorPosition(absolutePosition);
     }
 
-    public Rotation2d optimizeTurn(Rotation2d oldAngle, Rotation2d newAngle){
-        double steerAngle = makePositiveDegrees(newAngle);
-        steerAngle %= (360);
-        if (steerAngle < 0.0) {
-            steerAngle += 360;
-        }
-
-        double difference = steerAngle - oldAngle.getDegrees();
-        // Change the target angle so the difference is in the range [-360, 360) instead of [0, 360)
-        if (difference >= 360) {
-            steerAngle -= 360;
-        } else if (difference < -360) {
-            steerAngle += 360;
-        }
-        difference = steerAngle - oldAngle.getDegrees(); // Recalculate difference
-
-        // If the difference is greater than 90 deg or less than -90 deg the drive can be inverted so the total
-        // movement of the module is less than 90 deg
-        if (difference >90 || difference < -90) {
-            // Only need to add 180 deg here because the target angle will be put back into the range [0, 2pi)
-            steerAngle += 180;
-        }
-
-        return Rotation2d.fromDegrees(makePositiveDegrees(steerAngle));
-    }
-
     public double makePositiveDegrees(double angle) {
         return MathUtil.inputModulus(angle, 0, 360);
     }
@@ -152,7 +125,6 @@ public class SwerveModule {
         driveMotor.setSmartCurrentLimit(currentLimit);
         driveMotor.setInverted(driveMotorInvert);
         driveMotor.setIdleMode(IdleMode.kCoast); 
-        // driveMotor.setControlFramePeriod(ControlFrame.Control, angleContinuousCurrentLimit)
         driveMotor.setSelectedSensorPosition(0);
     }
     

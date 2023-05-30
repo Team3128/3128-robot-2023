@@ -21,7 +21,7 @@ public class Intake extends PIDSubsystem {
 
     // Motors
     private NAR_CANSparkMax m_intakePivot;
-    private NAR_TalonSRX m_intakeRollers;
+    public NAR_TalonSRX m_intakeRollers;
 
     private DoubleSupplier kF;
     private DoubleSupplier setpoint, power;
@@ -138,7 +138,7 @@ public class Intake extends PIDSubsystem {
 
 
     public boolean hasObjectPresent(){
-        return getCurrent() > CURRENT_THRESHOLD;
+        return getCurrent() > ABSOLUTE_THRESHOLD;
     }
 
     // Roller Control
