@@ -51,7 +51,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public Swerve() {
-        gyro = new WPI_Pigeon2(pigeonID, "drivetrain");
+        gyro = new WPI_Pigeon2(pigeonID);
         gyro.configFactoryDefault();
         //zeroGyro();
         fieldRelative = true;

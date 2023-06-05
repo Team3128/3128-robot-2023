@@ -118,6 +118,7 @@ public class SwerveModule {
         angleMotor.setSmartCurrentLimit(currentLimit);
         angleMotor.setInverted(angleMotorInvert);
         angleMotor.setIdleMode(IdleMode.kCoast);
+        //angleMotor.enableContinuousInput(-180, 180, degreesToRotations(1, angleGearRatio));
         resetToAbsolute();
     }
 

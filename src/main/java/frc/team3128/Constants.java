@@ -130,13 +130,13 @@ public class Constants {
 
         /* Angle Motor PID Values */
         // switched 364 pid values to SDS pid values
-        public static final double angleKP = 0.3; // 0.6; // citrus: 0.3 //0.15
+        public static final double angleKP = 0.15; // 0.6; // citrus: 0.3 //0.15
         public static final double angleKI = 0.0;
         public static final double angleKD = 0.0; // 12.0; // citrus: 0
         public static final double angleKF = 0.0;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.05; //4e-5
+        public static final double driveKP = 4e-5; //4e-5, //0.05
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
@@ -349,7 +349,7 @@ public class Constants {
         // public static final int CANCODER_ID = 24;
         public static final int ENC_DIO_ID = 7;
         public static final double ANGLE_OFFSET = 0; //get from new encoder
-        public static final double GEAR_RATIO = 300.0;
+        public static final double GEAR_RATIO = 240.0;
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
         
