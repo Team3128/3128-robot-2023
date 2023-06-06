@@ -68,7 +68,7 @@ public class Intake extends PIDSubsystem {
         m_intakeRollers.setNeutralMode(NeutralMode.Brake);
 
         m_intakePivot.setInverted(true);
-        m_intakeRollers.setInverted(true);
+        m_intakeRollers.setInverted(false);
 
         m_intakeRollers.enableVoltageCompensation(true);
         

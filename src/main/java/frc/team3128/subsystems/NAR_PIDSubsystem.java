@@ -14,6 +14,8 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 
 /**
  * A subsystem based off of {@link PIDSubsystem} 
+ * @since 2023 CHARGED UP
+ * @author Mason Lam
  */
 public abstract class NAR_PIDSubsystem extends SubsystemBase {
     protected final PIDController m_controller;

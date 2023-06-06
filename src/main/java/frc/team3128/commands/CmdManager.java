@@ -46,7 +46,7 @@ public class CmdManager {
                 new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)
             ),
             Commands.parallel(
-                new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], true, VisionConstants.SCORES_GRID[xpos]),
+                //new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], true, VisionConstants.SCORES_GRID[xpos]),
                 CmdPivot(position)
             ),
             vibrateController(),

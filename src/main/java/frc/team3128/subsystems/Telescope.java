@@ -31,9 +31,9 @@ public class Telescope extends PIDSubsystem {
     private static Telescope instance;
 
     private NAR_CANSparkMax m_teleMotor;
-    private SparkMaxRelativeEncoder m_encoder;
+    //private SparkMaxRelativeEncoder m_encoder;
     private DoubleSolenoid m_solenoid; 
-    private DigitalInput m_limitSwitch;
+    //private DigitalInput m_limitSwitch;
 
     public Telescope() {
         super(new PIDController(kP, kI, kD));
@@ -69,14 +69,15 @@ public class Telescope extends PIDSubsystem {
     }
 
     private void configEncoders() {
-        m_encoder = (SparkMaxRelativeEncoder) m_teleMotor.getEncoder();
-        m_encoder.setPositionConversionFactor(ENC_CONV); 
-        m_limitSwitch = new DigitalInput(9);
+        m_teleMotor.setPositionConversionFactor(ENC_CONV);
+        // m_encoder = (SparkMaxRelativeEncoder) m_teleMotor.getEncoder();
+        // m_encoder.setPositionConversionFactor(ENC_CONV); 
+        // m_limitSwitch = new DigitalInput(9);
     }
 
-    public boolean getLimitSwitch() {
-        return m_limitSwitch.get();
-    }
+    // public boolean getLimitSwitch() {
+    //     return m_limitSwitch.get();
+    // }
 
     /*If extends actually extends set isReversed to false,
     if extends retracts, set isReversed to true*/
@@ -97,7 +98,7 @@ public class Telescope extends PIDSubsystem {
     }
 
     public double getDist() {
-        return -m_encoder.getPosition() + MIN_DIST;
+        return -m_teleMotor.getSelectedSensorPosition() + MIN_DIST;
     }
 
     @Override
@@ -156,7 +157,7 @@ public class Telescope extends PIDSubsystem {
     }
 
     public void zeroEncoder(double dist) { //returns inches
-        m_encoder.setPosition(dist);
+        m_teleMotor.setSelectedSensorPosition(dist);
     }
 
     public boolean atSetpoint() {
@@ -178,7 +179,7 @@ public class Telescope extends PIDSubsystem {
         NAR_Shuffleboard.addData("telescope", "atSetpoint", ()->getController().atSetpoint(), 3, 0);
         NAR_Shuffleboard.addData("telescope", "isEnabled", ()->isEnabled(), 4, 0);
 
-        NAR_Shuffleboard.addData("telescope", "limit switch",()-> getLimitSwitch(), 5, 0);   
+        // NAR_Shuffleboard.addData("telescope", "limit switch",()-> getLimitSwitch(), 5, 0);   
     }
 
 }

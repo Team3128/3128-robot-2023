@@ -43,8 +43,8 @@ public class AutoPrograms {
         */
         Trajectories.autoSpeed = 2.5;
         auto.put("DEFAULT", Commands.sequence(
-            Trajectories.startScoringPoint(ArmPosition.TOP_CONE),
-            Trajectories.resetOdometry(false)
+            Trajectories.startScoringPoint(ArmPosition.TOP_CONE)
+            //Trajectories.resetOdometry(false)
         ));
 
         Trajectories.autoSpeed = 2.5;

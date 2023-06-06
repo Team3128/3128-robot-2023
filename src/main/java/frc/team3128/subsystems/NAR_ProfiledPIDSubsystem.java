@@ -14,6 +14,8 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 
 /**
  * A subsystem based off of {@link ProfiledPIDSubsystem} 
+ * @since 2023 CHARGED UP
+ * @author Mason Lam
  */
 public abstract class NAR_ProfiledPIDSubsystem extends SubsystemBase {
     protected final ProfiledPIDController m_controller;
@@ -63,7 +65,7 @@ public abstract class NAR_ProfiledPIDSubsystem extends SubsystemBase {
     public void periodic() {
         if (m_enabled) {
           double output = m_controller.calculate(getMeasurement());
-          output += !atGoal() ? kS.getAsDouble() * Math.signum(getSetpoint().velocity) : 0;
+          output += kS.getAsDouble() * Math.signum(getSetpoint().velocity);
           output += kV.getAsDouble() * getSetpoint().velocity;
           output += kG_Function.apply(kG.getAsDouble());
           useOutput(output, m_controller.getSetpoint());

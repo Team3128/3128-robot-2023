@@ -50,7 +50,7 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.setInverted(false);
         m_rotateMotor.enableVoltageCompensation(12.0);
         m_rotateMotor.setIdleMode(IdleMode.kBrake);
-        m_rotateMotor.setSelectedSensorPosition(ANGLE_OFFSET / 360 / GEAR_RATIO);
+        m_rotateMotor.setSelectedSensorPosition(ANGLE_OFFSET / 360 * GEAR_RATIO);
     }
 
     public void setPower(double power) {
@@ -58,12 +58,16 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.set(power);
     }
 
+    public void resetPivot() {
+        m_rotateMotor.setSelectedSensorPosition(0);
+    }
+
     public void stopPivot() {
         setPower(0);
     }
 
     public double getAngle(){
-        return m_rotateMotor.getSelectedSensorPosition() * 360 * GEAR_RATIO;
+        return m_rotateMotor.getSelectedSensorPosition() * 360 / GEAR_RATIO;
     }
 
     @Override

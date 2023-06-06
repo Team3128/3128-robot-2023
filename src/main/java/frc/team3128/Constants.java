@@ -348,8 +348,8 @@ public class Constants {
         public static final int PIVOT_CURRENT_LIMIT = 40;
         // public static final int CANCODER_ID = 24;
         public static final int ENC_DIO_ID = 7;
-        public static final double ANGLE_OFFSET = 0; //get from new encoder
-        public static final double GEAR_RATIO = 240.0;
+        public static final double ANGLE_OFFSET = 2.5; //get from new encoder
+        public static final double GEAR_RATIO = 300.0;
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
         
@@ -485,7 +485,7 @@ public class Constants {
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TO_DEGREES = 360;
-        public static final double ANGLE_OFFSET = 138; 
+        public static final double ANGLE_OFFSET = 138+35; 
 
         public static final int ENCODER_DIO_ID = 8;
 
