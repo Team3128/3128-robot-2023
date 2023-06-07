@@ -73,8 +73,8 @@ public class CmdManager {
             CmdIntakeIntake(),
             CmdExtendIntake(IntakeState.DEPLOYED),
             new WaitUntilCommand(()-> intake.atSetpoint()).withTimeout(0.5),
-            new WaitCommand(0.2),
-            new CmdCurrentCheck(intake.m_intakeRollers, IntakeConstants.CURRENT_THRESHOLD, IntakeConstants.ABSOLUTE_THRESHOLD),
+            new WaitCommand(0.4),
+            //new CmdCurrentCheck(intake.m_intakeRollers, IntakeConstants.CURRENT_THRESHOLD, IntakeConstants.ABSOLUTE_THRESHOLD),
             new WaitUntilCommand(()->intake.hasObjectPresent()),
             new InstantCommand(()-> Intake.objectPresent = true),
             new InstantCommand(()-> intake.stallPower(), intake),
@@ -85,8 +85,9 @@ public class CmdManager {
     public static CommandBase CmdManipGrab(boolean cone) {
         return Commands.sequence(
             CmdManipIntake(cone),
-            new WaitCommand(0.2),
-            new CmdCurrentCheck(manipulator.m_roller, ManipulatorConstants.CURRENT_THRESHOLD, ManipulatorConstants.ABSOLUTE_THRESHOLD),
+            new WaitCommand(0.4),
+            //new CmdCurrentCheck(manipulator.m_roller, ManipulatorConstants.CURRENT_THRESHOLD, ManipulatorConstants.ABSOLUTE_THRESHOLD),
+            new WaitUntilCommand(()-> manipulator.hasObjectPresent()),
             new WaitCommand(cone ? 0.1 : 0),
             new InstantCommand(()-> manipulator.stallPower(), manipulator)
         );
