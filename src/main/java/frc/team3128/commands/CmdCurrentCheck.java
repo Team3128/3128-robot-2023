@@ -36,6 +36,7 @@ public class CmdCurrentCheck extends CommandBase {
             }
             prevCurrent = current;
             if (Math.abs(current) > absoluteThreshold) hasObject = true;
+            count = 0;
         }
     }
 
