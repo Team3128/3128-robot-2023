@@ -388,7 +388,7 @@ public class Constants {
             NEUTRAL(5, 11.5, null, null), //pivot should be 0
 
             HP_SHELF_CONE(115, 17.5, null, null), //105
-            HP_SHELF_CUBE(108, 17.5, null, null), //105
+            HP_SHELF_CUBE(111, 17.5, null, null), //105
             GROUND_PICKUP(37, 26.5, null, null),
             GROUND_PICKUP_CONE(37, 26.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 26, null, null), 
