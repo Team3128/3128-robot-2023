@@ -1,6 +1,7 @@
 package frc.team3128.commands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -40,7 +41,7 @@ public class CmdSystemCheckFancy extends CommandBase {
 
     private double driveVelocity = 1;
 
-    private static boolean swerveSystemCheck, armSystemCheck, manipulatorSystemCheck, intakeSystemCheck = false;
+    private static boolean discreteSwerveSystemCheck, armSystemCheck, manipulatorSystemCheck, intakeSystemCheck, continuousSwerveSystemCheck = false;
 
     public CmdSystemCheckFancy() {
         swerve = Swerve.getInstance();
@@ -54,10 +55,11 @@ public class CmdSystemCheckFancy extends CommandBase {
     public void initialize() {
         systemCheck = 0;
         repeat = true;
-        swerveSystemCheck = false;
+        discreteSwerveSystemCheck = false;
         armSystemCheck = false;
         manipulatorSystemCheck = false;
         intakeSystemCheck = false;
+        continuousSwerveSystemCheck = false;
     }
 
     @Override
@@ -65,8 +67,8 @@ public class CmdSystemCheckFancy extends CommandBase {
         if (!repeat) return;
         repeat = false;
         if (systemCheck == 1) {
-            swerveSystemCheck = false;
-            swerveCheck(driveVelocity);
+            discreteSwerveSystemCheck = false;
+            discreteSwerveCheck(driveVelocity);
         }
         else if (systemCheck == 2) {
             CommandBase armTest = Commands.sequence(
@@ -106,14 +108,23 @@ public class CmdSystemCheckFancy extends CommandBase {
             );
             intakeCheck.schedule();
         }
+        else if(systemCheck == 5) {
+            CommandBase continuousSwerveCheck = Commands.sequence(
+                new InstantCommand(()-> swerve.drive(new Translation2d(driveVelocity,0), 1, true)),
+                new WaitCommand(5),
+                new InstantCommand(()-> swerve.stop()),
+                new InstantCommand(()-> continuousSwerveSystemCheck = true)
+            );
+            continuousSwerveCheck.schedule();
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return systemCheck > 4;
+        return systemCheck > 5;
     }
 
-    public void swerveCheck(double velocity) {
+    public void discreteSwerveCheck(double velocity) {
         for (int i = 0; i < 8; i++) {
             double angle = i * 45;
             SwerveModuleState desiredTestState = new SwerveModuleState(velocity * (angle > 180 ? -1 : 1),
@@ -129,14 +140,15 @@ public class CmdSystemCheckFancy extends CommandBase {
             }
         }
         swerve.stop();
-        swerveSystemCheck = true;
+        discreteSwerveSystemCheck = true;
     }
 
     public static void initShuffleboard() {
         NAR_Shuffleboard.addData("System Check", "Count", ()-> systemCheck, 1,0);
-        NAR_Shuffleboard.addData("System Check", "Swerve", () -> swerveSystemCheck, 0, 0);
+        NAR_Shuffleboard.addData("System Check", "Swerve Discrete", () -> discreteSwerveSystemCheck, 0, 0);
         NAR_Shuffleboard.addData("System Check", "Arm", () -> armSystemCheck, 0, 1);
         NAR_Shuffleboard.addData("System Check", "Intake", () -> intakeSystemCheck, 0, 2);
         NAR_Shuffleboard.addData("System Check", "Manipulator", () -> manipulatorSystemCheck, 0, 3);
+        NAR_Shuffleboard.addData("System Check", "Swerve Continuous", () -> continuousSwerveSystemCheck, 0, 4);
     }
 }
