@@ -76,7 +76,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         CommandScheduler.getInstance().run();
         if (xlockTimer.hasElapsed(134.75)) {
-            //new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance()).schedule();
+            new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance()).schedule();
         }
     }
 

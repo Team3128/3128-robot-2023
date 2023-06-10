@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -39,7 +40,7 @@ public class CmdSystemCheckFancy extends CommandBase {
     private Manipulator manip;
     private Intake intake;
 
-    private double driveVelocity = 1;
+    private double driveVelocity = 0.1;
 
     private static boolean discreteSwerveSystemCheck, armSystemCheck, manipulatorSystemCheck, intakeSystemCheck, continuousSwerveSystemCheck = false;
 
@@ -110,8 +111,7 @@ public class CmdSystemCheckFancy extends CommandBase {
         }
         else if(systemCheck == 5) {
             CommandBase continuousSwerveCheck = Commands.sequence(
-                new InstantCommand(()-> swerve.drive(new Translation2d(driveVelocity,0), 1, true)),
-                new WaitCommand(5),
+                new RunCommand(()-> swerve.drive(new Translation2d(driveVelocity,0), 1, true), swerve).withTimeout(5),
                 new InstantCommand(()-> swerve.stop()),
                 new InstantCommand(()-> continuousSwerveSystemCheck = true)
             );

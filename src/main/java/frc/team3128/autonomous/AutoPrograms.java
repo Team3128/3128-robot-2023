@@ -4,9 +4,13 @@ import java.util.HashMap;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team3128.Constants.AutoConstants;
@@ -47,11 +51,13 @@ public class AutoPrograms {
             //Trajectories.resetOdometry(false)
         ));
 
-        Trajectories.autoSpeed = 2.5;
+        Trajectories.autoSpeed = 0.1;
         auto.put("bottom_1pc+mobility", Commands.sequence(
             Trajectories.startScoringPoint(ArmPosition.TOP_CONE),
             Trajectories.resetOdometry(false),
-            Trajectories.movePoint(AutoConstants.PICKUP_1)
+            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -1 : 1,0),0,true), swerve).withTimeout(3.5),
+            new InstantCommand(()-> swerve.stop())
+            //Trajectories.movePoint(AutoConstants.PICKUP_1)
         ));
 
         Trajectories.autoSpeed = 2.5;
@@ -193,7 +199,7 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-        String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
+        String selectedAutoName = "bottom_1pc+mobility";//NarwhalDashboard.getSelectedAutoName();
         // String selectedAutoName = "bottom_2.5pc+Climb"; //uncomment and change this for testing without opening Narwhal Dashboard
         //REMINDER TO TEST AUTO SPEED AT SOME POINT
         if (selectedAutoName == null) {

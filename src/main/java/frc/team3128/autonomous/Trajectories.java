@@ -244,8 +244,8 @@ public class Trajectories {
         return Commands.sequence(
             new InstantCommand(()-> Vision.AUTO_ENABLED = true),
             new InstantCommand(()-> swerve.zeroGyro((DriverStation.getAlliance() == Alliance.Red && front) || (DriverStation.getAlliance() == Alliance.Blue && !front) ? 0 : 180)),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -2.5 : 2.5,0), 
-                                    0, true), swerve).until(() -> Vision.getInstance().getCamera(front ? VisionConstants.FRONT : VisionConstants.BACK).hasValidTarget()),
+            //new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -2.5 : 2.5,0), 
+            //                        0, true), swerve).until(() -> Vision.getInstance().getCamera(front ? VisionConstants.FRONT : VisionConstants.BACK).hasValidTarget()),
             new InstantCommand(()-> swerve.stop(), swerve),
             new InstantCommand(()-> Vision.getInstance().visionReset()),
             new InstantCommand(()-> Led.getInstance().setColorPurple())
