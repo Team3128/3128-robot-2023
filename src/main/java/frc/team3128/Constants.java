@@ -367,7 +367,7 @@ public class Constants {
         public static final double MIN_DIST = 11.5;
         public static final double MAX_DIST = 40;
         public static final double TELE_OFFSET = 0;
-        public static final double TELE_TOLERANCE = 2;
+        public static final double TELE_TOLERANCE = 1;
         public static final int TELE_CURRENT_LIMIT = 40;
         public static final boolean isReversed = true;
 
@@ -387,8 +387,8 @@ public class Constants {
 
             NEUTRAL(5, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF_CONE(115, 17.5, null, null), //105
-            HP_SHELF_CUBE(111, 17.5, null, null), //105
+            HP_SHELF_CONE(110, 17.5, null, null), //105
+            HP_SHELF_CUBE(108, 17.5, null, null), //105
             GROUND_PICKUP(37, 26.5, null, null),
             GROUND_PICKUP_CONE(37, 26.5, null, null), 
             GROUND_PICKUP_CUBE(37.5, 26, null, null), 
@@ -505,15 +505,12 @@ public class Constants {
     }
 
     public static class ManipulatorConstants{
-        public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
-        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
-
         public static final int ROLLER_MOTOR_ID = 13;
-        public static final double ROLLER_POWER = 0.8;
-        public static final double STALL_POWER = 0.3;
+        public static final double ROLLER_POWER = 0.6;
+        public static final double STALL_POWER = 0.25;
 
         public static final double CURRENT_THRESHOLD = 5;
-        public static final double ABSOLUTE_THRESHOLD = 25;
+        public static final double ABSOLUTE_THRESHOLD = 20;
 
         public static final double ROLLER_VOLTAGE = 8;
     }

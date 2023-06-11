@@ -111,7 +111,7 @@ public class CmdSystemCheckFancy extends CommandBase {
         }
         else if(systemCheck == 5) {
             CommandBase continuousSwerveCheck = Commands.sequence(
-                new RunCommand(()-> swerve.drive(new Translation2d(driveVelocity,0), 1, true), swerve).withTimeout(5),
+                new RunCommand(()-> swerve.drive(new Translation2d(driveVelocity,0), 0, true), swerve).withTimeout(5),
                 new InstantCommand(()-> swerve.stop()),
                 new InstantCommand(()-> continuousSwerveSystemCheck = true)
             );

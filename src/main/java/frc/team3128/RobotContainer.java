@@ -130,9 +130,9 @@ public class RobotContainer {
 
         controller.getButton("RightBumper").onTrue(CmdIntakeOuttake()).onFalse(CmdStopIntake());
         controller.getButton("LeftBumper").onTrue(CmdIntake()).onFalse(Commands.sequence(
+            new InstantCommand(() -> intake.set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), intake),
             CmdExtendIntake(Intake.IntakeState.RETRACTED),
-            new WaitUntilCommand(()-> intake.atSetpoint()),
-            new InstantCommand(() -> intake.set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), intake)));
+            new WaitUntilCommand(()-> intake.atSetpoint())));
 
         // rightStick.getButton(4).onTrue(new StartEndCommand(() ->telescope.retract(), () -> {telescope.stopTele(); telescope.zeroEncoder(TelescopeConstants.TELE_OFFSET);}).until(() -> !telescope.getLimitSwitch()));
         
@@ -179,7 +179,6 @@ public class RobotContainer {
 
         buttonPad.getButton(14).onTrue(new InstantCommand(()->{pivot.setPower(0); telescope.stopTele(); 
                                                                 manipulator.stopRoller(); swerve.stop(); intake.stop();}, pivot, telescope, swerve, manipulator, intake));
-        // cancel button
         buttonPad.getButton(16).onTrue(
             CmdShelfPickup(true)
         );
