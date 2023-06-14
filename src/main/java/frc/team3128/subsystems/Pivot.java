@@ -77,7 +77,7 @@ public class Pivot extends PIDSubsystem {
 
     public void startPID(double anglePos) {
         anglePos = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : anglePos;
-        anglePos = MathUtil.clamp(anglePos,0,135);
+        anglePos = MathUtil.clamp(anglePos,0,285);
         enable();
         setSetpoint(anglePos);
     }
