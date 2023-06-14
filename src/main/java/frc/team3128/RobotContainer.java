@@ -183,11 +183,20 @@ public class RobotContainer {
             CmdManipGrab(true)));
             //pivot.setPower(0); telescope.stopTele(); manipulator.stopRoller(); swerve.stop(); intake.stop();}, pivot, telescope, swerve, manipulator, intake));
         buttonPad.getButton(16).onTrue(
-            CmdShelfPickup(true)
-        );
+            //CmdShelfPickup(true)
+            Commands.sequence(new InstantCommand(()-> pivot.startPID(283.5)),
+            CmdManipGrab(true),
+            new WaitCommand(0.5),
+            new CmdMoveArm(ArmPosition.NEUTRAL)
+            ));
         buttonPad.getButton(15).onTrue(
-            CmdShelfPickup(false)
-        );
+            //CmdShelfPickup(false)
+            Commands.sequence(
+            new InstantCommand(()-> pivot.startPID(288)),
+            CmdManipGrab(false),
+            new WaitCommand(0.5),
+            new CmdMoveArm(ArmPosition.NEUTRAL)
+            ));
 
         //rightStick.getUpPOVButton().onTrue(new InstantCommand(()-> led.setAllianceColor()));
         //rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> led.setAutoColor()));

@@ -50,7 +50,7 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.setInverted(false);
         m_rotateMotor.enableVoltageCompensation(12.0);
         m_rotateMotor.setIdleMode(IdleMode.kBrake);
-        m_rotateMotor.setSelectedSensorPosition(ANGLE_OFFSET / 360 * GEAR_RATIO);
+        resetPivot();
     }
 
     public void setPower(double power) {
@@ -77,7 +77,7 @@ public class Pivot extends PIDSubsystem {
 
     public void startPID(double anglePos) {
         anglePos = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : anglePos;
-        anglePos = MathUtil.clamp(anglePos,0,285);
+        anglePos = MathUtil.clamp(anglePos,0,295);
         enable();
         setSetpoint(anglePos);
     }
@@ -91,11 +91,12 @@ public class Pivot extends PIDSubsystem {
         double fG = kG.getAsDouble() * Math.sin(Units.degreesToRadians(setpoint)); 
         double teleDist = Telescope.getInstance().getDist();
 
-        fG *= MathUtil.clamp(((teleDist-11.5) / (TelescopeConstants.MAX_DIST - TelescopeConstants.MIN_DIST)),0,1); 
+        fG *= 1.0/14.25 * (teleDist - TelescopeConstants.MIN_DIST) + 1;
+        //fG *= MathUtil.clamp(((teleDist-11.5) / (TelescopeConstants.MAX_DIST - TelescopeConstants.MIN_DIST)),0,1); 
 
         double voltageOutput = output + fG;
 
-        if (Math.abs(setpoint - getAngle()) > kF.getAsDouble()) voltageOutput = Math.copySign(12, voltageOutput);
+        //if (Math.abs(setpoint - getAngle()) > kF.getAsDouble()) voltageOutput = Math.copySign(12, voltageOutput);
         
         m_rotateMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
     }

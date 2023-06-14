@@ -337,11 +337,11 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 0.5;
+        public static final double kP = 0.425;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kF = 15;
-        public static final double kG = 0.7;
+        public static final double kG = 0.25;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 5.0;
@@ -349,7 +349,7 @@ public class Constants {
         // public static final int CANCODER_ID = 24;
         public static final int ENC_DIO_ID = 7;
         public static final double ANGLE_OFFSET = 2.5; //get from new encoder
-        public static final double GEAR_RATIO = 300.0;
+        public static final double GEAR_RATIO = 180.0;
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
         
