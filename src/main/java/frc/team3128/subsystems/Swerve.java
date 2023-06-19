@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.Constants.VisionConstants;
-import frc.team3128.common.swerve.SwerveModule;
+import frc.team3128.common.swerveNeo.SwerveModule;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
 import static frc.team3128.Constants.SwerveConstants.*;
@@ -51,7 +51,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public Swerve() {
-        gyro = new WPI_Pigeon2(pigeonID, "drivetrain");
+        gyro = new WPI_Pigeon2(pigeonID);
         gyro.configFactoryDefault();
         //zeroGyro();
         fieldRelative = true;

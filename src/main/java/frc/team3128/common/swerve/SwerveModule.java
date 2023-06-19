@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.team3128.common.hardware.motorcontroller.NAR_TalonFX;
 import frc.team3128.subsystems.Swerve;
 
 import com.ctre.phoenix.ErrorCode;
@@ -21,13 +22,11 @@ import static frc.team3128.common.swerve.FalconConversions.*;
 public class SwerveModule {
     public final int moduleNumber;
     private final double angleOffset;
-    private final TalonFX angleMotor;
-    private final TalonFX driveMotor;
+    private final NAR_TalonFX angleMotor;
+    private final NAR_TalonFX driveMotor;
     private final CANCoder angleEncoder;
     
     private Rotation2d lastAngle;
-    private double prevPosition;
-    private boolean hadError;
 
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(driveKS, driveKV, driveKA);
 
@@ -40,15 +39,14 @@ public class SwerveModule {
         configAngleEncoder();
 
         /* Angle Motor Config */
-        angleMotor = new TalonFX(moduleConstants.angleMotorID, "drivetrain");
+        angleMotor = new NAR_TalonFX(moduleConstants.angleMotorID, "drivetrain");
         configAngleMotor();
 
         /* Drive Motor Config */
-        driveMotor = new TalonFX(moduleConstants.driveMotorID, "drivetrain");
+        driveMotor = new NAR_TalonFX(moduleConstants.driveMotorID, "drivetrain");
         configDriveMotor();
 
         lastAngle = getState().angle;
-        prevPosition = driveMotor.getSelectedSensorPosition();
     }
 
     public void setDesiredState(SwerveModuleState desiredState){

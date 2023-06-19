@@ -36,13 +36,11 @@ import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdInPlaceTurn;
-import frc.team3128.commands.CmdIntake;
 import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.commands.CmdMovePickup;
 import frc.team3128.commands.CmdMoveScore;
-import frc.team3128.commands.CmdScore;
 import frc.team3128.commands.CmdScoreAuto;
 import frc.team3128.commands.CmdMove.Type;
 import frc.team3128.subsystems.Intake;
@@ -53,6 +51,7 @@ import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import frc.team3128.subsystems.Intake.IntakeState;
+import static frc.team3128.commands.CmdManager.*;
 
 /**
  * Store trajectories for autonomous. Edit points here. 
@@ -87,22 +86,22 @@ public class Trajectories {
 
         CommandEventMap.put("Score[2,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(true, ArmPosition.TOP_CUBE, 1)
+                                                CmdScore(true, ArmPosition.TOP_CUBE, 1)
                                                 ));
 
         CommandEventMap.put("Score[2,2]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 0),
-                                                new CmdScore(true, ArmPosition.MID_CUBE, 1)
+                                                CmdScore(true, ArmPosition.MID_CUBE, 1)
                                                 ));
 
         CommandEventMap.put("Score[8,3]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(true, ArmPosition.TOP_CUBE, 1)
+                                                CmdScore(true, ArmPosition.TOP_CUBE, 1)
                                                 ));
 
         CommandEventMap.put("Score[8,2]", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Vision.SELECTED_GRID = 2),
-                                                new CmdScore(true, ArmPosition.MID_CUBE, 1)
+                                                CmdScore(true, ArmPosition.MID_CUBE, 1)
                                                 ));
 
         //StartScore
@@ -167,7 +166,7 @@ public class Trajectories {
             Commands.race(
                 Commands.sequence(
                     new WaitCommand(inner ? 1 : 0.5),
-                    new CmdIntake()
+                    CmdIntake()
                 ), Commands.sequence(
                     new CmdMovePickup(false, autoSpeed, pose),
                     new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -0.5 : 0.5,
@@ -192,7 +191,7 @@ public class Trajectories {
         return Commands.sequence(
             new InstantCommand(()->Vision.AUTO_ENABLED = true),
             Commands.race(
-                new CmdIntake(),
+                CmdIntake(),
                 // new CmdGroundPickup(cone),
                 Commands.sequence(
                     new CmdMove(Type.NONE, false, autoSpeed, pose),
@@ -245,8 +244,8 @@ public class Trajectories {
         return Commands.sequence(
             new InstantCommand(()-> Vision.AUTO_ENABLED = true),
             new InstantCommand(()-> swerve.zeroGyro((DriverStation.getAlliance() == Alliance.Red && front) || (DriverStation.getAlliance() == Alliance.Blue && !front) ? 0 : 180)),
-            new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -2.5 : 2.5,0), 
-                                    0, true), swerve).until(() -> Vision.getInstance().getCamera(front ? VisionConstants.FRONT : VisionConstants.BACK).hasValidTarget()),
+            //new RunCommand(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Red ? -2.5 : 2.5,0), 
+            //                        0, true), swerve).until(() -> Vision.getInstance().getCamera(front ? VisionConstants.FRONT : VisionConstants.BACK).hasValidTarget()),
             new InstantCommand(()-> swerve.stop(), swerve),
             new InstantCommand(()-> Vision.getInstance().visionReset()),
             new InstantCommand(()-> Led.getInstance().setColorPurple())

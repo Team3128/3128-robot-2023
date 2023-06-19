@@ -1,35 +1,29 @@
 package frc.team3128.common.hardware.motorcontroller;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.team3128.common.hardware.motor.NAR_Motor;
 
 public class NAR_TalonSRX extends WPI_TalonSRX {
 
     private double prevValue = 0;
 	private ControlMode prevControlMode = ControlMode.Disabled;
 	private TalonSRXSimCollection motorSim;
-	private NAR_Motor motor;
 
 	/**
 	 * @param deviceNumber device id
 	 */
-	public NAR_TalonSRX(int deviceNumber, NAR_Motor motor) {
+	public NAR_TalonSRX(int deviceNumber) {
 		super(deviceNumber);
-		this.motor = motor;
 
 		if(RobotBase.isSimulation())
 			motorSim = getTalonSRXSimCollection();
 			
 		enableVoltageCompensation(true);
 		configVoltageCompSaturation(12, 10);
-	}
-
-	public NAR_TalonSRX(int deviceNumber) {
-		this(deviceNumber, null);
 	}
 
 	@Override
@@ -54,10 +48,6 @@ public class NAR_TalonSRX extends WPI_TalonSRX {
 		return prevControlMode;
 	}
 
-	public void setEncoderPosition(double n) {
-		setSelectedSensorPosition(n);
-	}
-
 	// getInverted() stuff should only be temporary
 	public void setSimPosition(double pos) {
 		if(super.getInverted()){
@@ -74,7 +64,18 @@ public class NAR_TalonSRX extends WPI_TalonSRX {
 		motorSim.setQuadratureVelocity((int)(vel / 10)); // convert nu/s to nu/100ms
 	}
 
+	@Override
+	public ErrorCode setSelectedSensorPosition(double n) {
+		return super.setSelectedSensorPosition(n * MotorControllerConstants.TALONSRX_ENCODER_RESOLUTION); //Rotations to nu
+	}
+
+	@Override
 	public double getSelectedSensorVelocity() {
-		return super.getSelectedSensorVelocity() * 10; // convert nu/100ms to nu/s
+		return super.getSelectedSensorVelocity() * 600 / MotorControllerConstants.TALONSRX_ENCODER_RESOLUTION; // convert nu/100ms to rpm
+	}
+
+	@Override
+	public double getSelectedSensorPosition() {
+		return super.getSelectedSensorPosition() / MotorControllerConstants.TALONSRX_ENCODER_RESOLUTION; // convert nu to rotations
 	}
 }
