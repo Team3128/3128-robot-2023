@@ -124,9 +124,10 @@ public class RobotContainer {
         controller.getButton("LeftTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = .25)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         controller.getButton("B").onTrue(new InstantCommand(()-> swerve.resetEncoders()));
-        controller.getButton("Y").onTrue(CmdExtendRelease())
+        controller.getButton("Y").onTrue(Commands.sequence(CmdExtendRelease(), new InstantCommand(()-> Swerve.throttle = 0.25)))
                                         .onFalse(Commands.sequence(CmdManipOuttake(),
-                                            new WaitCommand(0.35), CmdStopManip(), 
+                                            new WaitCommand(0.35), CmdStopManip(),
+                                            new InstantCommand(()-> Swerve.throttle = 0.8), 
                                             new CmdMoveArm(ArmPosition.NEUTRAL)));
 
         controller.getButton("RightBumper").onTrue(CmdIntakeOuttake()).onFalse(CmdStopIntake());
@@ -184,7 +185,10 @@ public class RobotContainer {
             //pivot.setPower(0); telescope.stopTele(); manipulator.stopRoller(); swerve.stop(); intake.stop();}, pivot, telescope, swerve, manipulator, intake));
         buttonPad.getButton(16).onTrue(
             //CmdShelfPickup(true)
-            Commands.sequence(new InstantCommand(()-> pivot.startPID(283.5)),
+            Commands.sequence(
+            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
+            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
+            new InstantCommand(()-> pivot.startPID(283.5)),
             CmdManipGrab(true),
             new WaitCommand(0.5),
             new CmdMoveArm(ArmPosition.NEUTRAL)
@@ -192,6 +196,8 @@ public class RobotContainer {
         buttonPad.getButton(15).onTrue(
             //CmdShelfPickup(false)
             Commands.sequence(
+                new InstantCommand(()-> Vision.AUTO_ENABLED = false),
+            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(()-> pivot.startPID(288)),
             CmdManipGrab(false),
             new WaitCommand(0.5),
