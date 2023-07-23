@@ -111,7 +111,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		DoubleSupplier proportional = NAR_Shuffleboard.debug(tabName, prefix + "_kP", kP, column, 0);
 		DoubleSupplier integral = NAR_Shuffleboard.debug(tabName, prefix + "_kI", kI, column, 1);
 		DoubleSupplier derivative = NAR_Shuffleboard.debug(tabName, prefix + "_kD", kD, column, 2);
-		Robot.getInstance().addPeriodic(()-> {
+		/*Robot.getInstance().addPeriodic(()-> {
 			if (proportional.getAsDouble() == kP) {
 				kP = proportional.getAsDouble();
 				controller.setP(kP);
@@ -128,7 +128,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 				kD = derivative.getAsDouble();
 				controller.setD(kD);
 			}
-		}, 0.200);
+		}, 0.200);*/
 	}
 
 	/**

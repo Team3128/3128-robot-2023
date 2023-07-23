@@ -77,7 +77,7 @@ public class NAR_TalonFX extends WPI_TalonFX {
 		DoubleSupplier proportional = NAR_Shuffleboard.debug(tabName, prefix + "_kP", kP, column, 0);
 		DoubleSupplier integral = NAR_Shuffleboard.debug(tabName, prefix + "_kI", kI, column, 1);
 		DoubleSupplier derivative = NAR_Shuffleboard.debug(tabName, prefix + "_kD", kD, column, 2);
-		Robot.getInstance().addPeriodic(()-> {
+		/*Robot.getInstance().addPeriodic(()-> {
 			if (proportional.getAsDouble() == kP) {
 				kP = proportional.getAsDouble();
 				config_kP(0, kP);
@@ -94,7 +94,7 @@ public class NAR_TalonFX extends WPI_TalonFX {
 				kD = derivative.getAsDouble();
 				config_kD(0, kD);
 			}
-		}, 0.200);
+		}, 0.200);*/
 	}
 
 	/**
