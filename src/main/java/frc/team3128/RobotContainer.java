@@ -136,6 +136,25 @@ public class RobotContainer {
             CmdExtendIntake(Intake.IntakeState.RETRACTED),
             new WaitUntilCommand(()-> intake.atSetpoint())));
 
+        controller.getUpPOVButton().onTrue(new InstantCommand(()-> {
+            CmdSwerveDrive.rSetpoint = DriverStation.getAlliance() == Alliance.Red ? 0 : 180;
+            CmdSwerveDrive.enabled = true;
+        }));
+        controller.getDownPOVButton().onTrue(new InstantCommand(()-> {
+            CmdSwerveDrive.rSetpoint = DriverStation.getAlliance() == Alliance.Red ? 180 : 0;
+            CmdSwerveDrive.enabled = true;
+        }));
+
+        controller.getRightPOVButton().onTrue(new InstantCommand(()-> {
+            CmdSwerveDrive.rSetpoint = DriverStation.getAlliance() == Alliance.Red ? 270 : 90;
+            CmdSwerveDrive.enabled = true;
+        }));
+
+        controller.getLeftPOVButton().onTrue(new InstantCommand(()-> {
+            CmdSwerveDrive.rSetpoint = DriverStation.getAlliance() == Alliance.Red ? 90 : 270;
+            CmdSwerveDrive.enabled = true;
+        }));
+
         // rightStick.getButton(4).onTrue(new StartEndCommand(() ->telescope.retract(), () -> {telescope.stopTele(); telescope.zeroEncoder(TelescopeConstants.TELE_OFFSET);}).until(() -> !telescope.getLimitSwitch()));
         
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.zeroGyro()));

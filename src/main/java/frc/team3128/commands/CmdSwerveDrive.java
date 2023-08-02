@@ -2,9 +2,11 @@ package frc.team3128.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +25,10 @@ public class CmdSwerveDrive extends CommandBase {
     private final DoubleSupplier zAxis;
 
     private final SlewRateLimiter accelLimiter;
+
+    private final PIDController rController;
+    public static boolean enabled = false;
+    public static double rSetpoint;
     
     public CmdSwerveDrive(DoubleSupplier xAxis, DoubleSupplier yAxis, DoubleSupplier zAxis, boolean fieldRelative) {
         this.swerve = Swerve.getInstance();
@@ -33,6 +39,9 @@ public class CmdSwerveDrive extends CommandBase {
         this.zAxis = zAxis;
 
         accelLimiter = new SlewRateLimiter(maxAcceleration);
+        rController = new PIDController(rotationKP, 0, 0);
+        rController.enableContinuousInput(0, 360);
+        rController.setTolerance(1);
         swerve.fieldRelative = fieldRelative;
     }
 
@@ -49,6 +58,15 @@ public class CmdSwerveDrive extends CommandBase {
         }
         
         rotation = -zAxis.getAsDouble() * maxAngularVelocity * Swerve.throttle; 
+        if (Math.abs(rotation) > 0.25) {
+            enabled = false;
+        }
+        if (enabled) {
+            rotation = Units.degreesToRadians(rController.calculate(swerve.getGyroRotation2d().getDegrees(), rSetpoint));
+            if (rController.atSetpoint()) {
+                rotation = 0;
+            }
+        }
 
         Rotation2d driveAngle = translation.getAngle();
         double slowedDist = accelLimiter.calculate(translation.getNorm());
