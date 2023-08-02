@@ -381,7 +381,7 @@ public class Constants {
         public enum ArmPosition {
             TOP_CONE(112, 38.5, 0, true), // 112,44 
             TOP_CUBE(105, 38.5, 0, false), //98,35
-            MID_CONE(105, 20.5, 1, true), //98,22.5
+            MID_CONE(105, 21.5, 1, true), //98,22.5
             MID_CUBE(90, 22, 1, false), //87,15
             LOW_FLOOR(45, 11.5, 2, false), 
 
@@ -474,7 +474,7 @@ public class Constants {
         public static final double ROLLER_POWER = 0.75;
         public static final double OUTTAKE_POWER = 0.3;
 
-        public static final double STALL_POWER = 0.1;
+        public static final double STALL_POWER = 0.15;
 
         public static final double kP = 0.065;
         public static final double kI = 0;

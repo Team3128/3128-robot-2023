@@ -209,7 +209,7 @@ public class RobotContainer {
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(()-> pivot.startPID(283.5)),
             CmdManipGrab(true),
-            new WaitCommand(0.5),
+            new WaitCommand(0.333),
             new CmdMoveArm(ArmPosition.NEUTRAL)
             ));
         buttonPad.getButton(15).onTrue(
@@ -219,7 +219,7 @@ public class RobotContainer {
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(()-> pivot.startPID(288)),
             CmdManipGrab(false),
-            new WaitCommand(0.5),
+            new WaitCommand(0.333),
             new CmdMoveArm(ArmPosition.NEUTRAL)
             ));
 
