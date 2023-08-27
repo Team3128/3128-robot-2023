@@ -57,8 +57,8 @@
         "y": 0.5
       },
       "prevControl": {
-        "x": 3.1538625716140323,
-        "y": 0.7998279763920637
+        "x": 3.153862571614032,
+        "y": 0.7998279763920642
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -67,7 +67,9 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "ScoreCubeLow"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -87,7 +89,7 @@
     {
       "position": 1.45,
       "names": [
-        "event"
+        "RetractIntake"
       ]
     }
   ]

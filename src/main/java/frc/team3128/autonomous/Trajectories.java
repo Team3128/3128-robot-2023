@@ -28,14 +28,18 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import static frc.team3128.Constants.SwerveConstants.*;
 
+import frc.team3128.Constants.ArmConstants;
 import frc.team3128.Constants.AutoConstants;
 import frc.team3128.Constants.IntakeConstants;
+import frc.team3128.Constants.PivotConstants;
 import frc.team3128.Constants.SwerveConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdInPlaceTurn;
+import frc.team3128.commands.CmdManager;
+
 import static frc.team3128.commands.CmdManager.*;
 import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdMove;
@@ -73,15 +77,18 @@ public class Trajectories {
 
 
     public static void initTrajectories() {
-        final String[] trajectoryNames = {"TestAuto1", "b_bottom_1Cone+1Cube","b_bottom_1Cone"};
+        final String[] trajectoryNames = {"TestAuto1","b_bottom_1Cone+1Cube","b_bottom_1Cone","b_bottom_1Cone+2Cube"};
 
         CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
                                                 new CmdMoveArm(ArmPosition.TOP_CONE),
                                                 new InstantCommand(() -> manipulator.outtake()),
-                                                new WaitCommand(2),
+                                                new WaitCommand(.5),
                                                 new InstantCommand(() -> manipulator.stopRoller()),
-                                                new ScheduleCommand(new CmdMoveArm(ArmPosition.NEUTRAL))
+                                                new CmdMoveArm(ArmPosition.NEUTRAL)
                                                 ));
+        
+        CommandEventMap.put("ScoreConeLow", new InstantCommand(()->Pivot.getInstance().startPID(15),Pivot.getInstance()));
+
         CommandEventMap.put("ScoreCubeLow", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Intake.getInstance().outtake(), Intake.getInstance()),
                                                 new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance())
@@ -91,6 +98,7 @@ public class Trajectories {
 
         CommandEventMap.put("RetractIntake", new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance()));
 
+        CommandEventMap.put("RetractPivot", new InstantCommand(()->Pivot.getInstance().startPID(ArmPosition.NEUTRAL),Pivot.getInstance()));
 
         for (String trajectoryName : trajectoryNames) {
             // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
@@ -104,7 +112,7 @@ public class Trajectories {
             new PIDConstants(translationKP,translationKI,translationKD),
             new PIDConstants(rotationKP,rotationKI,rotationKD),
             Swerve.getInstance()::setModuleStates,
-           CommandEventMap,
+            CommandEventMap,
             Swerve.getInstance()
         );
     }

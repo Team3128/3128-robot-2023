@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Constants.SwerveConstants;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
@@ -31,14 +32,14 @@ public class AutoPrograms {
     }
 
     private void initAutoSelector() {
-        String[] autoStrings = new String[] {"TestAuto1", "b_bottom_1Cone+1Cube","b_bottom_1Cone"};
+        String[] autoStrings = new String[] {"TestAuto1","b_bottom_1Cone+1Cube","b_bottom_1Cone","b_bottom_1Cone+2Cube"};
         NarwhalDashboard.addAutos(autoStrings);
     }
 
     public Command getAutonomousCommand() {
        //String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "b_bottom_1Cone"; //uncomment and change this for testing without opening Narwhal Dashboard
-
+        String selectedAutoName = "TestAuto1"; //uncomment and change this for testing without opening Narwhal Dashboard
+        SmartDashboard.putString(selectedAutoName, selectedAutoName);
         if (selectedAutoName == null) {
             return null;
         }
