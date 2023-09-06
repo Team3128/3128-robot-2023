@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import frc.team3128.Robot;
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.IntakeConstants;
 import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
@@ -61,17 +62,20 @@ public class Intake extends PIDSubsystem {
 
     // Config
     public void configMotors() {
-        m_intakePivot = new NAR_CANSparkMax(INTAKE_PIVOT_ID);
-        m_intakeRollers = new NAR_TalonSRX(INTAKE_ROLLERS_ID);
+        if (Robot.isReal()) {
+            m_intakePivot = new NAR_CANSparkMax(INTAKE_PIVOT_ID);
+            m_intakeRollers = new NAR_TalonSRX(INTAKE_ROLLERS_ID);
 
-        m_intakePivot.setIdleMode(IdleMode.kBrake);
-        m_intakeRollers.setNeutralMode(NeutralMode.Brake);
+            m_intakePivot.setIdleMode(IdleMode.kBrake);
+            m_intakeRollers.setNeutralMode(NeutralMode.Brake);
 
-        m_intakePivot.setInverted(true);
-        m_intakeRollers.setInverted(false);
+            m_intakePivot.setInverted(true);
+            m_intakeRollers.setInverted(false);
 
-        m_intakeRollers.enableVoltageCompensation(true);
-        
+            m_intakeRollers.enableVoltageCompensation(true);
+        } else {
+            
+        }
     }
 
     public void configEncoders() {

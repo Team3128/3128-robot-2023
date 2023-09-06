@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.team3128.autonomous.AutoPrograms;
+import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 /**
@@ -21,6 +22,7 @@ import frc.team3128.subsystems.Telescope;
  */
 public class Robot extends LoggedRobot {
     public static Robot instance;
+    private Pivot m_pivot;
 
     public static RobotContainer m_robotContainer = new RobotContainer();
     private Command m_autonomousCommand;
@@ -84,12 +86,13 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void simulationInit() {
-        
+        m_pivot = Pivot.getInstance();
     }
 
     @Override
     public void simulationPeriodic() {
         CommandScheduler.getInstance().run();
+        m_pivot.simulationPeriodic();
     }
     
     @Override

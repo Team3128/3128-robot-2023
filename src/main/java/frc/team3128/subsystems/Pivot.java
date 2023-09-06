@@ -2,13 +2,23 @@ package frc.team3128.subsystems;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.PWMSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.team3128.Constants.PivotConstants.*;
 
 import java.util.function.DoubleSupplier;
 
+import frc.team3128.Robot;
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.PivotConstants;
 import frc.team3128.Constants.TelescopeConstants;
@@ -26,6 +36,25 @@ public class Pivot extends PIDSubsystem {
     private NAR_CANSparkMax m_rotateMotor;
     public double offset;
 
+    private final EncoderSim m_encoderSim = new EncoderSim(new Encoder(0, 1, false));
+    private final PWMSim m_motorSim = new PWMSim(0);
+
+    private final SingleJointedArmSim m_singleJointedArmSim = new SingleJointedArmSim(
+        DCMotor.getNEO(1), 
+        180.0, 
+        4.37582658963, 
+        1.44145, 
+        0, 
+        5.14872, 
+        true
+    );
+    private final Mechanism2d m_mech2d = new Mechanism2d(20, 50);
+    private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Pivot Root", 10, 0);
+    private final MechanismLigament2d m_elevatorMech2d =
+        m_mech2dRoot.append(
+            new MechanismLigament2d("Pivot", m_singleJointedArmSim.getAngleRads(), 0)); // TODO: angle
+
+
     public Pivot() {
         super(new PIDController(kP, kI, kD));
 
@@ -35,7 +64,24 @@ public class Pivot extends PIDSubsystem {
         getController().setTolerance(PIVOT_TOLERANCE);
 
         setSetpoint(getMeasurement());
+        
+        SmartDashboard.putData("Elevator Sim", m_mech2d);
     }
+
+    public void simulationPeriodic() {
+        // In this method, we update our simulation of what our elevator is doing
+        // First, we set our "inputs" (voltages)
+        m_singleJointedArmSim.setInput(m_motorSim.getSpeed() * 12.0);
+    
+        // Next, we update it. The standard loop time is 20ms.
+        m_singleJointedArmSim.update(0.020);
+    
+        // Finally, we set our simulated encoder's readings and simulated battery voltage
+        m_encoderSim.setDistance(m_singleJointedArmSim.getAngleRads());
+        // SimBattery estimates loaded battery voltages
+        // RoboRioSim.setVInVoltage(
+        //     BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSim.getCurrentDrawAmps()));
+      }
 
     public static synchronized Pivot getInstance(){
         if (instance == null) {
@@ -116,5 +162,4 @@ public class Pivot extends PIDSubsystem {
         NAR_Shuffleboard.addData("pivot", "atSetpoint", ()->getController().atSetpoint(), 3, 0);
         NAR_Shuffleboard.addData("pivot", "isEnabled", ()->isEnabled(), 4, 0);
     }
-    
 }
