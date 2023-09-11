@@ -62,7 +62,7 @@ public class Intake extends PIDSubsystem {
 
     // Config
     public void configMotors() {
-        if (Robot.isReal()) {
+        //if (Robot.isReal()) {
             m_intakePivot = new NAR_CANSparkMax(INTAKE_PIVOT_ID);
             m_intakeRollers = new NAR_TalonSRX(INTAKE_ROLLERS_ID);
 
@@ -73,9 +73,9 @@ public class Intake extends PIDSubsystem {
             m_intakeRollers.setInverted(false);
 
             m_intakeRollers.enableVoltageCompensation(true);
-        } else {
+        //} else {
             
-        }
+        //}
     }
 
     public void configEncoders() {

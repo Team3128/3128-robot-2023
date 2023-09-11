@@ -17,10 +17,21 @@
       "/Shuffleboard/telescope/tele-PID": "PIDController",
       "/SmartDashboard/CommandScheduler": "Scheduler",
       "/SmartDashboard/Elevator Sim": "Mechanism2d",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Pivot Sim": "Mechanism2d"
     },
     "windows": {
       "/Shuffleboard/Field/field": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Elevator Sim": {
+        "window": {
+          "name": "ruk"
+        }
+      },
+      "/SmartDashboard/Pivot Sim": {
         "window": {
           "visible": true
         }

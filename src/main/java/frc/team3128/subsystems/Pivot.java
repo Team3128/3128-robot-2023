@@ -36,23 +36,11 @@ public class Pivot extends PIDSubsystem {
     private NAR_CANSparkMax m_rotateMotor;
     public double offset;
 
-    private final EncoderSim m_encoderSim = new EncoderSim(new Encoder(0, 1, false));
-    private final PWMSim m_motorSim = new PWMSim(0);
 
-    private final SingleJointedArmSim m_singleJointedArmSim = new SingleJointedArmSim(
-        DCMotor.getNEO(1), 
-        180.0, 
-        4.37582658963, 
-        1.44145, 
-        0, 
-        5.14872, 
-        true
-    );
-    private final Mechanism2d m_mech2d = new Mechanism2d(20, 50);
-    private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Pivot Root", 10, 0);
-    private final MechanismLigament2d m_elevatorMech2d =
-        m_mech2dRoot.append(
-            new MechanismLigament2d("Pivot", m_singleJointedArmSim.getAngleRads(), 0)); // TODO: angle
+    private  SingleJointedArmSim m_singleJointedArmSim;
+    private  Mechanism2d m_mech2d;
+    private  MechanismRoot2d m_mech2dRoot;
+    private  MechanismLigament2d m_elevatorMech2d;
 
 
     public Pivot() {
@@ -65,13 +53,34 @@ public class Pivot extends PIDSubsystem {
 
         setSetpoint(getMeasurement());
         
-        SmartDashboard.putData("Elevator Sim", m_mech2d);
+        if(Robot.isSimulation()){
+            m_singleJointedArmSim = new SingleJointedArmSim(
+        DCMotor.getNEO(1), 
+        180.0, 
+        4.37582658963, 
+        1.44145, 
+        0, 
+        5.14872, 
+        true
+    );
+            m_mech2d = new Mechanism2d(100, 50);
+            m_mech2dRoot = m_mech2d.getRoot("Pivot Root", 10, 0);
+            m_elevatorMech2d =
+        m_mech2dRoot.append(
+            new MechanismLigament2d("Pivot", m_singleJointedArmSim.getAngleRads(), 0)); 
+        }
+        SmartDashboard.putData("Pivot Sim", m_mech2d);
     }
 
     public void simulationPeriodic() {
+        Mechanism2d m_mech2d = new Mechanism2d(100, 50);
+    MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Pivot Root", 10, 0);
+     MechanismLigament2d m_elevatorMech2d =
+        m_mech2dRoot.append(
+            new MechanismLigament2d("Pivot", m_singleJointedArmSim.getAngleRads(), 0)); // TODO: angle
         // In this method, we update our simulation of what our elevator is doing
         // First, we set our "inputs" (voltages)
-        m_singleJointedArmSim.setInput(m_motorSim.getSpeed() * 12.0);
+        m_singleJointedArmSim.setInput(m_rotateMotor.getSpeed() * 12.0);
     
         // Next, we update it. The standard loop time is 20ms.
         m_singleJointedArmSim.update(0.020);
