@@ -4,10 +4,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import edu.wpi.first.wpilibj.simulation.PWMSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -37,10 +33,10 @@ public class Pivot extends PIDSubsystem {
     public double offset;
 
 
-    private  SingleJointedArmSim m_singleJointedArmSim;
-    private  Mechanism2d m_mech2d;
-    private  MechanismRoot2d m_mech2dRoot;
-    private  MechanismLigament2d m_elevatorMech2d;
+    private SingleJointedArmSim m_singleJointedArmSim;
+    private Mechanism2d m_mech2d;
+    private MechanismRoot2d m_mech2dRoot;
+    private MechanismLigament2d m_pivotMech2d;
 
 
     public Pivot() {
@@ -53,44 +49,37 @@ public class Pivot extends PIDSubsystem {
 
         setSetpoint(getMeasurement());
         
-        if(Robot.isSimulation()){
+        if(Robot.isSimulation()) {
             m_singleJointedArmSim = new SingleJointedArmSim(
-        DCMotor.getNEO(1), 
-        180.0, 
-        4.37582658963, 
-        1.44145, 
-        0, 
-        5.14872, 
-        true
-    );
-            m_mech2d = new Mechanism2d(100, 50);
-            m_mech2dRoot = m_mech2d.getRoot("Pivot Root", 10, 0);
-            m_elevatorMech2d =
-        m_mech2dRoot.append(
-            new MechanismLigament2d("Pivot", m_singleJointedArmSim.getAngleRads(), 0)); 
+                DCMotor.getNEO(1), 
+                GEAR_RATIO,
+                jKgMetersSquared, 
+                ARM_LENGTH * 0.0254, 
+                Math.toRadians(minAngleDegs),
+                Math.toRadians(maxAngleDegs), 
+                true
+            );
+            m_mech2d = new Mechanism2d(100, 100);
+            m_mech2dRoot = m_mech2d.getRoot("Pivot Root", 50, 50);
+            m_pivotMech2d = m_mech2dRoot.append(
+                new MechanismLigament2d("Pivot", 50, -90));
+            SmartDashboard.putData("Pivot Sim", m_mech2d);
+            // m_pivotMech2d.setLength(50);
         }
-        SmartDashboard.putData("Pivot Sim", m_mech2d);
     }
 
     public void simulationPeriodic() {
-        Mechanism2d m_mech2d = new Mechanism2d(100, 50);
-    MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Pivot Root", 10, 0);
-     MechanismLigament2d m_elevatorMech2d =
-        m_mech2dRoot.append(
-            new MechanismLigament2d("Pivot", m_singleJointedArmSim.getAngleRads(), 0)); // TODO: angle
-        // In this method, we update our simulation of what our elevator is doing
-        // First, we set our "inputs" (voltages)
-        m_singleJointedArmSim.setInput(m_rotateMotor.getSpeed() * 12.0);
-    
-        // Next, we update it. The standard loop time is 20ms.
-        m_singleJointedArmSim.update(0.020);
-    
-        // Finally, we set our simulated encoder's readings and simulated battery voltage
-        m_encoderSim.setDistance(m_singleJointedArmSim.getAngleRads());
-        // SimBattery estimates loaded battery voltages
-        // RoboRioSim.setVInVoltage(
-        //     BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSim.getCurrentDrawAmps()));
-      }
+        m_singleJointedArmSim.setInputVoltage(
+            m_rotateMotor.getMotorOutputVoltage()
+        );
+        m_singleJointedArmSim.update(0.02);
+        // m_pivotMech2d.setAngle(m_singleJointedArmSim.getAngleRads());
+
+        double angle = m_singleJointedArmSim.getAngleRads() / Math.PI * 180;
+
+        m_rotateMotor.setSimPosition(angle - 90);
+        // m_rotateMotor.setSimVelocity(m_singleJointedArmSim.getVelocityRadPerSec());
+    }
 
     public static synchronized Pivot getInstance(){
         if (instance == null) {
@@ -132,7 +121,7 @@ public class Pivot extends PIDSubsystem {
 
     public void startPID(double anglePos) {
         anglePos = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : anglePos;
-        anglePos = MathUtil.clamp(anglePos,0,295);
+        anglePos = MathUtil.clamp(anglePos,minAngleDegs,maxAngleDegs);
         enable();
         setSetpoint(anglePos);
     }
