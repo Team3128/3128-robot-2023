@@ -28,7 +28,8 @@
       },
       "/SmartDashboard/Elevator Sim": {
         "window": {
-          "name": "ruk"
+          "name": "ruk",
+          "visible": true
         }
       },
       "/SmartDashboard/Pivot Sim": {

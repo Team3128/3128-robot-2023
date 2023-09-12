@@ -352,7 +352,9 @@ public class Constants {
         public static final double GEAR_RATIO = 180.0;
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
-        
+        public static final double minAngleDegs = 0;
+        public static final double maxAngleDegs = 295;
+        public static final double jKgMetersSquared = 4.37582658963; // moment of inertia from CAD
     }
 
     public static class TelescopeConstants {
