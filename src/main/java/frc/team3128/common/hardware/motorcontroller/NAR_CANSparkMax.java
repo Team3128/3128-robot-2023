@@ -83,7 +83,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		controller.setFeedbackDevice(encoderType == EncoderType.Relative ? relativeEncoder : absoluteEncoder);
 
 		if (Robot.isSimulation()) {
-			encoderSim = new SimDeviceSim("CANSparkMax[" + this.getDeviceId() + "] - RelativeEncoder");
+			encoderSim = new SimDeviceSim(deviceNumber);
 			encoderSimVel = encoderSim.getDouble("Velocity");
 		}
 	}

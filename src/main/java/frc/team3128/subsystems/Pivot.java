@@ -54,9 +54,9 @@ public class Pivot extends PIDSubsystem {
                 DCMotor.getNEO(1), 
                 GEAR_RATIO,
                 jKgMetersSquared, 
-                ARM_LENGTH * 0.0254, 
-                Math.toRadians(minAngleDegs),
-                Math.toRadians(maxAngleDegs), 
+                Units.inchesToMeters(ARM_LENGTH), 
+                minAngleDegs,
+                maxAngleDegs, 
                 true
             );
             m_mech2d = new Mechanism2d(100, 100);
@@ -70,15 +70,18 @@ public class Pivot extends PIDSubsystem {
 
     public void simulationPeriodic() {
         m_singleJointedArmSim.setInputVoltage(
-            m_rotateMotor.getMotorOutputVoltage()
+            // m_rotateMotor.getMotorOutputVoltage()
+             12
         );
         m_singleJointedArmSim.update(0.02);
-        // m_pivotMech2d.setAngle(m_singleJointedArmSim.getAngleRads());
+        m_pivotMech2d.setAngle(m_singleJointedArmSim.getAngleRads() - 90);
 
         double angle = m_singleJointedArmSim.getAngleRads() / Math.PI * 180;
+        SmartDashboard.putNumber("Pivot Angle", m_singleJointedArmSim.getAngleRads()/ Math.PI * 180);
 
-        m_rotateMotor.setSimPosition(angle - 90);
-        // m_rotateMotor.setSimVelocity(m_singleJointedArmSim.getVelocityRadPerSec());
+        m_rotateMotor.setSimVelocity(m_singleJointedArmSim.getVelocityRadPerSec());
+        SmartDashboard.putNumber("Pivot Velocity", m_singleJointedArmSim.getVelocityRadPerSec());
+        m_rotateMotor.setSimPosition(angle);
     }
 
     public static synchronized Pivot getInstance(){
