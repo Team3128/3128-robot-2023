@@ -9,10 +9,14 @@ import org.littletonrobotics.junction.LoggedRobot;
 // import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import frc.team3128.autonomous.AutoPrograms;
+import frc.team3128.commands.CmdSimPivot;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
@@ -87,6 +91,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationInit() {
         m_pivot = Pivot.getInstance();
+        SmartDashboard.putData("Go to 295", new CmdSimPivot(295));
+        SmartDashboard.putData("Go to 0", new CmdSimPivot(0));
     }
 
     @Override

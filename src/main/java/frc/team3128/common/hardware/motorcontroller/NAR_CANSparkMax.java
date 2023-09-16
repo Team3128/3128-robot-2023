@@ -37,8 +37,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	private SparkMaxRelativeEncoder relativeEncoder;
 	private SparkMaxAbsoluteEncoder absoluteEncoder;
 	private SparkMaxPIDController controller;
-	private SimDeviceSim encoderSim;
-	private SimDouble encoderSimVel;
+	private double simVoltage;
 
 	/**
 	 * Create a new object to control a SPARK MAX motor
@@ -83,8 +82,7 @@ public class NAR_CANSparkMax extends CANSparkMax {
 		controller.setFeedbackDevice(encoderType == EncoderType.Relative ? relativeEncoder : absoluteEncoder);
 
 		if (Robot.isSimulation()) {
-			encoderSim = new SimDeviceSim(deviceNumber);
-			encoderSimVel = encoderSim.getDouble("Velocity");
+			simVoltage = 0;
 		}
 	}
 
@@ -352,12 +350,12 @@ public class NAR_CANSparkMax extends CANSparkMax {
 	public double getMotorOutputVoltage() {
 		return getAppliedOutput() * getBusVoltage();
 	}
-
-	public void setSimPosition(double pos) {
-		relativeEncoder.setPosition(pos);
+	
+	public void setSimVoltage(double voltage) {
+		simVoltage = voltage;
 	}
 
-	public void setSimVelocity(double vel) {
-		encoderSimVel.set(vel);
+	public double getSimVoltage() {
+		return simVoltage;
 	}
 }
