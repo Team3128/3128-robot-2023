@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.team3128.common.hardware.camera.Camera;
 
-import frc.team3128.common.swerve.SwerveModuleConstants;
+import frc.team3128.common.swerveNeo.SwerveModuleConstants;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -67,8 +67,8 @@ public class Constants {
 
         /* Drivetrain Constants */
         public static final double bumperLength = Units.inchesToMeters(5);
-        public static final double trackWidth = Units.inchesToMeters(26); 
-        public static final double wheelBase = Units.inchesToMeters(26); 
+        public static final double trackWidth = Units.inchesToMeters(26); //Hand measure later
+        public static final double wheelBase = Units.inchesToMeters(26); //Hand measure later
         public static final double robotLength = bumperLength + trackWidth;
         public static final double wheelDiameter = Units.inchesToMeters(4);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
@@ -85,6 +85,8 @@ public class Constants {
                 new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); 
 
         /* Swerve Current Limiting */
+        public static final int currentLimit = 40;
+
         public static final int angleContinuousCurrentLimit = 25;
         public static final int anglePeakCurrentLimit = 40;
         public static final double anglePeakCurrentDuration = 0.1;
@@ -116,7 +118,7 @@ public class Constants {
         public static final double alignKD = 0;
       
         /* Rotation PID Values */
-        public static final double rotationKP = 2;
+        public static final double rotationKP = 2.5;
         public static final double rotationKI = 0;
         public static final double rotationKD = 0;
 
@@ -128,13 +130,13 @@ public class Constants {
 
         /* Angle Motor PID Values */
         // switched 364 pid values to SDS pid values
-        public static final double angleKP = 0.3; // 0.6; // citrus: 0.3
+        public static final double angleKP = 0.15; // 0.6; // citrus: 0.3 //0.15
         public static final double angleKI = 0.0;
         public static final double angleKD = 0.0; // 12.0; // citrus: 0
         public static final double angleKF = 0.0;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.05; 
+        public static final double driveKP = 4e-5; //4e-5, //0.05
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
@@ -335,22 +337,24 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 0.5;
+        public static final double kP = 0.425;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kF = 15;
-        public static final double kG = 0.7;
+        public static final double kG = 0.25;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 5.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         // public static final int CANCODER_ID = 24;
         public static final int ENC_DIO_ID = 7;
-        public static final double ANGLE_OFFSET = -158.7+3+4-2-2-2-4-1; //get from new encoder
-        
+        public static final double ANGLE_OFFSET = 2.5; //get from new encoder
+        public static final double GEAR_RATIO = 180.0;
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
-        
+        public static final double minAngleDegs = 0;
+        public static final double maxAngleDegs = 295;
+        public static final double jKgMetersSquared = 4.37582658963; // TODO: fix? moment of inertia from CAD
     }
 
     public static class TelescopeConstants {
@@ -365,7 +369,7 @@ public class Constants {
         public static final double MIN_DIST = 11.5;
         public static final double MAX_DIST = 40;
         public static final double TELE_OFFSET = 0;
-        public static final double TELE_TOLERANCE = 2;
+        public static final double TELE_TOLERANCE = 1;
         public static final int TELE_CURRENT_LIMIT = 40;
         public static final boolean isReversed = true;
 
@@ -379,13 +383,13 @@ public class Constants {
         public enum ArmPosition {
             TOP_CONE(112, 38.5, 0, true), // 112,44 
             TOP_CUBE(105, 38.5, 0, false), //98,35
-            MID_CONE(105, 20.5, 1, true), //98,22.5
+            MID_CONE(105, 21.5, 1, true), //98,22.5
             MID_CUBE(90, 22, 1, false), //87,15
             LOW_FLOOR(45, 11.5, 2, false), 
 
             NEUTRAL(5, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF_CONE(115, 17.5, null, null), //105
+            HP_SHELF_CONE(110, 17.5, null, null), //105
             HP_SHELF_CUBE(108, 17.5, null, null), //105
             GROUND_PICKUP(37, 26.5, null, null),
             GROUND_PICKUP_CONE(37, 26.5, null, null), 
@@ -466,12 +470,13 @@ public class Constants {
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
-        public static final double CURRENT_THRESHOLD = 50;
+        public static final double CURRENT_THRESHOLD = 5;
+        public static final double ABSOLUTE_THRESHOLD = 30;
 
         public static final double ROLLER_POWER = 0.75;
         public static final double OUTTAKE_POWER = 0.3;
 
-        public static final double STALL_POWER = 0.1;
+        public static final double STALL_POWER = 0.15;
 
         public static final double kP = 0.065;
         public static final double kI = 0;
@@ -482,7 +487,7 @@ public class Constants {
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TO_DEGREES = 360;
-        public static final double ANGLE_OFFSET = 138; 
+        public static final double ANGLE_OFFSET = 138+35; 
 
         public static final int ENCODER_DIO_ID = 8;
 
@@ -502,15 +507,12 @@ public class Constants {
     }
 
     public static class ManipulatorConstants{
-        public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
-        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
-
         public static final int ROLLER_MOTOR_ID = 13;
-        public static final double ROLLER_POWER = 0.8;
-        public static final double STALL_POWER = 0.3;
+        public static final double ROLLER_POWER = 0.6;
+        public static final double STALL_POWER = 0.25;
 
-        public static final double CUBE_CURRENT_THRESHOLD = 25;
-        public static final double CONE_CURRENT_THRESHOLD = 25;
+        public static final double CURRENT_THRESHOLD = 5;
+        public static final double ABSOLUTE_THRESHOLD = 20;
 
         public static final double ROLLER_VOLTAGE = 8;
     }

@@ -14,7 +14,6 @@ public class CmdMoveArm extends CommandBase{
     private double angle;
     private double dist;
     private boolean teleStatic;
-    private Boolean cone;
     
     public CmdMoveArm(double angle, double dist){
         this.angle = angle;
@@ -26,9 +25,6 @@ public class CmdMoveArm extends CommandBase{
     public CmdMoveArm(ArmPosition position){
         this.angle = position.pivotAngle;
         this.dist = position.teleDist;
-
-        if (position.cone == null) cone = null;
-        else cone = position.cone;
         
         addRequirements(pivot, telescope);
     }

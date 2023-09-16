@@ -12,16 +12,64 @@
       "/Shuffleboard/VisionPID/RCONTROLLER": "PIDController",
       "/Shuffleboard/VisionPID/XCONTROLLER": "PIDController",
       "/Shuffleboard/VisionPID/YCONTROLLER": "PIDController",
+      "/Shuffleboard/intake/PID Controller": "PIDController",
       "/Shuffleboard/pivot/Pivot-PID": "PIDController",
       "/Shuffleboard/telescope/tele-PID": "PIDController",
+      "/SmartDashboard/CmdSimPivot": "Command",
       "/SmartDashboard/CommandScheduler": "Scheduler",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Elevator Sim": "Mechanism2d",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Go to 0": "Command",
+      "/SmartDashboard/Go to 295": "Command",
+      "/SmartDashboard/Go to Max": "Command",
+      "/SmartDashboard/Go to Min": "Command",
+      "/SmartDashboard/Pivot PID Controller": "PIDController",
+      "/SmartDashboard/Pivot Sim": "Mechanism2d"
     },
     "windows": {
       "/Shuffleboard/Field/field": {
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/Elevator Sim": {
+        "window": {
+          "name": "ruk",
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Go to Max": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Go to Min": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Pivot PID Controller": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Pivot Sim": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "LiveWindow": {
+        "open": true
+      },
+      "SmartDashboard": {
+        "CmdSimPivot": {
+          "open": true
+        },
+        "open": true
       }
     }
   }
