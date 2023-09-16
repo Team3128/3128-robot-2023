@@ -21,6 +21,9 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Go to 0": "Command",
       "/SmartDashboard/Go to 295": "Command",
+      "/SmartDashboard/Go to Max": "Command",
+      "/SmartDashboard/Go to Min": "Command",
+      "/SmartDashboard/Pivot PID Controller": "PIDController",
       "/SmartDashboard/Pivot Sim": "Mechanism2d"
     },
     "windows": {
@@ -35,7 +38,17 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Go to 0": {
+      "/SmartDashboard/Go to Max": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Go to Min": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Pivot PID Controller": {
         "window": {
           "visible": true
         }

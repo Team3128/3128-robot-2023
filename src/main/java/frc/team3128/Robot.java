@@ -91,8 +91,9 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationInit() {
         m_pivot = Pivot.getInstance();
-        SmartDashboard.putData("Go to 295", new CmdSimPivot(295));
-        SmartDashboard.putData("Go to 0", new CmdSimPivot(0));
+        SmartDashboard.putData("Go to Max", new CmdSimPivot(295));
+        SmartDashboard.putData("Go to Min", new CmdSimPivot(0));
+        SmartDashboard.putData("Pivot PID Controller", m_pivot.getController());
     }
 
     @Override
