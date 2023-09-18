@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.commands.CmdSwerveDrive;
 import frc.team3128.commands.CmdSystemCheck;
 import frc.team3128.commands.CmdSystemCheckFancy;
+import frc.team3128.commands.CmdTrajectory;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
 
@@ -290,6 +291,10 @@ public class RobotContainer {
             }
         );
         inProtected.onTrue(new InstantCommand(()-> controller.startVibrate())).onFalse(new InstantCommand(()-> controller.stopVibrate()));
+
+        for (int i = 0; i < 9; i ++) {
+            leftStick.getButton(i + 1).onTrue(new CmdTrajectory(i));
+        }
     }
 
     public void init() {

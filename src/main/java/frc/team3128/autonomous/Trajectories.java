@@ -117,6 +117,10 @@ public class Trajectories {
         );
     }
 
+    public static CommandBase generateAuto(PathPlannerTrajectory trajectory) {
+        return builder.fullAuto(trajectory);
+    }
+
     public static CommandBase get(String name) {
         return builder.fullAuto(trajectories.get(name));
     }

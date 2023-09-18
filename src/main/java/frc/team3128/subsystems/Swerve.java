@@ -130,7 +130,7 @@ public class Swerve extends SubsystemBase {
     public void resetOdometry(Pose2d pose) { // TODO: Call this!!!!
         zeroGyro(pose.getRotation().getDegrees());
         //System.out.println(pose.toString());
-        odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
+        odometry.resetPosition(pose.getRotation(), getPositions(), pose);
     }
 
     public SwerveModuleState[] getStates() {
@@ -199,7 +199,7 @@ public class Swerve extends SubsystemBase {
             // } catch (IOException e) {}
             
             prevTime = currTime;
-            NAR_Shuffleboard.addData("Logger","Positions",poseLogger,0,0);
+            NAR_Shuffleboard.addData("Logger","Positions", poseLogger,0,0);
         }
     }
 

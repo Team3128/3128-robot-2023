@@ -5,6 +5,10 @@ import static frc.team3128.common.hardware.motorcontroller.MotorControllerConsta
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
@@ -16,7 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.team3128.common.hardware.camera.Camera;
 
 import frc.team3128.common.swerveNeo.SwerveModuleConstants;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -33,7 +37,36 @@ public class Constants {
         public static final double FALCON_NUpS_TO_RPM = 60 / FALCON_ENCODER_RESOLUTION; // sensor units per second to rpm
     }
 
+    public static class TrajectoryConstants {
+        public static final Rotation2d HEADING = Rotation2d.fromDegrees(180);
+        
+        public static final Translation2d POINT_1 = new Translation2d(12.7, 6.75);
+        public static final double CONDITION_1 = 12.7;
+
+        public static final Translation2d POINT_2A = new Translation2d(4.85, 0.8);
+        public static final Translation2d POINT_2B = new Translation2d(4.85, 4.7);
+        public static final double CONDITION_2 = 4.85;
+
+        public static final Translation2d POINT_3A = new Translation2d(2.5, 0.8);
+        public static final Translation2d POINT_3B = new Translation2d(2.5, 4.7);
+        public static final double CONDITION_3 = 2.5;
+
+        public static final Pose2d[] END_POINTS = new Pose2d[]{
+            new Pose2d(1.75,0.5,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,1.05,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,1.65,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,2.15,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,2.75,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,3.3,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,3.85,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,4.45,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,4.89,Rotation2d.fromDegrees(0))
+        };
+    }
+
     public static class AutoConstants {
+        public static final PathConstraints pathConstraints = new PathConstraints(SwerveConstants.maxSpeed, SwerveConstants.maxAcceleration); 
+
         public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.95, Rotation2d.fromDegrees(0));
         public static final Pose2d PICKUP_2 = new Pose2d(7.1, 2.28, Rotation2d.fromDegrees(45));
         public static final Pose2d PICKUP_3 = new Pose2d(7.1, 3.3, Rotation2d.fromDegrees(-45));
@@ -67,8 +100,8 @@ public class Constants {
 
         /* Drivetrain Constants */
         public static final double bumperLength = Units.inchesToMeters(5);
-        public static final double trackWidth = Units.inchesToMeters(26); //Hand measure later
-        public static final double wheelBase = Units.inchesToMeters(26); //Hand measure later
+        public static final double trackWidth = Units.inchesToMeters(20.75); //Hand measure later
+        public static final double wheelBase = Units.inchesToMeters(20.75); //Hand measure later
         public static final double robotLength = bumperLength + trackWidth;
         public static final double wheelDiameter = Units.inchesToMeters(4);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
@@ -455,12 +488,34 @@ public class Constants {
             }
             return pose;
         }
+
+        public static Translation2d allianceFlip(Translation2d translation) {
+            if (DriverStation.getAlliance() == Alliance.Red) {
+                return flipTranslation(translation);
+            }
+            return translation;
+        }
+
+        public static Rotation2d allianceFlip(Rotation2d rotation) {
+            if (DriverStation.getAlliance() == Alliance.Red) {
+                return flipRotation(rotation);
+            }
+            return rotation;
+        }
+
         public static Pose2d flip(Pose2d pose) {
-            double angle = 180 - pose.getRotation().getDegrees();
-            return new Pose2d(
-                FIELD_X_LENGTH - pose.getX(),
-                pose.getY(),
-                Rotation2d.fromDegrees(angle));
+            return new Pose2d(flipTranslation(pose.getTranslation()), flipRotation(pose.getRotation()));
+        }
+
+        public static Translation2d flipTranslation(Translation2d translation) {
+            return new Translation2d (
+                FIELD_X_LENGTH - translation.getX(),
+                translation.getY()
+            );
+        }
+
+        public static Rotation2d flipRotation(Rotation2d rotation) {
+            return Rotation2d.fromDegrees(MathUtil.inputModulus(180 - rotation.getDegrees(), -180, 180));
         }
     }
 

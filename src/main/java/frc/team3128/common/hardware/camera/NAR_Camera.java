@@ -219,7 +219,7 @@ public class NAR_Camera extends PhotonCamera {
         Rotation2d angle = getTarget().getRotation();
         double targetAngle = AprilTags.get(targetId(target)).getRotation().getDegrees();
         Transform2d vector = getTarget(target);
-        double deltaY = vector.getX() * Math.tan(Units.degreesToRadians(gyro.getAsDouble() + targetAngle));
+        double deltaY = vector.getX() * Math.tan(Units.degreesToRadians(gyro.getAsDouble() + targetAngle + camera.offset.getRotation().getDegrees()));
         return new Transform2d(new Translation2d(vector.getX(), vector.getY() + deltaY), angle);
     }
     
