@@ -41,16 +41,13 @@ public class CmdManager {
             new InstantCommand(()-> Vision.position = position),
             new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
-            Commands.deadline(
-                new WaitUntilCommand(()-> Vision.AUTO_ENABLED)
-                //new CmdSwerveDrive(controller::getLeftX,controller::getLeftY, controller::getRightX, true)
-            ),
             Commands.parallel(
-                //new CmdMoveScore(VisionConstants.RAMP_OVERRIDE[xpos], true, VisionConstants.SCORES_GRID[xpos]),
-                CmdPivot(position)
-            ),
-            vibrateController(),
-            new InstantCommand(() -> Vision.AUTO_ENABLED = DriverStation.isAutonomous())
+                new CmdTrajectory(xpos),
+                Commands.sequence(
+                    CmdPivot(position),
+                    vibrateController()
+                )
+            )
         );
     }
 

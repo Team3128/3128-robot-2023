@@ -18,17 +18,19 @@ import static frc.team3128.Constants.TrajectoryConstants.*;
 
 import frc.team3128.autonomous.Trajectories;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Vision;
 
 public class CmdTrajectory extends CommandBase {
 
     private final Swerve swerve;
-    private final int index;
+    private final int xPos;
+    private int index;
     private CommandBase trajCommand;
 
-    public CmdTrajectory(int index) {
+    public CmdTrajectory(int xPos) {
         swerve = Swerve.getInstance();
-        this.index = index;
-        addRequirements(swerve);
+        this.xPos = xPos;
+        addRequirements(Vision.getInstance());
     }
 
     private PathPoint generatePoint(Pose2d pose, Rotation2d heading, double headingLength) {
@@ -42,7 +44,7 @@ public class CmdTrajectory extends CommandBase {
         return point;
     }
 
-    private boolean pastPoint(Translation2d start, double condition) {
+    private boolean isPastPoint(Translation2d start, double condition) {
         if (DriverStation.getAlliance() == Alliance.Blue) {
             return start.getX() < condition;
         }
@@ -58,35 +60,34 @@ public class CmdTrajectory extends CommandBase {
         final boolean skipLastPoint = (topPath && index == 8) || (!topPath && index == 0);
         startPoint.nextControlLength = 0.1;
         pathPoints.add(startPoint);
-        if (!pastPoint(start, CONDITION_1)) pathPoints.add(generatePoint(POINT_1, holonomicAngle, HEADING, 1));
-        if (!pastPoint(start, CONDITION_2)) pathPoints.add(generatePoint(topPath ? POINT_2B : POINT_2A, holonomicAngle, HEADING, 1));
-        if (!pastPoint(start, CONDITION_3) && !skipLastPoint) pathPoints.add(generatePoint(topPath ? POINT_3B : POINT_3A, holonomicAngle, HEADING, 0.5));
+        if (!isPastPoint(start, CONDITION_1)) pathPoints.add(generatePoint(POINT_1, holonomicAngle, HEADING, 1));
+        if (!isPastPoint(start, CONDITION_2)) pathPoints.add(generatePoint(topPath ? POINT_2B : POINT_2A, holonomicAngle, HEADING, 1));
+        if (!isPastPoint(start, CONDITION_3) && !skipLastPoint) pathPoints.add(generatePoint(topPath ? POINT_3B : POINT_3A, holonomicAngle, HEADING, 0.5));
         pathPoints.add(generatePoint(END_POINTS[index], HEADING, 0.1));
         
         return pathPoints;
     }
 
+    private CommandBase generateAuto() {
+        index = Vision.SELECTED_GRID * 3 + xPos;
+        final PathPlannerTrajectory trajectory = PathPlanner.generatePath(pathConstraints, generatePoses());
+        return Trajectories.generateAuto(trajectory);
+    }
+
     @Override
     public void initialize() {
-        final PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-            pathConstraints, generatePoses()
-        );
-        trajCommand = Trajectories.generateAuto(trajectory);
-        trajCommand.schedule();
+        trajCommand = generateAuto();
     }
 
     @Override
     public void execute() {
-        
-    }
-
-    @Override
-    public boolean isFinished() {
-        return !trajCommand.isScheduled();
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        swerve.stop();
+        if (Vision.AUTO_ENABLED) {
+            if (trajCommand.isScheduled()) trajCommand.cancel();
+            else {
+                trajCommand = generateAuto();
+                trajCommand.schedule();
+            }
+            Vision.AUTO_ENABLED = false;
+        }
     }
 }
