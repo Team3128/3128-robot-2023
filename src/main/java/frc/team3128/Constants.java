@@ -53,14 +53,14 @@ public class Constants {
 
         public static final Pose2d[] END_POINTS = new Pose2d[]{
             new Pose2d(1.75,0.5,Rotation2d.fromDegrees(0)),
-            new Pose2d(1.75,1.05,Rotation2d.fromDegrees(0)),
-            new Pose2d(1.75,1.65,Rotation2d.fromDegrees(0)),
-            new Pose2d(1.75,2.15,Rotation2d.fromDegrees(0)),
-            new Pose2d(1.75,2.75,Rotation2d.fromDegrees(0)),
-            new Pose2d(1.75,3.3,Rotation2d.fromDegrees(0)),
-            new Pose2d(1.75,3.85,Rotation2d.fromDegrees(0)),
-            new Pose2d(1.75,4.45,Rotation2d.fromDegrees(0)),
-            new Pose2d(1.75,4.89,Rotation2d.fromDegrees(0))
+            new Pose2d(1.75,0.95,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,1.55,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,2.05,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,2.65,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,3.2,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,3.75,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,4.35,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,4.79,Rotation2d.fromDegrees(0))
         };
     }
 
@@ -80,15 +80,15 @@ public class Constants {
         public static final Pose2d ClimbSetupOutsideTop = new Pose2d(5.6, 3.3, Rotation2d.fromDegrees(180));
 
         public static final Pose2d[] STARTING_POINTS = new Pose2d[] {
-            new Pose2d(1.85 ,0.5, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,1.05, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,1.65, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,2.15, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,2.75, Rotation2d.fromDegrees(0)),
-            new Pose2d(1.85 ,3.3, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,3.85, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,4.45, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,5, Rotation2d.fromDegrees(180))
+            new Pose2d(1.75 ,0.5, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,1.05, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,1.65, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,2.15, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,2.75, Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75 ,3.3, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,3.85, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,4.45, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,5, Rotation2d.fromDegrees(180))
         };
 
         public static final double BALANCE_FF = 0.3;

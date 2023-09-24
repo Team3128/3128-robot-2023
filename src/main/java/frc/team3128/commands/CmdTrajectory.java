@@ -9,9 +9,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 import static frc.team3128.Constants.FieldConstants.*;
 
 import java.util.ArrayList;
+import java.util.function.BooleanSupplier;
+
 import static frc.team3128.Constants.AutoConstants.*;
 
 import static frc.team3128.Constants.TrajectoryConstants.*;
@@ -77,17 +81,24 @@ public class CmdTrajectory extends CommandBase {
     @Override
     public void initialize() {
         trajCommand = generateAuto();
+        trajCommand.schedule();
     }
 
     @Override
     public void execute() {
-        if (Vision.AUTO_ENABLED) {
-            if (trajCommand.isScheduled()) trajCommand.cancel();
-            else {
-                trajCommand = generateAuto();
-                trajCommand.schedule();
-            }
-            Vision.AUTO_ENABLED = false;
-        }
+        // if (Vision.AUTO_ENABLED) {
+        //     trajCommand.schedule();
+        //     if (trajCommand.isScheduled()) trajCommand.cancel();
+        //     else {
+        //         trajCommand = generateAuto();
+        //         trajCommand.schedule();
+        //     }
+        //     Vision.AUTO_ENABLED = false;
+        // }
+    }
+
+    @Override
+    public boolean isFinished(){
+        return swerve.getPose().minus(END_POINTS[index]).getTranslation().getNorm() < 0.1;
     }
 }
