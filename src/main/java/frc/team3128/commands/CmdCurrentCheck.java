@@ -1,8 +1,8 @@
 package frc.team3128.commands;
 
+import common.hardware.motorcontroller.NAR_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.team3128.common.hardware.motorcontroller.NAR_TalonSRX;
 
 public class CmdCurrentCheck extends CommandBase {
     private NAR_TalonSRX motor;

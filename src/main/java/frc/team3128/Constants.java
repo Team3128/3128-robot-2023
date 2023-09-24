@@ -1,7 +1,7 @@
 package frc.team3128;
 
-import static frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.FALCON_ENCODER_RESOLUTION;
-import static frc.team3128.common.hardware.motorcontroller.MotorControllerConstants.SPARKMAX_ENCODER_RESOLUTION;
+import static common.hardware.motorcontroller.MotorControllerConstants.FALCON_ENCODER_RESOLUTION;
+import static common.hardware.motorcontroller.MotorControllerConstants.SPARKMAX_ENCODER_RESOLUTION;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -370,13 +370,19 @@ public class Constants {
     }
 
     public static class PivotConstants {
+        //TODO: Retune PID values
         public static final double kP = 0.425;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 15;
+
+        public static final double kV = 0; 
+        public static final double kS = 0; 
         public static final double kG = 0.25;
+
         public static final int PIVOT_MOTOR_ID = 9;
+
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
+        
         public static final double PIVOT_TOLERANCE = 5.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         // public static final int CANCODER_ID = 24;
@@ -389,19 +395,27 @@ public class Constants {
     }
 
     public static class TelescopeConstants {
+        //TODO: Retune PID values
         public static final double kP = 2.3;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kF = 0.1;
-        public static final double kG = 0.5;
+
+        public static final double kV = 0; 
+        public static final double kS = 0; 
+        public static final double kG = -0.5;
+
         public static final int TELE_MOTOR_ID = 10;
         public static final double TELE_MOTOR_POWER = 0.5;
         public static final double ENC_CONV = (1/5.0) * 2 * Math.PI * 0.4; //55.0 /35.0
+
         public static final double MIN_DIST = 11.5;
         public static final double MAX_DIST = 40;
+
         public static final double TELE_OFFSET = 0;
+
         public static final double TELE_TOLERANCE = 1;
         public static final int TELE_CURRENT_LIMIT = 40;
+
         public static final boolean isReversed = true;
 
         public static final double ARM_LENGTH = 40; // inches
@@ -531,11 +545,16 @@ public class Constants {
 
         public static final double STALL_POWER = 0.15;
 
+        //TODO: Retune PID values
+
         public static final double kP = 0.065;
         public static final double kI = 0;
         public static final double kD = 0; // 0.001
 
-        public static final double kF = 0.2;
+        public static final double kV = 0; 
+        public static final double kS = 0;
+        public static final double kG = 0.2;
+        
 
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
