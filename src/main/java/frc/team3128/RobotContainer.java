@@ -47,6 +47,7 @@ import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import static frc.team3128.Constants.ArmConstants.*;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import java.util.function.BooleanSupplier;
 
@@ -196,29 +197,29 @@ public class RobotContainer {
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).andThen(CmdManipStallPower()));
 
-        buttonPad.getButton(14).onTrue(Commands.sequence(
-            new InstantCommand(()-> pivot.startPID(282)),
+        buttonPad.getButton(14).onTrue(sequence(
+            runOnce(()-> pivot.startPID(282)),
             CmdManipGrab(true)));
             //pivot.setPower(0); telescope.stopTele(); manipulator.stopRoller(); swerve.stop(); intake.stop();}, pivot, telescope, swerve, manipulator, intake));
         buttonPad.getButton(16).onTrue(
             //CmdShelfPickup(true)
-            Commands.sequence(
-            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
-            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-            new InstantCommand(()-> pivot.startPID(283.5)),
-            CmdManipGrab(true),
-            new WaitCommand(0.333),
-            new CmdMoveArm(ArmPosition.NEUTRAL)
+            sequence(
+                runOnce(()-> Vision.AUTO_ENABLED = false),
+                waitUntil(()-> Vision.AUTO_ENABLED),
+                runOnce(()-> pivot.startPID(283.5)),
+                CmdManipGrab(true),
+                waitSeconds(0.333),
+                new CmdMoveArm(ArmPosition.NEUTRAL)
             ));
         buttonPad.getButton(15).onTrue(
             //CmdShelfPickup(false)
-            Commands.sequence(
-                new InstantCommand(()-> Vision.AUTO_ENABLED = false),
-            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-            new InstantCommand(()-> pivot.startPID(288)),
-            CmdManipGrab(false),
-            new WaitCommand(0.333),
-            new CmdMoveArm(ArmPosition.NEUTRAL)
+            sequence(
+                runOnce(()-> Vision.AUTO_ENABLED = false),
+                waitUntil(()-> Vision.AUTO_ENABLED),
+                runOnce(()-> pivot.startPID(288)),
+                CmdManipGrab(false),
+                waitSeconds(0.333),
+                new CmdMoveArm(ArmPosition.NEUTRAL)
             ));
         
         buttonPad.getButton(5).onTrue(
@@ -230,15 +231,15 @@ public class RobotContainer {
         buttonPad.getButton(11).onTrue(
             CmdScore(false, ArmPosition.TOP_CUBE, 1)
         );
-        buttonPad.getButton(1).onTrue(new InstantCommand(()-> {
+        buttonPad.getButton(1).onTrue(runOnce(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 0 : 2;
         }));
-        buttonPad.getButton(2).onTrue(new InstantCommand(()-> Vision.SELECTED_GRID = 1));
-        buttonPad.getButton(3).onTrue(new InstantCommand(()-> {
+        buttonPad.getButton(2).onTrue(runOnce(()-> Vision.SELECTED_GRID = 1));
+        buttonPad.getButton(3).onTrue(runOnce(()-> {
             Vision.SELECTED_GRID = DriverStation.getAlliance() == Alliance.Red ? 2 : 0;
         }));
 
-        operatorController.getButton("Back").onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
+        operatorController.getButton("Back").onTrue(runOnce(()-> Vision.MANUAL = !Vision.MANUAL));
         operatorController.getButton("Y").onTrue(CmdTeleZeroEncoder());
         operatorController.getButton("X").onTrue(CmdStopManip());
         operatorController.getButton("A").onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).alongWith(CmdExtendIntake(Intake.IntakeState.RETRACTED)));
