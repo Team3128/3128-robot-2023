@@ -22,6 +22,7 @@ import frc.team3128.commands.CmdSystemCheckFancy;
 import frc.team3128.commands.CmdTrajectory;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import static frc.team3128.Constants.FieldConstants.*;
 
@@ -121,35 +122,35 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        controller.getButton("A").onTrue(new InstantCommand(()-> Vision.AUTO_ENABLED = !Vision.AUTO_ENABLED)); //TODO: what to call?
+        controller.getButton("A").onTrue(runOnce(()-> Vision.AUTO_ENABLED = !Vision.AUTO_ENABLED)); //TODO: what to call?
         controller.getButton("RightTrigger").onTrue(CmdSwerveThrottle(1)).onFalse(CmdSwerveThrottle(0.8));
         controller.getButton("LeftTrigger").onTrue(CmdSwerveThrottle(0.25)).onFalse(CmdSwerveThrottle(0.8));
-        controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(CmdSwerveStop()); //TODO: run command?
+        controller.getButton("X").onTrue(run(()-> swerve.xlock(), swerve)).onFalse(CmdSwerveStop()); //TODO: run command?
         controller.getButton("B").onTrue(CmdSwerveResetEncoders());
-        controller.getButton("Y").onTrue(Commands.sequence(CmdExtendRelease(), CmdSwerveThrottle(0.25)))
+        controller.getButton("Y").onTrue(sequence(CmdExtendRelease(), CmdSwerveThrottle(0.25)))
                                         .onFalse(CmdOuttake());
 
         controller.getButton("RightBumper").onTrue(CmdIntakeOuttake()).onFalse(CmdStopIntake());
-        controller.getButton("LeftBumper").onTrue(CmdIntake()).onFalse(Commands.sequence( //TODO
-            new InstantCommand(() -> intake.set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), intake),
+        controller.getButton("LeftBumper").onTrue(CmdIntake()).onFalse(sequence( //TODO
+            runOnce(() -> intake.set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), intake),
             CmdExtendIntake(Intake.IntakeState.RETRACTED),
-            new WaitUntilCommand(()-> intake.atSetpoint())));
+            waitUntil(()-> intake.atSetpoint())));
 
-        controller.getUpPOVButton().onTrue(new InstantCommand(()-> {
+        controller.getUpPOVButton().onTrue(runOnce(()-> {
             CmdSwerveDrive.rSetpoint = DriverStation.getAlliance() == Alliance.Red ? 0 : 180;
             CmdSwerveDrive.enabled = true;
         }));
-        controller.getDownPOVButton().onTrue(new InstantCommand(()-> {
+        controller.getDownPOVButton().onTrue(runOnce(()-> {
             CmdSwerveDrive.rSetpoint = DriverStation.getAlliance() == Alliance.Red ? 180 : 0;
             CmdSwerveDrive.enabled = true;
         }));
 
-        controller.getRightPOVButton().onTrue(new InstantCommand(()-> {
+        controller.getRightPOVButton().onTrue(runOnce(()-> {
             CmdSwerveDrive.rSetpoint = DriverStation.getAlliance() == Alliance.Red ? 270 : 90;
             CmdSwerveDrive.enabled = true;
         }));
 
-        controller.getLeftPOVButton().onTrue(new InstantCommand(()-> {
+        controller.getLeftPOVButton().onTrue(runOnce(()-> {
             CmdSwerveDrive.rSetpoint = DriverStation.getAlliance() == Alliance.Red ? 90 : 270;
             CmdSwerveDrive.enabled = true;
         }));
@@ -167,10 +168,10 @@ public class RobotContainer {
         rightStick.getButton(6).onTrue(CmdTele(11.5));
 
         //rightStick.getButton(7).onTrue(new CmdBalance());
-        rightStick.getButton(7).onTrue(Commands.sequence( //TODO
-                                            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getPitch()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
+        rightStick.getButton(7).onTrue(sequence( //TODO
+                                            deadline(sequence(waitUntil(()-> Math.abs(swerve.getPitch()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
                                             //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
-                                            new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())));
+                                            run(()->Swerve.getInstance().xlock(), Swerve.getInstance())));
 
         rightStick.getButton(8).onTrue(CmdStopIntake());
     
@@ -192,8 +193,8 @@ public class RobotContainer {
 
         rightStick.getUpPOVButton().onTrue(new CmdSystemCheckFancy());
         rightStick.getDownPOVButton().onTrue(CmdSystemCheckRepeat());
-        rightStick.getRightPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck++;}));
-        rightStick.getLeftPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck--;}));
+        rightStick.getRightPOVButton().onTrue(runOnce(()->{CmdSystemCheckFancy.systemCheck++;}));
+        rightStick.getLeftPOVButton().onTrue(runOnce(()->{CmdSystemCheckFancy.systemCheck--;}));
 
         buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).andThen(CmdManipStallPower()));
 
