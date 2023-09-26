@@ -13,12 +13,11 @@ import edu.wpi.first.math.MathUtil;
 import static frc.team3128.Constants.TelescopeConstants.*;
 
 import java.util.function.DoubleSupplier;
-import common.subsystems.NAR_PIDSubsystem;
-import common.utility.Controller.PController;
-
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.Constants.TelescopeConstants;
+import common.core.controllers.Controller.PController;
+import common.core.subsystems.NAR_PIDSubsystem;
 import common.hardware.motorcontroller.NAR_CANSparkMax;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
 import frc.team3128.common.utility.NAR_Shuffleboard;

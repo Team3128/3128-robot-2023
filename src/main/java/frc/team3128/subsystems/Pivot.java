@@ -17,10 +17,10 @@ import frc.team3128.common.utility.NAR_Shuffleboard;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import common.core.controllers.Controller.PController;
+import common.core.subsystems.NAR_PIDSubsystem;
 import common.hardware.motorcontroller.NAR_CANSparkMax;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
-import common.subsystems.NAR_PIDSubsystem;
-import common.utility.Controller.PController;
 
 /**
  * Pivot for windmill arm

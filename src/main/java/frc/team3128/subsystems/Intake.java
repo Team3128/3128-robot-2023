@@ -10,8 +10,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import common.hardware.motorcontroller.NAR_CANSparkMax;
 import common.hardware.motorcontroller.NAR_TalonSRX;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
-import common.subsystems.NAR_PIDSubsystem;
-import common.utility.Controller.PController;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -23,6 +21,9 @@ import frc.team3128.RobotContainer;
 import frc.team3128.Constants.IntakeConstants;
 import frc.team3128.Constants.TelescopeConstants;
 import frc.team3128.common.utility.NAR_Shuffleboard;
+
+import common.core.controllers.Controller.PController;
+import common.core.subsystems.NAR_PIDSubsystem;
 
 public class Intake extends NAR_PIDSubsystem {
 

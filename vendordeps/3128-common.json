@@ -1,6 +1,6 @@
 {
     "name": "3128-common",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "uuid": "ae3fa5a2-78d9-47e8-921a-dba45b889445",
     "mavenUrls": [
         "https://jitpack.io"
@@ -11,7 +11,7 @@
         {
             "groupId": "com.github.Team3128",
             "artifactId": "3128-common",
-            "version": "0.0.3"
+            "version": "0.0.4"
         }
     ],
     "jniDependencies": [],
