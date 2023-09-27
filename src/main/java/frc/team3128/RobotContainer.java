@@ -27,6 +27,7 @@ import static frc.team3128.Constants.FieldConstants.*;
 
 import static frc.team3128.Constants.SwerveConstants.*;
 
+import frc.team3128.commands.CmdAutoBalance;
 import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdBangBangBalance;
 import static frc.team3128.commands.CmdManager.*;
@@ -156,6 +157,7 @@ public class RobotContainer {
             CmdSwerveDrive.enabled = true;
         }));
 
+        leftStick.getButton(1).onTrue(new CmdAutoBalance());
         // rightStick.getButton(4).onTrue(new StartEndCommand(() ->telescope.retract(), () -> {telescope.stopTele(); telescope.zeroEncoder(TelescopeConstants.TELE_OFFSET);}).until(() -> !telescope.getLimitSwitch()));
         
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.zeroGyro()));
@@ -292,9 +294,9 @@ public class RobotContainer {
         );
         inProtected.onTrue(new InstantCommand(()-> controller.startVibrate())).onFalse(new InstantCommand(()-> controller.stopVibrate()));
 
-        for (int i = 0; i < 9; i ++) {
-            leftStick.getButton(i + 1).onTrue(new CmdTrajectory(i));
-        }
+        // for (int i = 0; i < 9; i ++) {
+        //     leftStick.getButton(i + 1).onTrue(new CmdTrajectory(i));
+        // }
     }
 
     public void init() {
