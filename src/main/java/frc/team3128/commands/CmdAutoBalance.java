@@ -6,41 +6,58 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.team3128.Constants.AutoConstants.*;
+
+import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
 
 public class CmdAutoBalance extends CommandBase{
     private final Swerve swerve;
     private double prevAngle;
+    private double angleVelocity;
+    private int plateauCount;
     private boolean onRamp;
 
     public CmdAutoBalance() {
         swerve = Swerve.getInstance();
+        addRequirements(Swerve.getInstance());
     }
     
     @Override
     public void initialize() {
         prevAngle = swerve.getPitch();
         onRamp = false;
+        plateauCount = 0;
+        angleVelocity = 0;
+    }
+
+    public double getAngleVelocity(double currAngle) {
+        if (plateauCount < 5) {
+            plateauCount ++;
+            return angleVelocity;
+        }
+        plateauCount = 0;
+        angleVelocity = (currAngle - prevAngle) / 0.1;
+        prevAngle = currAngle;
+        return angleVelocity;
     }
 
     @Override
     public void execute() {
-        final Rotation2d pitch = Rotation2d.fromDegrees(swerve.getPitch());
-        final Rotation2d roll = Rotation2d.fromDegrees(swerve.getRoll());
-        final Rotation2d yaw = Rotation2d.fromDegrees(swerve.getYaw());
-        final double advAngle = yaw.getCos() * pitch.getDegrees() + yaw.getSin() * roll.getDegrees();
-        final double angleVelocity = (advAngle - prevAngle) / 0.02;
-        prevAngle = advAngle;
+        final double advAngle = swerve.getPitch();
+        // final double angleVelocity = (advAngle - prevAngle) / 0.02;
+        final double angleVelocity = getAngleVelocity(advAngle);
 
         if (advAngle > RAMP_THRESHOLD) onRamp = true;
 
         if (Math.abs(advAngle) < ANGLE_THRESHOLD && onRamp) {
+            System.out.println("WHY");
             swerve.xlock();
             return;
         }
 
-        if ((advAngle < 0.0 && angleVelocity > VELOCITY_THRESHOLD) || (advAngle > 0.0 && angleVelocity < VELOCITY_THRESHOLD)) {
-            swerve.stop();
+        NAR_Shuffleboard.addData("Drivetrain", "no", angleVelocity, 6, 2);
+        if (((advAngle < 0.0 && angleVelocity > VELOCITY_THRESHOLD) || (advAngle > 0.0 && angleVelocity < -VELOCITY_THRESHOLD)) && onRamp) {
+            swerve.xlock();
             return;
         }
 
@@ -55,7 +72,6 @@ public class CmdAutoBalance extends CommandBase{
     @Override
     public boolean isFinished() {
         return false;
-
     }
 
 }

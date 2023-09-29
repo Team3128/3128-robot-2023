@@ -43,6 +43,8 @@ public class Swerve extends SubsystemBase {
 
     private Field2d field;
 
+    private double initialRoll, initialPitch;
+
     public static synchronized Swerve getInstance() {
         if (instance == null) {
             instance = new Swerve();
@@ -53,7 +55,7 @@ public class Swerve extends SubsystemBase {
     public Swerve() {
         gyro = new WPI_Pigeon2(pigeonID);
         gyro.configFactoryDefault();
-        //zeroGyro();
+        zeroGyro();
         fieldRelative = true;
         estimatedPose = new Pose2d();
 
@@ -224,15 +226,17 @@ public class Swerve extends SubsystemBase {
     }
 
     public double getPitch() {
-        return gyro.getPitch();
+        return gyro.getRoll() - initialRoll;
     }
 
     public double getRoll() {
-        return gyro.getRoll();
+        return gyro.getPitch() - initialPitch;
     }
 
     public void zeroGyro() {
         gyro.reset();
+        initialRoll = gyro.getRoll();
+        initialPitch = gyro.getPitch();
     }
 
     public void zeroGyro(double reset) {

@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import static frc.team3128.Constants.FieldConstants.*;
@@ -75,7 +76,11 @@ public class CmdTrajectory extends CommandBase {
     private CommandBase generateAuto() {
         index = Vision.SELECTED_GRID * 3 + xPos;
         final PathPlannerTrajectory trajectory = PathPlanner.generatePath(pathConstraints, generatePoses());
-        return Trajectories.generateAuto(trajectory);
+        return Commands.sequence(
+            Trajectories.generateAuto(trajectory),
+            Commands.run(()-> swerve.drive(new Translation2d(DriverStation.getAlliance() == Alliance.Blue ? -0.5 : 0.5, 0), 0, true)).withTimeout(0.5),
+            Commands.runOnce(()-> swerve.stop())
+        );
     }
 
     @Override
@@ -99,6 +104,6 @@ public class CmdTrajectory extends CommandBase {
 
     @Override
     public boolean isFinished(){
-        return swerve.getPose().minus(END_POINTS[index]).getTranslation().getNorm() < 0.1;
+        return swerve.getPose().minus(END_POINTS[index]).getTranslation().getNorm() < 0.5;
     }
 }
