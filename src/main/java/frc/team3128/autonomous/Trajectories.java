@@ -77,7 +77,7 @@ public class Trajectories {
 
 
     public static void initTrajectories() {
-        final String[] trajectoryNames = {"TestAuto1","b_bottom_1Cone+1Cube","b_bottom_1Cone","b_bottom_1Cone+2Cube"};
+        final String[] trajectoryNames = {"b_cable_1Cone+1Cube","b_cable_1Cone+2Cube","b_cable_1Cone+1.5Cube+Climb"};
 
         CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
                                                 new CmdMoveArm(ArmPosition.TOP_CONE),
@@ -86,8 +86,9 @@ public class Trajectories {
                                                 new InstantCommand(() -> manipulator.stopRoller()),
                                                 new CmdMoveArm(ArmPosition.NEUTRAL)
                                                 ));
-        
-        CommandEventMap.put("ScoreConeLow", new InstantCommand(()->Pivot.getInstance().startPID(15),Pivot.getInstance()));
+
+        //For sketchy possible 3 piece idea
+        //CommandEventMap.put("ScoreConeLow", new InstantCommand(()->Pivot.getInstance().startPID(15),Pivot.getInstance()));
 
         CommandEventMap.put("ScoreCubeLow", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Intake.getInstance().outtake(), Intake.getInstance()),
@@ -98,7 +99,8 @@ public class Trajectories {
 
         CommandEventMap.put("RetractIntake", new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance()));
 
-        CommandEventMap.put("RetractPivot", new InstantCommand(()->Pivot.getInstance().startPID(ArmPosition.NEUTRAL),Pivot.getInstance()));
+        //For sketchy possible 3 piece idea
+        //CommandEventMap.put("RetractPivot", new InstantCommand(()->Pivot.getInstance().startPID(ArmPosition.NEUTRAL),Pivot.getInstance()));
 
         for (String trajectoryName : trajectoryNames) {
             // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");

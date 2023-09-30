@@ -32,7 +32,7 @@ public class AutoPrograms {
     }
 
     private void initAutoSelector() {
-        String[] autoStrings = new String[] {"TestAuto1","b_bottom_1Cone+1Cube","b_bottom_1Cone","b_bottom_1Cone+2Cube"};
+        String[] autoStrings = new String[] {"b_cable_1Cone+1Cube","b_cable_1Cone+2Cube","b_cable_1Cone+1.5Cube+Climb"};
         NarwhalDashboard.addAutos(autoStrings);
     }
 
