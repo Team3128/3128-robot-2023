@@ -79,10 +79,10 @@ public class Constants {
         public static final Pose2d ClimbSetupOutsideBot = new Pose2d(5.6, 2.9, Rotation2d.fromDegrees(180));
         public static final Pose2d ClimbSetupOutsideTop = new Pose2d(5.6, 3.3, Rotation2d.fromDegrees(180));
 
-        public static final double ANGLE_THRESHOLD = 7;
-        public static final double VELOCITY_THRESHOLD = 8;
-        public static final double RAMP_THRESHOLD = 8;
-        public static final double DRIVE_SPEED = Units.inchesToMeters(30);
+        public static final double ANGLE_THRESHOLD = 9; //7, 9
+        public static final double VELOCITY_THRESHOLD = 3; //6, 3
+        public static final double RAMP_THRESHOLD = 10; //8, 10
+        public static final double DRIVE_SPEED = Units.inchesToMeters(40); //30, 40
         public static final double kP = 0.000000001;
         public static final double kI = 0.0;
         public static final double kD = 0;
