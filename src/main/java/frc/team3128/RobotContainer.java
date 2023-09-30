@@ -157,6 +157,8 @@ public class RobotContainer {
             CmdSwerveDrive.enabled = true;
         }));
 
+        controller.getButton("Back").onTrue(new CmdAutoBalance());
+
         leftStick.getButton(1).onTrue(new CmdAutoBalance());
         // rightStick.getButton(4).onTrue(new StartEndCommand(() ->telescope.retract(), () -> {telescope.stopTele(); telescope.zeroEncoder(TelescopeConstants.TELE_OFFSET);}).until(() -> !telescope.getLimitSwitch()));
         

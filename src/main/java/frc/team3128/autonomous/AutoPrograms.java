@@ -38,13 +38,13 @@ public class AutoPrograms {
 
     public Command getAutonomousCommand() {
        //String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "TestAuto1"; //uncomment and change this for testing without opening Narwhal Dashboard
+        String selectedAutoName = "b_cable_1Cone+1.5Cube+Climb"; //uncomment and change this for testing without opening Narwhal Dashboard
         SmartDashboard.putString(selectedAutoName, selectedAutoName);
         if (selectedAutoName == null) {
             return null;
         }
 
-        return Trajectories.get(selectedAutoName);
+        return Trajectories.get(selectedAutoName,true);
     }
     
     // /** 

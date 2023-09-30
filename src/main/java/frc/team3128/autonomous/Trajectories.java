@@ -41,6 +41,8 @@ import frc.team3128.commands.CmdInPlaceTurn;
 import frc.team3128.commands.CmdManager;
 
 import static frc.team3128.commands.CmdManager.*;
+
+import frc.team3128.commands.CmdAutoBalance;
 import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdMove;
 import frc.team3128.commands.CmdMoveArm;
@@ -79,13 +81,19 @@ public class Trajectories {
     public static void initTrajectories() {
         final String[] trajectoryNames = {"b_cable_1Cone+1Cube","b_cable_1Cone+2Cube","b_cable_1Cone+1.5Cube+Climb"};
 
+        CommandEventMap.put("Rotate180", new CmdInPlaceTurn(180));
         CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
-                                                new CmdMoveArm(ArmPosition.TOP_CONE),
+                                                new CmdMoveArm(ArmPosition.TOP_CONE,false),
                                                 new InstantCommand(() -> manipulator.outtake()),
                                                 new WaitCommand(.5),
                                                 new InstantCommand(() -> manipulator.stopRoller()),
-                                                new CmdMoveArm(ArmPosition.NEUTRAL)
+                                                new CmdMoveArm(ArmPosition.NEUTRAL,false)
                                                 ));
+
+        CommandEventMap.put("ScoreConeLow", Commands.sequence(
+            CmdPivot(30),
+            CmdPivot(ArmPosition.NEUTRAL)
+        ));
 
         //For sketchy possible 3 piece idea
         //CommandEventMap.put("ScoreConeLow", new InstantCommand(()->Pivot.getInstance().startPID(15),Pivot.getInstance()));
@@ -98,6 +106,12 @@ public class Trajectories {
         CommandEventMap.put("IntakeCube", CmdIntake());
 
         CommandEventMap.put("RetractIntake", new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance()));
+
+        // CommandEventMap.put("Climb", Commands.sequence(
+        //     new InstantCommand(()-> Swerve.getInstance().stop(), Swerve.getInstance()),
+        //     new CmdAutoBalance()
+        // )
+        // );
 
         //For sketchy possible 3 piece idea
         //CommandEventMap.put("RetractPivot", new InstantCommand(()->Pivot.getInstance().startPID(ArmPosition.NEUTRAL),Pivot.getInstance()));
@@ -123,7 +137,13 @@ public class Trajectories {
         return builder.fullAuto(trajectory);
     }
 
-    public static CommandBase get(String name) {
+    public static CommandBase get(String name, boolean balance) {
+        if (balance) {
+            return new SequentialCommandGroup(
+                builder.fullAuto(trajectories.get(name)),
+                new CmdAutoBalance()
+            );
+        }
         return builder.fullAuto(trajectories.get(name));
     }
 
