@@ -32,19 +32,19 @@ public class AutoPrograms {
     }
 
     private void initAutoSelector() {
-        String[] autoStrings = new String[] {"b_cable_1Cone+1Cube","b_cable_1Cone+2Cube","b_cable_1Cone+1.5Cube+Climb"};
+        String[] autoStrings = new String[] {"b_cable_1Cone+1Cube","b_cable_1Cone+2Cube","b_cable_1Cone+1.5Cube+Climb","b_mid_1Cone+Climb"};
         NarwhalDashboard.addAutos(autoStrings);
     }
 
     public Command getAutonomousCommand() {
        //String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "b_cable_1Cone+1.5Cube+Climb"; //uncomment and change this for testing without opening Narwhal Dashboard
+        String selectedAutoName = "b_cable_1Cone+2Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
         SmartDashboard.putString(selectedAutoName, selectedAutoName);
         if (selectedAutoName == null) {
             return null;
         }
 
-        return Trajectories.get(selectedAutoName,true);
+        return Trajectories.get(selectedAutoName,false);
     }
     
     // /** 

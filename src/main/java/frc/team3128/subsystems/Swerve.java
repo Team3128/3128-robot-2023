@@ -235,6 +235,10 @@ public class Swerve extends SubsystemBase {
 
     public void zeroGyro() {
         gyro.reset();
+        zeroAxis();
+    }
+
+    public void zeroAxis() {
         initialRoll = gyro.getRoll();
         initialPitch = gyro.getPitch();
     }

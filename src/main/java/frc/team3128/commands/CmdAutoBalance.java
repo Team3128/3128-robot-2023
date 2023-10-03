@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import static frc.team3128.Constants.AutoConstants.*;
 
 import frc.team3128.common.utility.NAR_Shuffleboard;
+import frc.team3128.subsystems.Intake;
+import frc.team3128.subsystems.Manipulator;
+import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
 
 public class CmdAutoBalance extends CommandBase{
@@ -24,6 +27,7 @@ public class CmdAutoBalance extends CommandBase{
     
     @Override
     public void initialize() {
+        swerve.zeroAxis();
         prevAngle = swerve.getPitch();
         onRamp = false;
         plateauCount = 0;
@@ -52,6 +56,8 @@ public class CmdAutoBalance extends CommandBase{
         if (Math.abs(advAngle) < ANGLE_THRESHOLD && onRamp) {
             System.out.println("WHY");
             swerve.xlock();
+            Intake.getInstance().outtake();
+            Intake.getInstance().startPID(0);
             return;
         }
 

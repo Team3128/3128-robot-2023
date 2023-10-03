@@ -150,6 +150,10 @@ public class Intake extends PIDSubsystem {
         set(-OUTTAKE_POWER);
     }
 
+    public void outtake(double power) {
+        set(-power);
+    }
+
     public void stallPower() {
         set(STALL_POWER);
     }

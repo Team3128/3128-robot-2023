@@ -79,15 +79,15 @@ public class Trajectories {
 
 
     public static void initTrajectories() {
-        final String[] trajectoryNames = {"b_cable_1Cone+1Cube","b_cable_1Cone+2Cube","b_cable_1Cone+1.5Cube+Climb"};
+        final String[] trajectoryNames = {"b_cable_1Cone+1Cube","b_cable_1Cone+2Cube","b_cable_1Cone+1.5Cube+Climb","b_mid_1Cone+Climb"};
 
         CommandEventMap.put("Rotate180", new CmdInPlaceTurn(180));
         CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
-                                                new CmdMoveArm(ArmPosition.TOP_CONE,false),
+                                                new CmdMoveArm(ArmPosition.TOP_CONE),
                                                 new InstantCommand(() -> manipulator.outtake()),
                                                 new WaitCommand(.5),
                                                 new InstantCommand(() -> manipulator.stopRoller()),
-                                                new CmdMoveArm(ArmPosition.NEUTRAL,false)
+                                                new CmdMoveArm(ArmPosition.NEUTRAL)
                                                 ));
 
         CommandEventMap.put("ScoreConeLow", Commands.sequence(
@@ -99,8 +99,8 @@ public class Trajectories {
         //CommandEventMap.put("ScoreConeLow", new InstantCommand(()->Pivot.getInstance().startPID(15),Pivot.getInstance()));
 
         CommandEventMap.put("ScoreCubeLow", new SequentialCommandGroup(
-                                                new InstantCommand(()-> Intake.getInstance().outtake(), Intake.getInstance()),
-                                                new InstantCommand(()->Intake.getInstance().startPID(IntakeState.RETRACTED), Intake.getInstance())
+                                                new InstantCommand(()-> Intake.getInstance().outtake(.5), Intake.getInstance()),
+                                                new InstantCommand(()->Intake.getInstance().startPID(45), Intake.getInstance())
                                                 ));
         
         CommandEventMap.put("IntakeCube", CmdIntake());
@@ -118,7 +118,8 @@ public class Trajectories {
 
         for (String trajectoryName : trajectoryNames) {
             // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
-            trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(maxSpeed, maxAcceleration)));
+            trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(maxSpeed
+            , maxAcceleration)));
         }
 
         builder = new SwerveAutoBuilder(
@@ -149,7 +150,7 @@ public class Trajectories {
 
     public static PathPlannerTrajectory line(Pose2d start, Pose2d end) {
         return PathPlanner.generatePath(
-            new PathConstraints(maxSpeed, 4), 
+            new PathConstraints(maxSpeed, 4), //maxspeed
             new PathPoint(start.getTranslation(), start.getRotation()), 
             new PathPoint(end.getTranslation(), end.getRotation())
             );
