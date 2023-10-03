@@ -100,6 +100,9 @@ public class Constants {
         };
 
         public static final double BALANCE_FF = 0.3;
+
+        public static final double slowSpeed = 1;
+        public static final double slowAcceleration = 2;
     }
 
     public static class SwerveConstants {

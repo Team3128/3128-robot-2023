@@ -32,7 +32,24 @@ public class AutoPrograms {
     }
 
     private void initAutoSelector() {
-        String[] autoStrings = new String[] {"b_cable_1Cone+1Cube","b_cable_1Cone+2Cube","b_cable_1Cone+1.5Cube+Climb","b_mid_1Cone+Climb"};
+        String[] autoStrings = new String[] {
+                                            //Blue Autos
+                                                //Cable
+                                                "b_cable_1Cone+1Cube","b_cable_1Cone+2Cube",
+                                                //Mid
+                                                "b_mid_1Cone+Climb","b_mid_1Cone+1Cube+Climb",
+                                                //Hp
+                                                "b_hp_1Cone+1Cube","b_cable_1Cone+2Cube",
+                                            
+                                            //Red Autos
+                                                //Cable
+                                                "r_cable_1Cone+1Cube","r_cable_1Cone+2Cube",
+                                                //Mid
+                                                "r_mid_1Cone+Climb","r_mid_1Cone+1Cube+Climb",
+                                                //Hp
+                                                "r_hp_1Cone+1Cube","r_cable_1Cone+2Cube",
+
+                                            };
         NarwhalDashboard.addAutos(autoStrings);
     }
 
@@ -44,7 +61,7 @@ public class AutoPrograms {
             return null;
         }
 
-        return Trajectories.get(selectedAutoName,false);
+        return Trajectories.get(selectedAutoName,selectedAutoName.contains("Climb"));
     }
     
     // /** 

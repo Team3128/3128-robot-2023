@@ -79,7 +79,23 @@ public class Trajectories {
 
 
     public static void initTrajectories() {
-        final String[] trajectoryNames = {"b_cable_1Cone+1Cube","b_cable_1Cone+2Cube","b_cable_1Cone+1.5Cube+Climb","b_mid_1Cone+Climb"};
+        final String[] trajectoryNames = {
+                                        //Blue Autos
+                                            //Cable
+                                            "b_cable_1Cone+1Cube","b_cable_1Cone+2Cube",
+                                            //Mid
+                                            "b_mid_1Cone+Climb","b_mid_1Cone+1Cube+Climb",
+                                            //Hp
+                                            "b_hp_1Cone+1Cube","b_cable_1Cone+2Cube",
+                                            
+                                        //Red Autos
+                                            //Cable
+                                            "r_cable_1Cone+1Cube","r_cable_1Cone+2Cube",
+                                            //Mid
+                                            "r_mid_1Cone+Climb","r_mid_1Cone+1Cube+Climb",
+                                            //Hp
+                                            "r_hp_1Cone+1Cube","r_cable_1Cone+2Cube",
+                                        };
 
         CommandEventMap.put("Rotate180", new CmdInPlaceTurn(180));
         CommandEventMap.put("ScoreConeHigh", new SequentialCommandGroup(
@@ -118,8 +134,12 @@ public class Trajectories {
 
         for (String trajectoryName : trajectoryNames) {
             // Path path = Filesystem.getDeployDirectory().toPath().resolve("paths").resolve(trajectoryName + ".wpilib.json");
-            trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(maxSpeed
-            , maxAcceleration)));
+            if (trajectoryName.contains("mid")) {
+                trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(AutoConstants.slowSpeed, AutoConstants.slowAcceleration)));
+            } 
+            else {
+                trajectories.put(trajectoryName, PathPlanner.loadPathGroup(trajectoryName, new PathConstraints(maxSpeed, maxAcceleration)));
+            }
         }
 
         builder = new SwerveAutoBuilder(
@@ -150,7 +170,7 @@ public class Trajectories {
 
     public static PathPlannerTrajectory line(Pose2d start, Pose2d end) {
         return PathPlanner.generatePath(
-            new PathConstraints(maxSpeed, 4), //maxspeed
+            new PathConstraints(maxSpeed, 4),
             new PathPoint(start.getTranslation(), start.getRotation()), 
             new PathPoint(end.getTranslation(), end.getRotation())
             );
