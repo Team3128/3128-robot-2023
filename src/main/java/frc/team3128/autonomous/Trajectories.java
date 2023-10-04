@@ -82,7 +82,7 @@ public class Trajectories {
         final String[] trajectoryNames = {
                                         //Blue Autos
                                             //Cable
-                                            "b_cable_1Cone+1Cube","b_cable_1Cone+2Cube",
+                                            "b_cable_1Cone+1Cube","b_cable_1Cone+2Cube", "b_cable_1Cone+2Cube+Climb",
                                             //Mid
                                             "b_mid_1Cone+Climb","b_mid_1Cone+1Cube+Climb",
                                             //Hp
@@ -117,6 +117,11 @@ public class Trajectories {
         CommandEventMap.put("ScoreCubeLow", new SequentialCommandGroup(
                                                 new InstantCommand(()-> Intake.getInstance().outtake(.5), Intake.getInstance()),
                                                 new InstantCommand(()->Intake.getInstance().startPID(45), Intake.getInstance())
+                                                ));
+        
+        CommandEventMap.put("ShootCubeLow", new SequentialCommandGroup(
+                                                new InstantCommand(()-> Intake.getInstance().outtake(), Intake.getInstance()),
+                                                new InstantCommand(()->Intake.getInstance().startPID(90), Intake.getInstance())
                                                 ));
         
         CommandEventMap.put("IntakeCube", CmdIntake());
@@ -162,7 +167,7 @@ public class Trajectories {
         if (balance) {
             return new SequentialCommandGroup(
                 builder.fullAuto(trajectories.get(name)),
-                new CmdAutoBalance()
+                new CmdAutoBalance(true)
             );
         }
         return builder.fullAuto(trajectories.get(name));

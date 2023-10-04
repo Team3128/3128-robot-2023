@@ -19,8 +19,15 @@ public class CmdAutoBalance extends CommandBase{
     private double angleVelocity;
     private int plateauCount;
     private boolean onRamp;
+    private boolean shoot;
 
     public CmdAutoBalance() {
+        swerve = Swerve.getInstance();
+        addRequirements(Swerve.getInstance());
+    }
+
+    public CmdAutoBalance(boolean shoot) {
+        this.shoot = shoot;
         swerve = Swerve.getInstance();
         addRequirements(Swerve.getInstance());
     }
@@ -56,8 +63,10 @@ public class CmdAutoBalance extends CommandBase{
         if (Math.abs(advAngle) < ANGLE_THRESHOLD && onRamp) {
             System.out.println("WHY");
             swerve.xlock();
-            Intake.getInstance().outtake();
-            Intake.getInstance().startPID(0);
+            if (shoot) {
+                Intake.getInstance().outtake();
+                Intake.getInstance().startPID(0);
+            }
             return;
         }
 

@@ -35,7 +35,7 @@ public class AutoPrograms {
         String[] autoStrings = new String[] {
                                             //Blue Autos
                                                 //Cable
-                                                "b_cable_1Cone+1Cube","b_cable_1Cone+2Cube",
+                                                "b_cable_1Cone+1Cube","b_cable_1Cone+2Cube", "b_cable_1Cone+2Cube+Climb",
                                                 //Mid
                                                 "b_mid_1Cone+Climb","b_mid_1Cone+1Cube+Climb",
                                                 //Hp
@@ -55,7 +55,7 @@ public class AutoPrograms {
 
     public Command getAutonomousCommand() {
        //String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "b_cable_1Cone+2Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
+        String selectedAutoName = "b_cable_1Cone+2Cube+Climb"; //uncomment and change this for testing without opening Narwhal Dashboard
         SmartDashboard.putString(selectedAutoName, selectedAutoName);
         if (selectedAutoName == null) {
             return null;
