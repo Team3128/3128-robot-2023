@@ -84,11 +84,6 @@ public class Vision extends SubsystemBase {
         return camera.targetPitch();
     }
 
-    public double getArea(String name) {
-        NAR_Camera camera = cameras.get(name);
-        return camera.targetArea();
-    }
-
     public boolean hasValidTarget(String name) {
         NAR_Camera camera = cameras.get(name);
         return camera.hasValidTarget();

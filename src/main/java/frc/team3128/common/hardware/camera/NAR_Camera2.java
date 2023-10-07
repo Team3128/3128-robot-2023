@@ -116,15 +116,6 @@ public class NAR_Camera2 extends PhotonCamera {
         return hasValidTarget() ? target.getPitch() : 0;
     }
 
-    // TODO: remove?
-    public double targetArea() {
-        return targetArea(bestTarget);
-    }
-
-    private double targetArea(PhotonTrackedTarget target) {
-        return hasValidTarget() ? target.getArea() : 0;
-    }
-
     public int targetId() {
         return targetId(bestTarget);
     }
