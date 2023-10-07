@@ -17,7 +17,6 @@ import frc.team3128.common.constantsint.ConstantsInt.VisionConstants;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.subsystems.Intake;
-import frc.team3128.subsystems.Led;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Telescope;
@@ -30,7 +29,6 @@ public class CmdManager {
     private static Telescope telescope = Telescope.getInstance();
     private static Intake intake = Intake.getInstance();
     private static Manipulator manipulator = Manipulator.getInstance();
-    private static Led led = Led.getInstance();
     private static NAR_XboxController controller = RobotContainer.controller;
 
 
@@ -50,7 +48,6 @@ public class CmdManager {
 
     public static CommandBase CmdShelfPickup(boolean cone) {
         return Commands.sequence(
-            new InstantCommand(() -> led.setPickupColor(cone)),
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             CmdPivot(cone ? ArmPosition.HP_SHELF_CONE : ArmPosition.HP_SHELF_CUBE),

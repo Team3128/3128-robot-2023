@@ -33,6 +33,7 @@ import frc.team3128.commands.CmdBangBangBalance;
 import static frc.team3128.commands.CmdManager.*;
 import frc.team3128.Constants.IntakeConstants;
 import frc.team3128.Constants.TelescopeConstants;
+import frc.team3128.Constants.LedConstants.Colors;
 import frc.team3128.common.hardware.camera.NAR_Camera;
 import frc.team3128.common.hardware.input.NAR_ButtonBoard;
 import frc.team3128.common.hardware.input.NAR_Joystick;
@@ -40,7 +41,7 @@ import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
 import frc.team3128.subsystems.Intake;
-import frc.team3128.subsystems.Led;
+import frc.team3128.subsystems.Leds;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Pivot;
@@ -65,7 +66,7 @@ public class RobotContainer {
     private Pivot pivot;
     private Telescope telescope;
     private Manipulator manipulator;
-    private Led led;
+    private Leds leds;
 
     private NAR_Joystick leftStick;
     private NAR_Joystick rightStick;
@@ -92,7 +93,7 @@ public class RobotContainer {
         pivot = Pivot.getInstance();
         telescope = Telescope.getInstance();
         manipulator = Manipulator.getInstance();
-        led = Led.getInstance();
+        leds = Leds.getInstance();
 
         isAuto = new Trigger(() -> Vision.AUTO_ENABLED);
 
@@ -210,21 +211,27 @@ public class RobotContainer {
         buttonPad.getButton(16).onTrue(
             //CmdShelfPickup(true)
             Commands.sequence(
+            new InstantCommand(() -> leds.setPivotLeds(Colors.CONE)),
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(()-> pivot.startPID(283.5)),
             CmdManipGrab(true),
+            new InstantCommand(() -> leds.setPivotLeds(Colors.HOLDING)),
             new WaitCommand(0.333),
+            new InstantCommand(() -> leds.setPivotLeds(Colors.DEFAULT)),
             new CmdMoveArm(ArmPosition.NEUTRAL)
             ));
         buttonPad.getButton(15).onTrue(
             //CmdShelfPickup(false)
             Commands.sequence(
-                new InstantCommand(()-> Vision.AUTO_ENABLED = false),
+            new InstantCommand(() -> leds.setPivotLeds(Colors.CONE)),
+            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             new InstantCommand(()-> pivot.startPID(288)),
             CmdManipGrab(false),
+            new InstantCommand(() -> leds.setPivotLeds(Colors.HOLDING)),
             new WaitCommand(0.333),
+            new InstantCommand(() -> leds.setPivotLeds(Colors.DEFAULT)),
             new CmdMoveArm(ArmPosition.NEUTRAL)
             ));
 

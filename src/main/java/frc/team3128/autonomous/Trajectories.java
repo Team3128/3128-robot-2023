@@ -35,6 +35,7 @@ import frc.team3128.Constants.PivotConstants;
 import frc.team3128.Constants.SwerveConstants;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.Constants.LedConstants.Colors;
 import frc.team3128.commands.CmdBangBangBalance;
 import frc.team3128.commands.CmdDriveUp;
 import frc.team3128.commands.CmdInPlaceTurn;
@@ -51,7 +52,7 @@ import frc.team3128.commands.CmdMoveScore;
 import frc.team3128.commands.CmdScoreAuto;
 import frc.team3128.commands.CmdMove.Type;
 import frc.team3128.subsystems.Intake;
-import frc.team3128.subsystems.Led;
+import frc.team3128.subsystems.Leds;
 import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
@@ -166,11 +167,15 @@ public class Trajectories {
     public static CommandBase get(String name, boolean balance) {
         if (balance) {
             return new SequentialCommandGroup(
+                new InstantCommand(() -> Leds.getInstance().setPivotLeds(Colors.AUTO)),
                 builder.fullAuto(trajectories.get(name)),
                 new CmdAutoBalance(true)
             );
         }
-        return builder.fullAuto(trajectories.get(name));
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> Leds.getInstance().setPivotLeds(Colors.AUTO)),
+            builder.fullAuto(trajectories.get(name))
+        );
     }
 
     public static PathPlannerTrajectory line(Pose2d start, Pose2d end) {
