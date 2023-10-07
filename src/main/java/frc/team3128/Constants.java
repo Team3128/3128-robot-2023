@@ -430,8 +430,8 @@ public class Constants {
 
             NEUTRAL(5, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF_CONE(110, 17.5, null, true), //105
-            HP_SHELF_CUBE(110, 17.5, null, false), //105
+            HP_SHELF_CONE(114, 11.5, null, true), //105
+            HP_SHELF_CUBE(112, 11.5, null, false), //105
             CHUTE_CONE(283.5, 11.5, null, true),
             CHUTE_CUBE(288, 11.5, null, false),
             CONE_POLE(-40, 11.5, null, null),
