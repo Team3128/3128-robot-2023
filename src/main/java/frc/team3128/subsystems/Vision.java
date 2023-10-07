@@ -11,6 +11,7 @@ import static frc.team3128.Constants.VisionConstants.*;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.hardware.camera.NAR_Camera;
+import frc.team3128.common.hardware.camera.NAR_Camera2;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
 public class Vision extends SubsystemBase{
@@ -32,10 +33,7 @@ public class Vision extends SubsystemBase{
 
     public Vision() {
         Swerve swerve = Swerve.getInstance();
-        NAR_Camera.setGyro(()-> swerve.getYaw());
-        NAR_Camera.setOdometry((pose,time) -> swerve.addVisionMeasurement(pose,time));
-        NAR_Camera.setAprilTags(APRIL_TAG_POS);
-        NAR_Camera.multipleTargets = false;
+        NAR_Camera2.setRequirements(()-> swerve.getYaw(), (pose,time) -> swerve.addVisionMeasurement(pose,time), APRIL_TAG_POS, false);
         cameras = new HashMap<String,NAR_Camera>();
         cameras.put(FRONT.hostname, new NAR_Camera(FRONT));
         cameras.put(BACK.hostname, new NAR_Camera(BACK));
