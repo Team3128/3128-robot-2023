@@ -61,7 +61,7 @@ public class AutoPrograms {
             return null;
         }
 
-        return Trajectories.get(selectedAutoName,selectedAutoName.contains("Climb"));
+        return Trajectories.get(selectedAutoName, selectedAutoName.contains("Climb"));
     }
     
     // /** 

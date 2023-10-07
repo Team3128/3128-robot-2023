@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Swerve;
 import static frc.team3128.Constants.SwerveConstants.*;
 
@@ -39,9 +40,10 @@ public class CmdSwerveDrive extends CommandBase {
         this.zAxis = zAxis;
 
         accelLimiter = new SlewRateLimiter(maxAcceleration);
-        rController = new PIDController(rotationKP, 0, 0);
+        rController = new PIDController(turnKP, turnKI, turnKD);
         rController.enableContinuousInput(0, 360);
-        rController.setTolerance(1);
+        rController.setTolerance(0.5);
+        NAR_Shuffleboard.addComplex("Drivetrain", "rController", rController, 5, 4);
         swerve.fieldRelative = fieldRelative;
     }
 

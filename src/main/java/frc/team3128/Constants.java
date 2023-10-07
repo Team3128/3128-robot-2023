@@ -167,10 +167,9 @@ public class Constants {
         public static final double rotationKD = 0;
 
         /* Turning PID Values */
-        public static final double turnKP = 0.1;
+        public static final double turnKP = 5;
         public static final double turnKI = 0;
         public static final double turnKD = 0;
-        public static final double turnKF = 0.1;
 
         /* Angle Motor PID Values */
         // switched 364 pid values to SDS pid values
@@ -425,17 +424,16 @@ public class Constants {
         public enum ArmPosition {
             TOP_CONE(112, 38.5, 0, true), // 112,44 
             TOP_CUBE(105, 38.5, 0, false), //98,35
-            MID_CONE(105, 21.5, 1, true), //98,22.5
+            MID_CONE(100, 20, 1, true), //98,22.5
             MID_CUBE(90, 22, 1, false), //87,15
             LOW_FLOOR(45, 11.5, 2, false), 
 
             NEUTRAL(5, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF_CONE(114, 17.5, null, null), //105
-            HP_SHELF_CUBE(110, 17.5, null, null), //105
-            GROUND_PICKUP(37, 26.5, null, null),
-            GROUND_PICKUP_CONE(37, 26.5, null, null), 
-            GROUND_PICKUP_CUBE(37.5, 26, null, null), 
+            HP_SHELF_CONE(110, 17.5, null, true), //105
+            HP_SHELF_CUBE(110, 17.5, null, false), //105
+            CHUTE_CONE(283.5, 11.5, null, true),
+            CHUTE_CUBE(288, 11.5, null, false),
             CONE_POLE(-40, 11.5, null, null),
             AVOID_INTAKE(90, 11.5, null, null);
     

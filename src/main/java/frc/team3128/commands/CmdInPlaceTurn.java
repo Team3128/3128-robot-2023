@@ -26,7 +26,7 @@ public class CmdInPlaceTurn extends PIDCommand {
 
     public CmdInPlaceTurn(double degrees) {
         super(
-            new PIDController(turnKP,turnKF,turnKD),
+            new PIDController(turnKP,turnKI,turnKD),
             () -> Swerve.getInstance().getYaw(),
             0,
             output -> Swerve.getInstance().drive(new Translation2d(), -output, false),

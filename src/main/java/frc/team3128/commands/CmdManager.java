@@ -2,7 +2,7 @@ package frc.team3128.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -34,23 +34,42 @@ public class CmdManager {
     private static Leds leds = Leds.getInstance();
     private static NAR_XboxController controller = RobotContainer.controller;
 
+    public static boolean isChute = true;
+
 
     private CmdManager() {}
 
     public static CommandBase CmdScore(boolean isReversed, ArmPosition position, int xpos) {
-        return Commands.sequence(
+        return sequence(
             new InstantCommand(()-> Vision.position = position),
             new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-            new CmdTrajectory(xpos),
-            CmdPivot(position),
+            new CmdTrajectory(xpos, position == ArmPosition.LOW_FLOOR),
+            either(none(), CmdPivot(position), ()-> position == ArmPosition.LOW_FLOOR),
+            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             vibrateController()
         );
     }
 
+    public static CommandBase CmdPickup(ArmPosition position) {
+        return sequence(
+            runOnce(() -> leds.setPivotLeds(position.cone ? Colors.CONE : Colors.CUBE)),
+            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
+            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
+            runOnce(()-> Vision.AUTO_ENABLED = false),
+            runOnce(() -> leds.setPivotLeds(position.cone ? Colors.CONE : Colors.CUBE)),
+            new CmdMoveArm(position),
+            CmdManipGrab(position.cone),
+            new InstantCommand(() -> leds.setPivotLeds(Colors.HOLDING)),
+            new WaitCommand(0.333),
+            new InstantCommand(() -> leds.setPivotLeds(Colors.DEFAULT)),
+            new CmdMoveArm(ArmPosition.NEUTRAL)
+        );
+    }
+
     public static CommandBase CmdShelfPickup(boolean cone) {
-        return Commands.sequence(
+        return sequence(
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             CmdPivot(cone ? ArmPosition.HP_SHELF_CONE : ArmPosition.HP_SHELF_CUBE),
@@ -62,7 +81,7 @@ public class CmdManager {
     }
 
     public static CommandBase CmdIntake() {
-        return Commands.sequence(
+        return sequence(
             new InstantCommand(()-> Intake.objectPresent = false),
             CmdIntakeIntake(),
             CmdExtendIntake(IntakeState.DEPLOYED),
@@ -79,7 +98,7 @@ public class CmdManager {
     }
     
     public static CommandBase CmdManipGrab(boolean cone) {
-        return Commands.sequence(
+        return sequence(
             CmdManipIntake(cone),
             new WaitCommand(0.4),
             //new CmdCurrentCheck(manipulator.m_roller, ManipulatorConstants.CURRENT_THRESHOLD, ManipulatorConstants.ABSOLUTE_THRESHOLD),
@@ -90,7 +109,7 @@ public class CmdManager {
     }
 
     public static CommandBase CmdPivot(double angle) {
-        return Commands.sequence(
+        return sequence(
             new InstantCommand(() -> pivot.startPID(angle), pivot),
             new WaitUntilCommand(()-> pivot.atSetpoint())
         );
@@ -101,7 +120,7 @@ public class CmdManager {
     }
 
     public static CommandBase CmdTele(double dist) {
-        return Commands.sequence(
+        return sequence(
             new InstantCommand(() -> telescope.startPID(dist), telescope),
             new WaitUntilCommand(()-> telescope.atSetpoint())
         );

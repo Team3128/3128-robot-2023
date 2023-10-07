@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.Constants.VisionConstants;
+import frc.team3128.commands.CmdManager;
 import frc.team3128.common.swerveNeo.SwerveModule;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
@@ -55,7 +56,7 @@ public class Swerve extends SubsystemBase {
     public Swerve() {
         gyro = new WPI_Pigeon2(pigeonID);
         gyro.configFactoryDefault();
-        zeroGyro();
+        // zeroGyro();
         fieldRelative = true;
         estimatedPose = new Pose2d();
 
@@ -110,6 +111,7 @@ public class Swerve extends SubsystemBase {
         NAR_Shuffleboard.addData("Drivetrain","Pitch",this::getPitch,5,1);
         NAR_Shuffleboard.addData("Drivetrain", "Roll", this::getRoll, 0, 2);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
+        NAR_Shuffleboard.addData("Drivetrain", "isChute", ()-> CmdManager.isChute, 6, 0);
         NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
     }
 

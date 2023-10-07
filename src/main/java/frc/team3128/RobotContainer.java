@@ -31,6 +31,8 @@ import frc.team3128.commands.CmdAutoBalance;
 import frc.team3128.commands.CmdBalance;
 import frc.team3128.commands.CmdBangBangBalance;
 import static frc.team3128.commands.CmdManager.*;
+
+import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.Constants.IntakeConstants;
 import frc.team3128.Constants.TelescopeConstants;
 import frc.team3128.Constants.LedConstants.Colors;
@@ -202,38 +204,12 @@ public class RobotContainer {
         rightStick.getRightPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck++;}));
         rightStick.getLeftPOVButton().onTrue(new InstantCommand(()->{CmdSystemCheckFancy.systemCheck--;}));
 
-        buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).andThen(new InstantCommand(()->manipulator.stallPower(), manipulator)));
+        buttonPad.getButton(13).onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).andThen(new InstantCommand(()->manipulator.stallPower(), manipulator)).beforeStarting(() -> leds.setPivotLeds(Colors.DEFAULT)));
 
-        buttonPad.getButton(14).onTrue(Commands.sequence(
-            new InstantCommand(()-> pivot.startPID(282)),
-            CmdManipGrab(true)));
-            //pivot.setPower(0); telescope.stopTele(); manipulator.stopRoller(); swerve.stop(); intake.stop();}, pivot, telescope, swerve, manipulator, intake));
-        buttonPad.getButton(16).onTrue(
-            //CmdShelfPickup(true)
-            Commands.sequence(
-            new InstantCommand(() -> leds.setPivotLeds(Colors.CONE)),
-            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
-            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-            new InstantCommand(()-> pivot.startPID(283.5)),
-            CmdManipGrab(true),
-            new InstantCommand(() -> leds.setPivotLeds(Colors.HOLDING)),
-            new WaitCommand(0.333),
-            new InstantCommand(() -> leds.setPivotLeds(Colors.DEFAULT)),
-            new CmdMoveArm(ArmPosition.NEUTRAL)
-            ));
-        buttonPad.getButton(15).onTrue(
-            //CmdShelfPickup(false)
-            Commands.sequence(
-            new InstantCommand(() -> leds.setPivotLeds(Colors.CONE)),
-            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
-            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-            new InstantCommand(()-> pivot.startPID(288)),
-            CmdManipGrab(false),
-            new InstantCommand(() -> leds.setPivotLeds(Colors.HOLDING)),
-            new WaitCommand(0.333),
-            new InstantCommand(() -> leds.setPivotLeds(Colors.DEFAULT)),
-            new CmdMoveArm(ArmPosition.NEUTRAL)
-            ));
+        buttonPad.getButton(14).onTrue(Commands.runOnce(()-> isChute = !isChute));
+
+        buttonPad.getButton(16).onTrue(Commands.either(CmdPickup(ArmPosition.CHUTE_CONE), CmdPickup(ArmPosition.HP_SHELF_CONE), ()-> isChute));
+        buttonPad.getButton(15).onTrue(Commands.either(CmdPickup(ArmPosition.CHUTE_CUBE), CmdPickup(ArmPosition.HP_SHELF_CUBE), ()-> isChute));
 
         //rightStick.getUpPOVButton().onTrue(new InstantCommand(()-> led.setAllianceColor()));
         //rightStick.getDownPOVButton().onTrue(new InstantCommand(()-> led.setAutoColor()));

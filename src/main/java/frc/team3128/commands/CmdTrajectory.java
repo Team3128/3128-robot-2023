@@ -29,12 +29,14 @@ public class CmdTrajectory extends CommandBase {
 
     private final Swerve swerve;
     private final int xPos;
+    private final boolean scoreLow;
     private int index;
     private CommandBase trajCommand;
 
-    public CmdTrajectory(int xPos) {
+    public CmdTrajectory(int xPos, boolean scoreLow) {
         swerve = Swerve.getInstance();
         this.xPos = xPos;
+        this.scoreLow = scoreLow;
         addRequirements(Vision.getInstance());
     }
 
@@ -43,7 +45,7 @@ public class CmdTrajectory extends CommandBase {
     }
 
     private PathPoint generatePoint(Translation2d translation, Rotation2d holonomicAngle, Rotation2d heading, double headingLength) {
-        final PathPoint point =  new PathPoint(allianceFlip(translation), allianceFlip(heading), allianceFlip(holonomicAngle));
+        final PathPoint point =  new PathPoint(allianceFlip(translation), allianceFlip(heading), scoreLow ? flipRotation(allianceFlip(holonomicAngle)) : allianceFlip(holonomicAngle));
         point.prevControlLength = headingLength;
         point.nextControlLength = headingLength;
         return point;
@@ -59,7 +61,7 @@ public class CmdTrajectory extends CommandBase {
     private ArrayList<PathPoint> generatePoses() {
         final ArrayList<PathPoint> pathPoints = new ArrayList<PathPoint>();
         final Translation2d start = swerve.getPose().getTranslation();
-        final Rotation2d holonomicAngle = allianceFlip(END_POINTS[index].getRotation());
+        final Rotation2d holonomicAngle = END_POINTS[index].getRotation();
         final PathPoint startPoint = new PathPoint(start, allianceFlip(HEADING), swerve.getGyroRotation2d());
         final boolean topPath = start.getY() >= (POINT_2A.getY() + POINT_2B.getY()) / 2;
         final boolean skipLastPoint = (topPath && index == 8) || (!topPath && index == 0);
@@ -87,6 +89,7 @@ public class CmdTrajectory extends CommandBase {
     public void initialize() {
         trajCommand = generateAuto();
         trajCommand.schedule();
+        CmdSwerveDrive.enabled = false;
     }
 
     @Override
