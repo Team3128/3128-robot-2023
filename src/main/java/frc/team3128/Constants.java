@@ -597,6 +597,16 @@ public class Constants {
         
         public static final int STARTING_ID = 8;
         public static final int PIVOT_COUNT = 100;
+        public static final int PIVOT_COUNT_FRONT = 50; //change
+        public static final int PIVOT_COUNT_BACK = 50; //change
+
+        public static final double HOLDING_SPEED = 2;
+
+        public static class RainbowAnimation {
+            public static final double BRIGHTNESS = 1;
+            public static final double SPEED = 1;
+
+        }
 
         public enum Colors {
             OFF(0,0,0,false),

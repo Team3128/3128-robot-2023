@@ -13,6 +13,7 @@ import frc.team3128.RobotContainer;
 import frc.team3128.Constants.IntakeConstants;
 import frc.team3128.Constants.ManipulatorConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.Constants.LedConstants.Colors;
 import frc.team3128.common.constantsint.ConstantsInt.VisionConstants;
 import frc.team3128.common.hardware.input.NAR_XboxController;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
@@ -22,6 +23,7 @@ import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Vision;
 import frc.team3128.subsystems.Intake.IntakeState;
+import frc.team3128.subsystems.Leds;
 
 public class CmdManager {
 
@@ -29,6 +31,7 @@ public class CmdManager {
     private static Telescope telescope = Telescope.getInstance();
     private static Intake intake = Intake.getInstance();
     private static Manipulator manipulator = Manipulator.getInstance();
+    private static Leds leds = Leds.getInstance();
     private static NAR_XboxController controller = RobotContainer.controller;
 
 
@@ -69,7 +72,9 @@ public class CmdManager {
             new WaitUntilCommand(()->intake.hasObjectPresent()),
             new InstantCommand(()-> Intake.objectPresent = true),
             new InstantCommand(()-> intake.stallPower(), intake),
-            CmdExtendIntake(IntakeState.RETRACTED)
+            new InstantCommand(() -> leds.setPivotLeds(Colors.HOLDING)),
+            CmdExtendIntake(IntakeState.RETRACTED),
+            new InstantCommand(() -> leds.setPivotLeds(Colors.DEFAULT))
         );
     }
     

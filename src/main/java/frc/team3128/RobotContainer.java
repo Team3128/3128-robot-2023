@@ -286,7 +286,7 @@ public class RobotContainer {
         operatorController.getButton("RightNegY").onTrue(new InstantCommand(()->telescope.retract(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
         operatorController.getButton("RightPosY").onTrue(new InstantCommand(()->telescope.extend(), telescope)).onFalse(new InstantCommand(() -> telescope.stopTele(), telescope));
 
-        // isAuto.onTrue(new InstantCommand(() -> led.setAutoColor())).onFalse(new InstantCommand(()-> led.setAllianceColor()));
+        isAuto.onTrue(new InstantCommand(() -> leds.setPivotLeds(Colors.AUTO))).onFalse(new InstantCommand(()-> leds.setPivotLeds(Colors.DEFAULT)));
 
         inProtected = new Trigger(
             () -> {
