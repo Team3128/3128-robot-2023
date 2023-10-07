@@ -220,6 +220,9 @@ public class Constants {
                                                         new Transform2d(new Translation2d(Units.inchesToMeters(-5.75), 
                                                         Units.inchesToMeters(11.5)), Rotation2d.fromDegrees(180)));
 
+        public static final double FIELD_X_LENGTH = Units.inchesToMeters(648);
+        public static final double FIELD_Y_LENGTH = Units.inchesToMeters(324);
+        
         public static final double SCREEN_WIDTH = 320;
         public static final double SCREEN_HEIGHT = 240;
     
