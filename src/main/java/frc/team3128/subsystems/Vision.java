@@ -11,7 +11,6 @@ import static frc.team3128.Constants.VisionConstants.*;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
 import frc.team3128.common.hardware.camera.Camera;
 import frc.team3128.common.hardware.camera.NAR_Camera;
-import frc.team3128.common.hardware.camera.NAR_Camera2;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
 public class Vision extends SubsystemBase {
