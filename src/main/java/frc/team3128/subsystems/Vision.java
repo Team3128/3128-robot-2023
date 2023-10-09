@@ -33,14 +33,10 @@ public class Vision extends SubsystemBase {
 
     public Vision() {
         Swerve swerve = Swerve.getInstance();
-        NAR_Camera2.setRequirements(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), APRIL_TAG_POS, false);
+        NAR_Camera.setRequirements(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), APRIL_TAG_POS, false);
         cameras = new HashMap<String, NAR_Camera>();
         cameras.put(FRONT.hostname, new NAR_Camera(FRONT));
         cameras.put(BACK.hostname, new NAR_Camera(BACK));
-    }
-
-    public Pose2d targetPos(String name, Pose2d robotPos) {
-        return cameras.get(name).getTargetPos(robotPos);
     }
 
     public void visionReset() {
@@ -89,11 +85,6 @@ public class Vision extends SubsystemBase {
         return camera.hasValidTarget();
     }
 
-    public void setLED(String name, boolean state) {
-        NAR_Camera camera = cameras.get(name);
-        camera.setLED(state);
-    }
-
     public NAR_Camera getCamera(String name) {
         return cameras.get(name);
     }
@@ -129,14 +120,12 @@ public class Vision extends SubsystemBase {
         NAR_Shuffleboard.addData("Vision", "EstimatedPose", () -> cam.getPos().toString(), 0, 3, 4, 1);
         NAR_Shuffleboard.addData("Drivetrain", "HasTarget", () -> cam.hasValidTarget(), 1, 1);
         NAR_Shuffleboard.addData("Test", "Test", () -> SELECTED_GRID, 0, 0);
-        NAR_Shuffleboard.addData("Test", "TESTING", () -> cam.getTest().toString(), 0, 1, 3, 1);
 
         NAR_Shuffleboard.addData("Vision2", "HasTarget", () -> cam2.hasValidTarget(), 0, 0);
         NAR_Shuffleboard.addData("Vision2", "Distance", () -> cam2.getDistance(), 1, 0);
         NAR_Shuffleboard.addData("Vision2", "RawTarget", () -> cam2.getTarget().toString(), 0, 1, 4, 1);
         NAR_Shuffleboard.addData("Vision2", "Processed Target", () -> cam2.getProcessedTarget().toString(), 0, 2, 4, 1);
         NAR_Shuffleboard.addData("Vision2", "EstimatedPose", () -> cam2.getPos().toString(), 0, 3, 4, 1);
-        NAR_Shuffleboard.addData("Test", "TESTING", () -> cam2.getTest().toString(), 0, 2, 3, 1);
 
         NAR_Shuffleboard.addData("Togglables", "AUTO_ENABLED", () -> AUTO_ENABLED, 0, 0);
         NAR_Shuffleboard.addData("Togglables", "MANUAL", () -> MANUAL, 1, 0);
@@ -148,8 +137,6 @@ public class Vision extends SubsystemBase {
         NAR_Shuffleboard.addData("Vision Urgent", "EstimatedPose", cameras.get(FRONT.hostname).getPos().toString(), 0,
                 1);
         NAR_Shuffleboard.addData("Vision Urgent", "GEICO", cameras.get(FRONT.hostname).targetYaw(), 2, 0);
-        NAR_Shuffleboard.addData("Vision Urgent", "TARGETPOS",
-                cameras.get(FRONT.hostname).getTargetPos(Swerve.getInstance().getPose()).toString(), 0, 2);
         NAR_Shuffleboard.addData("Vision Urgent", "RAWTARGET", cameras.get(FRONT.hostname).getTarget().toString(), 0,
                 3);
         NAR_Shuffleboard.addData("Vision Urgent", "TARGETGUITY", cameras.get(FRONT.hostname).targetAmbiguity(), 3, 0);
