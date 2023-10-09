@@ -18,7 +18,7 @@ import org.json.simple.JSONObject;
 
 import frc.team3128.common.constantsint.ConstantsInt;
 import frc.team3128.common.hardware.camera.*;
-import frc.team3128.common.hardware.camera.NAR_Camera.Pipeline;
+// import frc.team3128.common.hardware.camera.NAR_Camera.Pipeline;
 import frc.team3128.common.narwhaldashboard.DashButtonCallback;
 import frc.team3128.common.narwhaldashboard.NumericalDataCallback;
 import frc.team3128.common.utility.Log;
@@ -102,17 +102,17 @@ public class NarwhalDashboard extends WebSocketServer {
         autoPrograms.addAll(Arrays.asList(names));
     }
 
-    public static void addLimelight(NAR_Camera light) {
-        limelights.put(light.get_name(), light);
-    }
+    // public static void addLimelight(NAR_Camera light) {
+    //     limelights.put(light.get_name(), light);
+    // }
 
     public static String getSelectedAutoName() {
         return selectedAuto;
     }
 
-    public static void setSelectedLimelight(NAR_Camera ll){
-        selectedLimelight = ll.get_name();
-    }
+    // public static void setSelectedLimelight(NAR_Camera ll){
+    //     selectedLimelight = ll.get_name();
+    // }
 
     /**
      * Starts the NarwhalDashboard server. This opens it up to be able to be
@@ -216,17 +216,17 @@ public class NarwhalDashboard extends WebSocketServer {
                     }
                     obj.put("auto", autoProgramArr);
 
-                    JSONArray limelightsArr = new JSONArray();
-                    for(NAR_Camera lime : limelights.values()) {
-                        limelightsArr.add(lime.get_name());
-                    }
-                    obj.put("limelight", limelightsArr);
+                    // JSONArray limelightsArr = new JSONArray();
+                    // for(NAR_Camera lime : limelights.values()) {
+                    //     limelightsArr.add(lime.get_name());
+                    // }
+                    // obj.put("limelight", limelightsArr);
 
-                    JSONArray limelightsOptionsArr = new JSONArray();
-                    for(Pipeline pipeline : Pipeline.values()) {
-                        limelightsOptionsArr.add(pipeline.toString());
-                    }
-                    obj.put("pipeline", limelightsOptionsArr);
+                    // JSONArray limelightsOptionsArr = new JSONArray();
+                    // for(Pipeline pipeline : Pipeline.values()) {
+                    //     limelightsOptionsArr.add(pipeline.toString());
+                    // }
+                    // obj.put("pipeline", limelightsOptionsArr);
 
                     pushed = true;
                 }
@@ -310,18 +310,20 @@ public class NarwhalDashboard extends WebSocketServer {
                 }
 
         // Receive pipeline selection (could be consolidated with limelight)
-        } else if(parts[0].equals("selectpipeline")) {
-                String pipelineStr = parts[1];
+        }
+        //  else if(parts[0].equals("selectpipeline")) {
+        //         String pipelineStr = parts[1];
 
-                if(pipelineStr.equals("null")){
-                    pipelineStr = null;
-                } else if(limelights.containsKey(selectedLimelight)) {
-                    limelights.get(selectedLimelight).setPipeline(Pipeline.valueOf(pipelineStr));
-                }
-                else {
-                    Log.info("NarwhalDashboard", "Unable to Parse Pipeline Change Request from Dashboard");
-                }
-        } else if(parts[0].equals("changeconstant")) {
+        //         if(pipelineStr.equals("null")){
+        //             pipelineStr = null;
+        //         } else if(limelights.containsKey(selectedLimelight)) {
+        //             limelights.get(selectedLimelight).setPipeline(Pipeline.valueOf(pipelineStr));
+        //         }
+        //         else {
+        //             Log.info("NarwhalDashboard", "Unable to Parse Pipeline Change Request from Dashboard");
+        //         }
+        // } 
+        else if(parts[0].equals("changeconstant")) {
             String category = parts[1];
             String name = parts[2];
             String value = parts[3];
