@@ -7,23 +7,15 @@ import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonUtils;
-import org.photonvision.SimVisionSystem;
-import org.photonvision.SimVisionTarget;
-import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
-import org.photonvision.targeting.TargetCorner;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static frc.team3128.Constants.VisionConstants.*;
 
@@ -41,7 +33,6 @@ public class NAR_Camera2 extends PhotonCamera {
     private static BiConsumer<Pose2d, Double> updatePose;
 
     private static HashMap<Integer, Pose2d> AprilTags;
-    private static Pose2d visionTarget;
     public static boolean multipleTargets;
 
     public static DoubleSupplier thresh;
@@ -49,7 +40,6 @@ public class NAR_Camera2 extends PhotonCamera {
     public NAR_Camera2(Camera camera) {
         super(camera.hostname);
         this.camera = camera;
-        setLED(false);
         setVersionCheckEnabled(false);
     }
 
@@ -184,23 +174,6 @@ public class NAR_Camera2 extends PhotonCamera {
             return -1;
         Transform2d transform = getTarget(target);
         return Math.sqrt(Math.pow(transform.getX(), 2) + Math.pow(transform.getY(), 2));
-    }
-
-    // TODO: remove?
-    public void setLED(boolean state) {
-        setLED(state ? VisionLEDMode.kOn : VisionLEDMode.kOff);
-    }
-
-    public Pose2d getTargetPos(Pose2d robotPos) {
-        return getTargetPosApril(robotPos, bestTarget);
-    }
-
-    private Pose2d getTargetPosApril(Pose2d robotPos, PhotonTrackedTarget target) {
-        if (!hasValidTarget())
-            return new Pose2d();
-        Pose2d cameraPos = robotPos.transformBy(camera.offset.inverse());
-        Transform2d transform = getTarget(target).inverse();
-        return cameraPos.plus(transform);
     }
 
     public Pose2d getPosApril() {
