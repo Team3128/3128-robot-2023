@@ -176,10 +176,7 @@ public class RobotContainer {
         rightStick.getButton(6).onTrue(CmdTele(11.5));
 
         //rightStick.getButton(7).onTrue(new CmdBalance());
-        rightStick.getButton(7).onTrue(Commands.sequence(
-                                            Commands.deadline(Commands.sequence(new WaitUntilCommand(()-> Math.abs(swerve.getPitch()) > 6), new CmdBangBangBalance()), new CmdBalance()), 
-                                            //new RunCommand(()-> swerve.drive(new Translation2d(CmdBalance.DIRECTION ? -0.25 : 0.25,0),0,true)).withTimeout(0.5), 
-                                            new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance())));
+        rightStick.getButton(7).onTrue(new CmdAutoBalance());
 
         rightStick.getButton(8).onTrue(CmdStopIntake());
     

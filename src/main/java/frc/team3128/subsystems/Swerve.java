@@ -41,6 +41,10 @@ public class Swerve extends SubsystemBase {
 
     private static Swerve instance;
     public boolean fieldRelative;
+    public double prevSpeed = 0;
+    public double speed = 0;
+    public double acceleration = 0;
+    public Translation2d prevTrans = new Translation2d();
 
     private Field2d field;
 
@@ -113,6 +117,8 @@ public class Swerve extends SubsystemBase {
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
         NAR_Shuffleboard.addData("Drivetrain", "isChute", ()-> CmdManager.isChute, 6, 0);
         NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
+        NAR_Shuffleboard.addData("Drivetrain", "Speed", ()-> speed, 2, 1);
+        NAR_Shuffleboard.addData("Drivetrain", "Acceleration",()-> acceleration, 1, 2);
     }
 
     public Pose2d getPose() {
@@ -177,6 +183,19 @@ public class Swerve extends SubsystemBase {
         for (SwerveModule module : modules) {
             SmartDashboard.putNumber("module " + module.moduleNumber, module.getCanCoder().getDegrees());
         }
+        updateSpeed();
+        updateAcceleration();
+    }
+
+    public void updateSpeed() {
+        Translation2d translation = getPose().getTranslation();
+        speed = translation.getDistance(prevTrans) / 0.02;
+        prevTrans = translation;
+    }
+
+    public void updateAcceleration() {
+        acceleration = (speed - prevSpeed)/0.02;
+        prevSpeed = speed;
     }
 
     public void resetAll() {

@@ -101,7 +101,7 @@ public class Constants {
 
         public static final double BALANCE_FF = 0.3;
 
-        public static final double slowSpeed = 1.5;
+        public static final double slowSpeed = 1;
         public static final double slowAcceleration = 2;
     }
 
@@ -424,7 +424,7 @@ public class Constants {
         public enum ArmPosition {
             TOP_CONE(112, 38.5, 0, true), // 112,44 
             TOP_CUBE(105, 38.5, 0, false), //98,35
-            MID_CONE(100, 20, 1, true), //98,22.5
+            MID_CONE(100, 23, 1, true), //98,22.5
             MID_CUBE(90, 22, 1, false), //87,15
             LOW_FLOOR(45, 11.5, 2, false), 
 

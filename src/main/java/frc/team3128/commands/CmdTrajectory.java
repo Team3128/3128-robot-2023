@@ -30,6 +30,7 @@ public class CmdTrajectory extends CommandBase {
     private final Swerve swerve;
     private final int xPos;
     private final boolean scoreLow;
+    private Pose2d endPoint;
     private int index;
     private CommandBase trajCommand;
 
@@ -62,7 +63,7 @@ public class CmdTrajectory extends CommandBase {
         final ArrayList<PathPoint> pathPoints = new ArrayList<PathPoint>();
         final Translation2d start = swerve.getPose().getTranslation();
         final Rotation2d holonomicAngle = END_POINTS[index].getRotation();
-        final PathPoint startPoint = new PathPoint(start, allianceFlip(HEADING), swerve.getGyroRotation2d());
+        final PathPoint startPoint = new PathPoint(start, allianceFlip(HEADING), swerve.getGyroRotation2d(), Math.abs(swerve.speed));
         final boolean topPath = start.getY() >= (POINT_2A.getY() + POINT_2B.getY()) / 2;
         final boolean skipLastPoint = (topPath && index == 8) || (!topPath && index == 0);
         startPoint.nextControlLength = 0.1;
@@ -88,6 +89,7 @@ public class CmdTrajectory extends CommandBase {
     @Override
     public void initialize() {
         trajCommand = generateAuto();
+        endPoint = flip(END_POINTS[index]);
         trajCommand.schedule();
         CmdSwerveDrive.enabled = false;
     }
@@ -107,6 +109,6 @@ public class CmdTrajectory extends CommandBase {
 
     @Override
     public boolean isFinished(){
-        return swerve.getPose().minus(END_POINTS[index]).getTranslation().getNorm() < 0.5;
+        return swerve.getPose().minus(endPoint).getTranslation().getNorm() < 0.5;
     }
 }
