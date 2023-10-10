@@ -59,28 +59,34 @@ public class NAR_Camera extends PhotonCamera {
         camera.updatePose = false;
     }
 
+    //TODO: Clean up this method
     public void update() {
         result = this.getLatestResult();
+
         if (result.hasTargets()) {
+
             targets = result.getTargets();
             bestTarget = result.getBestTarget();
-            if (!camera.updatePose)
-                return;
+
+            if (!camera.updatePose) return;
+
             ArrayList<Pose2d> poses = new ArrayList<Pose2d>();
             if (multipleTargets) {
-                for (int i = 0; i < targets.size(); i++) {
-                    if (targetAmbiguity(targets.get(i)) < 0.3 && !getApril(targets.get(i)).equals(new Pose2d()))
-                        poses.add(getApril(targets.get(i)));
+                for (PhotonTrackedTarget curTarget : targets) {
+                    if (targetAmbiguity(curTarget) < 0.3 && !getApril(curTarget).equals(new Pose2d()))
+                        poses.add(getApril(curTarget));
                 }
             } else if (!getPos().equals(new Pose2d()))
                 poses.add(getPos());
-            for (int i = 0; i < poses.size(); i++) {
-                if (translationOutOfBounds(poses.get(i).getTranslation()))
+
+            for (Pose2d curPos : poses) {
+                if (translationOutOfBounds(curPos.getTranslation()))
                     return;
-                updatePose.accept(poses.get(i), result.getTimestampSeconds());
+                updatePose.accept(curPos, result.getTimestampSeconds());
             }
             return;
         }
+
         targets = null;
         bestTarget = null;
     }
@@ -88,22 +94,6 @@ public class NAR_Camera extends PhotonCamera {
     private boolean translationOutOfBounds(Translation2d translation) {
         return translation.getX() > FIELD_X_LENGTH || translation.getX() < 0 || translation.getY() > FIELD_Y_LENGTH
                 || translation.getY() < 0;
-    }
-
-    public double targetYaw() {
-        return targetYaw(bestTarget);
-    }
-
-    private double targetYaw(PhotonTrackedTarget target) {
-        return hasValidTarget() ? target.getYaw() : 0;
-    }
-
-    public double targetPitch() {
-        return targetPitch(bestTarget);
-    }
-
-    private double targetPitch(PhotonTrackedTarget target) {
-        return hasValidTarget() ? target.getPitch() : 0;
     }
 
     public int targetId() {
@@ -180,23 +170,25 @@ public class NAR_Camera extends PhotonCamera {
         return getApril(bestTarget);
     }
 
+    // TODO: fix
     // Relative to Robot
     private Pose2d getApril(PhotonTrackedTarget tag) {
-        if (!hasValidTarget() || !AprilTags.containsKey(targetId(tag)))
-            return new Pose2d();
-        Transform2d transform = getProcessedTarget(tag);
-        if (!AprilTags.containsKey(targetId(tag)) || transform.getX() > 5
-                || Math.abs(transform.getRotation().getDegrees()) < 150)
-            return new Pose2d();
         Pose2d target = AprilTags.get(targetId());
-        if (target == null)
+        if (!hasValidTarget() || !AprilTags.containsKey(targetId(tag)) || target == null)
             return new Pose2d();
+
+        Transform2d transform = getProcessedTarget(tag);
         Translation2d coord = target.getTranslation().plus(transform.getTranslation().rotateBy(target.getRotation()));
         Rotation2d angle = target.getRotation().plus(transform.getRotation());
 
-        Pose2d pos = new Pose2d(coord, angle);
+        Pose2d pos = new Pose2d(coord, angle).transformBy(camera.offset);
 
-        return pos.transformBy(camera.offset);
+        
+
+        if (transform.getX() > 5 || Math.abs(transform.getRotation().getDegrees()) < 150) {
+            return new Pose2d();
+        }
+        return pos;
     }
 
     public String getName() {

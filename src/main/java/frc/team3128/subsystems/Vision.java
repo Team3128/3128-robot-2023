@@ -69,16 +69,6 @@ public class Vision extends SubsystemBase {
         return cameras.get(name).getDistance();
     }
 
-    public double getTX(String name) {
-        NAR_Camera camera = cameras.get(name);
-        return camera.targetYaw();
-    }
-
-    public double getTY(String name) {
-        NAR_Camera camera = cameras.get(name);
-        return camera.targetPitch();
-    }
-
     public boolean hasValidTarget(String name) {
         NAR_Camera camera = cameras.get(name);
         return camera.hasValidTarget();
@@ -135,7 +125,6 @@ public class Vision extends SubsystemBase {
         NAR_Shuffleboard.addData("Vision Urgent", "Distance", calculateDistance(FRONT.hostname), 1, 0);
         NAR_Shuffleboard.addData("Vision Urgent", "EstimatedPose", cameras.get(FRONT.hostname).getPos().toString(), 0,
                 1);
-        NAR_Shuffleboard.addData("Vision Urgent", "GEICO", cameras.get(FRONT.hostname).targetYaw(), 2, 0);
         NAR_Shuffleboard.addData("Vision Urgent", "RAWTARGET", cameras.get(FRONT.hostname).getTarget().toString(), 0,
                 3);
         NAR_Shuffleboard.addData("Vision Urgent", "TARGETGUITY", cameras.get(FRONT.hostname).targetAmbiguity(), 3, 0);
