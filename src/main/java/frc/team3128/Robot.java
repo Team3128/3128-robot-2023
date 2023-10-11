@@ -61,7 +61,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousPeriodic() {
         CommandScheduler.getInstance().run();
-        if (timer.hasElapsed(14.75) && Math.abs(Swerve.getInstance().getPitch()) > 6) {
+        if (timer.hasElapsed(14.75)) {
             new RunCommand(()->Swerve.getInstance().xlock(), Swerve.getInstance()).schedule();
         }
     }
