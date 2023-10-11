@@ -11,9 +11,13 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Constants.SwerveConstants;
+import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
+import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Swerve;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 /**
  * Class to store information about autonomous routines.
@@ -54,12 +58,18 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-       //String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        String selectedAutoName = "b_cable_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
-        SmartDashboard.putString(selectedAutoName, selectedAutoName);
+       String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
+        // String selectedAutoName = "b_cable_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
         if (selectedAutoName == null) {
-            return null;
+            return sequence(
+                new CmdMoveArm(ArmPosition.TOP_CONE),
+                runOnce(() -> Manipulator.getInstance().outtake()),
+                waitSeconds(.5),
+                runOnce(() -> Manipulator.getInstance().stopRoller()),
+                new CmdMoveArm(ArmPosition.NEUTRAL)
+                );
         }
+        SmartDashboard.putString(selectedAutoName, selectedAutoName);
 
         return Trajectories.get(selectedAutoName, selectedAutoName.contains("Climb"));
     }

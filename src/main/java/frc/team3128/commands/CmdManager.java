@@ -52,10 +52,10 @@ public class CmdManager {
         );
     }
 
-    public static CommandBase CmdPickup(ArmPosition position) {
+    public static CommandBase CmdPickup(ArmPosition position, boolean runImmediately) {
         return sequence(
             runOnce(() -> leds.setPivotLeds(position.cone ? Colors.CONE : Colors.CUBE)),
-            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
+            new InstantCommand(()-> Vision.AUTO_ENABLED = runImmediately),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
             runOnce(()-> Vision.AUTO_ENABLED = false),
             runOnce(() -> leds.setPivotLeds(position.cone ? Colors.CONE : Colors.CUBE)),
@@ -68,16 +68,8 @@ public class CmdManager {
         );
     }
 
-    public static CommandBase CmdShelfPickup(boolean cone) {
-        return sequence(
-            new InstantCommand(()-> Vision.AUTO_ENABLED = false),
-            new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-            CmdPivot(cone ? ArmPosition.HP_SHELF_CONE : ArmPosition.HP_SHELF_CUBE),
-            CmdTele(cone ? ArmPosition.HP_SHELF_CONE : ArmPosition.HP_SHELF_CUBE),
-            CmdManipGrab(cone),
-            vibrateController(),
-            new InstantCommand(() -> new InstantCommand(()-> Vision.AUTO_ENABLED = false))
-        );
+    public static CommandBase CmdPickup(ArmPosition position) {
+        return CmdPickup(position, false);
     }
 
     public static CommandBase CmdIntake() {

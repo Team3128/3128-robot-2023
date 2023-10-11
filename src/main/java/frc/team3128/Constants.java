@@ -435,7 +435,9 @@ public class Constants {
             CHUTE_CONE(283.5, 11.5, null, true),
             CHUTE_CUBE(288, 11.5, null, false),
             CONE_POLE(-40, 11.5, null, null),
-            AVOID_INTAKE(90, 11.5, null, null);
+            AVOID_INTAKE(90, 11.5, null, null),
+
+            GROUND_CONE(52, 25, null, true);
     
             
             public final double pivotAngle;

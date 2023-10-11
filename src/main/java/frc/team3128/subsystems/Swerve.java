@@ -29,7 +29,7 @@ import java.io.FileWriter;
 public class Swerve extends SubsystemBase {
 
     private volatile FileWriter txtFile;
-    public static double throttle = 0.8;
+    public static double throttle = 1;
     private String poseLogger = "";
     public static boolean error = false;
     private Pose2d prevPose;

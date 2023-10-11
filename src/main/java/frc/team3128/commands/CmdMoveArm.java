@@ -53,7 +53,7 @@ public class CmdMoveArm extends CommandBase{
 
     @Override
     public void end(boolean interrupted){
-        telescope.stopTele(); 
+        // telescope.stopTele(); 
     }
 
     @Override

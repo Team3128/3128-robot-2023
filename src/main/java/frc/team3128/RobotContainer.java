@@ -125,8 +125,8 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         controller.getButton("A").onTrue(new InstantCommand(()-> Vision.AUTO_ENABLED = !Vision.AUTO_ENABLED));
-        controller.getButton("RightTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = 1)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
-        controller.getButton("LeftTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = .25)).onFalse(new InstantCommand(()-> Swerve.throttle = 0.8));
+        controller.getButton("RightTrigger").onTrue(CmdPickup(ArmPosition.GROUND_CONE, true)).onFalse(new CmdMoveArm(ArmPosition.NEUTRAL).beforeStarting(CmdStopManip()));
+        controller.getButton("LeftTrigger").onTrue(new InstantCommand(()-> Swerve.throttle = .25)).onFalse(new InstantCommand(()-> Swerve.throttle = 1));
         controller.getButton("X").onTrue(new RunCommand(()-> swerve.xlock(), swerve)).onFalse(new InstantCommand(()-> swerve.stop(),swerve));
         controller.getButton("B").onTrue(new InstantCommand(()-> swerve.resetEncoders()));
         controller.getButton("Y").onTrue(Commands.sequence(CmdExtendRelease(), new InstantCommand(()-> Swerve.throttle = 0.25)))

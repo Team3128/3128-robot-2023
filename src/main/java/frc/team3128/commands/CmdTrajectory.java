@@ -89,7 +89,7 @@ public class CmdTrajectory extends CommandBase {
     @Override
     public void initialize() {
         trajCommand = generateAuto();
-        endPoint = flip(END_POINTS[index]);
+        endPoint = allianceFlip(END_POINTS[index]);
         trajCommand.schedule();
         CmdSwerveDrive.enabled = false;
     }
