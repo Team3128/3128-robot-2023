@@ -178,6 +178,10 @@ public class Trajectories {
         );
     }
 
+    public static boolean contains(String name) {
+        return trajectories.containsKey(name);
+    }
+
     public static PathPlannerTrajectory line(Pose2d start, Pose2d end) {
         return PathPlanner.generatePath(
             new PathConstraints(maxSpeed, 4),

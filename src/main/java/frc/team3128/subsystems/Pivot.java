@@ -50,7 +50,7 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.setInverted(false);
         m_rotateMotor.enableVoltageCompensation(12.0);
         m_rotateMotor.setIdleMode(IdleMode.kBrake);
-        // resetPivot();
+        resetPivot();
     }
 
     public void setPower(double power) {

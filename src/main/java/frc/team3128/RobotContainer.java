@@ -168,7 +168,7 @@ public class RobotContainer {
         rightStick.getButton(1).onTrue(new InstantCommand(()->swerve.zeroGyro()));
         //rightStick.getButton(2).onTrue(new InstantCommand(()->vision.visionReset()));
         
-        rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.releaseBrake()));
+        rightStick.getButton(2).onTrue(new InstantCommand(()->telescope.engageBrake()));
         rightStick.getButton(3).onTrue(new InstantCommand(()->telescope.zeroEncoder()));
         rightStick.getButton(4).onTrue(new InstantCommand(()->pivot.resetPivot()));
         

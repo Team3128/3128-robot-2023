@@ -43,15 +43,17 @@ public class AutoPrograms {
                                                 //Mid
                                                 "b_mid_1Cone+Climb","b_mid_1Cone+1Cube+Climb",
                                                 //Hp
-                                                "b_hp_1Cone+1Cube","b_cable_1Cone+2Cube",
+                                                // "b_hp_1Cone+1Cube",
+                                                "b_cable_1Cone+2Cube",
                                             
                                             //Red Autos
                                                 //Cable
                                                 "r_cable_1Cone+1Cube","r_cable_1Cone+2Cube",
                                                 //Mid
-                                                "r_mid_1Cone+Climb","r_mid_1Cone+1Cube+Climb",
+                                                "r_mid_1Cone+1Cube+Climb",
                                                 //Hp
-                                                "r_hp_1Cone+1Cube","r_cable_1Cone+2Cube",
+                                                // "r_hp_1Cone+1Cube",
+                                                "r_cable_1Cone+2Cube"
 
                                             };
         NarwhalDashboard.addAutos(autoStrings);
@@ -60,7 +62,7 @@ public class AutoPrograms {
     public Command getAutonomousCommand() {
        String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
         // String selectedAutoName = "b_cable_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
-        if (selectedAutoName == null) {
+        if (selectedAutoName == null || !Trajectories.contains(selectedAutoName)) {
             return sequence(
                 new CmdMoveArm(ArmPosition.TOP_CONE),
                 runOnce(() -> Manipulator.getInstance().outtake()),
