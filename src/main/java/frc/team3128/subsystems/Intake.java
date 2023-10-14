@@ -6,7 +6,6 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
@@ -22,7 +21,7 @@ public class Intake extends PIDSubsystem {
 
     // Motors
     private NAR_CANSparkMax m_intakePivot;
-    private NAR_TalonSRX m_intakeRollers;
+    public NAR_TalonSRX m_intakeRollers;
 
     private DoubleSupplier kF;
     private DoubleSupplier setpoint, power;
@@ -62,7 +61,7 @@ public class Intake extends PIDSubsystem {
 
     // Config
     public void configMotors() {
-        m_intakePivot = new NAR_CANSparkMax(INTAKE_PIVOT_ID, MotorType.kBrushless);
+        m_intakePivot = new NAR_CANSparkMax(INTAKE_PIVOT_ID);
         m_intakeRollers = new NAR_TalonSRX(INTAKE_ROLLERS_ID);
 
         m_intakePivot.setIdleMode(IdleMode.kBrake);
@@ -137,17 +136,26 @@ public class Intake extends PIDSubsystem {
         m_intakePivot.set(power);
     }
 
+
+    public boolean hasObjectPresent(){
+        return getCurrent() > ABSOLUTE_THRESHOLD;
+    }
+
     // Roller Control
     public void intake() {
         set(ROLLER_POWER);
     }
 
-    public boolean hasObjectPresent(){
-        return getCurrent() > CURRENT_THRESHOLD;
-    }
-
     public void outtake() {
         set(-OUTTAKE_POWER);
+    }
+
+    public void outtake(double power) {
+        set(-power);
+    }
+
+    public void stallPower() {
+        set(STALL_POWER);
     }
 
     public void shoot() {

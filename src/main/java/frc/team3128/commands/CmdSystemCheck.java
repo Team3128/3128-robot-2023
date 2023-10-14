@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.team3128.RobotContainer;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
-import frc.team3128.common.swerve.SwerveModule;
+import frc.team3128.common.swerveNeo.SwerveModule;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Manipulator;
@@ -20,6 +20,7 @@ import frc.team3128.subsystems.Telescope;
 import frc.team3128.subsystems.Intake.IntakeState;
 
 import static frc.team3128.Constants.ManipulatorConstants.*;
+import static frc.team3128.commands.CmdManager.*;
 
 import java.util.Arrays;
 
@@ -57,16 +58,16 @@ public class CmdSystemCheck extends SequentialCommandGroup{
             new CmdMoveArm(ArmPosition.NEUTRAL).withTimeout(3),
             new InstantCommand(()-> armSystemCheck = true),
             new WaitUntilCommand(()-> systemCheck == 3),
-            new CmdIntake(),
+            CmdIntake(),
             new WaitCommand(1),
             new StartEndCommand(()-> intake.outtake(), ()-> intake.stopRollers(), intake).withTimeout(1),
             new InstantCommand(()-> intakeSystemCheck = true),
             new WaitUntilCommand(()-> systemCheck == 4),
             new CmdMoveArm(90, 11.5),
-            new CmdManipGrab(true),
+            CmdManipGrab(true),
             new WaitCommand(2),
             new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(2),
-            new CmdManipGrab(false),
+            CmdManipGrab(false),
             new WaitCommand(2),
             new StartEndCommand(()-> manip.outtake(), ()-> manip.stopRoller(), manip).withTimeout(2),
             new InstantCommand(()-> manipulatorSystemCheck = true)

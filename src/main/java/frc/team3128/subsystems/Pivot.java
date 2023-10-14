@@ -17,7 +17,6 @@ import frc.team3128.common.hardware.motorcontroller.NAR_CANSparkMax;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Pivot extends PIDSubsystem {
 
@@ -25,7 +24,6 @@ public class Pivot extends PIDSubsystem {
 
     private static Pivot instance;
     private NAR_CANSparkMax m_rotateMotor;
-    private DutyCycleEncoder m_encoder;
     public double offset;
 
     public Pivot() {
@@ -34,7 +32,6 @@ public class Pivot extends PIDSubsystem {
         // getController().enableContinuousInput(-180, 180);
 
         configMotors();
-        configEncoders();
         getController().setTolerance(PIVOT_TOLERANCE);
 
         setSetpoint(getMeasurement());
@@ -48,15 +45,12 @@ public class Pivot extends PIDSubsystem {
     }
 
     private void configMotors() {
-        m_rotateMotor = new NAR_CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless);
+        m_rotateMotor = new NAR_CANSparkMax(PIVOT_MOTOR_ID);
         m_rotateMotor.setSmartCurrentLimit(PIVOT_CURRENT_LIMIT);
         m_rotateMotor.setInverted(false);
         m_rotateMotor.enableVoltageCompensation(12.0);
         m_rotateMotor.setIdleMode(IdleMode.kBrake);
-    }
-
-    private void configEncoders() {
-        m_encoder = new DutyCycleEncoder(ENC_DIO_ID);
+        resetPivot();
     }
 
     public void setPower(double power) {
@@ -64,12 +58,16 @@ public class Pivot extends PIDSubsystem {
         m_rotateMotor.set(power);
     }
 
+    public void resetPivot() {
+        m_rotateMotor.setSelectedSensorPosition(0);
+    }
+
     public void stopPivot() {
         setPower(0);
     }
 
     public double getAngle(){
-        return MathUtil.inputModulus(m_encoder.get() * 360.0 - ANGLE_OFFSET,-180,180);
+        return m_rotateMotor.getSelectedSensorPosition() * 360 / GEAR_RATIO;
     }
 
     @Override
@@ -79,7 +77,7 @@ public class Pivot extends PIDSubsystem {
 
     public void startPID(double anglePos) {
         anglePos = RobotContainer.DEBUG.getAsBoolean() ? setpoint.getAsDouble() : anglePos;
-        anglePos = MathUtil.clamp(anglePos,0,135);
+        anglePos = MathUtil.clamp(anglePos,0,295);
         enable();
         setSetpoint(anglePos);
     }
@@ -93,11 +91,12 @@ public class Pivot extends PIDSubsystem {
         double fG = kG.getAsDouble() * Math.sin(Units.degreesToRadians(setpoint)); 
         double teleDist = Telescope.getInstance().getDist();
 
-        fG *= MathUtil.clamp(((teleDist-11.5) / (TelescopeConstants.MAX_DIST - TelescopeConstants.MIN_DIST)),0,1); 
+        fG *= 1.0/14.25 * (teleDist - TelescopeConstants.MIN_DIST) + 1;
+        //fG *= MathUtil.clamp(((teleDist-11.5) / (TelescopeConstants.MAX_DIST - TelescopeConstants.MIN_DIST)),0,1); 
 
         double voltageOutput = output + fG;
 
-        if (Math.abs(setpoint - getAngle()) > kF.getAsDouble()) voltageOutput = Math.copySign(12, voltageOutput);
+        //if (Math.abs(setpoint - getAngle()) > kF.getAsDouble()) voltageOutput = Math.copySign(12, voltageOutput);
         
         m_rotateMotor.set(MathUtil.clamp(voltageOutput / 12.0, -1, 1));
     }

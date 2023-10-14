@@ -17,7 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.Constants.VisionConstants;
-import frc.team3128.common.swerve.SwerveModule;
+import frc.team3128.commands.CmdManager;
+import frc.team3128.common.swerveNeo.SwerveModule;
 import frc.team3128.common.utility.NAR_Shuffleboard;
 
 import static frc.team3128.Constants.SwerveConstants.*;
@@ -28,7 +29,7 @@ import java.io.FileWriter;
 public class Swerve extends SubsystemBase {
 
     private volatile FileWriter txtFile;
-    public static double throttle = 0.8;
+    public static double throttle = 1;
     private String poseLogger = "";
     public static boolean error = false;
     private Pose2d prevPose;
@@ -40,8 +41,14 @@ public class Swerve extends SubsystemBase {
 
     private static Swerve instance;
     public boolean fieldRelative;
+    public double prevSpeed = 0;
+    public double speed = 0;
+    public double acceleration = 0;
+    public Translation2d prevTrans = new Translation2d();
 
     private Field2d field;
+
+    private double initialRoll, initialPitch;
 
     public static synchronized Swerve getInstance() {
         if (instance == null) {
@@ -51,9 +58,9 @@ public class Swerve extends SubsystemBase {
     }
 
     public Swerve() {
-        gyro = new WPI_Pigeon2(pigeonID, "drivetrain");
+        gyro = new WPI_Pigeon2(pigeonID);
         gyro.configFactoryDefault();
-        //zeroGyro();
+        // zeroGyro();
         fieldRelative = true;
         estimatedPose = new Pose2d();
 
@@ -108,7 +115,10 @@ public class Swerve extends SubsystemBase {
         NAR_Shuffleboard.addData("Drivetrain","Pitch",this::getPitch,5,1);
         NAR_Shuffleboard.addData("Drivetrain", "Roll", this::getRoll, 0, 2);
         NAR_Shuffleboard.addData("Drivetrain","Heading/Angle",this::getHeading,6,1);
+        NAR_Shuffleboard.addData("Drivetrain", "isChute", ()-> CmdManager.isChute, 6, 0);
         NAR_Shuffleboard.addComplex("Drivetrain","Drivetrain", this,0,0);
+        NAR_Shuffleboard.addData("Drivetrain", "Speed", ()-> speed, 2, 1);
+        NAR_Shuffleboard.addData("Drivetrain", "Acceleration",()-> acceleration, 1, 2);
     }
 
     public Pose2d getPose() {
@@ -130,7 +140,7 @@ public class Swerve extends SubsystemBase {
     public void resetOdometry(Pose2d pose) { // TODO: Call this!!!!
         zeroGyro(pose.getRotation().getDegrees());
         //System.out.println(pose.toString());
-        odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
+        odometry.resetPosition(pose.getRotation(), getPositions(), pose);
     }
 
     public SwerveModuleState[] getStates() {
@@ -173,6 +183,19 @@ public class Swerve extends SubsystemBase {
         for (SwerveModule module : modules) {
             SmartDashboard.putNumber("module " + module.moduleNumber, module.getCanCoder().getDegrees());
         }
+        updateSpeed();
+        updateAcceleration();
+    }
+
+    public void updateSpeed() {
+        Translation2d translation = getPose().getTranslation();
+        speed = translation.getDistance(prevTrans) / 0.02;
+        prevTrans = translation;
+    }
+
+    public void updateAcceleration() {
+        acceleration = (speed - prevSpeed)/0.02;
+        prevSpeed = speed;
     }
 
     public void resetAll() {
@@ -199,7 +222,7 @@ public class Swerve extends SubsystemBase {
             // } catch (IOException e) {}
             
             prevTime = currTime;
-            NAR_Shuffleboard.addData("Logger","Positions",poseLogger,0,0);
+            NAR_Shuffleboard.addData("Logger","Positions", poseLogger,0,0);
         }
     }
 
@@ -224,15 +247,21 @@ public class Swerve extends SubsystemBase {
     }
 
     public double getPitch() {
-        return gyro.getPitch();
+        return gyro.getRoll() - initialRoll;
     }
 
     public double getRoll() {
-        return gyro.getRoll();
+        return gyro.getPitch() - initialPitch;
     }
 
     public void zeroGyro() {
         gyro.reset();
+        zeroAxis();
+    }
+
+    public void zeroAxis() {
+        initialRoll = gyro.getRoll();
+        initialPitch = gyro.getPitch();
     }
 
     public void zeroGyro(double reset) {

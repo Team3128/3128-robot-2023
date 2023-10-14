@@ -5,6 +5,10 @@ import static frc.team3128.common.hardware.motorcontroller.MotorControllerConsta
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
@@ -15,8 +19,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.team3128.common.hardware.camera.Camera;
 
-import frc.team3128.common.swerve.SwerveModuleConstants;
-
+import frc.team3128.common.swerveNeo.SwerveModuleConstants;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -33,7 +37,36 @@ public class Constants {
         public static final double FALCON_NUpS_TO_RPM = 60 / FALCON_ENCODER_RESOLUTION; // sensor units per second to rpm
     }
 
+    public static class TrajectoryConstants {
+        public static final Rotation2d HEADING = Rotation2d.fromDegrees(180);
+        
+        public static final Translation2d POINT_1 = new Translation2d(12.7, 6.75);
+        public static final double CONDITION_1 = 12.7;
+
+        public static final Translation2d POINT_2A = new Translation2d(4.85, 0.8);
+        public static final Translation2d POINT_2B = new Translation2d(4.85, 4.7);
+        public static final double CONDITION_2 = 4.85;
+
+        public static final Translation2d POINT_3A = new Translation2d(2.5, 0.8);
+        public static final Translation2d POINT_3B = new Translation2d(2.5, 4.7);
+        public static final double CONDITION_3 = 2.5;
+
+        public static final Pose2d[] END_POINTS = new Pose2d[]{
+            new Pose2d(1.75,0.5,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,0.95,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,1.55,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,2.05,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,2.65,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,3.2,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,3.75,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,4.35,Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75,4.79,Rotation2d.fromDegrees(0))
+        };
+    }
+
     public static class AutoConstants {
+        public static final PathConstraints pathConstraints = new PathConstraints(SwerveConstants.maxSpeed, SwerveConstants.maxAcceleration); 
+
         public static final Pose2d PICKUP_1 = new Pose2d(5.9, 0.95, Rotation2d.fromDegrees(0));
         public static final Pose2d PICKUP_2 = new Pose2d(7.1, 2.28, Rotation2d.fromDegrees(45));
         public static final Pose2d PICKUP_3 = new Pose2d(7.1, 3.3, Rotation2d.fromDegrees(-45));
@@ -46,19 +79,30 @@ public class Constants {
         public static final Pose2d ClimbSetupOutsideBot = new Pose2d(5.6, 2.9, Rotation2d.fromDegrees(180));
         public static final Pose2d ClimbSetupOutsideTop = new Pose2d(5.6, 3.3, Rotation2d.fromDegrees(180));
 
+        public static final double ANGLE_THRESHOLD = 9; //7, 9
+        public static final double VELOCITY_THRESHOLD = 3; //6, 3
+        public static final double RAMP_THRESHOLD = 10; //8, 10
+        public static final double DRIVE_SPEED = Units.inchesToMeters(40); //30, 40
+        public static final double kP = 0.000000001;
+        public static final double kI = 0.0;
+        public static final double kD = 0;
+
         public static final Pose2d[] STARTING_POINTS = new Pose2d[] {
-            new Pose2d(1.85 ,0.5, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,1.05, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,1.65, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,2.15, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,2.75, Rotation2d.fromDegrees(0)),
-            new Pose2d(1.85 ,3.3, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,3.85, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,4.45, Rotation2d.fromDegrees(180)),
-            new Pose2d(1.85 ,5, Rotation2d.fromDegrees(180))
+            new Pose2d(1.75 ,0.5, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,1.05, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,1.65, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,2.15, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,2.75, Rotation2d.fromDegrees(0)),
+            new Pose2d(1.75 ,3.3, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,3.85, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,4.45, Rotation2d.fromDegrees(180)),
+            new Pose2d(1.75 ,5, Rotation2d.fromDegrees(180))
         };
 
         public static final double BALANCE_FF = 0.3;
+
+        public static final double slowSpeed = 1.5;
+        public static final double slowAcceleration = 2;
     }
 
     public static class SwerveConstants {
@@ -67,8 +111,8 @@ public class Constants {
 
         /* Drivetrain Constants */
         public static final double bumperLength = Units.inchesToMeters(5);
-        public static final double trackWidth = Units.inchesToMeters(26); 
-        public static final double wheelBase = Units.inchesToMeters(26); 
+        public static final double trackWidth = Units.inchesToMeters(20.75); //Hand measure later
+        public static final double wheelBase = Units.inchesToMeters(20.75); //Hand measure later
         public static final double robotLength = bumperLength + trackWidth;
         public static final double wheelDiameter = Units.inchesToMeters(4);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
@@ -85,6 +129,8 @@ public class Constants {
                 new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); 
 
         /* Swerve Current Limiting */
+        public static final int currentLimit = 40;
+
         public static final int angleContinuousCurrentLimit = 25;
         public static final int anglePeakCurrentLimit = 40;
         public static final double anglePeakCurrentDuration = 0.1;
@@ -116,25 +162,24 @@ public class Constants {
         public static final double alignKD = 0;
       
         /* Rotation PID Values */
-        public static final double rotationKP = 2;
+        public static final double rotationKP = 2.5;
         public static final double rotationKI = 0;
         public static final double rotationKD = 0;
 
         /* Turning PID Values */
-        public static final double turnKP = 0.1;
+        public static final double turnKP = 5;
         public static final double turnKI = 0;
         public static final double turnKD = 0;
-        public static final double turnKF = 0.1;
 
         /* Angle Motor PID Values */
         // switched 364 pid values to SDS pid values
-        public static final double angleKP = 0.3; // 0.6; // citrus: 0.3
+        public static final double angleKP = 0.15; // 0.6; // citrus: 0.3 //0.15
         public static final double angleKI = 0.0;
         public static final double angleKD = 0.0; // 12.0; // citrus: 0
         public static final double angleKF = 0.0;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.05; 
+        public static final double driveKP = 4e-5; //4e-5, //0.05
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
@@ -335,19 +380,19 @@ public class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 0.5;
+        public static final double kP = 0.425;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kF = 15;
-        public static final double kG = 0.7;
+        public static final double kG = 0.25;
         public static final int PIVOT_MOTOR_ID = 9;
         public static final double ENC_CONV = 360.0/(42.0/16.0*60.0);
         public static final double PIVOT_TOLERANCE = 5.0;
         public static final int PIVOT_CURRENT_LIMIT = 40;
         // public static final int CANCODER_ID = 24;
         public static final int ENC_DIO_ID = 7;
-        public static final double ANGLE_OFFSET = -158.7+3+4-2-2-2-4-1; //get from new encoder
-        
+        public static final double ANGLE_OFFSET = 2.5; //get from new encoder
+        public static final double GEAR_RATIO = 180.0;
         public static final double PIVOT_HEIGHT = 123; //TBD Above ground (inches)
         public static final double ARM_LENGTH = 56.75; // inches
         
@@ -365,7 +410,7 @@ public class Constants {
         public static final double MIN_DIST = 11.5;
         public static final double MAX_DIST = 40;
         public static final double TELE_OFFSET = 0;
-        public static final double TELE_TOLERANCE = 2;
+        public static final double TELE_TOLERANCE = 1;
         public static final int TELE_CURRENT_LIMIT = 40;
         public static final boolean isReversed = true;
 
@@ -379,19 +424,20 @@ public class Constants {
         public enum ArmPosition {
             TOP_CONE(112, 38.5, 0, true), // 112,44 
             TOP_CUBE(105, 38.5, 0, false), //98,35
-            MID_CONE(105, 20.5, 1, true), //98,22.5
+            MID_CONE(100, 23, 1, true), //98,22.5
             MID_CUBE(90, 22, 1, false), //87,15
             LOW_FLOOR(45, 11.5, 2, false), 
 
             NEUTRAL(5, 11.5, null, null), //pivot should be 0
 
-            HP_SHELF_CONE(115, 17.5, null, null), //105
-            HP_SHELF_CUBE(108, 17.5, null, null), //105
-            GROUND_PICKUP(37, 26.5, null, null),
-            GROUND_PICKUP_CONE(37, 26.5, null, null), 
-            GROUND_PICKUP_CUBE(37.5, 26, null, null), 
+            HP_SHELF_CONE(114, 11.5, null, true), //105
+            HP_SHELF_CUBE(112, 11.5, null, false), //105
+            CHUTE_CONE(283.5, 11.5, null, true),
+            CHUTE_CUBE(288, 11.5, null, false),
             CONE_POLE(-40, 11.5, null, null),
-            AVOID_INTAKE(90, 11.5, null, null);
+            AVOID_INTAKE(90, 11.5, null, null),
+
+            GROUND_CONE(52, 25, null, true);
     
             
             public final double pivotAngle;
@@ -453,12 +499,34 @@ public class Constants {
             }
             return pose;
         }
+
+        public static Translation2d allianceFlip(Translation2d translation) {
+            if (DriverStation.getAlliance() == Alliance.Red) {
+                return flipTranslation(translation);
+            }
+            return translation;
+        }
+
+        public static Rotation2d allianceFlip(Rotation2d rotation) {
+            if (DriverStation.getAlliance() == Alliance.Red) {
+                return flipRotation(rotation);
+            }
+            return rotation;
+        }
+
         public static Pose2d flip(Pose2d pose) {
-            double angle = 180 - pose.getRotation().getDegrees();
-            return new Pose2d(
-                FIELD_X_LENGTH - pose.getX(),
-                pose.getY(),
-                Rotation2d.fromDegrees(angle));
+            return new Pose2d(flipTranslation(pose.getTranslation()), flipRotation(pose.getRotation()));
+        }
+
+        public static Translation2d flipTranslation(Translation2d translation) {
+            return new Translation2d (
+                FIELD_X_LENGTH - translation.getX(),
+                translation.getY()
+            );
+        }
+
+        public static Rotation2d flipRotation(Rotation2d rotation) {
+            return Rotation2d.fromDegrees(MathUtil.inputModulus(180 - rotation.getDegrees(), -180, 180));
         }
     }
 
@@ -466,12 +534,13 @@ public class Constants {
 
         public static final double INTAKE_DEPLOYED_POSITION_BOUNDRY = 0;
 
-        public static final double CURRENT_THRESHOLD = 50;
+        public static final double CURRENT_THRESHOLD = 5;
+        public static final double ABSOLUTE_THRESHOLD = 30;
 
-        public static final double ROLLER_POWER = 0.75;
-        public static final double OUTTAKE_POWER = 0.3;
+        public static final double ROLLER_POWER = 1;
+        public static final double OUTTAKE_POWER = 1;
 
-        public static final double STALL_POWER = 0.1;
+        public static final double STALL_POWER = 0.15;
 
         public static final double kP = 0.065;
         public static final double kI = 0;
@@ -482,7 +551,7 @@ public class Constants {
         public static final double ROTATOR_GEAR_RATIO = 1.0 / 30.0;
 
         public static final double ENCODER_CONVERSION_FACTOR_TO_DEGREES = 360;
-        public static final double ANGLE_OFFSET = 138; 
+        public static final double ANGLE_OFFSET = 138+35; 
 
         public static final int ENCODER_DIO_ID = 8;
 
@@ -502,15 +571,12 @@ public class Constants {
     }
 
     public static class ManipulatorConstants{
-        public static final int SOLENOID_FORWARD_CHANNEL_ID = 4;
-        public static final int SOLENOID_BACKWARD_CHANNEL_ID = 3;
-
         public static final int ROLLER_MOTOR_ID = 13;
-        public static final double ROLLER_POWER = 0.8;
-        public static final double STALL_POWER = 0.3;
+        public static final double ROLLER_POWER = 0.6;
+        public static final double STALL_POWER = 0.25;
 
-        public static final double CUBE_CURRENT_THRESHOLD = 25;
-        public static final double CONE_CURRENT_THRESHOLD = 25;
+        public static final double CURRENT_THRESHOLD = 5;
+        public static final double ABSOLUTE_THRESHOLD = 20;
 
         public static final double ROLLER_VOLTAGE = 8;
     }
@@ -525,44 +591,45 @@ public class Constants {
     }
 
     public static class LedConstants{
-        public static class Green{
-            public static final int HUE = 60;
-            public static final int SATURATION = 255;
-            public static final int VALUE = 255;
+        public static final int CANDLE_ID = 37;
+        
+        public static final int WHITE_VALUE = 0; //leds used don't have a white value
+        
+        public static final int STARTING_ID = 8;
+        public static final int PIVOT_COUNT = 100;
+        public static final int PIVOT_COUNT_FRONT = 50; //change
+        public static final int PIVOT_COUNT_BACK = 50; //change
+
+        public static final double HOLDING_SPEED = 2;
+
+        public static class RainbowAnimation {
+            public static final double BRIGHTNESS = 1;
+            public static final double SPEED = 1;
+
         }
 
-        public static class Blue{
-            public static final int HUE = 120;
-            public static final int SATURATION = 255;
-            public static final int VALUE = 255;
+        public enum Colors {
+            OFF(0,0,0,false),
+            CONE(255,255,0,false),
+            CUBE(255,0,255,false),
+            HOLDING(255,0,0,false),
+    
+            AUTO(0,0,0,true),
+            DEFAULT(0,0,225,false);
+    
+            public final int r;
+            public final int b;
+            public final int g;
+            public final boolean animation;
+    
+            Colors(int r, int g, int b,boolean animation) {
+                this.r = r;
+                this.g = g;
+                this.b = b;
+                this.animation = animation;
+            }
+    
         }
-
-        public static class Red{
-            public static final int HUE = 0;
-            public static final int SATURATION = 255;
-            public static final int VALUE = 255;
-        }
-
-        public static class Yellow{
-            public static final int HUE = 30;
-            public static final int SATURATION = 255;
-            public static final int VALUE = 255;
-        }
-
-        public static class Purple{
-            public static final int HUE = 130;
-            public static final int SATURATION = 255;
-            public static final int VALUE = 50;
-        }
-
-        public static class Off{
-            public static final int HUE = 0;
-            public static final int SATURATION = 0;
-            public static final int VALUE = 0;
-        }
-
-        public static final int PORT = 0; 
-        public static final int LENGTH = 288;
     }
 
 

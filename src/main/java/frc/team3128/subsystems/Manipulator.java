@@ -9,7 +9,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class Manipulator extends SubsystemBase {
 
-    private NAR_TalonSRX m_roller;
+    public NAR_TalonSRX m_roller;
 
     private static Manipulator instance;
 
@@ -31,7 +31,7 @@ public class Manipulator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (Math.abs(getCurrent()) > CUBE_CURRENT_THRESHOLD + 40 && !outtaking)
+        if (Math.abs(getCurrent()) > ABSOLUTE_THRESHOLD + 40 && !outtaking)
             stallPower();
     }
 
@@ -67,7 +67,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public boolean hasObjectPresent(){
-        return Math.abs(getCurrent()) > (CONE ? CONE_CURRENT_THRESHOLD : CUBE_CURRENT_THRESHOLD);
+        return Math.abs(getCurrent()) > ABSOLUTE_THRESHOLD;
     }
 
     public void intake(boolean cone) {
