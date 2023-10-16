@@ -8,10 +8,14 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Constants.SwerveConstants;
 import frc.team3128.Constants.ArmConstants.ArmPosition;
+import frc.team3128.commands.CmdAutoBalance;
+import frc.team3128.commands.CmdAutoBalance2;
 import frc.team3128.commands.CmdMoveArm;
 import frc.team3128.common.narwhaldashboard.NarwhalDashboard;
 import frc.team3128.common.utility.Log;
@@ -53,7 +57,8 @@ public class AutoPrograms {
                                                 "r_mid_1Cone+1Cube+Climb",
                                                 //Hp
                                                 // "r_hp_1Cone+1Cube",
-                                                "r_cable_1Cone+2Cube"
+                                                "r_cable_1Cone+2Cube",
+                                                "ScuffedClimb"
 
                                             };
         NarwhalDashboard.addAutos(autoStrings);
@@ -61,19 +66,40 @@ public class AutoPrograms {
 
     public Command getAutonomousCommand() {
        String selectedAutoName = NarwhalDashboard.getSelectedAutoName();
-        // String selectedAutoName = "b_cable_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
-        if (selectedAutoName == null || !Trajectories.contains(selectedAutoName)) {
-            return sequence(
-                new CmdMoveArm(ArmPosition.TOP_CONE),
-                runOnce(() -> Manipulator.getInstance().outtake()),
-                waitSeconds(.5),
-                runOnce(() -> Manipulator.getInstance().stopRoller()),
-                new CmdMoveArm(ArmPosition.NEUTRAL)
-                );
-        }
-        SmartDashboard.putString(selectedAutoName, selectedAutoName);
+       return sequence(
+        runOnce(()-> Swerve.getInstance().zeroGyro(DriverStation.getAlliance() == Alliance.Blue ? 0 : 180)),
+        new CmdMoveArm(ArmPosition.TOP_CONE),
+        runOnce(() -> Manipulator.getInstance().outtake()),
+        waitSeconds(.5),
+        runOnce(() -> Manipulator.getInstance().stopRoller()),
+        new CmdMoveArm(ArmPosition.NEUTRAL),
+        new CmdAutoBalance()
+    );
 
-        return Trajectories.get(selectedAutoName, selectedAutoName.contains("Climb"));
+    //    if (selectedAutoName == "ScuffedClimb") {
+    //        return sequence(
+    //             runOnce(()-> Swerve.getInstance().zeroGyro(DriverStation.getAlliance() == Alliance.Blue ? 0 : 180)),
+    //             new CmdMoveArm(ArmPosition.TOP_CONE),
+    //             runOnce(() -> Manipulator.getInstance().outtake()),
+    //             waitSeconds(.5),
+    //             runOnce(() -> Manipulator.getInstance().stopRoller()),
+    //             new CmdMoveArm(ArmPosition.NEUTRAL),
+    //             new CmdAutoBalance()
+    //        );
+    //    }
+    //     // String selectedAutoName = "b_cable_1Cone+1Cube"; //uncomment and change this for testing without opening Narwhal Dashboard
+        // if (selectedAutoName == null || !Trajectories.contains(selectedAutoName)) {
+        //     return sequence(
+        //         new CmdMoveArm(ArmPosition.TOP_CONE),
+        //         runOnce(() -> Manipulator.getInstance().outtake()),
+        //         waitSeconds(.5),
+        //         runOnce(() -> Manipulator.getInstance().stopRoller()),
+        //         new CmdMoveArm(ArmPosition.NEUTRAL)
+        //         );
+        // }
+        // // SmartDashboard.putString(selectedAutoName, selectedAutoName);
+
+        // return Trajectories.get(selectedAutoName, selectedAutoName.contains("Climb"));
     }
     
     // /** 

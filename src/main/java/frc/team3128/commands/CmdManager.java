@@ -45,7 +45,7 @@ public class CmdManager {
             new InstantCommand(() -> NarwhalDashboard.setGridCell(xpos,position.height)),
             new InstantCommand(()-> Vision.AUTO_ENABLED = DriverStation.isAutonomous()),
             new WaitUntilCommand(()-> Vision.AUTO_ENABLED),
-            new CmdTrajectory(xpos, position == ArmPosition.LOW_FLOOR),
+            // new CmdTrajectory(xpos, position == ArmPosition.LOW_FLOOR),
             either(none(), CmdPivot(position), ()-> position == ArmPosition.LOW_FLOOR),
             new InstantCommand(()-> Vision.AUTO_ENABLED = false),
             vibrateController()

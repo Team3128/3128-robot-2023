@@ -34,7 +34,7 @@ public class Intake extends PIDSubsystem {
     private static Intake instance;
 
     public enum IntakeState {
-        DEPLOYED(-3),
+        DEPLOYED(0),
         RETRACTED(100);
 
         public double angle;
@@ -79,7 +79,7 @@ public class Intake extends PIDSubsystem {
     }
 
     public double getAngle() {
-        return MathUtil.inputModulus(-m_encoder.get() * ENCODER_CONVERSION_FACTOR_TO_DEGREES - ANGLE_OFFSET,-180, 180);
+        return MathUtil.inputModulus(m_encoder.get() * ENCODER_CONVERSION_FACTOR_TO_DEGREES - ANGLE_OFFSET,-180, 180);
     }
 
     public void startPID(IntakeState desiredState) {

@@ -13,7 +13,7 @@ import frc.team3128.subsystems.Manipulator;
 import frc.team3128.subsystems.Pivot;
 import frc.team3128.subsystems.Swerve;
 
-public class CmdAutoBalance extends CommandBase{
+public class CmdAutoBalance2 extends CommandBase{
     private final Swerve swerve;
     private double prevAngle;
     private double angleVelocity;
@@ -21,12 +21,12 @@ public class CmdAutoBalance extends CommandBase{
     private boolean onRamp;
     private boolean shoot;
 
-    public CmdAutoBalance() {
+    public CmdAutoBalance2() {
         swerve = Swerve.getInstance();
         addRequirements(Swerve.getInstance());
     }
 
-    public CmdAutoBalance(boolean shoot) {
+    public CmdAutoBalance2(boolean shoot) {
         this.shoot = shoot;
         swerve = Swerve.getInstance();
         addRequirements(Swerve.getInstance());
@@ -76,7 +76,7 @@ public class CmdAutoBalance extends CommandBase{
             return;
         }
 
-        swerve.drive(new Translation2d(onRamp ? DRIVE_SPEED * (advAngle > 0.0 ? 1.0 : -1.0) : DRIVE_SPEED * 2, 0), 0, false);
+        swerve.drive(new Translation2d(onRamp ? -DRIVE_SPEED * (advAngle > 0.0 ? 1.0 : -1.0) : -DRIVE_SPEED, 0), 0, false);
     }
 
     @Override

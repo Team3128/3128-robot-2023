@@ -90,7 +90,9 @@ public class CmdTrajectory extends CommandBase {
     public void initialize() {
         trajCommand = generateAuto();
         endPoint = allianceFlip(END_POINTS[index]);
-        trajCommand.schedule();
+        if (!Vision.MANUAL) {
+            trajCommand.schedule();
+        }
         CmdSwerveDrive.enabled = false;
     }
 
@@ -109,6 +111,7 @@ public class CmdTrajectory extends CommandBase {
 
     @Override
     public boolean isFinished(){
-        return swerve.getPose().minus(endPoint).getTranslation().getNorm() < 0.5;
+        return true;
+        // return swerve.getPose().minus(endPoint).getTranslation().getNorm() < 0.5;
     }
 }
