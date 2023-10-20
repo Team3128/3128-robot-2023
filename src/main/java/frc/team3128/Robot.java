@@ -94,6 +94,6 @@ public class Robot extends LoggedRobot {
     
     @Override
     public void disabledPeriodic() {
-        Telescope.getInstance().engageBrake();
+        // Telescope.getInstance().engageBrake();
     }
 }

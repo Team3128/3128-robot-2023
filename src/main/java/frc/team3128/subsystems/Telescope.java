@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.math.MathUtil;
 import static frc.team3128.Constants.TelescopeConstants.*;
@@ -32,7 +33,7 @@ public class Telescope extends PIDSubsystem {
 
     private NAR_CANSparkMax m_teleMotor;
     //private SparkMaxRelativeEncoder m_encoder;
-    private DoubleSolenoid m_solenoid; 
+    private Solenoid m_solenoid; 
     //private DigitalInput m_limitSwitch;
 
     public Telescope() {
@@ -64,7 +65,7 @@ public class Telescope extends PIDSubsystem {
     }
 
     public void configPneumatics(){
-        m_solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, SOLENOID_FORWARD_CHANNEL_ID, SOLENOID_BACKWARD_CHANNEL_ID);
+        m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
         engageBrake();
     }
 
@@ -132,11 +133,11 @@ public class Telescope extends PIDSubsystem {
     }
 
     public void releaseBrake(){
-        m_solenoid.set(Value.kReverse);
+        m_solenoid.set(false);
     }
 
     public void engageBrake(){
-        m_solenoid.set(Value.kForward);
+        m_solenoid.set(true);
     }
 
     /**

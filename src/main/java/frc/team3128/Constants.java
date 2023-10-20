@@ -422,9 +422,9 @@ public class Constants {
     public static class ArmConstants {
 
         public enum ArmPosition {
-            TOP_CONE(112, 38.5, 0, true), // 112,44 
+            TOP_CONE(104, 39.5, 0, true), // 112,44 
             TOP_CUBE(105, 38.5, 0, false), //98,35
-            MID_CONE(100, 23, 1, true), //98,22.5
+            MID_CONE(92, 22, 1, true), //98,22.5
             MID_CUBE(90, 22, 1, false), //87,15
             LOW_FLOOR(45, 11.5, 2, false), 
 
