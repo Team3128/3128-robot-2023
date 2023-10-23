@@ -19,6 +19,12 @@ import edu.wpi.first.math.util.Units;
 
 import static frc.team3128.Constants.VisionConstants.*;
 
+/**
+ * Team 3128's streamlined {@link PhotonCamera} class. Provides additional functionality and ease of use.
+ * 
+ * @since 2023 CHARGED UP
+ * @author Mason Lam, William Yuan, Audrey Zheng, Lucas Han
+ */
 public class NAR_Camera extends PhotonCamera {
 
     public final Camera camera;
@@ -37,162 +43,260 @@ public class NAR_Camera extends PhotonCamera {
 
     public static DoubleSupplier thresh;
 
+    /**
+     * Creates a new object to represent a camera. Disables version checking.
+     * 
+     * @param camera {@link Camera} object to be represented
+     * @see for geometry help: https://first.wpi.edu/FRC/roborio/release/docs/java/edu/wpi/first/math/geometry/
+     */
     public NAR_Camera(Camera camera) {
         super(camera.hostname);
         this.camera = camera;
         setVersionCheckEnabled(false);
     }
-
-    public static void setRequirements(DoubleSupplier angle, BiConsumer<Pose2d, Double> odometry,
-            HashMap<Integer, Pose2d> poses, boolean haveMultipleTargets) {
+    /**
+     * Sets the requirements for the camera.
+     * 
+     * @param angle DoubleSupplier that represents Swerve.getYaw(). Returns the rotation of the robot.
+     * @param odometry BiConsumer that represents Swerve.addVisionMeasurement(Pose2d, double). Updates the pose of the robot.
+     * @param poses HashMap of poses of the AprilTags.
+     * @param haveMultipleTargets boolean representing whether or not to consider multiple targest.
+     */
+    public static void setRequirements(DoubleSupplier angle, BiConsumer<Pose2d, Double> odometry, HashMap<Integer, Pose2d> poses, boolean haveMultipleTargets) {
         gyro = angle;
         updatePose = odometry;
         AprilTags = poses;
         multipleTargets = haveMultipleTargets;
     }
-
+    /**
+     * Enables the camera to update the pose of the robot.
+     */
     public void enable() {
         camera.updatePose = true;
     }
-
+    /**
+     * Disables the camera from updating the pose of the robot.
+     */
     public void disable() {
         camera.updatePose = false;
     }
-
-    //TODO: Clean up this method
+    /**
+     * Returns the name of the camera.
+     */
+    public String getName() {
+        return camera.hostname;
+    }
+    /**
+     * Updates the pose of the robot based on what the camera sees.
+     * 
+     * @see #update() comments in code for logic.
+     */
     public void update() {
         result = this.getLatestResult();
 
-        if (result.hasTargets()) {
-
-            targets = result.getTargets();
-            bestTarget = result.getBestTarget();
-
-            if (!camera.updatePose) return;
-
-            ArrayList<Pose2d> poses = new ArrayList<Pose2d>();
-            if (multipleTargets) {
-                for (PhotonTrackedTarget curTarget : targets) {
-                    if (targetAmbiguity(curTarget) < 0.3 && !getApril(curTarget).equals(new Pose2d()))
-                        poses.add(getApril(curTarget));
-                }
-            } else if (!getPos().equals(new Pose2d()))
-                poses.add(getPos());
-
-            for (Pose2d curPos : poses) {
-                if (translationOutOfBounds(curPos.getTranslation()))
-                    return;
-                updatePose.accept(curPos, result.getTimestampSeconds());
-            }
+        // if the camera sees no target, set values to null and return
+        if (!result.hasTargets()) {
+            targets = null;
+            bestTarget = null;
             return;
         }
 
-        targets = null;
-        bestTarget = null;
-    }
+        targets = result.getTargets();
+        bestTarget = result.getBestTarget();
 
+        // do not update pose if the camera is not supposed to
+        if (!camera.updatePose) return;
+
+        // if the camera sees multiple targets, add all valid targets to poses
+        // if the camera sees one target, only add first valid target to poses
+        final ArrayList<Pose2d> poses = new ArrayList<Pose2d>();
+        for (final PhotonTrackedTarget curTarget : targets) {
+            final Transform2d transform = getAccTarget(curTarget);
+            // if the target is not ambiguous, the target is not empty, and the target is in an accurate position, add the poses
+            if (targetAmbiguity(curTarget) < 0.5 && !getPos(curTarget).equals(new Pose2d())
+                && !(getDistance() > 5 || Math.abs(transform.getRotation().getDegrees()) < 150)) {
+                poses.add(getPos(curTarget));
+                // if only one target, break
+                if (!multipleTargets) break;
+            }
+        }
+
+        // updates Swerve.addVisionMeasurement(Pose2d, double) with all valid poses
+        for (final Pose2d curPos : poses) {
+            if (translationOutOfBounds(curPos.getTranslation())) return;
+            updatePose.accept(curPos, result.getTimestampSeconds());
+        }
+    }    
+
+    /**
+     * Returns if a calculated Pose2d is within the bounds of the field.
+     * 
+     * @param translation Translation2d of the Pose2d.
+     * @return boolean representing whether or not the Pose2d is within the bounds of the field.
+     */
     private boolean translationOutOfBounds(Translation2d translation) {
         return translation.getX() > FIELD_X_LENGTH || translation.getX() < 0 || translation.getY() > FIELD_Y_LENGTH
                 || translation.getY() < 0;
     }
 
+    /**
+     * Returns the target ID of the best target.
+     * 
+     * @return the target ID of the best target.
+     */
     public int targetId() {
         return targetId(bestTarget);
     }
 
+    /**
+     * Returns the target ID of a target.
+     * @param target PhotonTrackedTarget target to get the ID of.
+     * @return the target ID of a target.
+     */
     private int targetId(PhotonTrackedTarget target) {
         return hasValidTarget() ? target.getFiducialId() : 0;
     }
-
+    /**
+     * Returns the error of the best target.
+     * @return the error of the best target.
+     */
     public double targetAmbiguity() {
         return targetAmbiguity(bestTarget);
     }
 
+    /**
+     * Returns the error of a target.
+     * @param target PhotonTrackedTarget target to get the error of.
+     * @return the error of a target.
+     */
     private double targetAmbiguity(PhotonTrackedTarget target) {
         return hasValidTarget() ? target.getPoseAmbiguity() : 0;
     }
 
-    public Transform3d getRawTarget() {
-        return getRawTarget(bestTarget);
+    /**
+     * Returns the position of the best target relative to the camera as a Transform3d.
+     * @return the position of the best target relative to the camera as a Transform3d.
+     */
+    public Transform3d getTarget3d() {
+        return getTarget3d(bestTarget);
     }
 
-    private Transform3d getRawTarget(PhotonTrackedTarget target) {
+    /**
+     * Returns the position of a target relative to the camera as a Transform3d.
+     * @param target PhotonTrackedTarget target to get the position of.
+     * @return the position of a target relative to the camera as a Transform3d.
+     */
+    private Transform3d getTarget3d(PhotonTrackedTarget target) {
         return hasValidTarget() ? target.getBestCameraToTarget() : new Transform3d();
     }
 
+    /**
+     * Returns the position of the best target relative to the camera as a Transform2d.
+     * @return the position of the best target relative to the camera as a Transform2d.
+     */
     public Transform2d getTarget() {
         return getTarget(bestTarget);
     }
 
-    // rawTarget() + transform
+    /**
+     * Returns the position of a target relative to the camera as a Transform2d.
+     * @param target PhotonTrackedTarget target to get the position of.
+     * @return the position of a target relative to the camera as a Transform2d.
+     */
     private Transform2d getTarget(PhotonTrackedTarget target) {
-        if (!hasValidTarget())
-            return new Transform2d();
-        Transform3d transform = getRawTarget(target);
+        if (!hasValidTarget()) return new Transform2d();
+
+        final Transform3d transform = getTarget3d(target);
         return new Transform2d(transform.getTranslation().toTranslation2d(),
                 transform.getRotation().toRotation2d().unaryMinus());
     }
 
-    public Transform2d getProcessedTarget() {
-        return getProcessedTarget(bestTarget);
+    /**
+     * Returns a more accurate camera pos relative to target as a Transform2d.
+     * @return a more accurate camera pos relative to target as a Transform2d.
+     * @see #getAccTarget(PhotonTrackedTarget) comments in code for logic.
+     */
+    public Transform2d getAccTarget() {
+        return getAccTarget(bestTarget);
     }
 
-    // process getTarget()
-    private Transform2d getProcessedTarget(PhotonTrackedTarget target) {
-        if (!hasValidTarget() || !AprilTags.containsKey(targetId(target)))
-            return new Transform2d();
-        double hypotenuse = getDistance(target);
-        Rotation2d angle = getTarget().getRotation();
-        double targetAngle = AprilTags.get(targetId(target)).getRotation().getDegrees();
-        double deltaY = hypotenuse * Math.sin(
-                Units.degreesToRadians(gyro.getAsDouble() + targetAngle + camera.offset.getRotation().getDegrees()));
-        Transform2d vector = getTarget(target);
-        return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), angle);
-    }
+    /**
+     * Returns a more accurate camera pos relative to target as a Transform2d.
+     * @param target PhotonTrackedTarget target to get the position of.
+     * @return a more accurate camera pos relative to target as a Transform2d.
+     * @see #getAccTarget(PhotonTrackedTarget) comments in code for logic.
+     */
+    private Transform2d getAccTarget(PhotonTrackedTarget target) {
+        // if no valid target, return empty Transform2d
+        if (!hasValidTarget() || !AprilTags.containsKey(targetId(target))) return new Transform2d();
 
+        // distance from robot to target
+        final double hypotenuse = getDistance(target);
+        // angle of the robot relative to target
+        final Rotation2d angleTargetToCamera = getTarget().getRotation();
+        // angle of the april tag relative to the field (0: ->, 180: <-)
+        final double angleFieldToTarget = AprilTags.get(targetId(target)).getRotation().getDegrees();
+        final double deltaY = hypotenuse * Math.sin(
+                Units.degreesToRadians(gyro.getAsDouble() + angleFieldToTarget + camera.offset.getRotation().getDegrees()));
+        final Transform2d vector = getTarget(target);
+        return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), angleTargetToCamera);
+    }
+    /**
+     * Returns if the camera sees any targets.
+     * 
+     * @return boolean returning if List<PhotonTrackedTarget> targets is not empty.
+     */
     public boolean hasValidTarget() {
         return targets != null;
     }
 
+    /**
+     * Returns the distance from the best target to the camera.
+     * 
+     * @return the distance from the best target to the camera.
+     */
     public double getDistance() {
         return getDistance(bestTarget);
     }
 
-    // Relative to Camera
+    /**
+     * Returns the distance from a target to the camera.
+     * @param target PhotonTrackedTarget target to get the distance of.
+     * @return the distance from a target to the camera.
+     */
     private double getDistance(PhotonTrackedTarget target) {
-        if (!hasValidTarget())
-            return -1;
-        Transform2d transform = getTarget(target);
+        if (!hasValidTarget()) return -1;
+
+        final Transform2d transform = getTarget(target);
         return Math.sqrt(Math.pow(transform.getX(), 2) + Math.pow(transform.getY(), 2));
     }
 
+    /**
+     * Returns the position of the robot, as a Pose2d, relative to the field using the position of the best target.
+     * @return the position of the robot, as a Pose2d relative to the field using the position of the best target.
+     * @see #getPos(PhotonTrackedTarget) comments in code for logic.
+     */
     public Pose2d getPos() {
-        return getApril(bestTarget);
+        return getPos(bestTarget);
     }
 
-    // TODO: fix
-    // Relative to Robot
-    private Pose2d getApril(PhotonTrackedTarget tag) {
-        Pose2d target = AprilTags.get(targetId());
-        if (!hasValidTarget() || !AprilTags.containsKey(targetId(tag)) || target == null)
-            return new Pose2d();
+    /**
+     * Returns the position of the robot, as a Pose2d, relative to the field using the position of a target.
+     * @param tag PhotonTrackedTarget target to use to get the position of the robot.
+     * @return the position of the robot, as a Pose2d relative to the field using the position of a target.
+     * @see #getPos(PhotonTrackedTarget) comments in code for logic.
+     */
+    private Pose2d getPos(PhotonTrackedTarget tag) {
+        final Pose2d target = AprilTags.get(targetId());
+        // if no valid target, return empty Pose2d
+        if (!hasValidTarget() || !AprilTags.containsKey(targetId(tag)) || target == null) return new Pose2d();
 
-        Transform2d transform = getProcessedTarget(tag);
-        Translation2d coord = target.getTranslation().plus(transform.getTranslation().rotateBy(target.getRotation()));
-        Rotation2d angle = target.getRotation().plus(transform.getRotation());
+        // transforms the camera pos relative to target to camera pos relative to field
+        final Transform2d transform = getAccTarget(tag);
+        final Translation2d coord = target.getTranslation().plus(transform.getTranslation().rotateBy(target.getRotation()));
+        final Rotation2d angle = target.getRotation().plus(transform.getRotation());
 
-        Pose2d pos = new Pose2d(coord, angle).transformBy(camera.offset);
-
-        
-
-        if (transform.getX() > 5 || Math.abs(transform.getRotation().getDegrees()) < 150) {
-            return new Pose2d();
-        }
-        return pos;
+        // camera pos to robot pos
+        return new Pose2d(coord, angle).transformBy(camera.offset);
     }
-
-    public String getName() {
-        return camera.hostname;
-    }
-
 }

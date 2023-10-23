@@ -32,6 +32,7 @@ public class Vision extends SubsystemBase {
 
     public Vision() {
         Swerve swerve = Swerve.getInstance();
+        //swerve.addVisionMeasurement(), updates the pos of the robot every time a pos is passed in
         NAR_Camera.setRequirements(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), APRIL_TAG_POS, false);
         cameras = new HashMap<String, NAR_Camera>();
         cameras.put(FRONT.hostname, new NAR_Camera(FRONT));
@@ -105,7 +106,7 @@ public class Vision extends SubsystemBase {
         NAR_Shuffleboard.addData("Vision", "HasTarget", () -> cam.hasValidTarget(), 0, 0);
         NAR_Shuffleboard.addData("Vision", "Distance", () -> cam.getDistance(), 1, 0);
         NAR_Shuffleboard.addData("Vision", "RawTarget", () -> cam.getTarget().toString(), 0, 1, 4, 1);
-        NAR_Shuffleboard.addData("Vision", "Processed Target", () -> cam.getProcessedTarget().toString(), 0, 2, 4, 1);
+        NAR_Shuffleboard.addData("Vision", "Processed Target", () -> cam.getAccTarget().toString(), 0, 2, 4, 1);
         NAR_Shuffleboard.addData("Vision", "EstimatedPose", () -> cam.getPos().toString(), 0, 3, 4, 1);
         NAR_Shuffleboard.addData("Drivetrain", "HasTarget", () -> cam.hasValidTarget(), 1, 1);
         NAR_Shuffleboard.addData("Test", "Test", () -> SELECTED_GRID, 0, 0);
@@ -113,7 +114,7 @@ public class Vision extends SubsystemBase {
         NAR_Shuffleboard.addData("Vision2", "HasTarget", () -> cam2.hasValidTarget(), 0, 0);
         NAR_Shuffleboard.addData("Vision2", "Distance", () -> cam2.getDistance(), 1, 0);
         NAR_Shuffleboard.addData("Vision2", "RawTarget", () -> cam2.getTarget().toString(), 0, 1, 4, 1);
-        NAR_Shuffleboard.addData("Vision2", "Processed Target", () -> cam2.getProcessedTarget().toString(), 0, 2, 4, 1);
+        NAR_Shuffleboard.addData("Vision2", "Processed Target", () -> cam2.getAccTarget().toString(), 0, 2, 4, 1);
         NAR_Shuffleboard.addData("Vision2", "EstimatedPose", () -> cam2.getPos().toString(), 0, 3, 4, 1);
 
         NAR_Shuffleboard.addData("Togglables", "AUTO_ENABLED", () -> AUTO_ENABLED, 0, 0);
@@ -129,8 +130,8 @@ public class Vision extends SubsystemBase {
                 3);
         NAR_Shuffleboard.addData("Vision Urgent", "TARGETGUITY", cameras.get(FRONT.hostname).targetAmbiguity(), 3, 0);
         NAR_Shuffleboard.addData("Vision Urgent", "PROCESSED TARGET",
-                cameras.get(FRONT.hostname).getProcessedTarget().toString(), 0, 4);
-        NAR_Shuffleboard.addData("Vision Urgent", "SUNSHINE", cameras.get(FRONT.hostname).getRawTarget().toString(), 0,
+                cameras.get(FRONT.hostname).getAccTarget().toString(), 0, 4);
+        NAR_Shuffleboard.addData("Vision Urgent", "SUNSHINE", cameras.get(FRONT.hostname).getTarget3d().toString(), 0,
                 5);
     }
 }
