@@ -47,7 +47,7 @@ public class NAR_Camera extends PhotonCamera {
      * Creates a new object to represent a camera. Disables version checking.
      * 
      * @param camera {@link Camera} object to be represented
-     * @see for geometry help: https://first.wpi.edu/FRC/roborio/release/docs/java/edu/wpi/first/math/geometry/
+     * @see for geometry help: https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/index.html 
      */
     public NAR_Camera(Camera camera) {
         super(camera.hostname);
@@ -111,7 +111,7 @@ public class NAR_Camera extends PhotonCamera {
         // if the camera sees one target, only add first valid target to poses
         final ArrayList<Pose2d> poses = new ArrayList<Pose2d>();
         for (final PhotonTrackedTarget curTarget : targets) {
-            final Transform2d transform = getAccTarget(curTarget);
+            final Transform2d transform = getAbsTarget(curTarget);
             // if the target is not ambiguous, the target is not empty, and the target is in an accurate position, add the poses
             if (targetAmbiguity(curTarget) < 0.5 && !getPos(curTarget).equals(new Pose2d())
                 && !(getDistance() > 5 || Math.abs(transform.getRotation().getDegrees()) < 150)) {
@@ -214,32 +214,37 @@ public class NAR_Camera extends PhotonCamera {
     /**
      * Returns a more accurate camera pos relative to target as a Transform2d.
      * @return a more accurate camera pos relative to target as a Transform2d.
-     * @see #getAccTarget(PhotonTrackedTarget) comments in code for logic.
+     * @see #getAbsTarget(PhotonTrackedTarget) comments in code for logic.
      */
-    public Transform2d getAccTarget() {
-        return getAccTarget(bestTarget);
+    public Transform2d getAbsTarget() {
+        return getAbsTarget(bestTarget);
     }
 
+    /*
+     * NOTE THE POSE2D X AND Y DOES NOT CARE ABOUT THE ROTATION PART. THE ROTATION IS JUST THE ROTATION OF THE END POINT OF THE VECTOR, AKA WHERE IT IS FACING
+     */
+
     /**
-     * Returns a more accurate camera pos relative to target as a Transform2d.
+     * #########################Returns the camera pos relative to target as a Transform2d.
      * @param target PhotonTrackedTarget target to get the position of.
      * @return a more accurate camera pos relative to target as a Transform2d.
-     * @see #getAccTarget(PhotonTrackedTarget) comments in code for logic.
+     * @see #getAbsTarget(PhotonTrackedTarget) comments in code for logic.
      */
-    private Transform2d getAccTarget(PhotonTrackedTarget target) {
+    private Transform2d getAbsTarget(PhotonTrackedTarget target) {
         // if no valid target, return empty Transform2d
         if (!hasValidTarget() || !AprilTags.containsKey(targetId(target))) return new Transform2d();
 
-        // distance from robot to target
+        // distance from camera to target
         final double hypotenuse = getDistance(target);
-        // angle of the robot relative to target
-        final Rotation2d angleTargetToCamera = getTarget().getRotation();
-        // angle of the april tag relative to the field (0: ->, 180: <-)
+        // rel
+        final Rotation2d targetAngRelCam = getTarget().getRotation();
+        // abs
         final double angleFieldToTarget = AprilTags.get(targetId(target)).getRotation().getDegrees();
+        
         final double deltaY = hypotenuse * Math.sin(
                 Units.degreesToRadians(gyro.getAsDouble() + angleFieldToTarget + camera.offset.getRotation().getDegrees()));
         final Transform2d vector = getTarget(target);
-        return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), angleTargetToCamera);
+        return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), targetAngRelCam);
     }
     /**
      * Returns if the camera sees any targets.
@@ -292,7 +297,7 @@ public class NAR_Camera extends PhotonCamera {
         if (!hasValidTarget() || !AprilTags.containsKey(targetId(tag)) || target == null) return new Pose2d();
 
         // transforms the camera pos relative to target to camera pos relative to field
-        final Transform2d transform = getAccTarget(tag);
+        final Transform2d transform = getAbsTarget(tag);
         final Translation2d coord = target.getTranslation().plus(transform.getTranslation().rotateBy(target.getRotation()));
         final Rotation2d angle = target.getRotation().plus(transform.getRotation());
 
