@@ -10,6 +10,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -57,7 +58,7 @@ public class NAR_Camera extends PhotonCamera {
     /**
      * Sets the requirements for the camera.
      * 
-     * @param angle DoubleSupplier that represents Swerve.getYaw(). Returns the rotation of the robot.
+     * @param angle DoubleSupplier that represents Swerve.getYaw(). Returns the rotation of the robot relative to the field.
      * @param odometry BiConsumer that represents Swerve.addVisionMeasurement(Pose2d, double). Updates the pose of the robot.
      * @param poses HashMap of poses of the AprilTags.
      * @param haveMultipleTargets boolean representing whether or not to consider multiple targest.
@@ -107,9 +108,10 @@ public class NAR_Camera extends PhotonCamera {
         // do not update pose if the camera is not supposed to
         if (!camera.updatePose) return;
 
+        final ArrayList<Pose2d> poses = new ArrayList<Pose2d>();
+
         // if the camera sees multiple targets, add all valid targets to poses
         // if the camera sees one target, only add first valid target to poses
-        final ArrayList<Pose2d> poses = new ArrayList<Pose2d>();
         for (final PhotonTrackedTarget curTarget : targets) {
             final Transform2d transform = getAbsTarget(curTarget);
             // if the target is not ambiguous, the target is not empty, and the target is in an accurate position, add the poses
@@ -121,7 +123,7 @@ public class NAR_Camera extends PhotonCamera {
             }
         }
 
-        // updates Swerve.addVisionMeasurement(Pose2d, double) with all valid poses
+        // updates Swerve.addVisionMeasurement(Pose2d, double) with all acceptable poses
         for (final Pose2d curPos : poses) {
             if (translationOutOfBounds(curPos.getTranslation())) return;
             updatePose.accept(curPos, result.getTimestampSeconds());
@@ -174,50 +176,87 @@ public class NAR_Camera extends PhotonCamera {
     }
 
     /**
-     * Returns the position of the best target relative to the camera as a Transform3d.
-     * @return the position of the best target relative to the camera as a Transform3d.
+     * Returns the vector of the best target to the camera as a Transform3d, with the facing angle of the target relative to the camera.
+     * <p> Vector's coordinate system is relative to the camera.
+     * @return the vector of the best target to the camera as a Transform3d, with the facing angle of the target relative to the camera.
      */
     public Transform3d getTarget3d() {
         return getTarget3d(bestTarget);
     }
 
     /**
-     * Returns the position of a target relative to the camera as a Transform3d.
-     * @param target PhotonTrackedTarget target to get the position of.
-     * @return the position of a target relative to the camera as a Transform3d.
+     * Returns the vector of a target to the camera as a Transform3d, with the facing angle of the target relative to the camera.
+     * @param target PhotonTrackedTarget target to get the transform of.
+     * @return the vector of a target to the camera as a Transform3d, with the facing angle of the target relative to the camera.
+     * @see vector's coordinate system is relative to the camera.
      */
     private Transform3d getTarget3d(PhotonTrackedTarget target) {
         return hasValidTarget() ? target.getBestCameraToTarget() : new Transform3d();
     }
 
     /**
-     * Returns the position of the best target relative to the camera as a Transform2d.
-     * @return the position of the best target relative to the camera as a Transform2d.
+     * Returns the vector of the best target to the camera as a Transform2d, with the facing angle of the target relative to the camera.
+     * @return the vector of the best target to the camera as a Transform2d, with the facing angle of the target relative to the camera.
+     * @see vector's coordinate system is relative to the camera.
      */
-    public Transform2d getTarget() {
-        return getTarget(bestTarget);
+    public Transform2d getRelTarget() {
+        return getRelTarget(bestTarget);
     }
 
     /**
-     * Returns the position of a target relative to the camera as a Transform2d.
-     * @param target PhotonTrackedTarget target to get the position of.
-     * @return the position of a target relative to the camera as a Transform2d.
+     * Returns the vector of a target to the camera as a Transform2d, with the facing angle of the target relative to the camera.
+     * @param target PhotonTrackedTarget target to get the transform of.
+     * @return the vector of a target to the camera as a Transform2d, with the facing angle of the target relative to the camera.
+     * @see vector's coordinate system is relative to the camera.
      */
-    private Transform2d getTarget(PhotonTrackedTarget target) {
+    private Transform2d getRelTarget(PhotonTrackedTarget target) {
         if (!hasValidTarget()) return new Transform2d();
 
         final Transform3d transform = getTarget3d(target);
+
         return new Transform2d(transform.getTranslation().toTranslation2d(),
                 transform.getRotation().toRotation2d().unaryMinus());
     }
 
     /**
-     * Returns a more accurate camera pos relative to target as a Transform2d.
-     * @return a more accurate camera pos relative to target as a Transform2d.
+     * Returns the vector of the best target to the camera as a Transform2d, with the facing angle of the target relative to the camera.
+     * @return the vector of the best target to the camera as a Transform2d, with the facing angle of the target relative to the camera.
      * @see #getAbsTarget(PhotonTrackedTarget) comments in code for logic.
+     * @see vector's coordinate system is relative to the field.
      */
     public Transform2d getAbsTarget() {
         return getAbsTarget(bestTarget);
+    }
+
+    /**
+     * Returns the vector of a target to the camera as a Transform2d, with the facing angle of the target relative to the camera.
+     * @param target PhotonTrackedTarget target to get the position of.
+     * @return the vector of a target to the camera as a Transform2d, with the facing angle of the target relative to the camera.
+     * @see #getAbsTarget(PhotonTrackedTarget) comments in code for logic.
+     * @see vector's coordinate system is relative to the field.
+     */
+    private Transform2d getAbsTarget(PhotonTrackedTarget target) {
+        // if no valid target, return empty Transform2d
+        if (!hasValidTarget() || !AprilTags.containsKey(targetId(target))) return new Transform2d();
+
+        // facing angle of target relative to camera
+        final Rotation2d targetAngRelCam = getRelTarget().getRotation();
+        // facing angle of target relative to field
+        final double angleFieldToTarget = AprilTags.get(targetId(target)).getRotation().getDegrees();
+        
+        Translation2d vector = getRelTarget(target).getTranslation();
+        // TODO: angleFieldToTarget necessary?
+        vector = vector.rotateBy(Rotation2d.fromDegrees(gyro.getAsDouble() + angleFieldToTarget + camera.offset.getRotation().getDegrees()));
+        return new Transform2d(vector, targetAngRelCam);
+    }
+
+    /**
+     * Returns a more accurate camera pos relative to target as a Transform2d.
+     * @return a more accurate camera pos relative to target as a Transform2d.
+     * @see #getAccTarget(PhotonTrackedTarget) comments in code for logic.
+     */
+    public Transform2d getAccTarget() {
+        return getAccTarget(bestTarget);
     }
 
     /*
@@ -228,24 +267,27 @@ public class NAR_Camera extends PhotonCamera {
      * #########################Returns the camera pos relative to target as a Transform2d.
      * @param target PhotonTrackedTarget target to get the position of.
      * @return a more accurate camera pos relative to target as a Transform2d.
-     * @see #getAbsTarget(PhotonTrackedTarget) comments in code for logic.
+     * @see #getAccTarget(PhotonTrackedTarget) comments in code for logic.
      */
-    private Transform2d getAbsTarget(PhotonTrackedTarget target) {
+    private Transform2d getAccTarget(PhotonTrackedTarget target) {
         // if no valid target, return empty Transform2d
         if (!hasValidTarget() || !AprilTags.containsKey(targetId(target))) return new Transform2d();
 
         // distance from camera to target
         final double hypotenuse = getDistance(target);
-        // rel
-        final Rotation2d targetAngRelCam = getTarget().getRotation();
-        // abs
+        // facing angle of target relative to camera
+        final Rotation2d targetAngRelCam = getRelTarget().getRotation();
+        // facing angle of target relative to field
         final double angleFieldToTarget = AprilTags.get(targetId(target)).getRotation().getDegrees();
         
+
         final double deltaY = hypotenuse * Math.sin(
-                Units.degreesToRadians(gyro.getAsDouble() + angleFieldToTarget + camera.offset.getRotation().getDegrees()));
-        final Transform2d vector = getTarget(target);
+                Units.degreesToRadians(MathUtil.inputModulus(gyro.getAsDouble() + angleFieldToTarget + camera.offset.getRotation().getDegrees(),-180, 180)));
+        final Transform2d vector = getRelTarget(target);
         return new Transform2d(new Translation2d(vector.getX(), vector.getY() - deltaY), targetAngRelCam);
     }
+
+
     /**
      * Returns if the camera sees any targets.
      * 
@@ -272,7 +314,7 @@ public class NAR_Camera extends PhotonCamera {
     private double getDistance(PhotonTrackedTarget target) {
         if (!hasValidTarget()) return -1;
 
-        final Transform2d transform = getTarget(target);
+        final Transform2d transform = getRelTarget(target);
         return Math.sqrt(Math.pow(transform.getX(), 2) + Math.pow(transform.getY(), 2));
     }
 
@@ -304,4 +346,7 @@ public class NAR_Camera extends PhotonCamera {
         // camera pos to robot pos
         return new Pose2d(coord, angle).transformBy(camera.offset);
     }
+
+        
+    
 }

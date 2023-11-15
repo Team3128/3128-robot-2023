@@ -133,10 +133,10 @@ public class RobotContainer {
                                             new CmdMoveArm(ArmPosition.NEUTRAL)));
 
         controller.getButton("RightBumper").onTrue(CmdIntakeOuttake()).onFalse(CmdStopIntake());
-        controller.getButton("LeftBumper").onTrue(CmdIntake()).onFalse(Commands.sequence(
-            new InstantCommand(() -> intake.set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), intake),
-            CmdExtendIntake(Intake.IntakeState.RETRACTED),
-            new WaitUntilCommand(()-> intake.atSetpoint())));
+        // controller.getButton("LeftBumper").onTrue(CmdIntake()).onFalse(Commands.sequence(
+        //     new InstantCommand(() -> intake.set(Intake.objectPresent ? IntakeConstants.STALL_POWER : 0), intake),
+        //     CmdExtendIntake(Intake.IntakeState.RETRACTED),
+        //     new WaitUntilCommand(()-> intake.atSetpoint())));
 
         controller.getUpPOVButton().onTrue(new InstantCommand(()-> {
             CmdSwerveDrive.rSetpoint = DriverStation.getAlliance() == Alliance.Red ? 0 : 180;
@@ -259,7 +259,7 @@ public class RobotContainer {
         operatorController.getButton("Back").onTrue(new InstantCommand(()-> Vision.MANUAL = !Vision.MANUAL));
         operatorController.getButton("Y").onTrue(new InstantCommand(()-> telescope.zeroEncoder()));
         operatorController.getButton("X").onTrue(CmdStopManip());
-        operatorController.getButton("A").onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).alongWith(CmdExtendIntake(Intake.IntakeState.RETRACTED)));
+        // operatorController.getButton("A").onTrue(new CmdMoveArm(ArmPosition.NEUTRAL).alongWith(CmdExtendIntake(Intake.IntakeState.RETRACTED)));
 
         operatorController.getButton("LeftBumper").onTrue(CmdManipGrab(false)).onFalse(CmdStopManip());
         operatorController.getButton("RightBumper").onTrue(CmdManipGrab(true)).onFalse(CmdStopManip());
