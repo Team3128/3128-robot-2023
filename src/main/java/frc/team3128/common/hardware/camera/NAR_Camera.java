@@ -246,7 +246,7 @@ public class NAR_Camera extends PhotonCamera {
         
         Translation2d vector = getRelTarget(target).getTranslation();
         // TODO: angleFieldToTarget necessary?
-        vector = vector.rotateBy(Rotation2d.fromDegrees(gyro.getAsDouble() +/*angleFieldToTarget*/ camera.offset.getRotation().getDegrees()));
+        vector = vector.rotateBy(Rotation2d.fromDegrees(gyro.getAsDouble() +/*180+*//*angleFieldToTarget*/ camera.offset.getRotation().getDegrees()));
         return new Transform2d(vector, targetAngRelCam);
     }
 
@@ -302,7 +302,7 @@ public class NAR_Camera extends PhotonCamera {
 
         // transforms the camera pos relative to target to camera pos relative to field
         final Transform2d transform = getAccTarget(tag);
-        final Translation2d coord = target.getTranslation().plus(transform.getTranslation()/*.rotateBy(target.getRotation())*/);
+        final Translation2d coord = target.getTranslation().plus(transform.getTranslation()/* .rotateBy(Rotation2d.fromDegrees(180))*//*.rotateBy(target.getRotation())*/);
         final Rotation2d angle = target.getRotation().plus(transform.getRotation());
 
         // camera pos to robot pos
