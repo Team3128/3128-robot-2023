@@ -16,6 +16,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.team3128.Constants.SwerveConstants.Mod0;
+import frc.team3128.Constants.SwerveConstants.Mod1;
+import frc.team3128.Constants.SwerveConstants.Mod2;
+import frc.team3128.Constants.SwerveConstants.Mod3;
 import frc.team3128.Constants.VisionConstants;
 import frc.team3128.common.swerveNeo.SwerveModule;
 import frc.team3128.common.utility.NAR_Shuffleboard;
@@ -25,6 +29,12 @@ import static frc.team3128.Constants.VisionConstants.*;
 
 import java.io.FileWriter;
 
+/**
+ * Team 3128's swerve drive subsystem
+ * 
+ * @since 2023 CHARGED UP
+ * @author Mason Lam, Mika Okamoto, William Yuan
+ */
 public class Swerve extends SubsystemBase {
 
     private volatile FileWriter txtFile;
@@ -45,6 +55,9 @@ public class Swerve extends SubsystemBase {
 
     private double initialRoll, initialPitch;
 
+    /**
+     * @return the singleton instance of the subsystem
+     */
     public static synchronized Swerve getInstance() {
         if (instance == null) {
             instance = new Swerve();
@@ -52,10 +65,17 @@ public class Swerve extends SubsystemBase {
         return instance;
     }
 
+    /**
+     * Creates a new object to control swerve drive
+     * <p> Sets up the gyro and swerve modules
+     */
     public Swerve() {
+        //gyro configurations
         gyro = new WPI_Pigeon2(pigeonID);
         gyro.configFactoryDefault();
         zeroGyro();
+
+        //
         fieldRelative = true;
         estimatedPose = new Pose2d();
 
@@ -64,7 +84,7 @@ public class Swerve extends SubsystemBase {
         // } catch (IOException e) {
         //     e.printStackTrace();
         // }
-
+        
         modules = new SwerveModule[] {
             new SwerveModule(0, Mod0.constants),
             new SwerveModule(1, Mod1.constants),
@@ -77,7 +97,6 @@ public class Swerve extends SubsystemBase {
 
         odometry = new SwerveDrivePoseEstimator(swerveKinematics, getGyroRotation2d(), getPositions(), 
                                                 estimatedPose, SVR_STATE_STD, SVR_VISION_MEASUREMENT_STD);
-
 
         field = new Field2d();
         SmartDashboard.putData("Field", field);

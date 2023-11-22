@@ -21,6 +21,7 @@ import static frc.team3128.Constants.VisionConstants.*;
 
 /**
  * Team 3128's streamlined {@link PhotonCamera} class that provides additional functionality and ease of use
+ * <p> Geometry: https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/index.html
  * 
  * @since 2023 CHARGED UP
  * @author William Yuan, Lucas Han, Audrey Zheng, Mason Lam
@@ -46,7 +47,7 @@ public class NAR_Camera extends PhotonCamera {
     /**
      * Creates a PhotonCamera object
      * 
-     * @param camera info of a camera
+     * @param camera specs of a camera
      */
     public NAR_Camera(Camera camera) {
         super(camera.hostname);
@@ -55,7 +56,7 @@ public class NAR_Camera extends PhotonCamera {
     }
 
     /**
-     * Sets the requirements for a camera
+     * Sets the requirements for NAR_Camera
      * 
      * @param angle returns the rotation of the robot relative to the field
      * @param odometry updates the pose of the robot
@@ -228,18 +229,18 @@ public class NAR_Camera extends PhotonCamera {
         if (!hasValidTarget() || !AprilTags.containsKey(targetId(target))) return new Transform2d();
 
         // angle of the AprilTag relative to the field
-        final double angleTarget = AprilTags.get(targetId(target)).getRotation().getDegrees();
+        final double fieldTargetAngle = AprilTags.get(targetId(target)).getRotation().getDegrees();
         
         // vector relative to camera coordinate system
         Translation2d vector = getRelTarget(target).getTranslation();
         
         // rotated vector to match target coordinate system
-        vector = vector.rotateBy(Rotation2d.fromDegrees(MathUtil.inputModulus(gyro.getAsDouble() + angleTarget + camera.offset.getRotation().getDegrees(),-180,180)));
+        vector = vector.rotateBy(Rotation2d.fromDegrees(MathUtil.inputModulus(gyro.getAsDouble() + fieldTargetAngle + camera.offset.getRotation().getDegrees(),-180,180)));
 
         // angle of the AprilTag relative to the camera
-        final Rotation2d relAngleTarget = getRelTarget().getRotation();
+        final Rotation2d relTargetAngle = getRelTarget().getRotation();
 
-        return new Transform2d(vector, relAngleTarget);
+        return new Transform2d(vector, relTargetAngle);
     }
 
     /**
@@ -258,7 +259,7 @@ public class NAR_Camera extends PhotonCamera {
 
     /**
      * @param target an April Tag
-     * @return the distance from the best target to the camera
+     * @return the distance from a target to the camera
      */
     private double getDistance(PhotonTrackedTarget target) {
         if (!hasValidTarget()) return -1;
@@ -281,7 +282,7 @@ public class NAR_Camera extends PhotonCamera {
      * @return position of the robot on the field as a Pose2d calculated from a target
      */
     private Pose2d getPos(PhotonTrackedTarget tag) {
-        final Pose2d target = AprilTags.get(targetId());
+        final Pose2d target = AprilTags.get(targetId(tag));
 
         // if no valid target, return empty Pose2d
         if (!hasValidTarget() || !AprilTags.containsKey(targetId(tag)) || target == null) return new Pose2d();
