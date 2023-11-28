@@ -118,7 +118,7 @@ public class NAR_Camera extends PhotonCamera {
 
             // if target is tolerable, add to possiblePoses
             if (!getPos(curTarget).equals(new Pose2d()) && targetAmbiguity(curTarget) < 0.5
-                && !(getDistance() > 5 || Math.abs(transform.getRotation().getDegrees()) < 150)) {
+                && !(getDistance(curTarget) > 5 || Math.abs(transform.getRotation().getDegrees()) < 150)) {
 
                 possiblePoses.add(getPos(curTarget));
 
@@ -207,8 +207,9 @@ public class NAR_Camera extends PhotonCamera {
 
         final Transform3d transform = getTarget3d(target);
 
+        // unary minus used to reverse the sign of the angle
         return new Transform2d(transform.getTranslation().toTranslation2d(),
-                transform.getRotation().toRotation2d().unaryMinus());
+                Rotation2d.fromDegrees(MathUtil.inputModulus(transform.getRotation().toRotation2d().unaryMinus().getDegrees(),-180,180)));
     }
 
     /**
@@ -238,7 +239,7 @@ public class NAR_Camera extends PhotonCamera {
         vector = vector.rotateBy(Rotation2d.fromDegrees(MathUtil.inputModulus(gyro.getAsDouble() + fieldTargetAngle + camera.offset.getRotation().getDegrees(),-180,180)));
 
         // angle of the AprilTag relative to the camera
-        final Rotation2d relTargetAngle = getRelTarget().getRotation();
+        final Rotation2d relTargetAngle = getRelTarget(target).getRotation();
 
         return new Transform2d(vector, relTargetAngle);
     }
