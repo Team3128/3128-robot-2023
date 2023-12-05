@@ -17,8 +17,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 
-import static frc.team3128.Constants.VisionConstants.*;
-
 /**
  * Team 3128's streamlined {@link PhotonCamera} class that provides additional functionality and ease of use
  * <p> Geometry: https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/index.html
@@ -44,15 +42,20 @@ public class NAR_Camera extends PhotonCamera {
 
     public static DoubleSupplier thresh;
 
+    private int FIELD_X_LENGTH;
+    private int FIELD_Y_LENGTH;
+
     /**
      * Creates a NAR_Camera object
      * 
      * @param camera specs of the camera
      */
-    public NAR_Camera(Camera camera) {
+    public NAR_Camera(Camera camera, int fieldXLength, int fieldYLength) {
         super(camera.hostname);
         this.camera = camera;
         setVersionCheckEnabled(false);
+        FIELD_X_LENGTH = fieldXLength;
+        FIELD_Y_LENGTH = fieldYLength;
     }
 
     /**
