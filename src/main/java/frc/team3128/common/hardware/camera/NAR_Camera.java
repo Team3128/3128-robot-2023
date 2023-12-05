@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 
 /**
  * Team 3128's streamlined {@link PhotonCamera} class that provides additional functionality and ease of use
@@ -42,20 +43,18 @@ public class NAR_Camera extends PhotonCamera {
 
     public static DoubleSupplier thresh;
 
-    private int FIELD_X_LENGTH;
-    private int FIELD_Y_LENGTH;
+    private final double FIELD_X_LENGTH = Units.inchesToMeters(648);
+    private final double FIELD_Y_LENGTH = Units.inchesToMeters(324);
 
     /**
      * Creates a NAR_Camera object
      * 
      * @param camera specs of the camera
      */
-    public NAR_Camera(Camera camera, int fieldXLength, int fieldYLength) {
+    public NAR_Camera(Camera camera) {
         super(camera.hostname);
         this.camera = camera;
         setVersionCheckEnabled(false);
-        FIELD_X_LENGTH = fieldXLength;
-        FIELD_Y_LENGTH = fieldYLength;
     }
 
     /**
