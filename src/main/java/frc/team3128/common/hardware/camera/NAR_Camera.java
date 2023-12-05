@@ -45,9 +45,9 @@ public class NAR_Camera extends PhotonCamera {
     public static DoubleSupplier thresh;
 
     /**
-     * Creates a PhotonCamera object
+     * Creates a NAR_Camera object
      * 
-     * @param camera specs of a camera
+     * @param camera specs of the camera
      */
     public NAR_Camera(Camera camera) {
         super(camera.hostname);
@@ -58,9 +58,9 @@ public class NAR_Camera extends PhotonCamera {
     /**
      * Sets the requirements for NAR_Camera
      * 
-     * @param angle returns the rotation of the robot relative to the field
-     * @param odometry updates the pose of the robot
-     * @param poses AprilTag poses
+     * @param angle feeds the angle of the robot
+     * @param odometry feeds the robot odometry object for vision estimates to update
+     * @param poses sets the AprilTag positions on the field
      * @param haveMultipleTargets represents whether or not to consider multiple targets
      */
     public static void setRequirements(DoubleSupplier angle, BiConsumer<Pose2d, Double> odometry, HashMap<Integer, Pose2d> poses, boolean haveMultipleTargets) {
@@ -71,14 +71,14 @@ public class NAR_Camera extends PhotonCamera {
     }
 
     /**
-     * Enables the camera to update the pose of the robot
+     * Allows the camera to update robot odometry
      */
     public void enable() {
         camera.updatePose = true;
     }
 
     /**
-     * Disables the camera from updating the pose of the robot
+     * Stops the camera from updating robot odometry
      */
     public void disable() {
         camera.updatePose = false;
@@ -92,9 +92,10 @@ public class NAR_Camera extends PhotonCamera {
     }
 
     /**
-     * Updates the pose of the robot
+     * Gets the latest targets and updates the robot position if applicable
      */
     public void update() {
+        //returns the most recent camera frame
         result = this.getLatestResult();
 
         // if camera sees no target, set values to null and return
@@ -144,7 +145,7 @@ public class NAR_Camera extends PhotonCamera {
     }
 
     /**
-     * @return the target ID of the best target
+     * @return the target ID of the best target represented as a number
      */
     public int targetId() {
         return targetId(bestTarget);
@@ -152,21 +153,23 @@ public class NAR_Camera extends PhotonCamera {
 
     /**
      * @param target an AprilTag
-     * @return the target ID of a target
+     * @return the target ID of a target represented as a number
      */
     private int targetId(PhotonTrackedTarget target) {
         return hasValidTarget() ? target.getFiducialId() : 0;
     }
     /**
-     * @return the error of the best target
+     * The ambiguity of the best target with lower being more accurate
+     * @return a value from 0.0 to 1.0 representing the accuracy of the target
      */
     public double targetAmbiguity() {
         return targetAmbiguity(bestTarget);
     }
 
     /**
+     * The ambiguity of a target with lower being more accurate
      * @param target an AprilTag
-     * @return the error of a target
+     * @return a value from 0.0 to 1.0 representing the accuracy of the target
      */
     private double targetAmbiguity(PhotonTrackedTarget target) {
         return hasValidTarget() ? target.getPoseAmbiguity() : 0;
