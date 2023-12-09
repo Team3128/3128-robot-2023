@@ -241,7 +241,7 @@ public class NAR_Camera extends PhotonCamera {
         Translation2d vector = getRelTarget(target).getTranslation();
         
         // rotated vector to match target coordinate system
-        vector = vector.rotateBy(Rotation2d.fromDegrees(MathUtil.inputModulus(gyro.getAsDouble() + fieldTargetAngle + camera.offset.getRotation().getDegrees(),-180,180)));
+        vector = vector.rotateBy(Rotation2d.fromDegrees(MathUtil.inputModulus(gyro.getAsDouble() + fieldTargetAngle + camera.offset.getRotation().getDegrees() + 180,-180,180)));
 
         // angle of the AprilTag relative to the camera
         final Rotation2d relTargetAngle = getRelTarget(target).getRotation();
